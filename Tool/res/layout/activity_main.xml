@@ -1,0 +1,75 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/activity_horizontal_margin"
+    android:orientation="vertical" >
+
+    <!-- test mode -->
+
+    <include
+        android:id="@+id/test_item"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        layout="@layout/layout_test_item" />
+
+    <!-- test detail mode -->
+
+    <RelativeLayout
+        android:id="@+id/mate_unit_test"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <TextView
+            android:id="@+id/mate_test_item"
+            style="@style/Text_Large_Black"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:id="@+id/mate_test_left"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="250dip"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/test_on"
+                style="@style/Text_Large_Black"
+                android:layout_width="wrap_content"
+                android:layout_height="70dip"
+                android:text="@string/start_test" />
+
+            <Button
+                android:id="@+id/test_temp"
+                style="@style/Text_Large_Black"
+                android:layout_width="wrap_content"
+                android:layout_height="70dip"
+                android:text="@string/turn_right" />
+
+            <Button
+                android:id="@+id/test_off"
+                style="@style/Text_Large_Black"
+                android:layout_width="wrap_content"
+                android:layout_height="70dip"
+                android:text="@string/stop_test" />
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/mate_ble_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="40dip"
+            android:layout_toRightOf="@+id/mate_test_left" >
+        </ListView>
+
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            layout="@layout/layout_result" />
+    </RelativeLayout>
+
+</LinearLayout>

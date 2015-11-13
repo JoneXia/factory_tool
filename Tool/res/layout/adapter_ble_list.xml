@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/mate_ble_mac"
+        android:layout_width="match_parent"
+        style="@style/Text_Small_Black"
+        android:layout_height="wrap_content"
+        android:background="@color/gray_pool"
+        android:gravity="center" />
+
+</LinearLayout>

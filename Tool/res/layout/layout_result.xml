@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="200dip"
+    android:orientation="vertical" >
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="0.5dip"
+        android:background="@color/gray_pool" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="@dimen/activity_horizontal_margin" >
+
+        <Button
+            android:id="@+id/btn_test_succeed"
+            style="@style/Text_Large_White"
+            android:layout_width="200dip"
+            android:layout_height="70dip"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:background="@color/green"
+            android:text="@string/test_succeed" />
+
+        <Button
+            android:id="@+id/btn_test_failed"
+            style="@style/Text_Large_White"
+            android:layout_width="200dip"
+            android:layout_height="70dip"
+            android:background="@color/red"
+            android:text="@string/test_failed" />
+    </LinearLayout>
+
+</LinearLayout>

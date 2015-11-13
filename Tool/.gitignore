@@ -1,0 +1,10 @@
+/gen/
+/bin/
+/build/
+/.idea/
+/.gradle/
+*.iml
+local.properties
+.classpath
+custom_rules.xml
+project.properties

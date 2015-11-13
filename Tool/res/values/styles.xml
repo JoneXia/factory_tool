@@ -1,0 +1,146 @@
+<resources>
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="@android:style/Theme.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+
+    
+    <style name="Text_Large_Black">
+        <item name="android:textSize">22dip</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="Text_Middle_Black">
+        <item name="android:textSize">18dip</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="Text_Small_Black">
+        <item name="android:textSize">14dip</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="Text_Large_Gray">
+        <item name="android:textSize">22dip</item>
+        <item name="android:textColor">@color/gray</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="Text_Middle_Gray">
+        <item name="android:textSize">18dip</item>
+        <item name="android:textColor">@color/gray</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="Text_Small_Gray">
+        <item name="android:textSize">14dip</item>
+        <item name="android:textColor">@color/gray</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="Text_Large_White">
+        <item name="android:textSize">22dip</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="Text_Middle_White">
+        <item name="android:textSize">18dip</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+    
+    <style name="Chat_Text_White">
+        <item name="android:textSize">17dip</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textIsSelectable">true</item>
+    </style>
+    
+    <style name="Chat_Text_Black">
+        <item name="android:textSize">17dip</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textIsSelectable">true</item>
+    </style>
+    
+    <style name="Text_Middle_Yellow">
+        <item name="android:textSize">18dip</item>
+        <item name="android:textColor">@color/yellow</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="Text_Small_White">
+        <item name="android:textSize">14dip</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="Text_Large_Blue">
+        <item name="android:textSize">22dip</item>
+        <item name="android:textColor">@color/blue</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+    
+    <style name="Text_Middle_Blue">
+        <item name="android:textSize">18dip</item>
+        <item name="android:textColor">@color/blue</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+    
+    <style name="Text_Small_Blue">
+        <item name="android:textSize">14dip</item>
+        <item name="android:textColor">@color/green</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="Text_Large_Green">
+        <item name="android:textSize">22dip</item>
+        <item name="android:textColor">@color/blue</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+    
+    <style name="Text_Middle_Green">
+        <item name="android:textSize">18dip</item>
+        <item name="android:textColor">@color/green</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+    
+    <style name="Text_Small_Green">
+        <item name="android:textSize">14dip</item>
+        <item name="android:textColor">@color/green</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+    
+    <style name="Text_Small_Yellow">
+        <item name="android:textSize">14dip</item>
+        <item name="android:textColor">@color/yellow</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+    
+    <style name="Text_Small_Red">
+        <item name="android:textSize">14dip</item>
+        <item name="android:textColor">@color/red</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+    
+    <style name="Text_Middle_Red">
+        <item name="android:textSize">18dip</item>
+        <item name="android:textColor">@color/red</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+</resources>

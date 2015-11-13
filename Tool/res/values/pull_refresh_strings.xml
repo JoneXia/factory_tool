@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Just use standard Pull Down String when pulling up. These can be set for languages which require it -->
+    <string name="pull_to_refresh_from_bottom_pull_label">@string/Pull_to_load_more</string>
+    <string name="pull_to_refresh_from_bottom_release_label">@string/Release_to_refresh</string>
+    <string name="pull_to_refresh_from_bottom_refreshing_label">@string/Loading</string>
+	<string name="pull_to_refresh_pull_label" translatable="false">@string/Pull_to_refresh</string>
+    <string name="pull_to_refresh_release_label" translatable="false">@string/Release_to_refresh</string>
+    <string name="pull_to_refresh_refreshing_label" translatable="false">@string/Loading</string>
+    <string name="pull_to_refresh_tap_label" translatable="false">@string/Tap_to_refresh</string>
+</resources>

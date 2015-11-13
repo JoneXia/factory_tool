@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:padding="10dip"
+              android:orientation="vertical">
+
+    <RadioGroup
+        android:id="@+id/mate_test_style"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dip">
+
+        <RadioButton
+            android:id="@+id/mate_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:selectAllOnFocus="true"
+            android:text="Mate Style"/>
+
+        <RadioButton
+            android:id="@+id/mate_pro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dip"
+            android:text="Mate Pro"/>
+    </RadioGroup>
+
+    <EditText
+        android:id="@+id/fixture_number_edittxt"
+        style="@style/Text_Middle_Black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dip"
+        android:layout_marginTop="20dip"
+        android:hint="@string/fixture_number"
+        android:inputType="number"
+        android:maxLength="1"/>
+
+    <Button
+        android:id="@+id/start_test"
+        style="@style/Text_Large_Black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dip"
+        android:padding="15dip"
+        android:text="@string/start_test"/>
+
+</LinearLayout>

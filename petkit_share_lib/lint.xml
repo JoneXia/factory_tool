@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="DefaultLocale">
+        <ignore path="src/com/petkit/android/ble/service/BLEActionService.java" />
+        <ignore path="src/com/petkit/android/service/BLEActionService.java" />
+    </issue>
+</lint>

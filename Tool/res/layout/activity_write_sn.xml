@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    
+        <EditText
+        android:id="@+id/write_sn"
+        style="@style/Text_Middle_Black"
+        android:layout_width="match_parent"
+        android:layout_height="50dip"
+        android:layout_marginBottom="10dip"
+        android:layout_marginTop="20dip"
+        android:gravity="center"
+        android:inputType="number" />
+
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="match_parent"
+            android:layout_height="50dip"
+            android:text="@string/ok" />
+
+</LinearLayout>

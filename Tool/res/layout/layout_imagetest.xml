@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="5dip" >
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="360dp"
+        android:layout_height="360dp"
+        android:rotation="90"
+        android:src="@drawable/background_corner" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/result"
+        android:orientation="horizontal" >	
+        <LinearLayout
+            android:id="@+id/video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dip"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/video_start"
+                style="@style/Text_Large_Black"
+                android:layout_width="wrap_content"
+                android:layout_height="70dip"
+                android:text="@string/start_video" />
+
+            <Button
+                android:id="@+id/video_stop"
+                style="@style/Text_Large_Black"
+                android:layout_width="wrap_content"
+                android:layout_height="70dip"
+                android:text="@string/stop_video" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/cut_led"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dip"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/cut_led1"
+                style="@style/Text_Large_Black"
+                android:layout_width="wrap_content"
+                android:layout_height="70dip"
+                android:text="cut_灯1" />
+
+            <Button
+                android:id="@+id/cut_led2"
+                style="@style/Text_Large_Black"
+                android:layout_width="wrap_content"
+                android:layout_height="70dip"
+                android:text="cut_灯2" />
+
+            <Button
+                android:id="@+id/cut_led_end"
+                style="@style/Text_Large_Black"
+                android:layout_width="wrap_content"
+                android:layout_height="70dip"
+                android:text="cut_关闭" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <include
+        android:id="@+id/result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        layout="@layout/layout_result"
+        android:gravity="center" />
+
+</RelativeLayout>

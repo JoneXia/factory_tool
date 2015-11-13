@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/activity_horizontal_margin"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/test_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dip"
+        android:orientation="vertical" >
+
+        <EditText
+            android:id="@+id/sn"
+            style="@style/Text_Middle_Black"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dip"
+            android:layout_marginTop="20dip"
+            android:background="@color/transparent"
+            android:gravity="center"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/date_edittxt"
+            style="@style/Text_Middle_Black"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/fixture_number_edittxt"
+            style="@style/Text_Middle_Black"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dip"
+            android:layout_marginTop="5dip"
+            android:hint="@string/fixture_number"
+            android:inputType="number"
+            android:maxLength="1" >
+
+            <requestFocus />
+        </EditText>
+
+        <Button
+            android:id="@+id/start_test"
+            style="@style/Text_Large_Black"
+            android:layout_width="match_parent"
+            android:layout_height="70dip"
+            android:layout_marginTop="20dip"
+            android:text="@string/start_test" />
+    </LinearLayout>
+
+    <!-- loading mode -->
+
+    <LinearLayout
+        android:id="@+id/test_loading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dip"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:id="@+id/loading_txt"
+            style="@style/Text_Large_Black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dip"
+            android:text="@string/loading" />
+
+        <ListView
+            android:id="@+id/loading_mac_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/gray_bg" >
+        </ListView>
+    </LinearLayout>
+
+    <!-- failed mode -->
+
+    <LinearLayout
+        android:id="@+id/test_failed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dip"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <Button
+            style="@style/Text_Large_White"
+            android:layout_width="100dip"
+            android:layout_height="100dip"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/red"
+            android:text="@string/test_failed" />
+
+        <Button
+            android:id="@+id/test_retry"
+            style="@style/Text_Large_Black"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dip"
+            android:text="@string/test_retry" />
+    </LinearLayout>
+
+</LinearLayout>

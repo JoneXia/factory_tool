@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/activity_horizontal_margin"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/ble_value"
+        style="@style/Text_Middle_Black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dip"
+        android:layout_marginTop="20dip"
+        android:gravity="center"
+        android:hint="板测蓝牙信号值"
+        android:inputType="number" />
+
+    <EditText
+        android:id="@+id/ble_value2"
+        style="@style/Text_Middle_Black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dip"
+        android:layout_marginTop="20dip"
+        android:gravity="center"
+        android:hint="终测蓝牙信号值"
+        android:inputType="number" />
+
+    <EditText
+        android:id="@+id/volt_value_min"
+        style="@style/Text_Middle_Black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dip"
+        android:layout_marginTop="20dip"
+        android:gravity="center"
+        android:hint="电压最小值" />
+
+    <EditText
+        android:id="@+id/volt_value_max"
+        style="@style/Text_Middle_Black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dip"
+        android:layout_marginTop="20dip"
+        android:gravity="center"
+        android:hint="电压最大值" />
+
+    <Button
+        android:id="@+id/button1"
+        style="@style/Text_Middle_Black"
+        android:layout_width="match_parent"
+        android:layout_height="70dip"
+        android:layout_marginTop="10dip"
+        android:text="@string/ok" />
+
+</LinearLayout>
