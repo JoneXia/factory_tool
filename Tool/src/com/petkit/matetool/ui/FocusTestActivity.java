@@ -256,7 +256,7 @@ public class FocusTestActivity extends BaseActivity {
                         case DatagramConsts.VIDEO_VALUE:
                             value.setText(Utils.video_value + "/" + Utils.video_value1);
                             break;
-                        case DatagramConsts.WRITEOK:
+                        case DatagramConsts.WRITEOK://data is a boolean, true is write ok
                             finish();
                             break;
                     }

@@ -132,7 +132,7 @@ public class WriteSnActivity extends BaseActivity {
 
                     LoadDialog.dismissDialog();
                     switch (progress) {
-                        case DatagramConsts.WRITEOK:
+                        case DatagramConsts.WRITEOK: //data is a boolean, true is write ok
                             if(!writeSucceed) {
                                 mHander.removeCallbacks(mRunnable);
                                 writeSucceed = true;

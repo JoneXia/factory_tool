@@ -151,7 +151,7 @@ public class PlayActivity extends BaseActivity {
 
                     LoadDialog.dismissDialog();
                     switch (progress) {
-                        case DatagramConsts.WRITEOK:
+                        case DatagramConsts.WRITEOK://data is a boolean, true is write ok
                             finish();
                             break;
                     }

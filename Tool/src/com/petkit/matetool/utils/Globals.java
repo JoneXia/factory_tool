@@ -71,12 +71,7 @@ public class Globals {
 	//test result 
 	public static final int MATE_TEST_PASS      = 1;
 	public static final int MATE_TEST_FAILED = 2;
-	
-	
-	
-	
-	
-	
+
 	public static String organizationSN(Context context, int station, int style) {
 		String sn;
 		if(style == Globals.MATE_PRO) {
@@ -96,24 +91,12 @@ public class Globals {
 		}
 		
 		String serialNum = String.format("%05d", factoryNum);
-		
-//		if(factoryNum > 0 && factoryNum < 10) {
-//			serialNum = "0000" +factoryNum;
-//		} else if(factoryNum < 100) {
-//			serialNum = "000" +factoryNum;
-//		} else if(factoryNum < 1000) {
-//			serialNum = "00" +factoryNum;
-//		}else if(factoryNum < 10000) {
-//			serialNum = "0" +factoryNum;
-//		}else if(factoryNum < 100000) {
-//			serialNum = "" +factoryNum;
-//		} else {
-//			Utils.showToast(context, "Serial Number >= 100000  error!");
-//			return null;
-//		}
-        
 		return (sn + date + station + serialNum).trim();
 	}
+
+    public static boolean checkSNValid(String sn){
+        return sn != null && sn.length() == 15 && (sn.startsWith("001") || sn.startsWith("002"));
+    }
 	
 	
 	@SuppressLint("SimpleDateFormat")

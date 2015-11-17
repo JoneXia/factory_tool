@@ -374,7 +374,11 @@ public class MainActivity extends BaseActivity {
                                 updateUnitTestLayoutForAdd("1 ");
                             }
                             break;
-                        case DatagramConsts.WRITEOK:
+                        case DatagramConsts.WRITEOK://data is a boolean, true is write ok
+                            if(!Boolean.valueOf(data)){
+                                showShortToast(R.string.Failure);
+                                return;
+                            }
                             if(mCurCaseMode != Globals.FinalTestMode) {
                                 showLongToast(R.string.Succeed);
                                 finish();

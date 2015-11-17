@@ -193,6 +193,7 @@
     <string name="Focus_mode_images">图像调焦</string>
 
     <string name="Regist_successful">注册成功</string>
+    <string name="Regist_failed">注册失败</string>
     <string name="Entry_test_mode_failed">进入测试模式失败</string>
 
     <string name="Confirm_clear_all_test">确认清除测试状态为0？</string>
@@ -202,9 +203,10 @@
     <string name="Hint_mate_style_empty">请先选择mate类型</string>
     <string name="Hint_test_case_not_compelte">还有项目未测试，请确认!!!</string>
     <string name="Hint_wait_result_for_write_sn">正在写SN，请等待写入结果。。。</string>
-    <string name="Hint_sn_not_valid">SN长度必须为15位</string>
+    <string name="Hint_sn_not_valid">SN格式不正确，请重新输入</string>
     <string name="Confrim_paste_sn_in_write_way">请正确粘贴SN条码！</string>
     <string name="Hint_failed_to_write_sn">SN写入失败！</string>
     <string name="Retry_to_write_sn">点击重新写SN</string>
+    <string name="Title_input_sn">请输入SN码</string>
 
 </resources>

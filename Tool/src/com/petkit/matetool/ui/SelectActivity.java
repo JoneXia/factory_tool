@@ -1,5 +1,6 @@
 package com.petkit.matetool.ui;
 
+import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,8 +9,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.InputType;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -122,7 +126,6 @@ public class SelectActivity extends BaseActivity {
 		switch (view.getId()) {
 		case R.id.test_case1:
 			mCurCaseMode = Globals.BoardTestMode;
-//			startActivity(new Intent(SelectActivity.this, InputActivity.class));
             LoadDialog.show(this, getString(R.string.Connecting));
             writeCMD(DatagramConsts.SERVER_REG_MONI, DatagramConsts.BoardTestMode);
 			break;
@@ -132,16 +135,11 @@ public class SelectActivity extends BaseActivity {
 			break;
 		case R.id.test_case3:
 			mCurCaseMode = Globals.FinalTestMode;
-//			startActivity(new Intent(SelectActivity.this, InputActivity.class));
             LoadDialog.show(this, getString(R.string.Connecting));
             writeCMD(DatagramConsts.SERVER_REG_MONI, DatagramConsts.FinalTestMode);
 			break;
 		case R.id.test_case4:
-//			startActivity(new Intent(SelectActivity.this, SpotActivity.class));
-
-			mCurCaseMode = Globals.SpotTestMode;
-            LoadDialog.show(this, getString(R.string.Connecting));
-            writeCMD(DatagramConsts.SERVER_REG_MONI, DatagramConsts.SpotTestMode);
+            showInputCodeDialog();
 			break;
 		case R.id.test_case5:
 			mCurCaseMode = Globals.FocusTestMode2;
@@ -150,18 +148,53 @@ public class SelectActivity extends BaseActivity {
 		}
 	}
 
+    private void showInputCodeDialog(){
+        final View inputView = LayoutInflater.from(this).inflate(R.layout.dialog_input, null);
+
+        TextView title = (TextView) inputView.findViewById(R.id.dialog_input_title);
+        title.setText(R.string.Title_input_sn);
+
+        new AlertDialog.Builder(this)
+                .setCancelable(true)
+                .setView(inputView)
+                .setPositiveButton(R.string.OK,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(
+                                    DialogInterface dialog,
+                                    int which) {
+                                EditText inputEditText = (EditText) inputView.findViewById(R.id.dialog_input);
+                                String sn = inputEditText.getEditableText().toString();
+                                if (!Globals.checkSNValid(sn)) {
+                                    showShortToast(R.string.Hint_sn_not_valid);
+                                } else {
+                                    mCurCaseMode = Globals.SpotTestMode;
+                                    LoadDialog.show(SelectActivity.this, getString(R.string.Connecting));
+                                    writeCMD(DatagramConsts.SERVER_REG_MONI, DatagramConsts.SpotTestMode, sn);
+                                }
+                            }
+                        })
+                .setNegativeButton(R.string.Cancel,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(
+                                    DialogInterface dialog,
+                                    int which) {
+
+                            }
+                        }).show();
+    }
+
 	private void showDialog() {
 		  new Builder(this).setTitle(R.string.Prompt)
 		     .setMessage(R.string.Confirm_select_focus_mode)
-                  .setPositiveButton(R.string.Focus_mode_video,new DialogInterface.OnClickListener() {
-		         @Override  
-		         public void onClick(DialogInterface dialog, int which) {
-                     focusTestImageMode = false;
-                     LoadDialog.show(SelectActivity.this, getString(R.string.Connecting));
-                     writeCMD(DatagramConsts.SERVER_REG_MONI, mCurCaseMode);
+                  .setPositiveButton(R.string.Focus_mode_video, new DialogInterface.OnClickListener() {
+                      @Override
+                      public void onClick(DialogInterface dialog, int which) {
+                          focusTestImageMode = false;
+                          LoadDialog.show(SelectActivity.this, getString(R.string.Connecting));
+                          writeCMD(DatagramConsts.SERVER_REG_MONI, mCurCaseMode);
 //		 			 startActivity(new Intent(SelectActivity.this, InputActivity.class));
-		         }  
-		     }).setNegativeButton(R.string.Focus_mode_images, new DialogInterface.OnClickListener() {
+                      }
+                  }).setNegativeButton(R.string.Focus_mode_images, new DialogInterface.OnClickListener() {
               @Override
               public void onClick(DialogInterface dialog, int which) {
                   focusTestImageMode = true;
@@ -173,10 +206,17 @@ public class SelectActivity extends BaseActivity {
     }
 
     private void writeCMD(int cmd, int mode){
+        writeCMD(cmd, mode, null);
+    }
+
+    private void writeCMD(int cmd, int mode, String sn){
         Intent intent = new Intent(DatagramConsts.BROADCAST_ACTION);
         intent.putExtra(DatagramConsts.EXTRA_ACTION, DatagramConsts.ACTION_WRITE);
         intent.putExtra(DatagramConsts.EXTRA_WRITE_CMD, cmd);
         intent.putExtra(DatagramConsts.EXTRA_CURRENT_MODE, mode);
+        if(!isEmpty(sn)){
+            intent.putExtra(DatagramConsts.EXTRA_DATA, sn);
+        }
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
@@ -219,7 +259,12 @@ public class SelectActivity extends BaseActivity {
                                         startActivityWithData(MainActivity.class, bundle, false);
                                         break;
                                     case Globals.SpotTestMode:
-                                        startActivity(SpotActivity.class);
+                                        Intent intent = new Intent(SelectActivity.this, MainActivity.class);
+                                        intent.putExtra(DatagramConsts.EXTRA_WIFI_PARAMS, mWifiParams);
+                                        intent.putExtra(DatagramConsts.EXTRA_CURRENT_MODE, mCurCaseMode);
+                                        intent.putExtra(DatagramConsts.EXTRA_MATE_STYLE, mateStyle);
+                                        intent.putExtra(DatagramConsts.EXTRA_WORK_STATION, workStation);
+                                        startActivityForResult(intent, DatagramConsts.SpotTestMode);
                                         break;
                                     default:
                                         Bundle bundle1 = new Bundle();
@@ -235,6 +280,13 @@ public class SelectActivity extends BaseActivity {
                         case DatagramConsts.DATAGRAM_DESTROY:
                             showShortToast(R.string.Test_canceled);
                             finish();
+                            break;
+                        case DatagramConsts.SERVER_CHECK_SYS_PASS:
+                            if(!Boolean.valueOf(data)){
+                                LoadDialog.dismissDialog();
+                                showLongToast(R.string.Regist_failed);
+                                finish();
+                            }
                             break;
                     }
                 }

@@ -93,6 +93,9 @@ public class DatagramProcessService extends IntentService {
                         case DatagramConsts.SERVER_REG_MONI:
                             currentCmd = -1;
                             currentMode = intent.getIntExtra(DatagramConsts.EXTRA_CURRENT_MODE, 0);
+                            if(currentMode == DatagramConsts.SpotTestMode){
+                                sn = intent.getStringExtra(DatagramConsts.EXTRA_DATA);
+                            }
                             break;
                         case DatagramConsts.SERVER_TEST_MODE_WRITE_SN:
                             sn = intent.getStringExtra(DatagramConsts.EXTRA_DATA);
@@ -252,11 +255,9 @@ public class DatagramProcessService extends IntentService {
                             if(writeHead == DatagramConsts.SERVER_TEST_MODE && writeRow != null) {
                                 if(writeRow[1] == 1){
                                     if(writeRow[0] == 0){
-                                        if(writeRow[3] == data1){
-                                            updateProgressNotification(DatagramConsts.WRITEOK, String.valueOf(writeRow[3]));
-                                        }
-                                    } else if(writeRow[0] == data1) {
-                                        updateProgressNotification(DatagramConsts.WRITEOK, String.valueOf(writeRow[3]));
+                                        updateProgressNotification(DatagramConsts.WRITEOK, String.valueOf(writeRow[3] == data1));
+                                    } else {
+                                        updateProgressNotification(DatagramConsts.WRITEOK, String.valueOf(writeRow[0] == data1));
                                     }
                                 } else {
                                     updateProgressNotification(DatagramConsts.SERVER_TEST_MODE, String.valueOf(convertToLocalMode(data1) == currentMode));
@@ -330,100 +331,10 @@ public class DatagramProcessService extends IntentService {
                             params.status = tempchar[0];
                             index++;
 
-//                            if(Globals.mCurCaseMode == Globals.BoardTestMode) {
-//                                if(params.status != 0) {
-//                                    mIsReging = false;
-//                                    receiveData(context);
-//                                    return;
-//                                }
-//                            } else if(Globals.mCurCaseMode == Globals.FocusTestMode) {
-//                                if(params.status != 1) {
-//                                    mIsReging = false;
-//                                    receiveData(context);
-//                                    return;
-//                                }
-//                            } else if(Globals.mCurCaseMode == Globals.FocusTestMode2) {
-//                                if(params.status != 2) {
-//                                    mIsReging = false;
-//                                    receiveData(context);
-//                                    return;
-//                                }
-//                            } else if(Globals.mCurCaseMode == Globals.FinalTestMode) {
-//                                if(params.status != 3) {
-//                                    mIsReging = false;
-//                                    receiveData(context);
-//                                    return;
-//                                }
-//                            } else if(Globals.mCurCaseMode == Globals.SpotTestMode) {
-//                                if(params.status < 3 || (params.sn != null && !params.sn.trim().equals(sn))) {
-//                                    if(params.status >= 3 && params.sn != null && !params.sn.trim().equals(sn)) {
-//                                        sendBroadcast(context, "snerror");
-//                                    }
-//                                    mIsReging = false;
-//                                    receiveData(context);
-//                                    return;
-//                                }
-//                            }
-//
-//                            if(Globals.mCurCaseMode == Globals.BoardTestMode
-//                                    || Globals.mCurCaseMode == Globals.FocusTestMode2
-//                                    || Globals.mCurCaseMode == Globals.FocusTestMode) {
-//                                if(!mIsReging) {
-//                                    mIsReging = true;
-//                                } else {
-//                                    mIsReging = false;
-//                                    receiveData(context);
-//                                    return;
-//                                }
-//                            }
-
                             //version
                             temp = new byte[32];
                             System.arraycopy(data, index, temp, 0, 32);
                             params.version = new String(temp);
-
-//                            if(Globals.mCurCaseMode == Globals.BoardTestMode) {
-//                                if (!String.valueOf(params.index).equals(Globals.g_station)) {
-////									sendBroadcast(context, FixtureNumNotSame);
-////									logString += "Fixture Num Not Same\n";
-//                                    mIsReging = false;
-//                                    receiveData(context);
-//                                    return;
-//                                }
-//                            }
-//                            if(Globals.mCurCaseMode == Globals.BoardTestMode
-//                                    || Globals.mCurCaseMode == Globals.FocusTestMode
-//                                    || Globals.mCurCaseMode == Globals.FocusTestMode2
-//                                    || Globals.mCurCaseMode == Globals.SpotTestMode) {
-//                                // update wifi info
-//                                head = g_head;
-//                                wifi_params.local_rtp_ip = params.local_rtp_ip.replace("/", "");
-//                                wifi_params.local_port = params.local_port;
-//                                wifi_params.ssid = params.ssid;
-//                                wifi_params.rsq = params.rsq;
-//                                wifi_params.state = params.state;
-//                                wifi_params.index = params.index;
-//                                wifi_params.mac = params.mac;
-//                                wifi_params.sn = params.sn;
-//                                wifi_params.status = params.status;
-//                                wifi_params.version = params.version;
-//
-//                                if(Globals.mCurCaseMode == Globals.BoardTestMode) {
-//                                    sendBroadcast(context, updateWifiStatus);
-//                                }
-//                                sendData(context, SERVER_REG_MONI, true);
-//                            } else if(Globals.mCurCaseMode == Globals.FinalTestMode) {
-//                                // add wifi info
-//                                if(!isExist(params.mac)) {
-//                                    if(params.mac != null) {
-//                                        mFinalParams.add(params);
-//                                        mFinalMAC.add(params.mac);
-//                                        sendBroadcast(context, addWifiStatus);
-//                                    }
-//                                }
-//                                receiveData(context);
-//                                return;
-//                            }
 
                             logString += "ip="+ params.local_rtp_ip + "\n";
                             logString += "port=" + params.local_port + "\n";
@@ -436,7 +347,9 @@ public class DatagramProcessService extends IntentService {
                             logString += "status=" + params.status + "\n";
                             logString += "version=" + params.version + "\n\n";
 
-                            if(workStation == params.index && convertToLocalMode(params.status) == currentMode){
+                            if(convertToLocalMode(params.status) == currentMode && (
+                                    (workStation == params.index && currentMode != DatagramConsts.SpotTestMode)           //非抽检模式下，判断工位对应
+                                    || (currentMode == DatagramConsts.SpotTestMode && sn != null && sn.equals(params.sn)))){ //抽检模式下，判断SN对应
                                 head = g_head;
                                 wifi_params.local_rtp_ip = params.local_rtp_ip.replace("/", "");
                                 wifi_params.local_port = params.local_port;
@@ -455,7 +368,6 @@ public class DatagramProcessService extends IntentService {
                                 synchronized (mLock){
                                     mLock.notifyAll();
                                 }
-//                                sendData(DatagramConsts.SERVER_REG_MONI);
                             }
                             break;
                         case DatagramConsts.SERVER_DEVSTA_PARAM:
@@ -528,79 +440,6 @@ public class DatagramProcessService extends IntentService {
                                 logString += " Pass!\n";
                             }
                             break;
-//                        case DatagramConsts.SERVER_TEST_MODE:
-//                            logString += "SERVER_TEST_MODE ";
-//                            index = 8;
-//
-//                            byte data0 = data[index++];
-//                            byte data1 = data[index++];
-//
-//                            index = 50;
-//                            byte data50 = data[index++];
-//                            byte data51 = data[index++];
-//
-//                            if(data1 == 0x00) { //no sn
-//                                if(Globals.mCurCaseMode == Globals.SpotTestMode) {
-//                                    sendBroadcast(context, SERVER_CHECK_HAS_NO_SN);
-//                                    mIsReging = false;
-//                                    return;
-//                                }
-//
-//                                if ((data50 & data51) == 0x1) {
-//                                    sendBroadcast(context, "" + SERVER_CHECK_SYS_FAILED);
-//                                } else {
-////									mIsReged = true;
-////									sendBroadcast(context, "" + SERVER_CHECK_SYS_PASS);
-//                                }
-//                            } else if(data1 == 0x01) { //has sn
-//                                String rtnsn = new String(data, 8 + 3, 46).trim();
-//                                if(Globals.mCurCaseMode == Globals.SpotTestMode) {
-//                                    if(sn != null && rtnsn.equals(sn)) {
-//                                        if((data50 & data51) != 0x1) {
-////											mIsReged = true;
-////											sendBroadcast(context, "" + SERVER_CHECK_SYS_PASS);
-//                                        } else {
-//                                            sendBroadcast(context, "" + SERVER_CHECK_SYS_FAILED);
-//                                        }
-//                                    } else {
-//                                        sendBroadcast(context, "snerror");
-//                                        return;
-//                                    }
-//                                } else if(Globals.mCurCaseMode == Globals.FinalTestMode) {
-//                                    if(rtnsn != null) {
-//                                        sendBroadcast(context, SERVER_CHECK_HAS_SN);
-//                                        if(sn != null) {
-//                                            if(rtnsn.equals(sn)) {
-////												mIsReged = true;
-////												sendBroadcast(context, "" + SERVER_WRITE_SN_PASS);
-//                                                sendBroadcast(context, writesnok);
-//                                                logString += "write sn pass=====  sn=" + sn + "\n";
-//                                            }else {
-//                                                sendBroadcast(context, "" + SERVER_WRITE_SN_FAILED);
-//                                                sendBroadcast(context, writesnfailed);
-//                                                logString += "write sn failed===== sn=" + sn + "\n";
-//                                            }
-//                                        }
-//                                    } else {
-//                                        sendBroadcast(context, SERVER_CHECK_HAS_NO_SN);
-//                                    }
-//                                } else if(Globals.mCurCaseMode == Globals.FocusTestMode
-//                                        || Globals.mCurCaseMode == Globals.FocusTestMode2) {
-//                                    if ((data50 & data51) == 0x01) {
-//                                        sendBroadcast(context, "" + SERVER_CHECK_SYS_FAILED);
-//                                    } else {
-////										mIsReged = true;
-////										sendBroadcast(context, "" + SERVER_CHECK_SYS_PASS);
-//                                    }
-//                                } else {
-////									mIsReged = true;
-//                                    sendBroadcast(context, SERVER_CHECK_HAS_SN);
-////									sendBroadcast(context, "" + SERVER_CHECK_SYS_PASS);
-//                                }
-//                            }
-//
-//                            mIsReging = false;
-//                            break;
                     }
 
                     addTestLog(logString);
@@ -654,16 +493,6 @@ public class DatagramProcessService extends IntentService {
                         row[0] = 1;
                         row[1] = 1;
                         break;
-                    //FOR VIDEO BY IMAGE =======
-//					case SERVER_TEST_MODE_OFF:
-//						head = intToBytes2(SERVER_TEST_MODE);
-//						row[0] = 2;
-//						row[1] = 0;
-//						break;
-//					case TEST_PUSH_RESULT:
-//						head = intToBytes2(SERVER_TEST_MODE);
-//						row[0] = 0;
-//						break;
                     case DatagramConsts.SERVER_REG_UNMONI:
                         mIsReged = false;
                         mIsReging = false;
