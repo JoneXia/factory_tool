@@ -1,31 +1,6 @@
 package com.petkit.matetool.ui;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.RandomAccessFile;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import com.petkit.android.utils.PetkitLog;
-import com.petkit.matetool.model.WifiParams;
-import com.petkit.matetool.service.DatagramConsts;
-import com.petkit.matetool.ui.base.BaseActivity;
-import com.petkit.matetool.utils.FileUtils;
-import com.petkit.matetool.utils.Globals;
-import com.petkit.matetool.utils.Utils;
-import com.petkit.matetool.R;
-import com.petkit.android.ble.BLEConsts;
-import com.petkit.android.ble.DeviceInfo;
-import com.petkit.android.ble.service.AndroidBLEActionService;
-import com.petkit.android.utils.CommonUtils;
-import com.petkit.matetool.widget.LoadDialog;
-
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.bluetooth.BluetoothAdapter;
@@ -51,6 +26,29 @@ import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.petkit.android.ble.BLEConsts;
+import com.petkit.android.ble.DeviceInfo;
+import com.petkit.android.ble.service.AndroidBLEActionService;
+import com.petkit.android.utils.CommonUtils;
+import com.petkit.android.utils.PetkitLog;
+import com.petkit.matetool.R;
+import com.petkit.matetool.model.WifiParams;
+import com.petkit.matetool.service.DatagramConsts;
+import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.utils.FileUtils;
+import com.petkit.matetool.utils.Globals;
+import com.petkit.matetool.utils.Utils;
+import com.petkit.matetool.widget.LoadDialog;
+
+import java.io.File;
+import java.io.RandomAccessFile;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -260,7 +258,7 @@ public class MainActivity extends BaseActivity {
                     break;
 
                 case R.id.Button40:
-                    needReceiveBroadcast = false;
+//                    needReceiveBroadcast = false;
                     startActivityForResult(new Intent(MainActivity.this, WriteSnActivity.class), 0x12);
                     break;
             }
@@ -320,10 +318,16 @@ public class MainActivity extends BaseActivity {
         if(isEmpty(currentSN)){
             currentSN = Globals.organizationSN(this, workStation, mateStyle);
         }
+
+        WriteSN(currentSN);
+    }
+
+    private void WriteSN(String sn) {
+        currentSN = sn;
 //            currentSN = Globals.organizationSN(this, workStation, mateStyle);
 //            Utils.receiveWriteSNData(MainActivity.this);
         writeSucceed = false;
-        Utils.sendData(MainActivity.this, Utils.SERVER_TEST_MODE_WRITE_SN, currentSN);
+        Utils.sendData(MainActivity.this, Utils.SERVER_TEST_MODE_WRITE_SN, sn);
         mHander.postDelayed(mRunnable, 6000);
         showShortToast(R.string.Hint_wait_result_for_write_sn);
     }
@@ -661,8 +665,13 @@ public class MainActivity extends BaseActivity {
 
         if(resultCode == RESULT_OK) {
             if(requestCode == 0x12) {
-                finish();
-                return;
+
+                String sn = data.getStringExtra("SN");
+                if(!Globals.checkSNValid(sn)){
+                    showShortToast("无效的SN");
+                } else {
+                    WriteSN(sn);
+                }
             }
         }
     }
@@ -793,7 +802,7 @@ public class MainActivity extends BaseActivity {
                             if(mWifiParams.mac.equalsIgnoreCase(deviceInfo.getMac())) {
                                 //SCANED AIM BLE...
                                 mBleDeviceInfo = deviceInfo;
-                                updateUnitTestLayout(deviceInfo.getMac());
+                                updateUnitTestLayout(deviceInfo.getMac() + "   " + deviceInfo.getRssi());
                                 int ble_value = -50;
                                 if(mCurCaseMode == Globals.BoardTestMode) {
                                     ble_value = CommonUtils.getSysIntMap(MainActivity.this, Globals.SHARED_BLE_VALUE,  -50);

@@ -1,7 +1,6 @@
 package com.petkit.matetool.service;
 
 import android.app.IntentService;
-import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,18 +13,14 @@ import com.petkit.android.ble.BLEConsts;
 import com.petkit.android.utils.LogcatStorageHelper;
 import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.model.WifiParams;
-import com.petkit.matetool.utils.Globals;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Objects;
 
 /**
  * ���ڴ���DatagramSocket�ķ��������
@@ -269,13 +264,21 @@ public class DatagramProcessService extends IntentService {
                             Log.e(LOG_TAG, "receive........ SERVER_REG_MONI");
                             index = 9;
                             mIsReging = false;
-                            mIsReged = data[index] == 0;
-                            if (mIsReged) {
-                                sendData(DatagramConsts.SERVER_TEST_MODE);
+//                            mIsReged = data[index] == 0;
+                            if (data[index] == 0) {
+                                if(mIsReged) {
+                                    mIsReged = false;
+                                    currentMode = -1;
+                                    currentCmd = -1;
+                                    sn = "";
+                                } else {
+                                    mIsReged = true;
+                                    sendData(DatagramConsts.SERVER_TEST_MODE);
+                                }
                             } else {
                                 currentMode = -1;//反注册怎么判断来清除状态 //TODO:
                             }
-                            updateProgressNotification(DatagramConsts.SERVER_CHECK_SYS_PASS, String.valueOf(mIsReged));
+                            updateProgressNotification(DatagramConsts.SERVER_CHECK_SYS_PASS, String.valueOf(data[index] == 0));
                             break;
                         case DatagramConsts.SERVER_WIFI_PARAM:
                             logString += "receive...SERVER_WIFI_PARAM\n";
@@ -349,7 +352,7 @@ public class DatagramProcessService extends IntentService {
 
                             if(convertToLocalMode(params.status) == currentMode && (
                                     (workStation == params.index && currentMode != DatagramConsts.SpotTestMode)           //非抽检模式下，判断工位对应
-                                    || (currentMode == DatagramConsts.SpotTestMode && sn != null && sn.equals(params.sn)))){ //抽检模式下，判断SN对应
+                                    || (currentMode == DatagramConsts.SpotTestMode && sn != null && params.sn.startsWith(sn)))){ //抽检模式下，判断SN对应
                                 head = g_head;
                                 wifi_params.local_rtp_ip = params.local_rtp_ip.replace("/", "");
                                 wifi_params.local_port = params.local_port;
@@ -494,14 +497,15 @@ public class DatagramProcessService extends IntentService {
                         row[1] = 1;
                         break;
                     case DatagramConsts.SERVER_REG_UNMONI:
-                        mIsReged = false;
-                        mIsReging = false;
+                        mIsReged = true;
+                        mIsReging = true;
                         head = intToBytes2(DatagramConsts.SERVER_REG_MONI);
                         row[0] = 0;
                         row[1] = (byte) (currentMode >= DatagramConsts.FocusTestMode2 ? DatagramConsts.FocusTestMode : currentMode);
                         row[2] = (byte) workStation;
                         break;
                     case DatagramConsts.SERVER_REG_MONI:
+                        mIsReged = false;
                         mIsReging = true;
                         head = intToBytes2(DatagramConsts.SERVER_REG_MONI);
                         row[0] = 1;
