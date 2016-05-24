@@ -96,12 +96,12 @@ public class SelectActivity extends BaseActivity {
         registerBoradcastReceiver();
     }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-
-        LoadDialog.show(this, "反注册中...");
-    }
+//    @Override
+//    protected void onRestart() {
+//        super.onRestart();
+//
+//        LoadDialog.show(this, "反注册中...");
+//    }
 
     @Override
     protected void onStop() {
@@ -226,6 +226,15 @@ public class SelectActivity extends BaseActivity {
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(0x111 == requestCode){
+            LoadDialog.show(this, "反注册中...");
+        }
+    }
+
     private void registerBoradcastReceiver() {
         mBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -257,12 +266,19 @@ public class SelectActivity extends BaseActivity {
                                 switch (mCurCaseMode){
                                     case Globals.BoardTestMode:
                                     case Globals.FinalTestMode:
-                                        Bundle bundle = new Bundle();
-                                        bundle.putSerializable(DatagramConsts.EXTRA_WIFI_PARAMS, mWifiParams);
-                                        bundle.putInt(DatagramConsts.EXTRA_CURRENT_MODE, mCurCaseMode);
-                                        bundle.putInt(DatagramConsts.EXTRA_MATE_STYLE, mateStyle);
-                                        bundle.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
-                                        startActivityWithData(MainActivity.class, bundle, false);
+//                                        Bundle bundle = new Bundle();
+//                                        bundle.putSerializable(DatagramConsts.EXTRA_WIFI_PARAMS, mWifiParams);
+//                                        bundle.putInt(DatagramConsts.EXTRA_CURRENT_MODE, mCurCaseMode);
+//                                        bundle.putInt(DatagramConsts.EXTRA_MATE_STYLE, mateStyle);
+//                                        bundle.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
+//                                        startActivityWithData(MainActivity.class, bundle, false);
+
+                                        Intent intent1 = new Intent(SelectActivity.this, MainActivity.class);
+                                        intent1.putExtra(DatagramConsts.EXTRA_WIFI_PARAMS, mWifiParams);
+                                        intent1.putExtra(DatagramConsts.EXTRA_CURRENT_MODE, mCurCaseMode);
+                                        intent1.putExtra(DatagramConsts.EXTRA_MATE_STYLE, mateStyle);
+                                        intent1.putExtra(DatagramConsts.EXTRA_WORK_STATION, workStation);
+                                        startActivityForResult(intent1, 0x111);
                                         break;
                                     case Globals.SpotTestMode:
                                         Intent intent = new Intent(SelectActivity.this, MainActivity.class);
@@ -270,15 +286,21 @@ public class SelectActivity extends BaseActivity {
                                         intent.putExtra(DatagramConsts.EXTRA_CURRENT_MODE, mCurCaseMode);
                                         intent.putExtra(DatagramConsts.EXTRA_MATE_STYLE, mateStyle);
                                         intent.putExtra(DatagramConsts.EXTRA_WORK_STATION, workStation);
-                                        startActivityForResult(intent, DatagramConsts.SpotTestMode);
+                                        startActivityForResult(intent, 0x111);
                                         break;
                                     default:
-                                        Bundle bundle1 = new Bundle();
-                                        bundle1.putInt(DatagramConsts.EXTRA_CURRENT_MODE, mCurCaseMode);
-                                        bundle1.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
-                                        bundle1.putInt(DatagramConsts.EXTRA_MATE_STYLE, mateStyle);
-                                        startActivityWithData(focusTestImageMode ? FocusTestActivity.class : PlayActivity.class,
-                                                       bundle1, false);
+//                                        Bundle bundle1 = new Bundle();
+//                                        bundle1.putInt(DatagramConsts.EXTRA_CURRENT_MODE, mCurCaseMode);
+//                                        bundle1.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
+//                                        bundle1.putInt(DatagramConsts.EXTRA_MATE_STYLE, mateStyle);
+//                                        startActivityWithData(focusTestImageMode ? FocusTestActivity.class : PlayActivity.class,
+//                                                       bundle1, false);
+
+                                        Intent intent2 = new Intent(SelectActivity.this, focusTestImageMode ? FocusTestActivity.class : PlayActivity.class);
+                                        intent2.putExtra(DatagramConsts.EXTRA_CURRENT_MODE, mCurCaseMode);
+                                        intent2.putExtra(DatagramConsts.EXTRA_WORK_STATION, workStation);
+                                        intent2.putExtra(DatagramConsts.EXTRA_MATE_STYLE, mateStyle);
+                                        startActivityForResult(intent2, 0x111);
                                         break;
                                 }
                             }
