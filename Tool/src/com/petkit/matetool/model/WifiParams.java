@@ -96,4 +96,20 @@ public class WifiParams implements Serializable {
     public void setVersion(String version) {
         this.version = version;
     }
+
+    @Override
+    public String toString() {
+        return "WifiParams{" +
+                "local_rtp_ip='" + local_rtp_ip + '\'' +
+                ", local_port=" + local_port +
+                ", ssid='" + ssid + '\'' +
+                ", rsq=" + rsq +
+                ", state=" + state +
+                ", index=" + index +
+                ", mac='" + mac + '\'' +
+                ", sn='" + sn + '\'' +
+                ", status=" + status +
+                ", version='" + version + '\'' +
+                '}';
+    }
 };

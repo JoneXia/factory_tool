@@ -258,7 +258,12 @@ public class MainActivity extends BaseActivity {
                     break;
 
                 case R.id.Button40:
-//                    needReceiveBroadcast = false;
+                    for (int value : mTestResult ) {
+                        if (value == 0) {
+                            showShortToast("还有项目未测试，请确认!!!");
+                            return;
+                        }
+                    }
                     startActivityForResult(new Intent(MainActivity.this, WriteSnActivity.class), 0x12);
                     break;
             }

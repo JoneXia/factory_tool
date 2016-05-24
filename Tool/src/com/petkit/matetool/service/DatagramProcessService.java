@@ -60,6 +60,9 @@ public class DatagramProcessService extends IntentService {
 
     private boolean mIsReged = false;
     private boolean mIsReging = false;
+    private boolean mIsUnRegedByBroadcast = false; //该标记用于判断反注册是否被通过广播的数据判断处理为成功
+    private long mUnRegedTimemillis;
+    private static final long UNREGED_TIME_OUT = 3000L;
 
 //    private ArrayList<String> mTestLogResult = new ArrayList<>();
     private DatagramSocket udpSocket = null;
@@ -262,6 +265,10 @@ public class DatagramProcessService extends IntentService {
                             break;
                         case DatagramConsts.SERVER_REG_MONI:
                             Log.e(LOG_TAG, "receive........ SERVER_REG_MONI");
+                            if(mIsUnRegedByBroadcast){
+                                Log.e(LOG_TAG, "receive........ SERVER_REG_MONI, [WARNING] IsUnRegedByBroadcast");
+                                continue;
+                            }
                             index = 9;
                             mIsReging = false;
 //                            mIsReged = data[index] == 0;
@@ -282,10 +289,6 @@ public class DatagramProcessService extends IntentService {
                             break;
                         case DatagramConsts.SERVER_WIFI_PARAM:
                             logString += "receive...SERVER_WIFI_PARAM\n";
-                            if (mIsReged || mIsReging) {
-                                logString +="reg succeed...";
-                                return;
-                            }
 
                             WifiParams params = new WifiParams();
                             temp = new byte[16];
@@ -339,22 +342,41 @@ public class DatagramProcessService extends IntentService {
                             System.arraycopy(data, index, temp, 0, 32);
                             params.version = new String(temp);
 
-                            logString += "ip="+ params.local_rtp_ip + "\n";
-                            logString += "port=" + params.local_port + "\n";
-                            logString += "ssid=" + params.ssid + "\n";
-                            logString += "rsq=" + params.rsq + "\n";
-                            logString += "state=" + params.state + "\n";
-                            logString += "index=" + params.index + "\n";
-                            logString += "mac=" + params.mac + "\n\n";
-                            logString += "sn=" + params.sn + "\n\n";
-                            logString += "status=" + params.status + "\n";
-                            logString += "version=" + params.version + "\n\n";
+//                            logString += "ip="+ params.local_rtp_ip + "\n";
+//                            logString += "port=" + params.local_port + "\n";
+//                            logString += "ssid=" + params.ssid + "\n";
+//                            logString += "rsq=" + params.rsq + "\n";
+//                            logString += "state=" + params.state + "\n";
+//                            logString += "index=" + params.index + "\n";
+//                            logString += "mac=" + params.mac + "\n\n";
+//                            logString += "sn=" + params.sn + "\n\n";
+//                            logString += "status=" + params.status + "\n";
+//                            logString += "version=" + params.version + "\n\n";
 
-                            if(convertToLocalMode(params.status) == currentMode && (
+                            logString += params.toString();
+
+                            if (mIsReged || mIsReging) {
+                                if(System.currentTimeMillis() - mUnRegedTimemillis > UNREGED_TIME_OUT && wifi_params != null && wifi_params.mac != null && mIsReged && mIsReging){  //正在反注册
+                                    if(wifi_params.mac.equals(params.mac)){ //反注册已经成功了，但是没收到指令
+                                        logString +=" [WARNING] UNREG success, but no cmd received, reset registe state to UNREG";
+                                        mIsUnRegedByBroadcast = true;
+                                        mIsReged = false;
+                                        mIsReging = false;
+                                        mIsReged = false;
+                                        currentMode = -1;
+                                        currentCmd = -1;
+                                        sn = "";
+                                        updateProgressNotification(DatagramConsts.SERVER_CHECK_SYS_PASS, String.valueOf(true));
+                                    }
+                                }
+                                logString +="\n return";
+                            } else if(convertToLocalMode(params.status) == currentMode && (
                                     (workStation == params.index && currentMode != DatagramConsts.SpotTestMode)           //非抽检模式下，判断工位对应
                                     || (currentMode == DatagramConsts.SpotTestMode && sn != null && params.sn.startsWith(sn)))){ //抽检模式下，判断SN对应
                                 head = g_head;
                                 wifi_params.local_rtp_ip = params.local_rtp_ip.replace("/", "");
+                                addTestLog("set rtp ip: " + wifi_params.local_rtp_ip);
+
                                 wifi_params.local_port = params.local_port;
                                 wifi_params.ssid = params.ssid;
                                 wifi_params.rsq = params.rsq;
@@ -432,7 +454,7 @@ public class DatagramProcessService extends IntentService {
                                     updateProgressNotification(DatagramConsts.VIDEO_VALUE, String.valueOf(video_value));
                                     break;
                                 default:
-                                    return;
+                                    continue;
                             }
 
                             if(command == -1) {
@@ -456,6 +478,7 @@ public class DatagramProcessService extends IntentService {
             e.printStackTrace();
         }
 
+        addTestLog("DATAGRAM_DESTROY");
         destoryDatagram();
         updateProgressNotification(DatagramConsts.DATAGRAM_DESTROY, "");
 
@@ -499,6 +522,8 @@ public class DatagramProcessService extends IntentService {
                     case DatagramConsts.SERVER_REG_UNMONI:
                         mIsReged = true;
                         mIsReging = true;
+                        mUnRegedTimemillis = System.currentTimeMillis();
+                        mIsUnRegedByBroadcast = false;
                         head = intToBytes2(DatagramConsts.SERVER_REG_MONI);
                         row[0] = 0;
                         row[1] = (byte) (currentMode >= DatagramConsts.FocusTestMode2 ? DatagramConsts.FocusTestMode : currentMode);
@@ -507,6 +532,7 @@ public class DatagramProcessService extends IntentService {
                     case DatagramConsts.SERVER_REG_MONI:
                         mIsReged = false;
                         mIsReging = true;
+                        mIsUnRegedByBroadcast = false;
                         head = intToBytes2(DatagramConsts.SERVER_REG_MONI);
                         row[0] = 1;
                         row[1] = (byte) (currentMode >= DatagramConsts.FocusTestMode2 ? DatagramConsts.FocusTestMode : currentMode);
