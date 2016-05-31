@@ -25,6 +25,9 @@ import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.widget.LoadDialog;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 
 /**
  *
@@ -86,6 +89,7 @@ public class SelectActivity extends BaseActivity {
         findViewById(R.id.test_case3).setOnClickListener(this);
         findViewById(R.id.test_case4).setOnClickListener(this);
         findViewById(R.id.test_case5).setOnClickListener(this);
+        findViewById(R.id.test_case6).setOnClickListener(this);
 
     }
 
@@ -151,6 +155,9 @@ public class SelectActivity extends BaseActivity {
 			mCurCaseMode = Globals.FocusTestMode2;
 			showDialog();
 			break;
+        case R.id.test_case6:
+            startActivity(BroadcastDisplayActivity.class);
+            break;
 		}
 	}
 
@@ -226,12 +233,54 @@ public class SelectActivity extends BaseActivity {
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
+    private void writeClear(){
+        Intent intent = new Intent(DatagramConsts.BROADCAST_ACTION);
+        intent.putExtra(DatagramConsts.EXTRA_ACTION, DatagramConsts.ACTION_CLEAR);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(0x111 == requestCode){
-            LoadDialog.show(this, "反注册中...");
+            LoadDialog.show(this, "反注册中...", true);
+            startTimeoutTimer();
+
+//        } else if(0x112 == requestCode) {
+//            LoadDialog.show(this, "反注册中...", false, new DialogInterface.OnCancelListener() {
+//                @Override
+//                public void onCancel(DialogInterface dialog) {
+//                    writeClear();
+//                }
+//            });
+        }
+    }
+
+    private Timer mTimeoutTimer;
+    private void startTimeoutTimer(){
+        if(mTimeoutTimer == null){
+            mTimeoutTimer = new Timer();
+            mTimeoutTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showShortToast("设备出现异常，请检查！");
+                            LoadDialog.dismissDialog();
+                            writeClear();
+                        }
+                    });
+                }
+            }, 5000);
+        }
+    }
+
+    private void stopTimeoutTimer(){
+        if(mTimeoutTimer != null){
+            mTimeoutTimer.cancel();
+            mTimeoutTimer = null;
         }
     }
 
@@ -249,7 +298,6 @@ public class SelectActivity extends BaseActivity {
                     PetkitLog.d("progress : " + progress + "  data = " + data);
                     LogcatStorageHelper.addLog("[broadcast]progress : " + progress + "  data = " + data);
 
-                    LoadDialog.dismissDialog();
                     switch (progress){
                         case DatagramConsts.SERVER_WIFI_PARAM:
                             mWifiParams = new Gson().fromJson(data, WifiParams.class);
@@ -260,6 +308,7 @@ public class SelectActivity extends BaseActivity {
                             }
                             break;
                         case DatagramConsts.SERVER_TEST_MODE:
+                            LoadDialog.dismissDialog();
                             if(isEmpty(data) || !Boolean.valueOf(data)){
                                 showShortToast(R.string.Entry_test_mode_failed);
                             } else {
@@ -306,6 +355,7 @@ public class SelectActivity extends BaseActivity {
                             }
                             break;
                         case DatagramConsts.DATAGRAM_DESTROY:
+                            LoadDialog.dismissDialog();
                             showShortToast(R.string.Test_canceled);
                             finish();
                             break;
@@ -315,6 +365,7 @@ public class SelectActivity extends BaseActivity {
                                 showLongToast(R.string.Regist_failed);
                                 finish();
                             } else {
+                                stopTimeoutTimer();
                                 LoadDialog.dismissDialog();
                             }
                             break;

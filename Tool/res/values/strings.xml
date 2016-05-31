@@ -127,7 +127,7 @@
 	<string name="Tap_to_load_more">点击加载更多</string>
 	<string name="No_more_data">无更多数据</string>
 
-    <string name="activity_name">Mate产测工具 v2.0.2 </string>
+    <string name="activity_name">Mate产测工具 v2.0.4 </string>
     <string name="fixture_number">工位号</string>
     <string name="start_test">开始测试</string>
     <string name="self_test">系统自测，等待测试结果\n请稍后。。。</string>
@@ -138,6 +138,7 @@
     <string name="test_case2">调焦</string>
     <string name="test_case3">终测</string>
     <string name="test_case4">抽检</string>
+	<string name="test_case6">广播查询</string>
     <string name="loading">正在搜索设备......</string>
     <string name="test_retry">重新测试</string>
     <string name="FixtureNumNotSame">搜索到一台设备，但工位号不一致！</string>
@@ -208,5 +209,14 @@
     <string name="Hint_failed_to_write_sn">SN写入失败！</string>
     <string name="Retry_to_write_sn">点击重新写SN</string>
     <string name="Title_input_sn">请输入SN码</string>
+
+	<string name="broadcast_receiving">广播查询中...</string>
+	<string name="Device_mac_format">蓝牙MAC：<xliff:g id="prefix">%s</xliff:g></string>
+	<string name="Device_ip_format">IP地址：<xliff:g id="prefix">%s</xliff:g></string>
+	<string name="Device_station_format">工位号：<xliff:g id="prefix">%s</xliff:g></string>
+	<string name="Device_status_format">工站号：<xliff:g id="prefix">%s</xliff:g></string>
+	<string name="Device_rssi_format">信号：<xliff:g id="prefix">%s</xliff:g></string>
+	<string name="Device_sn_format">SN号：<xliff:g id="prefix">%s</xliff:g></string>
+	<string name="Copy_sn">复制SN</string>
 
 </resources>

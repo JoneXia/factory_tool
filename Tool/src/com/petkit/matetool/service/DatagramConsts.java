@@ -20,6 +20,7 @@ public class DatagramConsts {
 
     public static final int ACTION_WRITE         = 1;
     public static final int ACTION_DESTROY       = 2;
+    public static final int ACTION_CLEAR       = 3;
 
 
 

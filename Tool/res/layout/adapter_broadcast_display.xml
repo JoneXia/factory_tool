@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+                android:background="@color/white"
+                android:padding="10dip">
+
+    <TextView
+        android:id="@+id/device_mac"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Text_Small_Black"/>
+
+    <TextView
+        android:id="@+id/device_ip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/device_mac"
+        android:layout_marginLeft="10dip"
+        style="@style/Text_Small_Black"/>
+
+    <TextView
+        android:id="@+id/device_station"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/device_mac"
+        android:layout_marginTop="5dip"
+        style="@style/Text_Small_Black"/>
+
+    <TextView
+        android:id="@+id/device_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/device_station"
+        android:layout_alignBottom="@id/device_station"
+        android:layout_marginLeft="10dip"
+        style="@style/Text_Small_Black"/>
+
+    <TextView
+        android:id="@+id/device_rssi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/device_station"
+        android:layout_toRightOf="@id/device_status"
+        android:layout_marginLeft="10dip"
+        style="@style/Text_Small_Black"/>
+
+    <TextView
+        android:id="@+id/device_sn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/device_station"
+        android:layout_marginTop="5dip"
+        style="@style/Text_Middle_Black"/>
+
+    <Button
+        android:id="@+id/device_sn_copy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Copy_sn"
+        style="@style/Text_Small_Black"
+        android:layout_alignBottom="@id/device_sn"
+        android:layout_alignParentRight="true" />
+
+
+
+</RelativeLayout>

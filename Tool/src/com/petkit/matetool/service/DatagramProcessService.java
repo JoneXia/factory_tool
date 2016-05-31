@@ -105,6 +105,23 @@ public class DatagramProcessService extends IntentService {
                     mAborted = true;
                     destoryDatagram();
                     break;
+                case DatagramConsts.ACTION_CLEAR:
+                    head = 0;
+                    sn = null;
+                    mIsReged = false;
+                    mIsReging = false;
+                    wifi_params = new WifiParams();
+                    testPass = false;
+
+                    if(mFinalParams != null) {
+                        mFinalParams.clear();
+                    }
+                    if(mFinalMAC != null) {
+                        mFinalMAC.clear();
+                    }
+                    mFinalIndex = -1;
+                    currentMode = -1;
+                    break;
             }
 
             // notify waiting thread
@@ -323,13 +340,15 @@ public class DatagramProcessService extends IntentService {
                             temp = new byte[20];
                             System.arraycopy(data, index, temp, 0, 20);
                             String mactemp = new String(temp);
-                            params.mac = getmac(mactemp.trim());
+                            params.setMac(getmac(mactemp.trim()));
+
                             index += 20;
 
                             //sn
                             temp = new byte[32];
                             System.arraycopy(data, index, temp, 0, 32);
-                            params.sn = new String(temp);
+                            params.setSn(new String(temp));
+//                            params.sn = new String(temp);
                             index += 32;
 
                             //status
@@ -359,6 +378,7 @@ public class DatagramProcessService extends IntentService {
                                 if(System.currentTimeMillis() - mUnRegedTimemillis > UNREGED_TIME_OUT && wifi_params != null && wifi_params.mac != null && mIsReged && mIsReging){  //正在反注册
                                     if(wifi_params.mac.equals(params.mac)){ //反注册已经成功了，但是没收到指令
                                         logString +=" [WARNING] UNREG success, but no cmd received, reset registe state to UNREG";
+                                        mUnRegedTimemillis = 0;
                                         mIsUnRegedByBroadcast = true;
                                         mIsReged = false;
                                         mIsReging = false;
@@ -394,6 +414,7 @@ public class DatagramProcessService extends IntentService {
                                     mLock.notifyAll();
                                 }
                             }
+                            updateProgressNotification(DatagramConsts.SERVER_WIFI_LISTEN, new Gson().toJson(params));
                             break;
                         case DatagramConsts.SERVER_DEVSTA_PARAM:
                             logString += "receive.......SERVER_DEVSTA_PARAM\n";

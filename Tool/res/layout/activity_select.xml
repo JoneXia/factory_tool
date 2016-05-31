@@ -13,52 +13,67 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dip"/>
 
-    <LinearLayout
-        android:id="@+id/test_case"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dip"
-        android:orientation="vertical"
-        android:visibility="visible" >
+        android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/test_case1"
-            style="@style/Text_Large_Black"
+        <LinearLayout
+            android:id="@+id/test_case"
             android:layout_width="match_parent"
-            android:layout_height="70dip"
-            android:text="@string/test_case1" />
+            android:layout_height="wrap_content"
+            android:paddingTop="20dip"
+            android:paddingBottom="20dip"
+            android:orientation="vertical"
+            android:visibility="visible" >
 
-        <Button
-            android:id="@+id/test_case2"
-            style="@style/Text_Large_Black"
-            android:layout_width="match_parent"
-            android:layout_height="70dip"
-            android:layout_marginTop="10dip"
-            android:text="@string/test_case2" />
+            <Button
+                android:id="@+id/test_case1"
+                style="@style/Text_Large_Black"
+                android:layout_width="match_parent"
+                android:layout_height="70dip"
+                android:text="@string/test_case1" />
 
-        <Button
-            android:id="@+id/test_case5"
-            style="@style/Text_Large_Black"
-            android:layout_width="match_parent"
-            android:layout_height="70dip"
-            android:layout_marginTop="10dip"
-            android:text="对焦" />
+            <Button
+                android:id="@+id/test_case2"
+                style="@style/Text_Large_Black"
+                android:layout_width="match_parent"
+                android:layout_height="70dip"
+                android:layout_marginTop="10dip"
+                android:text="@string/test_case2" />
 
-        <Button
-            android:id="@+id/test_case3"
-            style="@style/Text_Large_Black"
-            android:layout_width="match_parent"
-            android:layout_height="70dip"
-            android:layout_marginTop="10dip"
-            android:text="@string/test_case3" />
+            <Button
+                android:id="@+id/test_case5"
+                style="@style/Text_Large_Black"
+                android:layout_width="match_parent"
+                android:layout_height="70dip"
+                android:layout_marginTop="10dip"
+                android:text="对焦" />
 
-        <Button
-            android:id="@+id/test_case4"
-            style="@style/Text_Large_Black"
-            android:layout_width="match_parent"
-            android:layout_height="70dip"
-            android:layout_marginTop="10dip"
-            android:text="@string/test_case4" />
-    </LinearLayout>
+            <Button
+                android:id="@+id/test_case3"
+                style="@style/Text_Large_Black"
+                android:layout_width="match_parent"
+                android:layout_height="70dip"
+                android:layout_marginTop="10dip"
+                android:text="@string/test_case3" />
+
+            <Button
+                android:id="@+id/test_case4"
+                style="@style/Text_Large_Black"
+                android:layout_width="match_parent"
+                android:layout_height="70dip"
+                android:layout_marginTop="10dip"
+                android:text="@string/test_case4" />
+
+            <Button
+                android:id="@+id/test_case6"
+                style="@style/Text_Large_Black"
+                android:layout_width="match_parent"
+                android:layout_height="70dip"
+                android:layout_marginTop="10dip"
+                android:text="@string/test_case6" />
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

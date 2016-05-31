@@ -9,12 +9,12 @@ public class WifiParams implements Serializable {
     public String local_rtp_ip;
     public int local_port;
     public String ssid;
-    public byte rsq;
-    public byte state;
-    public byte index;
-    public String mac;
+    public byte rsq;//信号
+    public byte state;//wifi的状态
+    public byte index;//工位
+    public String mac;//蓝牙mac
     public String sn;
-    public int status;
+    public int status;//工站号
     public String version;
 
     public String getLocal_rtp_ip() {
@@ -70,7 +70,11 @@ public class WifiParams implements Serializable {
     }
 
     public void setMac(String mac) {
-        this.mac = mac;
+        if(mac.length() > 12) {
+            this.mac = mac.substring(0, 12);
+        } else {
+            this.mac = mac;
+        }
     }
 
     public String getSn() {
@@ -78,7 +82,11 @@ public class WifiParams implements Serializable {
     }
 
     public void setSn(String sn) {
-        this.sn = sn;
+        if(sn.length() > 15) {
+            this.sn = sn.substring(0, 15);
+        } else {
+            this.sn = sn;
+        }
     }
 
     public int getStatus() {

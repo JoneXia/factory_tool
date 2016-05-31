@@ -166,14 +166,13 @@ public class MainActivity extends BaseActivity {
         findViewById(R.id.Button36).setOnClickListener(new myItemOnClickListener());
         findViewById(R.id.Button37).setOnClickListener(new myItemOnClickListener());
 
-        if(mCurCaseMode == Globals.SpotTestMode || mCurCaseMode == Globals.FinalTestMode) {
+        if(mCurCaseMode == Globals.SpotTestMode){
+            findViewById(R.id.Button38).setVisibility(View.VISIBLE);
+            ((TextView) findViewById(R.id.Button38)).setText("特殊处理");
+            findViewById(R.id.Button38).setOnClickListener(new myItemOnClickListener());
+        } else if(mCurCaseMode == Globals.FinalTestMode) {
             findViewById(R.id.Button38).setVisibility(View.VISIBLE);
             findViewById(R.id.Button38).setOnClickListener(new myItemOnClickListener());
-        }
-
-        if(mCurCaseMode == Globals.FinalTestMode) {
-//			findViewById(R.id.Button39).setVisibility(View.VISIBLE);
-//			findViewById(R.id.Button39).setOnClickListener(new myItemOnClickListener());
 
             findViewById(R.id.Button40).setVisibility(View.VISIBLE);
             findViewById(R.id.Button40).setOnClickListener(new myItemOnClickListener());
@@ -243,15 +242,45 @@ public class MainActivity extends BaseActivity {
                     break;
                 case R.id.Button38:
 //				startActivity(new Intent(MainActivity.this, PlayActivity.class));
-                    try {
-                        Toast.makeText(MainActivity.this, "请等待写入结果。。。", Toast.LENGTH_LONG).show();
-                        Utils.receiveWriteData(MainActivity.this);
-                        Utils.sendData(MainActivity.this, Utils.SERVER_TEST_EXIT_TO_FOCUS, false);
-                    } catch (SocketException | UnknownHostException e) {
-                        Toast.makeText(MainActivity.this, "写入失败。。。。", Toast.LENGTH_LONG).show();
-                        e.printStackTrace();
+                    if(mCurCaseMode == Globals.SpotTestMode){
+                        new AlertDialog.Builder(MainActivity.this).setTitle("选择操作").setItems(
+                                new String[]{"回到调焦", "重写SN"}, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        switch (which) {
+                                            case 0:
+                                                try {
+                                                    Toast.makeText(MainActivity.this, "请等待写入结果。。。", Toast.LENGTH_LONG).show();
+                                                    Utils.receiveWriteData(MainActivity.this);
+                                                    Utils.sendData(MainActivity.this, Utils.SERVER_TEST_EXIT_TO_FOCUS, false);
+                                                } catch (SocketException | UnknownHostException e) {
+                                                    Toast.makeText(MainActivity.this, "写入失败。。。。", Toast.LENGTH_LONG).show();
+                                                    e.printStackTrace();
+                                                }
+                                                break;
+                                            case 1:
+                                                for (int value : mTestResult ) {
+                                                    if (value == 0) {
+                                                        showShortToast("还有项目未测试，请确认!!!");
+                                                        return;
+                                                    }
+                                                }
+                                                startActivityForResult(new Intent(MainActivity.this, WriteSnActivity.class), 0x12);
+                                                break;
+                                        }
+                                    }
+                                }).setNegativeButton(
+                                R.string.Cancel, null).show();
+                    } else {
+                        try {
+                            Toast.makeText(MainActivity.this, "请等待写入结果。。。", Toast.LENGTH_LONG).show();
+                            Utils.receiveWriteData(MainActivity.this);
+                            Utils.sendData(MainActivity.this, Utils.SERVER_TEST_EXIT_TO_FOCUS, false);
+                        } catch (SocketException | UnknownHostException e) {
+                            Toast.makeText(MainActivity.this, "写入失败。。。。", Toast.LENGTH_LONG).show();
+                            e.printStackTrace();
+                        }
                     }
-
                     break;
                 case R.id.Button39:
                     showExitDialog();
