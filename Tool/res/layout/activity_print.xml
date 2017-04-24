@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/btn_printer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/border_color_on_light"
+        android:gravity="center"
+        android:hint="@string/noconnectprinter"
+        android:onClick="selectPrinterOnClick"
+        android:textColorHint="@android:color/white" />
+
+    <LinearLayout
+        style="@android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btn_printquality"
+            style="@android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="50"
+            android:background="@color/border_color_on_light"
+            android:gravity="center"
+            android:onClick="printQualityOnClick"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="" />
+
+        <Button
+            android:id="@+id/btn_gaptype"
+            style="@android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="50"
+            android:background="@color/border_color_on_light"
+            android:gravity="center"
+            android:onClick="gapTypeOnClick"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="" />
+    </LinearLayout>
+
+    <LinearLayout
+        style="@android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btn_printdensity"
+            style="@android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="50"
+            android:background="@color/border_color_on_light"
+            android:gravity="center"
+            android:onClick="printDensityOnClick"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="" />
+
+        <Button
+            android:id="@+id/btn_printspeed"
+            style="@android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="50"
+            android:background="@color/border_color_on_light"
+            android:gravity="center"
+            android:onClick="printSpeedOnClick"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_printtext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/border_color_on_light"
+        android:gravity="center"
+        android:onClick="printTextOnClick"
+        android:text="@string/printtext" />
+
+    <Button
+        android:id="@+id/btn_printtext1dbarcode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/border_color_on_light"
+        android:gravity="center"
+        android:onClick="printText1DBarcodeOnClick"
+        android:text="@string/printtext1dbarcode" />
+
+    <Button
+        android:id="@+id/btn_print2dbarcode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/border_color_on_light"
+        android:gravity="center"
+        android:onClick="print2DBarcodeOnClick"
+        android:text="@string/print2dbarcode" />
+</LinearLayout>

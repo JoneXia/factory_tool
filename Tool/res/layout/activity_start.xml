@@ -24,6 +24,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dip"
             android:text="Mate Pro"/>
+
+        <RadioButton
+            android:id="@+id/feeder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dip"
+            android:text="喂食器"/>
     </RadioGroup>
 
     <EditText

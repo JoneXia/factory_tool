@@ -18,6 +18,8 @@ import com.petkit.matetool.R;
 import com.petkit.matetool.service.DatagramConsts;
 import com.petkit.matetool.service.DatagramProcessService;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.feeder.FeederStartActivity;
+import com.petkit.matetool.ui.mate.SelectActivity;
 import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.Utils;
 import com.petkit.matetool.widget.LoadDialog;
@@ -88,14 +90,22 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
                     return;
                 }
 
-                if (parseTestStyle()) {
-                    collapseSoftInputMethod(fixtureNumberEditText);
-                    LoadDialog.show(this);
+                switch (testStyle) {
+                    case Globals.MATE_PRO:
+                    case Globals.MATE_STYLE:
+                        LoadDialog.show(this);
 
-                    final Intent service = new Intent(this, DatagramProcessService.class);
-                    service.putExtra(DatagramConsts.EXTRA_WORK_STATION, workStation);
-                    startService(service);
+                        final Intent service = new Intent(this, DatagramProcessService.class);
+                        service.putExtra(DatagramConsts.EXTRA_WORK_STATION, workStation);
+                        startService(service);
+                        break;
+                    case Globals.FEEDER:
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
+                        startActivityWithData(FeederStartActivity.class, bundle, false);
+                        break;
                 }
+                collapseSoftInputMethod(fixtureNumberEditText);
                 break;
         }
     }
@@ -108,6 +118,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
                 break;
             case R.id.mate_pro:
                 testStyle = Globals.MATE_PRO;
+                break;
+            case R.id.feeder:
+                testStyle = Globals.FEEDER;
                 break;
             default:
                 break;
@@ -160,12 +173,6 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
     private void unregisterBoradcastReceiver(){
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);
     }
-
-    private boolean parseTestStyle() {
-        return testStyle == Globals.MATE_PRO
-                || testStyle == Globals.MATE_STYLE;
-    }
-
 
 
 }

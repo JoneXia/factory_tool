@@ -1,14 +1,14 @@
 package com.petkit.matetool.utils;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-
-import com.petkit.android.utils.CommonUtils;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Environment;
+
+import com.petkit.android.utils.CommonUtils;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class Globals {
 	public static final String localUrl = Environment
@@ -31,6 +31,7 @@ public class Globals {
 	//test style  1--mate style , 2---mate pro
 	public static final int MATE_STYLE = 1;
 	public static final int MATE_PRO =2;
+	public static final int FEEDER =3;
 //	public static int g_testStyle = 0;
 
 	public static ArrayList<String> mTestItem = new ArrayList<String>();

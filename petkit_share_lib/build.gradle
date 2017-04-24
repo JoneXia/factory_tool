@@ -29,7 +29,7 @@ makeJar.dependsOn(build)
 
 android {
     compileSdkVersion 22
-    buildToolsVersion '22.0.1'
+    buildToolsVersion '25.0.0'
 
     sourceSets {
         main {

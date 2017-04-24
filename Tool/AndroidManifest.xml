@@ -40,52 +40,64 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.SelectActivity"
+            android:name=".ui.mate.SelectActivity"
             android:label="@string/activity_name"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.mate.MainActivity"
             android:label="@string/activity_name"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".ui.InputActivity"
+            android:name=".ui.mate.InputActivity"
             android:label="@string/activity_name"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".ui.SpotActivity"
+            android:name=".ui.mate.SpotActivity"
             android:label="@string/activity_name"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".ui.SettingActivity"
+            android:name=".ui.mate.SettingActivity"
             android:label="@string/activity_name"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".ui.WriteSnActivity"
+            android:name=".ui.mate.WriteSnActivity"
             android:label="@string/activity_name"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".ui.ImageTestActivity"
+            android:name=".ui.mate.ImageTestActivity"
             android:label="@string/activity_name"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".ui.FocusTestActivity"
+            android:name=".ui.mate.FocusTestActivity"
             android:label="@string/activity_name"
             android:screenOrientation="landscape" >
         </activity>
         <activity
-            android:name=".ui.PlayActivity"
+            android:name=".ui.mate.PlayActivity"
             android:label="@string/activity_name"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".ui.BroadcastDisplayActivity"
+            android:name=".ui.mate.BroadcastDisplayActivity"
+            android:label="@string/activity_name"
+            android:screenOrientation="portrait" >
+        </activity>
+
+        <activity
+            android:name=".ui.feeder.FeederStartActivity"
+            android:label="@string/activity_name"
+            android:screenOrientation="portrait" >
+        </activity>
+
+        <activity
+            android:name=".ui.feeder.PrintActivity"
             android:label="@string/activity_name"
             android:screenOrientation="portrait" >
         </activity>
