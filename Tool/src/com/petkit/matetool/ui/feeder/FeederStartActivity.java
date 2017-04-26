@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.dothantech.printer.IDzPrinter;
 import com.petkit.matetool.R;
 import com.petkit.matetool.service.DatagramConsts;
 import com.petkit.matetool.ui.base.BaseActivity;
@@ -61,7 +62,7 @@ public class FeederStartActivity extends BaseActivity {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.test_case1:
-
+                startActivity(FeederTestMainActivity.class);
                 break;
             case R.id.test_case2:
 
@@ -77,4 +78,15 @@ public class FeederStartActivity extends BaseActivity {
                 break;
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // 应用退出时，调用IDzPrinter对象的quit方法断开打印机连接
+        IDzPrinter.Factory.getInstance().quit();
+    }
+
+
+
 }

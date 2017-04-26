@@ -230,6 +230,19 @@
 	<string name="Test_auto">自动模式</string>
 	<string name="Set_print">设置打印机</string>
 
+	<string-array name="Feeder_test_items">
+		<item>门马达</item>
+		<item>叶轮马达</item>
+		<item>灯</item>
+		<item>beep</item>
+		<item>dc电压</item>
+		<item>bat电池</item>
+		<item>门板信号</item>
+		<item>秤校准</item>
+		<item>写入SN</item>
+		<item>打印标签</item>
+	</string-array>
+
 	<string name="printer">打印机</string>
 	<string name="chinesecolon">：</string>
 	<string name="printtext">打印文本</string>

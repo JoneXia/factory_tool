@@ -4,10 +4,12 @@ dependencies {
     compile fileTree(include: '*.jar', dir: 'libs')
     compile files('libs/petkit_share_lib.jar')
     compile files('libs/DzPrinter-2016-11-03.jar')
+    compile project(':socketclient')
+    compile 'com.github.vilyever:AndroidLogger:1.0.9'
 }
 
 android {
-    compileSdkVersion 22
+    compileSdkVersion 23
     buildToolsVersion '25.0.0'
 
     sourceSets {

@@ -21,8 +21,8 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <uses-sdk
-        android:minSdkVersion="14"
-        android:targetSdkVersion="19" />
+        android:minSdkVersion="16"
+        android:targetSdkVersion="23" />
 
     <application
         android:allowBackup="true"
@@ -98,6 +98,12 @@
 
         <activity
             android:name=".ui.feeder.PrintActivity"
+            android:label="@string/activity_name"
+            android:screenOrientation="portrait" >
+        </activity>
+
+        <activity
+            android:name=".ui.feeder.FeederTestMainActivity"
             android:label="@string/activity_name"
             android:screenOrientation="portrait" >
         </activity>

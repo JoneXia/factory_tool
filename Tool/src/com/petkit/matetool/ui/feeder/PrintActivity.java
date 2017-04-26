@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -38,6 +37,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.petkit.matetool.ui.feeder.utils.PrintUtils.KeyDefault1dBarcode;
+import static com.petkit.matetool.ui.feeder.utils.PrintUtils.KeyDefault2dBarcode;
+import static com.petkit.matetool.ui.feeder.utils.PrintUtils.KeyDefaultText1;
+import static com.petkit.matetool.ui.feeder.utils.PrintUtils.KeyDefaultText2;
+import static com.petkit.matetool.ui.feeder.utils.PrintUtils.KeyGapType;
+import static com.petkit.matetool.ui.feeder.utils.PrintUtils.KeyLastPrinterMac;
+import static com.petkit.matetool.ui.feeder.utils.PrintUtils.KeyLastPrinterName;
+import static com.petkit.matetool.ui.feeder.utils.PrintUtils.KeyLastPrinterType;
+import static com.petkit.matetool.ui.feeder.utils.PrintUtils.KeyPrintDensity;
+import static com.petkit.matetool.ui.feeder.utils.PrintUtils.KeyPrintQuality;
+import static com.petkit.matetool.ui.feeder.utils.PrintUtils.KeyPrintSpeed;
+import static com.petkit.matetool.ui.feeder.utils.PrintUtils.isPrinterConnected;
 
 /**
  * Created by Jone on 17/4/19.
@@ -165,13 +177,39 @@ public class PrintActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        // 应用退出时，调用IDzPrinter对象的quit方法断开打印机连接
-        IDzPrinter.Factory.getInstance().quit();
-
-        // 应用退出时需要的操作
-        fini();
-
         super.onDestroy();
+
+        fini();
+    }
+
+    // 应用退出时需要的操作
+    private void fini() {
+        // 保存相关信息
+        SharedPreferences sharedPreferences = getSharedPreferences(getResources().getString(R.string.app_name), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putInt(KeyPrintQuality, printQuality);
+        editor.putInt(KeyPrintDensity, printDensity);
+        editor.putInt(KeyPrintSpeed, printSpeed);
+        editor.putInt(KeyGapType, gapType);
+        if (mPrinterAddress != null) {
+            editor.putString(KeyLastPrinterMac, mPrinterAddress.macAddress);
+            editor.putString(KeyLastPrinterName, mPrinterAddress.shownName);
+            editor.putString(KeyLastPrinterType, mPrinterAddress.addressType.toString());
+        }
+        if (defaultText1 != null) {
+            editor.putString(KeyDefaultText1, defaultText1);
+        }
+        if (defaultText2 != null) {
+            editor.putString(KeyDefaultText2, defaultText2);
+        }
+        if (default1dBarcode != null) {
+            editor.putString(KeyDefault1dBarcode, default1dBarcode);
+        }
+        if (default2dBarcode != null) {
+            editor.putString(KeyDefault2dBarcode, default2dBarcode);
+        }
+        editor.commit();
     }
 
     // 打印机列表的每项点击事件
@@ -191,27 +229,6 @@ public class PrintActivity extends BaseActivity {
             // 连接打印机失败，刷新界面提示
             onPrinterDisconnected();
         }
-    }
-
-    // 判断当前打印机是否连接
-    private boolean isPrinterConnected() {
-        // 调用IDzPrinter对象的getPrinterState方法获取当前打印机的连接状态
-        PrinterState state = IDzPrinter.Factory.getInstance().getPrinterState();
-
-        // 打印机未连接
-        if (state == null || state.equals(PrinterState.Disconnected)) {
-            DzToast.show(R.string.pleaseconnectprinter);
-            return false;
-        }
-
-        // 打印机正在连接
-        if (state.equals(PrinterState.Connecting)) {
-            DzToast.show(R.string.waitconnectingprinter);
-            return false;
-        }
-
-        // 打印机已连接
-        return true;
     }
 
     // 获取打印时需要的打印参数
@@ -371,36 +388,6 @@ public class PrintActivity extends BaseActivity {
                 }
             }
         }
-    }
-
-    // 应用退出时需要的操作
-    private void fini() {
-        // 保存相关信息
-        SharedPreferences sharedPreferences = getSharedPreferences(getResources().getString(R.string.app_name), Context.MODE_PRIVATE);
-        Editor editor = sharedPreferences.edit();
-
-        editor.putInt(KeyPrintQuality, printQuality);
-        editor.putInt(KeyPrintDensity, printDensity);
-        editor.putInt(KeyPrintSpeed, printSpeed);
-        editor.putInt(KeyGapType, gapType);
-        if (mPrinterAddress != null) {
-            editor.putString(KeyLastPrinterMac, mPrinterAddress.macAddress);
-            editor.putString(KeyLastPrinterName, mPrinterAddress.shownName);
-            editor.putString(KeyLastPrinterType, mPrinterAddress.addressType.toString());
-        }
-        if (defaultText1 != null) {
-            editor.putString(KeyDefaultText1, defaultText1);
-        }
-        if (defaultText2 != null) {
-            editor.putString(KeyDefaultText2, defaultText2);
-        }
-        if (default1dBarcode != null) {
-            editor.putString(KeyDefault1dBarcode, default1dBarcode);
-        }
-        if (default2dBarcode != null) {
-            editor.putString(KeyDefault2dBarcode, default2dBarcode);
-        }
-        editor.commit();
     }
 
     // 选择打印机的按钮事件
@@ -757,20 +744,6 @@ public class PrintActivity extends BaseActivity {
     // 用于处理各种通知消息，刷新界面的handler
     private final Handler mHandler = new Handler();
 
-    // 保存各种信息时的名称
-    private static final String KeyPrintQuality = "PrintQuality";
-    private static final String KeyPrintDensity = "PrintDensity";
-    private static final String KeyPrintSpeed = "PrintSpeed";
-    private static final String KeyGapType = "GapType";
-
-    private static final String KeyLastPrinterMac = "LastPrinterMac";
-    private static final String KeyLastPrinterName = "LastPrinterName";
-    private static final String KeyLastPrinterType = "LastPrinterType";
-
-    private static final String KeyDefaultText1 = "DefaultText1";
-    private static final String KeyDefaultText2 = "DefaultText2";
-    private static final String KeyDefault1dBarcode = "Default1dBarcode";
-    private static final String KeyDefault2dBarcode = "Default2dBarcode";
 
     // 需要用到的各个控件对象
     private Button btnConnectDevice = null;
