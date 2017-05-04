@@ -70,8 +70,8 @@ public class Globals {
 	public static int mCurCaseMode = -1;
 	
 	//test result 
-	public static final int MATE_TEST_PASS      = 1;
-	public static final int MATE_TEST_FAILED = 2;
+	public static final int TEST_PASS      = 1;
+	public static final int TEST_FAILED = 2;
 
 	public static String organizationSN(Context context, int station, int style) {
 		String sn;

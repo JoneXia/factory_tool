@@ -16,7 +16,10 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import com.petkit.matetool.R;
+import com.petkit.matetool.model.Feeder;
+import com.petkit.matetool.service.DatagramConsts;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.feeder.mode.FeederTestUnit;
 import com.petkit.matetool.ui.feeder.utils.FeederUtils;
 import com.petkit.matetool.ui.feeder.utils.PetkitSocketInstance;
 import com.petkit.matetool.ui.feeder.utils.WifiAdminSimple;
@@ -26,24 +29,30 @@ import com.petkit.matetool.utils.JSONUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import static com.petkit.matetool.ui.feeder.utils.PrintUtils.isPrinterConnected;
 
 /**
+ *
  * Created by Jone on 17/4/24.
  */
-
 public class FeederTestMainActivity extends BaseActivity implements PetkitSocketInstance.IPetkitSocketListener {
 
     private static final int TEST_STATE_INVALID      = 0;
     private static final int TEST_STATE_CONNECTING      = 1;
     private static final int TEST_STATE_CONNECTED      = 2;
 
+    private int workStation;
+    private int mTestType;
+
     private WifiAdminSimple mWifiAdminSimple;
     private boolean isPrintConnected = false;
     private int mTestState;
-    private int[] mTestResult;
-    private String mCurDeviceMac;
+    private Feeder mCurFeeder;
 
+    private ArrayList<FeederTestUnit> mFeederTestUnits;
     private TestItemAdapter mAdapter;
 
     private TextView mInfoTestTextView;
@@ -51,10 +60,25 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(savedInstanceState != null) {
+            workStation = savedInstanceState.getInt(DatagramConsts.EXTRA_WORK_STATION, -1);
+            mTestType = savedInstanceState.getInt("TestType");
+        } else {
+            workStation = getIntent().getIntExtra(DatagramConsts.EXTRA_WORK_STATION, -1);
+            mTestType = getIntent().getIntExtra("TestType", FeederUtils.TYPE_TEST);
+        }
 
         setContentView(R.layout.activity_feeder_main_test);
 
         registerBoradcastReceiver();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
+        outState.putInt("TestType", mTestType);
     }
 
     @Override
@@ -66,8 +90,9 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
         mInfoTestTextView = (TextView) findViewById(R.id.test_info);
         findViewById(R.id.set_print).setOnClickListener(this);
         findViewById(R.id.set_wifi).setOnClickListener(this);
+        findViewById(R.id.connect_dev).setOnClickListener(this);
 
-        mTestResult = new int[getStringArray(R.array.Feeder_test_items).length];
+        mFeederTestUnits = FeederUtils.generateFeederTestUnitsForType(mTestType);
 
         GridView gridView =(GridView) findViewById(R.id.gridView);
         mAdapter = new TestItemAdapter(this);
@@ -76,7 +101,11 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if(mTestState == TEST_STATE_CONNECTED) {
-
+                    Intent intent = new Intent(FeederTestMainActivity.this, FeederTestDetailActivity.class);
+                    intent.putExtra("TestUnits", mFeederTestUnits);
+                    intent.putExtra("CurrentTestStep", position);
+                    intent.putExtra("Feeder", mCurFeeder);
+                    startActivityForResult(intent, 0x12);
                 } else {
                     showShortToast(mInfoTestTextView.getText().toString());
                 }
@@ -88,8 +117,10 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
     protected void onResume() {
         super.onResume();
 
-        refreshView();
+        PetkitSocketInstance.getInstance().setPetkitSocketListener(this);
+//        refreshView();
     }
+
 
     @Override
     protected void onDestroy() {
@@ -108,6 +139,9 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
             case R.id.set_wifi:
                 startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                 break;
+            case R.id.connect_dev:
+                refreshView();
+                break;
         }
     }
 
@@ -120,6 +154,10 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
                 case 0x11:
                     refreshView();
                     break;
+                case 0x12:
+                    mFeederTestUnits = (ArrayList<FeederTestUnit>) data.getSerializableExtra("TestUnits");
+                    mAdapter.notifyDataSetChanged();
+                    break;
             }
         }
     }
@@ -130,7 +168,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
             mInfoTestTextView.setText("打印机还未连接！");
         } else {
             String apSsid = mWifiAdminSimple.getWifiConnectedSsid();
-            if(apSsid == null || !apSsid.startsWith("wifi")) { //PETKIT_AP_
+            if(apSsid == null || !apSsid.startsWith("PETKIT_AP_")) { //PETKIT_AP_
                 mInfoTestTextView.setText("请先连接到特定的WIFI，再进行测试！");
             } else {
                 connectAp();
@@ -148,8 +186,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
                 mInfoTestTextView.setText("正在连接设备");
                 mTestState = TEST_STATE_CONNECTING;
 
-                PetkitSocketInstance.getInstance().setPetkitSocketListener(this);
-                PetkitSocketInstance.getInstance().startConnect(remoteIp, 8002);
+                PetkitSocketInstance.getInstance().startConnect(remoteIp, 8001);
             }
         } else {
             mInfoTestTextView.setText("可以开始测试啦");
@@ -162,6 +199,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
             PetkitSocketInstance.getInstance().disconnect();
         }
         mTestState = TEST_STATE_INVALID;
+        mFeederTestUnits = FeederUtils.generateFeederTestUnitsForType(mTestType);
     }
 
     private BroadcastReceiver mBroadcastReceiver;
@@ -208,36 +246,41 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
             case 110:
                 try {
                     JSONObject jsonObject = JSONUtils.getJSONObject(data);
-                    String sn = null;
-                    String mac = null;
-                    int hardware = 0;
-                    String software = null;
-                    String id = null;
-                    if (!jsonObject.isNull("sn")) {
-                        sn = jsonObject.getString("sn");
-                    }
+                    StringBuilder stringBuilder = new StringBuilder();
+                    String mac = null, sn = null;
                     if (!jsonObject.isNull("mac")) {
                         mac = jsonObject.getString("mac");
+                        stringBuilder.append("\n").append("mac: ").append(mac).append("\n");
+                    }
+                    if (!jsonObject.isNull("sn")) {
+                        sn = jsonObject.getString("sn");
+                        stringBuilder.append("sn: ").append(sn).append("\n");
                     }
                     if (!jsonObject.isNull("hardware")) {
-                        hardware = jsonObject.getInt("hardware");
+                        stringBuilder.append("hardware: ").append(jsonObject.getInt("hardware")).append("\n");
                     }
-                    if (!jsonObject.isNull("software")) {
-                        software = jsonObject.getString("software");
+                    if (!jsonObject.isNull("version")) {
+                        stringBuilder.append("version: ").append(jsonObject.getInt("version")).append("\n");
                     }
                     if (!jsonObject.isNull("id")) {
-                        id = jsonObject.getString("id");
+                        stringBuilder.append("id: ").append(jsonObject.getInt("id")).append("\n");
                     }
+                    mCurFeeder = new Feeder(mac, sn);
+
+                   mInfoTestTextView.append(stringBuilder.toString());
+
+                    HashMap<String, Object> params = new HashMap<>();
+                    params.put("mac", mCurFeeder.getMac());
+                    params.put("state", 1);
+                    PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(160, params));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 break;
+            case 161:
+
+                break;
         }
-    }
-
-    @Override
-    public void onFailed() {
-
     }
 
     private class TestItemAdapter extends BaseAdapter {
@@ -249,12 +292,12 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
 
         @Override
         public int getCount() {
-            return getStringArray(R.array.Feeder_test_items).length;
+            return mFeederTestUnits.size();
         }
 
         @Override
-        public String getItem(int position) {
-            return getStringArray(R.array.Feeder_test_items)[position];
+        public FeederTestUnit getItem(int position) {
+            return mFeederTestUnits.get(position);
         }
 
         @Override
@@ -274,14 +317,20 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            holder.name.setText(getItem(position));
+            FeederTestUnit item = getItem(position);
 
-            if(mTestResult[position] == Globals.MATE_TEST_PASS) {
-                holder.name.setBackgroundColor(getResources().getColor(R.color.green));
-            } else if(mTestResult[position] == Globals.MATE_TEST_FAILED) {
-                holder.name.setBackgroundColor(getResources().getColor(R.color.red));
-            } else {
-                holder.name.setBackgroundColor(getResources().getColor(R.color.gray));
+            holder.name.setText(item.getName());
+
+            switch (item.getResult()) {
+                case Globals.TEST_PASS:
+                    holder.name.setBackgroundColor(getResources().getColor(R.color.green));
+                    break;
+                case Globals.TEST_FAILED:
+                    holder.name.setBackgroundColor(getResources().getColor(R.color.red));
+                    break;
+                default:
+                    holder.name.setBackgroundColor(getResources().getColor(R.color.gray));
+                    break;
             }
 
             return convertView;

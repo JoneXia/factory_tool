@@ -41,6 +41,14 @@
                 android:text="@string/Set_wifi" />
 
             <Button
+                android:id="@+id/connect_dev"
+                style="@style/Text_Middle_Black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="15dip"
+                android:text="@string/Connect_device" />
+
+            <Button
                 android:id="@+id/test_auto"
                 style="@style/Text_Middle_Black"
                 android:layout_width="wrap_content"

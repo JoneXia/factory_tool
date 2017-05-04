@@ -402,10 +402,10 @@ public class MainActivity extends BaseActivity {
                             }
                             break;
                         case DatagramConsts.TESTOK:
-                            mTestSysResult[mCurTestIndex] = Globals.MATE_TEST_PASS;
+                            mTestSysResult[mCurTestIndex] = Globals.TEST_PASS;
                             break;
                         case DatagramConsts.TESTFAILED:
-                            mTestSysResult[mCurTestIndex] = Globals.MATE_TEST_FAILED;
+                            mTestSysResult[mCurTestIndex] = Globals.TEST_FAILED;
                             break;
                         case DatagramConsts.IOD_GPIO_KEY_IN:
                             if(mCurTestIndex > 0 && mTestItem.get(mCurTestIndex).equals("RESET按键")) {
@@ -594,7 +594,7 @@ public class MainActivity extends BaseActivity {
 
                 break;
             case R.id.btn_test_succeed:
-                mTestResult[mCurTestIndex] = Globals.MATE_TEST_PASS;
+                mTestResult[mCurTestIndex] = Globals.TEST_PASS;
 
                 if(AutoTestMode) {
                     sendRequest(false, mCurTestIndex);
@@ -620,7 +620,7 @@ public class MainActivity extends BaseActivity {
                 }
                 break;
             case R.id.btn_test_failed:
-                mTestResult[mCurTestIndex] = Globals.MATE_TEST_FAILED;
+                mTestResult[mCurTestIndex] = Globals.TEST_FAILED;
                 sendRequest(false, mCurTestIndex);
 
 //			if(AutoTestMode) {
@@ -692,7 +692,7 @@ public class MainActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 0x01 && mTestResult != null && mTestResult.length > 0){
-            mTestResult[mCurTestIndex] = resultCode == RESULT_OK ? Globals.MATE_TEST_PASS : Globals.MATE_TEST_FAILED;
+            mTestResult[mCurTestIndex] = resultCode == RESULT_OK ? Globals.TEST_PASS : Globals.TEST_FAILED;
             updateLayout(TEST_MODE);
             mAdapter.notifyDataSetChanged();
         }
@@ -775,9 +775,9 @@ public class MainActivity extends BaseActivity {
 
             holder.name.setText(getItem(position));
 
-            if(mTestResult[position] ==Globals.MATE_TEST_PASS) {
+            if(mTestResult[position] ==Globals.TEST_PASS) {
                 holder.name.setBackgroundColor(getResources().getColor(R.color.green));
-            } else if(mTestResult[position] == Globals.MATE_TEST_FAILED) {
+            } else if(mTestResult[position] == Globals.TEST_FAILED) {
                 holder.name.setBackgroundColor(getResources().getColor(R.color.red));
             } else {
                 holder.name.setBackgroundColor(getResources().getColor(R.color.gray));

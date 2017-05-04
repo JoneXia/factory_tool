@@ -31,7 +31,8 @@
                 style="@style/Text_Large_Black"
                 android:layout_width="match_parent"
                 android:layout_height="70dip"
-                android:text="@string/feeder_test_case1" />
+                android:layout_marginTop="10dip"
+                android:text="@string/feeder_test_case2" />
 
             <Button
                 android:id="@+id/test_case2"
@@ -39,7 +40,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="70dip"
                 android:layout_marginTop="10dip"
-                android:text="@string/feeder_test_case2" />
+                android:text="@string/feeder_test_case3" />
 
             <Button
                 android:id="@+id/test_case3"
@@ -47,23 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="70dip"
                 android:layout_marginTop="10dip"
-                android:text="@string/feeder_test_case3" />
-
-            <Button
-                android:id="@+id/test_case4"
-                style="@style/Text_Large_Black"
-                android:layout_width="match_parent"
-                android:layout_height="70dip"
-                android:layout_marginTop="10dip"
                 android:text="@string/feeder_test_case4" />
-
-            <Button
-                android:id="@+id/test_case5"
-                style="@style/Text_Large_Black"
-                android:layout_width="match_parent"
-                android:layout_height="70dip"
-                android:layout_marginTop="10dip"
-                android:text="打印机设置" />
 
         </LinearLayout>
 

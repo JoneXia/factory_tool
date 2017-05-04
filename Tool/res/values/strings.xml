@@ -127,7 +127,7 @@
 	<string name="Tap_to_load_more">点击加载更多</string>
 	<string name="No_more_data">无更多数据</string>
 
-    <string name="activity_name">Mate产测工具 v2.0.4 </string>
+    <string name="activity_name">产测工具 v2.0.4 </string>
     <string name="fixture_number">工位号</string>
     <string name="start_test">开始测试</string>
     <string name="self_test">系统自测，等待测试结果\n请稍后。。。</string>
@@ -229,6 +229,10 @@
 	<string name="Set_wifi">设置WIFI</string>
 	<string name="Test_auto">自动模式</string>
 	<string name="Set_print">设置打印机</string>
+	<string name="Connect_device">连接设备</string>
+
+	<string name="Print">打印</string>
+	<string name="Write">写入</string>
 
 	<string-array name="Feeder_test_items">
 		<item>门马达</item>
@@ -237,7 +241,6 @@
 		<item>beep</item>
 		<item>dc电压</item>
 		<item>bat电池</item>
-		<item>门板信号</item>
 		<item>秤校准</item>
 		<item>写入SN</item>
 		<item>打印标签</item>

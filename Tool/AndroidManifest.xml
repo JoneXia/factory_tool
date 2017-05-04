@@ -108,6 +108,12 @@
             android:screenOrientation="portrait" >
         </activity>
 
+        <activity
+            android:name=".ui.feeder.FeederTestDetailActivity"
+            android:label="@string/activity_name"
+            android:screenOrientation="portrait" >
+        </activity>
+
         <meta-data
             android:name="UMENG_APPKEY"
             android:value="5637205067e58e76b6001e76" />

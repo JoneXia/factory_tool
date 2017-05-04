@@ -161,7 +161,6 @@ public class PetkitSocketInstance implements SocketClientDelegate {
         void onConnected();
         void onDisconnected();
         void onResponse(int key, String data);
-        void onFailed();
     }
 
 

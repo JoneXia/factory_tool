@@ -30,11 +30,6 @@ public class FeederStartActivity extends BaseActivity {
 
         setContentView(R.layout.activity_feeder_start);
 
-        if(workStation == -1){
-            showShortToast(R.string.Hint_mate_style_empty);
-            finish();
-        }
-
     }
 
     @Override
@@ -54,23 +49,20 @@ public class FeederStartActivity extends BaseActivity {
         findViewById(R.id.test_case1).setOnClickListener(this);
         findViewById(R.id.test_case2).setOnClickListener(this);
         findViewById(R.id.test_case3).setOnClickListener(this);
-        findViewById(R.id.test_case4).setOnClickListener(this);
-        findViewById(R.id.test_case5).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.test_case1:
-                startActivity(FeederTestMainActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
+                startActivityWithData(FeederTestMainActivity.class, bundle, false);
                 break;
             case R.id.test_case2:
 
                 break;
             case R.id.test_case3:
-
-                break;
-            case R.id.test_case4:
 
                 break;
             case R.id.test_case5:
