@@ -231,8 +231,17 @@
 	<string name="Set_print">设置打印机</string>
 	<string name="Connect_device">连接设备</string>
 
+	<string name="Title_prepare">测试准备</string>
 	<string name="Print">打印</string>
 	<string name="Write">写入</string>
+	<string name="Permission_storage">存储空间</string>
+	<string name="Permission_phone_state">设备信息</string>
+	<string name="Permission_location">位置信息</string>
+	<string name="Hint_permission_storage_must_request">我们需要获取存储空间，为你存储个人信息；否则，你将无法正常使用小佩宠物</string>
+
+	<string name="Hint_input_account">请输入账号</string>
+	<string name="Hint_input_password">请输入密码</string>
+
 
 	<string-array name="Feeder_test_items">
 		<item>门马达</item>

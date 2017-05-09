@@ -25,14 +25,6 @@
             android:orientation="vertical" >
 
             <Button
-                android:id="@+id/set_print"
-                style="@style/Text_Middle_Black"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="15dip"
-                android:text="@string/Set_print" />
-
-            <Button
                 android:id="@+id/set_wifi"
                 style="@style/Text_Middle_Black"
                 android:layout_width="wrap_content"
@@ -47,16 +39,13 @@
                 android:layout_height="wrap_content"
                 android:padding="15dip"
                 android:text="@string/Connect_device" />
-
-            <Button
-                android:id="@+id/test_auto"
-                style="@style/Text_Middle_Black"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="15dip"
-                android:text="@string/Test_auto" />
         </LinearLayout>
     </LinearLayout>
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="0dip"
+        android:layout_weight="1"/>
 
     <GridView
         android:id="@+id/gridView"
@@ -65,5 +54,15 @@
         android:layout_marginTop="20dip"
         android:numColumns="4" >
     </GridView>
+
+    <Button
+        android:id="@+id/test_auto"
+        style="@style/Text_Middle_Black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dip"
+        android:layout_margin="15dip"
+        android:gravity="center"
+        android:text="@string/Test_auto" />
 
 </LinearLayout>

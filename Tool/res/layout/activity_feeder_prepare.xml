@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/test_prompt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Text_Middle_Black"
+        android:layout_margin="15dip" />
+
+    <EditText
+        android:id="@+id/input_login_name"
+        style="@style/Text_Middle_Black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dip"
+        android:hint="@string/Hint_input_account"
+        android:inputType="text"
+        android:textColorHint="@color/gray" />
+
+    <EditText
+        android:id="@+id/input_login_password"
+        style="@style/Text_Middle_Black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dip"
+        android:hint="@string/Hint_input_password"
+        android:inputType="textPassword"
+        android:textColorHint="@color/gray" />
+
+    <Button
+        android:id="@+id/login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dip"
+        android:gravity="center"
+        android:text="@string/Login"/>
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="0dip"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:id="@+id/logout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Text_Middle_Black"
+        android:layout_gravity="center_horizontal"
+        android:text="登出？"
+        android:visibility="invisible"
+        android:padding="5dip" />
+
+</LinearLayout>

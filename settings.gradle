@@ -1,1 +1,1 @@
-include ':Tool', ':petkit_share_lib', ':socketclient'
+include ':Tool', ':socketclient', ':petkit_share_lib'

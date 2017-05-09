@@ -12,6 +12,9 @@
     <color name="gray_bg">#ffebeae4</color>
     <color name="yellow">#ffff9900</color>
 
+    <color name="red_pressed">#ffed525e</color>
+    <color name="blue_pressed">#ff1b89c2</color>
+    <color name="gray_pressed">#ffa7a3a3</color>
 
     <color name="border_color_on_light">#ff3bb3c3</color>
 

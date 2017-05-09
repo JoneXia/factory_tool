@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@drawable/solid_white_bg"
+              android:gravity="center">
+    <TextView
+        style="@style/Text_Large_Black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dip"
+        android:gravity="center"
+        android:text="权限申请" />
+
+    <TextView
+        style="@style/Text_Small_Black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dip"
+        android:gravity="center"
+        android:text="为了你能够正常使用本软件，需要以下权限" />
+
+    <LinearLayout
+        android:id="@+id/permission_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dip"/>
+
+    <Button
+        android:id="@+id/permission_next"
+        style="@style/Text_Middle_White"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/selector_blue"
+        android:focusable="true"
+        android:gravity="center"
+        android:padding="12dp"
+        android:text="@string/Next" />
+
+</LinearLayout>

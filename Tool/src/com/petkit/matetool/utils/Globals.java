@@ -13,7 +13,11 @@ import java.util.Date;
 public class Globals {
 	public static final String localUrl = Environment
 			.getExternalStorageDirectory().getAbsolutePath() + "/mate_test/";
-	
+
+	public static final String EXTRA_PERMISSION_CONTENT      = "com.petkit.android.EXTRA_PERMISSION_CONTENT";
+
+	public static final String BROADCAST_PERMISSION_FINISHED = "com.petkit.android.BROADCAST_PERMISSION_FINISHED";
+
 	//test date
 	public static String g_date;
 	//worker station

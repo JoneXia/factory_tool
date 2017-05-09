@@ -8,9 +8,8 @@
     <TextView
         android:id="@+id/textView1"
         android:layout_width="match_parent"
-        style="@style/Text_Middle_Black"
+        style="@style/Text_Small_White"
         android:layout_height="65dip"
-        android:background="@color/gray_pool"
         android:gravity="center" />
 
 </LinearLayout>

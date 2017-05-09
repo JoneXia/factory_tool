@@ -113,6 +113,15 @@
             android:label="@string/activity_name"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name=".ui.feeder.FeederTestPrepareActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".ui.permission.PermissionDialogActivity"
+            android:theme="@style/petkit_theme_dialog"
+            android:screenOrientation="portrait" >
+        </activity>
 
         <meta-data
             android:name="UMENG_APPKEY"

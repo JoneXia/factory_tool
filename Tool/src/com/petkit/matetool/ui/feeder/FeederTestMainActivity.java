@@ -32,8 +32,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.petkit.matetool.ui.feeder.utils.PrintUtils.isPrinterConnected;
-
 /**
  *
  * Created by Jone on 17/4/24.
@@ -48,7 +46,6 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
     private int mTestType;
 
     private WifiAdminSimple mWifiAdminSimple;
-    private boolean isPrintConnected = false;
     private int mTestState;
     private Feeder mCurFeeder;
 
@@ -88,9 +85,9 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
         mWifiAdminSimple = new WifiAdminSimple(this);
 
         mInfoTestTextView = (TextView) findViewById(R.id.test_info);
-        findViewById(R.id.set_print).setOnClickListener(this);
         findViewById(R.id.set_wifi).setOnClickListener(this);
         findViewById(R.id.connect_dev).setOnClickListener(this);
+        findViewById(R.id.test_auto).setOnClickListener(this);
 
         mFeederTestUnits = FeederUtils.generateFeederTestUnitsForType(mTestType);
 
@@ -105,6 +102,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
                     intent.putExtra("TestUnits", mFeederTestUnits);
                     intent.putExtra("CurrentTestStep", position);
                     intent.putExtra("Feeder", mCurFeeder);
+                    intent.putExtra("AutoTest", false);
                     startActivityForResult(intent, 0x12);
                 } else {
                     showShortToast(mInfoTestTextView.getText().toString());
@@ -133,14 +131,31 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.set_print:
-                startActivityForResult(PrintActivity.class, 0x11);
-                break;
             case R.id.set_wifi:
                 startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                 break;
             case R.id.connect_dev:
                 refreshView();
+                break;
+            case R.id.test_auto:
+                if(mTestState == TEST_STATE_CONNECTED) {
+                    int position = 0;
+
+                    for (FeederTestUnit unit : mFeederTestUnits) {
+                        if(unit.getResult() == 1) {
+                            position++;
+                        } else {
+                            break;
+                        }
+                    }
+                    Intent intent = new Intent(FeederTestMainActivity.this, FeederTestDetailActivity.class);
+                    intent.putExtra("TestUnits", mFeederTestUnits);
+                    intent.putExtra("CurrentTestStep", position);
+                    intent.putExtra("Feeder", mCurFeeder);
+                    startActivityForResult(intent, 0x12);
+                } else {
+                    showShortToast(mInfoTestTextView.getText().toString());
+                }
                 break;
         }
     }
@@ -163,16 +178,11 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
     }
 
     private void refreshView() {
-        isPrintConnected = isPrinterConnected();
-        if(!isPrintConnected) {
-            mInfoTestTextView.setText("打印机还未连接！");
+        String apSsid = mWifiAdminSimple.getWifiConnectedSsid();
+        if(apSsid == null || !apSsid.startsWith("PETKIT_AP_")) { //PETKIT_AP_
+            mInfoTestTextView.setText("请先连接到特定的WIFI，再进行测试！");
         } else {
-            String apSsid = mWifiAdminSimple.getWifiConnectedSsid();
-            if(apSsid == null || !apSsid.startsWith("PETKIT_AP_")) { //PETKIT_AP_
-                mInfoTestTextView.setText("请先连接到特定的WIFI，再进行测试！");
-            } else {
-                connectAp();
-            }
+            connectAp();
         }
     }
 
@@ -323,13 +333,13 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
 
             switch (item.getResult()) {
                 case Globals.TEST_PASS:
-                    holder.name.setBackgroundColor(getResources().getColor(R.color.green));
+                    holder.name.setBackgroundResource(R.drawable.selector_blue);
                     break;
                 case Globals.TEST_FAILED:
-                    holder.name.setBackgroundColor(getResources().getColor(R.color.red));
+                    holder.name.setBackgroundResource(R.drawable.selector_red);
                     break;
                 default:
-                    holder.name.setBackgroundColor(getResources().getColor(R.color.gray));
+                    holder.name.setBackgroundResource(R.drawable.selector_gray);
                     break;
             }
 

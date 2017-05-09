@@ -79,7 +79,7 @@ public abstract class BaseActivity extends Activity implements OnClickListener, 
 	@Override
 	public void onSizeChange(boolean flag, int listHeight, int inputViewHeight) {
 		if(flag){  
-			int deviceHeight = BaseApplication.getDisplayMetrics().heightPixels;
+			int deviceHeight = BaseApplication.getDisplayMetrics(this).heightPixels;
 			Rect r = new Rect();
 			View rootview = this.getWindow().getDecorView();
 			rootview.getWindowVisibleDisplayFrame(r);

@@ -4,6 +4,13 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/test_prompt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Text_Middle_Black"
+        android:padding="5dip" />
+
     <ScrollView
         android:id="@+id/test_scrllview"
         android:layout_width="match_parent"
@@ -29,14 +36,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="15dip">
+        android:padding="10dip">
 
         <Button
             android:id="@+id/test_btn_1"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_margin="10dip"
+            style="@style/Text_Small_White"
+            android:background="@drawable/selector_gray"
             />
 
         <Button
@@ -44,7 +52,8 @@
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_margin="10dip"
+            android:layout_marginLeft="10dip"
+            style="@style/Text_Small_White"
             />
 
         <Button
@@ -52,7 +61,8 @@
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_margin="10dip"
+            android:layout_marginLeft="10dip"
+            style="@style/Text_Small_White"
             />
     </LinearLayout>
 </LinearLayout>

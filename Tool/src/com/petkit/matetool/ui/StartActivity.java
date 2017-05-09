@@ -1,12 +1,15 @@
 package com.petkit.matetool.ui;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.content.PermissionChecker;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -18,8 +21,9 @@ import com.petkit.matetool.R;
 import com.petkit.matetool.service.DatagramConsts;
 import com.petkit.matetool.service.DatagramProcessService;
 import com.petkit.matetool.ui.base.BaseActivity;
-import com.petkit.matetool.ui.feeder.FeederStartActivity;
+import com.petkit.matetool.ui.feeder.FeederTestPrepareActivity;
 import com.petkit.matetool.ui.mate.SelectActivity;
+import com.petkit.matetool.ui.permission.PermissionDialogActivity;
 import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.Utils;
 import com.petkit.matetool.widget.LoadDialog;
@@ -42,7 +46,11 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_start);
-        LogcatStorageHelper.getInstance(this, "http://www.baidu.com").start();
+        if(!checkSelfPermissionComplete(this)) {
+            startActivity(PermissionDialogActivity.class);
+        } else {
+            LogcatStorageHelper.getInstance(this, "http://www.baidu.com").start();
+        }
 
     }
 
@@ -78,21 +86,21 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.start_test:
-                String workStationString = fixtureNumberEditText.getText().toString().trim();
-                if(isEmpty(workStationString)){
-                    showShortToast(R.string.input_error);
-                    return;
-                }
-                workStation = Integer.valueOf(workStationString);
-
-                if (workStation <= 0 || workStation >= 10) {
-                    showShortToast(R.string.input_error);
-                    return;
-                }
 
                 switch (testStyle) {
                     case Globals.MATE_PRO:
                     case Globals.MATE_STYLE:
+                        String workStationString = fixtureNumberEditText.getText().toString().trim();
+                        if(isEmpty(workStationString)){
+                            showShortToast(R.string.input_error);
+                            return;
+                        }
+                        workStation = Integer.valueOf(workStationString);
+
+                        if (workStation <= 0 || workStation >= 10) {
+                            showShortToast(R.string.input_error);
+                            return;
+                        }
                         LoadDialog.show(this);
 
                         final Intent service = new Intent(this, DatagramProcessService.class);
@@ -102,7 +110,7 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
                     case Globals.FEEDER:
                         Bundle bundle = new Bundle();
                         bundle.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
-                        startActivityWithData(FeederStartActivity.class, bundle, false);
+                        startActivityWithData(FeederTestPrepareActivity.class, bundle, false);
                         break;
                 }
                 collapseSoftInputMethod(fixtureNumberEditText);
@@ -161,12 +169,20 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
                             }
                         }
                     }, 5000);
+                } else if(arg1.getAction().equals(Globals.BROADCAST_PERMISSION_FINISHED)) {
+                    boolean result = arg1.getBooleanExtra("result", false);
+                    if(result){
+                        LogcatStorageHelper.getInstance(StartActivity.this, "http://www.baidu.com").start();
+                    } else {
+                        finish();
+                    }
                 }
             }
         };
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(DatagramConsts.BROADCAST_PROGRESS);
+        filter.addAction(Globals.BROADCAST_PERMISSION_FINISHED);
         LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver, filter);
     }
 
@@ -174,5 +190,8 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);
     }
 
+    private boolean checkSelfPermissionComplete(Context context){
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.M || (PermissionChecker.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PermissionChecker.PERMISSION_GRANTED);
+    }
 
 }

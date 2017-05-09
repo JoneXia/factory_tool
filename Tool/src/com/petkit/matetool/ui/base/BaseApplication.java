@@ -1,5 +1,6 @@
 package com.petkit.matetool.ui.base;
 
+import android.app.Activity;
 import android.util.DisplayMetrics;
 
 import com.orm.SugarApp;
@@ -28,7 +29,12 @@ public class BaseApplication extends SugarApp {
 		crashHandler.init(this);
 	}
 
-	public static DisplayMetrics getDisplayMetrics(){
+	public static DisplayMetrics getDisplayMetrics(Activity activity){
+		if(dm == null || dm.widthPixels == 0){
+			if(activity != null){
+				activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
+			}
+		}
 		return dm;
 	}
 }

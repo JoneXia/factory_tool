@@ -30,6 +30,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static com.petkit.matetool.ui.feeder.utils.PrintUtils.isPrinterConnected;
+
 /**
  *
  * Created by Jone on 17/4/24.
@@ -40,8 +42,10 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
     private ArrayList<FeederTestUnit> mFeederTestUnits;
     private int mTempResult;
     private Feeder mFeeder;
+    private boolean isWriteEndCmd = false;
+    private boolean isAutoTest = false;
 
-    private TextView mDescTextView;
+    private TextView mDescTextView, mPromptTextView;
     private Button mBtn1, mBtn2, mBtn3;
     private ScrollView mDescScrollView;
 
@@ -53,10 +57,12 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
             mFeederTestUnits = (ArrayList<FeederTestUnit>) savedInstanceState.getSerializable("TestUnits");
             mCurTestStep = savedInstanceState.getInt("CurrentTestStep");
             mFeeder = (Feeder) savedInstanceState.getSerializable("Feeder");
+            isAutoTest = savedInstanceState.getBoolean("AutoTest");
         } else {
             mFeederTestUnits = (ArrayList<FeederTestUnit>) getIntent().getSerializableExtra("TestUnits");
             mCurTestStep = getIntent().getIntExtra("CurrentTestStep", 0);
             mFeeder = (Feeder) getIntent().getSerializableExtra("Feeder");
+            isAutoTest = getIntent().getBooleanExtra("AutoTest", true);
         }
 
         setContentView(R.layout.activity_feeder_test_detail);
@@ -79,6 +85,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
         outState.putInt("CurrentTestStep", mCurTestStep);
         outState.putSerializable("TestUnits", mFeederTestUnits);
         outState.putSerializable("Feeder", mFeeder);
+        outState.putBoolean("AutoTest", isAutoTest);
     }
 
     @Override
@@ -88,6 +95,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
         findViewById(R.id.test_btn_3).setOnClickListener(this);
 
         mDescTextView = (TextView) findViewById(R.id.test_detail);
+        mPromptTextView = (TextView) findViewById(R.id.test_prompt);
         mBtn1 = (Button) findViewById(R.id.test_btn_1);
         mBtn2 = (Button) findViewById(R.id.test_btn_2);
         mBtn3 = (Button) findViewById(R.id.test_btn_3);
@@ -99,6 +107,8 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
     private void refreshView() {
         setTitle(mFeederTestUnits.get(mCurTestStep).getName());
 
+        mDescTextView.setText("");
+        mPromptTextView.setText("");
         switch (mFeederTestUnits.get(mCurTestStep).getType()) {
             case TEST_MODE_PRINT:
                 mDescTextView.setText("mac:" + mFeeder.getMac() + "\n" + "sn:" + mFeeder.getSn());
@@ -111,8 +121,22 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                     mDescTextView.setText("mac:" + mFeeder.getMac());
                 }
                 break;
+            case TEST_MODE_KEY:
+                mPromptTextView.setText("需要分别测试food按键和wifi按键！");
+                break;
+            case TEST_MODE_LIGHT:
+                mPromptTextView.setText("点击开始，观察喂食器三个灯依次亮灭，蜂鸣器响一秒！");
+                break;
+            case TEST_MODE_DOOR:
+                mPromptTextView.setText("需要测试开门和关门！");
+                break;
+            case TEST_MODE_LID:
+                mPromptTextView.setText("需要粮桶盖打开和合上！");
+                break;
+            case TEST_MODE_BALANCE:
+                mPromptTextView.setText("点击开始后，按照提示放指定重量的砝码！");
+                break;
             default:
-                mDescTextView.setText("");
                 break;
         }
 
@@ -124,23 +148,45 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
             case TEST_MODE_LIGHT:
                 mBtn1.setText(R.string.Start);
                 mBtn2.setText(R.string.Failure);
+                mBtn2.setBackgroundResource(R.drawable.selector_red);
                 mBtn2.setVisibility(View.VISIBLE);
                 mBtn3.setText(R.string.Succeed);
+                mBtn3.setBackgroundResource(R.drawable.selector_blue);
                 break;
             case TEST_MODE_PRINT:
                 mBtn1.setText(R.string.Print);
-                mBtn2.setVisibility(View.INVISIBLE);
-                mBtn3.setText(mFeederTestUnits.get(mCurTestStep).getResult() == 1 ? R.string.Succeed : R.string.Failure);
+                mBtn2.setText(R.string.Set_print);
+                mBtn2.setVisibility(View.VISIBLE);
+                mBtn2.setBackgroundResource(R.drawable.selector_gray);
+                if(mFeederTestUnits.get(mCurTestStep).getResult() == 1) {
+                    mBtn3.setText(R.string.Succeed);
+                    mBtn3.setBackgroundResource(R.drawable.selector_blue);
+                } else {
+                    mBtn3.setText(R.string.Failure);
+                    mBtn3.setBackgroundResource(R.drawable.selector_red);
+                }
                 break;
             case TEST_MODE_SN:
                 mBtn1.setText(R.string.Write);
                 mBtn2.setVisibility(View.INVISIBLE);
-                mBtn3.setText(mFeederTestUnits.get(mCurTestStep).getResult() == 1 ? R.string.Succeed : R.string.Failure);
+                if(mFeederTestUnits.get(mCurTestStep).getResult() == 1) {
+                    mBtn3.setText(R.string.Succeed);
+                    mBtn3.setBackgroundResource(R.drawable.selector_blue);
+                } else {
+                    mBtn3.setText(R.string.Failure);
+                    mBtn3.setBackgroundResource(R.drawable.selector_red);
+                }
                 break;
             default:
                 mBtn1.setText(R.string.Start);
                 mBtn2.setVisibility(View.INVISIBLE);
-                mBtn3.setText(mFeederTestUnits.get(mCurTestStep).getResult() == 1 ? R.string.Succeed : R.string.Failure);
+                if(mFeederTestUnits.get(mCurTestStep).getResult() == 1) {
+                    mBtn3.setText(R.string.Succeed);
+                    mBtn3.setBackgroundResource(R.drawable.selector_blue);
+                } else {
+                    mBtn3.setText(R.string.Failure);
+                    mBtn3.setBackgroundResource(R.drawable.selector_red);
+                }
                 break;
         }
 
@@ -152,13 +198,35 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
             case R.id.test_btn_1:
                 switch (mFeederTestUnits.get(mCurTestStep).getType()) {
                     case TEST_MODE_PRINT:
-                        String oneBarCode = "SN:" + mFeeder.getSn();
-                        String twoBarCode = "SN:" + mFeeder.getSn() + ",MAC:" + mFeeder.getMac();
-                        printBarcode(getString(R.string.defaulttextone), oneBarCode, twoBarCode);
+                        if(isPrinterConnected()) {
+                            if(isEmpty(mFeeder.getSn())) {
+                                showShortToast("SN还未写入，不能打印！");
+                            } else if(isEmpty(mFeeder.getMac())) {
+                                showShortToast("MAC为空，不能打印！");
+                            } else {
+                                String oneBarCode = "SN:" + mFeeder.getSn();
+                                String twoBarCode = "SN:" + mFeeder.getSn() + ",MAC:" + mFeeder.getMac();
+                                printBarcode(getString(R.string.defaulttextone), oneBarCode, twoBarCode);
+                            }
+                        } else {
+                            showShortToast("请先连接打印机！");
+                        }
                         break;
                     case TEST_MODE_SN:
                         if(isEmpty(mFeeder.getSn())) {
-                            showSNSetDialog();
+                            boolean result = true;
+                            for (FeederTestUnit unit : mFeederTestUnits) {
+                                if(unit.getResult() != 1) {
+                                    result = false;
+                                    break;
+                                }
+                            }
+
+                            if(!result) {
+                                showShortToast("还有未完成的测试项，不能写入SN！");
+                            } else {
+                                showSNSetDialog();
+                            }
                         } else {
                             HashMap<String, Object> params = new HashMap<>();
                             params.put("mac", mFeeder.getMac());
@@ -174,17 +242,37 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
             case R.id.test_btn_2:
                 switch (mFeederTestUnits.get(mCurTestStep).getType()) {
                     case TEST_MODE_LIGHT:
-                        gotoNextTestModule();
+                        isWriteEndCmd = true;
+
+                        HashMap<String, Object> params = new HashMap<>();
+                        params.put("module", mFeederTestUnits.get(mCurTestStep).getModule());
+                        params.put("state", 0);
+                        PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(163, params));
+                        break;
+                    case TEST_MODE_PRINT:
+                        startActivity(PrintActivity.class);
                         break;
                 }
                 break;
             case R.id.test_btn_3:
                 switch (mFeederTestUnits.get(mCurTestStep).getType()) {
+                    case TEST_MODE_SN:
+                        gotoNextTestModule();
+                        break;
+                    case TEST_MODE_PRINT:
+                        gotoNextTestModule();
+                        break;
                     case TEST_MODE_LIGHT:
                         mFeederTestUnits.get(mCurTestStep).setResult(1);
+                    default:
+                        isWriteEndCmd = true;
+
+                        HashMap<String, Object> params = new HashMap<>();
+                        params.put("module", mFeederTestUnits.get(mCurTestStep).getModule());
+                        params.put("state", 0);
+                        PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(163, params));
                         break;
                 }
-                gotoNextTestModule();
                 break;
         }
     }
@@ -197,14 +285,9 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
     }
 
     private void gotoNextTestModule() {
-        if(mCurTestStep == mFeederTestUnits.size() - 1) {
+        if(mCurTestStep == mFeederTestUnits.size() - 1 || !isAutoTest) {
             finish();
         } else {
-            HashMap<String, Object> params = new HashMap<>();
-            params.put("module", mFeederTestUnits.get(mCurTestStep).getModule());
-            params.put("state", 0);
-            PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(163, params));
-
             mTempResult = 0;
             mCurTestStep++;
             refreshView();
@@ -238,9 +321,11 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                 if(!jsonObject.isNull("state")) {
                     try {
                         if(jsonObject.getInt("state") == 1) {
-                            mDescTextView.append("\n指令发送成功！");
-                            if(mFeederTestUnits.get(mCurTestStep).getModule() == 1) {
-                                mDescTextView.append("\n请确认三个灯依次亮灭，蜂鸣器响一秒。");
+                            if(isWriteEndCmd) {
+                                isWriteEndCmd = false;
+                                gotoNextTestModule();
+                            } else {
+                                mDescTextView.append("\n指令发送成功！");
                             }
                         }
                     } catch (JSONException e) {
@@ -405,10 +490,10 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
     private Bundle getPrintParam() {
         Bundle param = new Bundle();
 
-        param.putInt(IDzPrinter.PrintParamName.PRINT_DIRECTION, 90);
+        param.putInt(IDzPrinter.PrintParamName.PRINT_DIRECTION, 0);
         param.putInt(IDzPrinter.PrintParamName.PRINT_COPIES, 1);
         param.putInt(IDzPrinter.PrintParamName.GAP_TYPE, 2);
-        param.putInt(IDzPrinter.PrintParamName.PRINT_DENSITY, 15);
+        param.putInt(IDzPrinter.PrintParamName.PRINT_DENSITY, 14);
         param.putInt(IDzPrinter.PrintParamName.PRINT_SPEED, 2);
         return param;
     }
