@@ -221,8 +221,8 @@
 
 	<!-- Feeder test -->
 	<string name="Feeder">喂食器</string>
-	<string name="feeder_test_case1">自动模式</string>
-	<string name="feeder_test_case2">测试</string>
+	<string name="feeder_test_case1">半成品测试</string>
+	<string name="feeder_test_case2">成品测试</string>
 	<string name="feeder_test_case3">维修</string>
 	<string name="feeder_test_case4">抽检</string>
 
@@ -242,6 +242,7 @@
 	<string name="Hint_input_account">请输入账号</string>
 	<string name="Hint_input_password">请输入密码</string>
 
+	<string name="Feeder_test_info_format">工厂名：<xliff:g id="prefix">%s</xliff:g>，工位：<xliff:g id="prefix">%s</xliff:g></string>
 
 	<string-array name="Feeder_test_items">
 		<item>门马达</item>

@@ -11,6 +11,7 @@
         style="@style/Text_Small_Gray"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="15dip"
         android:layout_marginTop="20dip"/>
 
     <ScrollView
@@ -32,7 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="70dip"
                 android:layout_marginTop="10dip"
-                android:text="@string/feeder_test_case2" />
+                android:text="@string/feeder_test_case1" />
 
             <Button
                 android:id="@+id/test_case2"
@@ -40,10 +41,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="70dip"
                 android:layout_marginTop="10dip"
-                android:text="@string/feeder_test_case3" />
+                android:text="@string/feeder_test_case2" />
 
             <Button
                 android:id="@+id/test_case3"
+                style="@style/Text_Large_Black"
+                android:layout_width="match_parent"
+                android:layout_height="70dip"
+                android:layout_marginTop="10dip"
+                android:text="@string/feeder_test_case3" />
+
+            <Button
+                android:id="@+id/test_case4"
                 style="@style/Text_Large_Black"
                 android:layout_width="match_parent"
                 android:layout_height="70dip"

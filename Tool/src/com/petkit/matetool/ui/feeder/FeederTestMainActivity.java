@@ -17,9 +17,9 @@ import android.widget.TextView;
 
 import com.petkit.matetool.R;
 import com.petkit.matetool.model.Feeder;
-import com.petkit.matetool.service.DatagramConsts;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.feeder.mode.FeederTestUnit;
+import com.petkit.matetool.ui.feeder.mode.FeederTester;
 import com.petkit.matetool.ui.feeder.utils.FeederUtils;
 import com.petkit.matetool.ui.feeder.utils.PetkitSocketInstance;
 import com.petkit.matetool.ui.feeder.utils.WifiAdminSimple;
@@ -42,7 +42,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
     private static final int TEST_STATE_CONNECTING      = 1;
     private static final int TEST_STATE_CONNECTED      = 2;
 
-    private int workStation;
+    private FeederTester mTester;
     private int mTestType;
 
     private WifiAdminSimple mWifiAdminSimple;
@@ -58,10 +58,10 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
-            workStation = savedInstanceState.getInt(DatagramConsts.EXTRA_WORK_STATION, -1);
+            mTester = (FeederTester) savedInstanceState.getSerializable(FeederUtils.EXTRA_FEEDER_TESTER);
             mTestType = savedInstanceState.getInt("TestType");
         } else {
-            workStation = getIntent().getIntExtra(DatagramConsts.EXTRA_WORK_STATION, -1);
+            mTester = (FeederTester) getIntent().getSerializableExtra(FeederUtils.EXTRA_FEEDER_TESTER);
             mTestType = getIntent().getIntExtra("TestType", FeederUtils.TYPE_TEST);
         }
 
@@ -74,7 +74,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
+        outState.putSerializable(FeederUtils.EXTRA_FEEDER_TESTER, mTester);
         outState.putInt("TestType", mTestType);
     }
 
@@ -103,6 +103,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
                     intent.putExtra("CurrentTestStep", position);
                     intent.putExtra("Feeder", mCurFeeder);
                     intent.putExtra("AutoTest", false);
+                    intent.putExtra(FeederUtils.EXTRA_FEEDER_TESTER, mTester);
                     startActivityForResult(intent, 0x12);
                 } else {
                     showShortToast(mInfoTestTextView.getText().toString());
@@ -116,7 +117,6 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
         super.onResume();
 
         PetkitSocketInstance.getInstance().setPetkitSocketListener(this);
-//        refreshView();
     }
 
 
@@ -148,10 +148,16 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
                             break;
                         }
                     }
+                    if(position == mFeederTestUnits.size()) {
+                        showShortToast("测试已完成");
+                        return;
+                    }
+
                     Intent intent = new Intent(FeederTestMainActivity.this, FeederTestDetailActivity.class);
                     intent.putExtra("TestUnits", mFeederTestUnits);
                     intent.putExtra("CurrentTestStep", position);
                     intent.putExtra("Feeder", mCurFeeder);
+                    intent.putExtra(FeederUtils.EXTRA_FEEDER_TESTER, mTester);
                     startActivityForResult(intent, 0x12);
                 } else {
                     showShortToast(mInfoTestTextView.getText().toString());
@@ -350,4 +356,6 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
             TextView name;
         }
     }
+
+
 }

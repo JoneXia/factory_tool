@@ -6,8 +6,9 @@ import android.widget.TextView;
 
 import com.dothantech.printer.IDzPrinter;
 import com.petkit.matetool.R;
-import com.petkit.matetool.service.DatagramConsts;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.feeder.mode.FeederTester;
+import com.petkit.matetool.ui.feeder.utils.FeederUtils;
 
 /**
  * 喂食器测试，选择工站
@@ -16,16 +17,16 @@ import com.petkit.matetool.ui.base.BaseActivity;
  */
 public class FeederStartActivity extends BaseActivity {
 
-    private int workStation;
+    private FeederTester mTester;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null){
-            workStation = savedInstanceState.getInt(DatagramConsts.EXTRA_WORK_STATION, -1);
+            mTester = (FeederTester) savedInstanceState.getSerializable(FeederUtils.EXTRA_FEEDER_TESTER);
         } else {
-            workStation = getIntent().getIntExtra(DatagramConsts.EXTRA_WORK_STATION, -1);
+            mTester = (FeederTester) getIntent().getSerializableExtra(FeederUtils.EXTRA_FEEDER_TESTER);
         }
 
         setContentView(R.layout.activity_feeder_start);
@@ -36,7 +37,7 @@ public class FeederStartActivity extends BaseActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
+        outState.putSerializable(FeederUtils.EXTRA_FEEDER_TESTER, mTester);
     }
 
     @Override
@@ -44,11 +45,12 @@ public class FeederStartActivity extends BaseActivity {
         setTitle(R.string.Title_select_mode);
 
         TextView testInfo = (TextView) findViewById(R.id.test_info);
-        testInfo.setText(getString(R.string.Test_info_format, getString(R.string.Feeder), String.valueOf(workStation)));
+        testInfo.setText(getString(R.string.Feeder_test_info_format, mTester.getName(), String.valueOf(mTester.getStation())));
 
         findViewById(R.id.test_case1).setOnClickListener(this);
         findViewById(R.id.test_case2).setOnClickListener(this);
         findViewById(R.id.test_case3).setOnClickListener(this);
+        findViewById(R.id.test_case4).setOnClickListener(this);
     }
 
     @Override
@@ -56,17 +58,27 @@ public class FeederStartActivity extends BaseActivity {
         switch (v.getId()) {
             case R.id.test_case1:
                 Bundle bundle = new Bundle();
-                bundle.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
+                bundle.putSerializable(FeederUtils.EXTRA_FEEDER_TESTER, mTester);
+                bundle.putInt("TestType", FeederUtils.TYPE_TEST_PARTIALLY);
                 startActivityWithData(FeederTestMainActivity.class, bundle, false);
                 break;
             case R.id.test_case2:
-
+                bundle = new Bundle();
+                bundle.putSerializable(FeederUtils.EXTRA_FEEDER_TESTER, mTester);
+                bundle.putInt("TestType", FeederUtils.TYPE_TEST);
+                startActivityWithData(FeederTestMainActivity.class, bundle, false);
                 break;
             case R.id.test_case3:
-
+                bundle = new Bundle();
+                bundle.putSerializable(FeederUtils.EXTRA_FEEDER_TESTER, mTester);
+                bundle.putInt("TestType", FeederUtils.TYPE_MAINTAIN);
+                startActivityWithData(FeederTestMainActivity.class, bundle, false);
                 break;
-            case R.id.test_case5:
-                startActivity(PrintActivity.class);
+            case R.id.test_case4:
+                bundle = new Bundle();
+                bundle.putSerializable(FeederUtils.EXTRA_FEEDER_TESTER, mTester);
+                bundle.putInt("TestType", FeederUtils.TYPE_CHECK);
+                startActivityWithData(FeederTestMainActivity.class, bundle, false);
                 break;
         }
     }

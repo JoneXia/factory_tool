@@ -15,19 +15,23 @@ import android.widget.TextView;
 import com.dothantech.lpapi.IAtBitmap;
 import com.dothantech.printer.IDzPrinter;
 import com.google.gson.Gson;
+import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.model.Feeder;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.feeder.mode.FeederTestUnit;
+import com.petkit.matetool.ui.feeder.mode.FeederTester;
 import com.petkit.matetool.ui.feeder.mode.ModuleStateStruct;
 import com.petkit.matetool.ui.feeder.utils.FeederUtils;
 import com.petkit.matetool.ui.feeder.utils.PetkitSocketInstance;
+import com.petkit.matetool.utils.DateUtil;
 import com.petkit.matetool.utils.JSONUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import static com.petkit.matetool.ui.feeder.utils.PrintUtils.isPrinterConnected;
@@ -38,6 +42,7 @@ import static com.petkit.matetool.ui.feeder.utils.PrintUtils.isPrinterConnected;
  */
 public class FeederTestDetailActivity extends BaseActivity implements PetkitSocketInstance.IPetkitSocketListener {
 
+    private FeederTester mTester;
     private int mCurTestStep;
     private ArrayList<FeederTestUnit> mFeederTestUnits;
     private int mTempResult;
@@ -58,16 +63,16 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
             mCurTestStep = savedInstanceState.getInt("CurrentTestStep");
             mFeeder = (Feeder) savedInstanceState.getSerializable("Feeder");
             isAutoTest = savedInstanceState.getBoolean("AutoTest");
+            mTester = (FeederTester) savedInstanceState.getSerializable(FeederUtils.EXTRA_FEEDER_TESTER);
         } else {
             mFeederTestUnits = (ArrayList<FeederTestUnit>) getIntent().getSerializableExtra("TestUnits");
             mCurTestStep = getIntent().getIntExtra("CurrentTestStep", 0);
             mFeeder = (Feeder) getIntent().getSerializableExtra("Feeder");
             isAutoTest = getIntent().getBooleanExtra("AutoTest", true);
+            mTester = (FeederTester) getIntent().getSerializableExtra(FeederUtils.EXTRA_FEEDER_TESTER);
         }
 
         setContentView(R.layout.activity_feeder_test_detail);
-
-        IDzPrinter.Factory.getInstance().init(this, mCallback);
     }
 
     @Override
@@ -75,6 +80,8 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
         super.onResume();
 
         PetkitSocketInstance.getInstance().setPetkitSocketListener(this);
+
+        IDzPrinter.Factory.getInstance().init(this, mCallback);
     }
 
 
@@ -86,6 +93,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
         outState.putSerializable("TestUnits", mFeederTestUnits);
         outState.putSerializable("Feeder", mFeeder);
         outState.putBoolean("AutoTest", isAutoTest);
+        outState.putSerializable(FeederUtils.EXTRA_FEEDER_TESTER, mTester);
     }
 
     @Override
@@ -206,7 +214,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                             } else {
                                 String oneBarCode = "SN:" + mFeeder.getSn();
                                 String twoBarCode = "SN:" + mFeeder.getSn() + ",MAC:" + mFeeder.getMac();
-                                printBarcode(getString(R.string.defaulttextone), oneBarCode, twoBarCode);
+                                printBarcode(oneBarCode, twoBarCode);
                             }
                         } else {
                             showShortToast("请先连接打印机！");
@@ -216,7 +224,9 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                         if(isEmpty(mFeeder.getSn())) {
                             boolean result = true;
                             for (FeederTestUnit unit : mFeederTestUnits) {
-                                if(unit.getResult() != 1) {
+                                if(unit.getType() != FeederUtils.FeederTestModes.TEST_MODE_SN &&
+                                        unit.getType() != FeederUtils.FeederTestModes.TEST_MODE_PRINT
+                                        && unit.getResult() != 1) {
                                     result = false;
                                     break;
                                 }
@@ -225,7 +235,19 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                             if(!result) {
                                 showShortToast("还有未完成的测试项，不能写入SN！");
                             } else {
-                                showSNSetDialog();
+                                String sn = FeederUtils.generateSNForTester(mTester);
+                                if(sn == null) {
+                                    showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
+                                    return;
+                                }
+                                HashMap<String, Object> payload = new HashMap<>();
+                                payload.put("mac", mFeeder.getMac());
+                                payload.put("sn", sn);
+                                mFeeder.setSn(sn);
+                                mFeeder.setDate(DateUtil.formatISO8601DateWithMills(new Date()));
+                                FeederUtils.storeSucceedFeederInfo(mFeeder);
+                                PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(161, payload));
+//                                showSNSetDialog();
                             }
                         } else {
                             HashMap<String, Object> params = new HashMap<>();
@@ -424,6 +446,12 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                             case 3:
                                 desc.append("校准完成");
                                 result = true;
+
+                                //校准完成，发送去皮命令
+//                                HashMap<String, Object> params = new HashMap<>();
+//                                params.put("module", mFeederTestUnits.get(mCurTestStep).getModule());
+//                                params.put("state", 2);
+//                                PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(163, params));
                                 break;
                         }
                         desc.append("\n").append("秤").append("-").append("读取数值").append("-").append(moduleStateStruct.getSub1());
@@ -498,13 +526,20 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
         return param;
     }
 
-    private boolean printBarcode(String text, String onedBarcde, String twodBarcde) {
+    private boolean printBarcode(String onedBarcde, String twodBarcde) {
+        LoadDialog.show(this, "正在打印标签，请稍后……");
+
         IAtBitmap api = IAtBitmap.Factory.createInstance();
 
-        api.startJob(50 * 100, 30 * 100);
-        api.draw2DQRCode(twodBarcde, 4 * 100, 4 * 100, 16 * 100);
-        api.draw1DBarcode(onedBarcde, IAtBitmap.BarcodeType1D.AUTO, 22 * 100, 4 * 100, 24 * 100, 16 * 100, 190);
-        api.drawText(text, 4 * 100, 22 * 100, 40 * 100, 10 * 100, 4 * 100, IAtBitmap.FontStyle.REGULAR);
+//        api.startJob(48 * 100, 30 * 100);
+//        api.draw2DQRCode(twodBarcde, 18 * 100, 2 * 100, 14 * 100);
+//        api.draw1DBarcode(onedBarcde, IAtBitmap.BarcodeType1D.AUTO, 6 * 100, 18 * 100, 38 * 100, 10 * 100, 180);
+//        api.endJob();
+        api.startJob(48 * 100, 30 * 100);
+        api.setItemHorizontalAlignment(IAtBitmap.ItemAlignment.MIDDLE);
+        api.draw2DQRCode(twodBarcde, 17 * 100, 2 * 100, 14 * 100);
+        api.draw1DBarcode(onedBarcde, IAtBitmap.BarcodeType1D.CODE128, 0 * 100, 18 * 100, 48 * 100, 8 * 100, 0);
+        api.drawText(onedBarcde, 0 * 100, 26 * 100, 48 * 100, 4 *100, 3 * 100, IAtBitmap.FontStyle.REGULAR);
         api.endJob();
 
         return IDzPrinter.Factory.getInstance().print(api, getPrintParam());
@@ -585,7 +620,11 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mDescTextView.append(getString(R.string.printsuccess));
+
+                            LoadDialog.dismissDialog();
+                            FeederUtils.storeSucceedFeederInfo(mFeeder);
+
+                            mDescTextView.append("\n" + getString(R.string.printsuccess));
                             mFeederTestUnits.get(mCurTestStep).setResult(1);
                             refershBtnView();
                         }

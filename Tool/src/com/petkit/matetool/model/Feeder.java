@@ -10,6 +10,7 @@ public class Feeder implements Serializable {
 
     private String mac;
     private String sn;
+    private String date;
 
     public Feeder(String mac, String sn) {
         this.mac = mac;
@@ -30,5 +31,26 @@ public class Feeder implements Serializable {
 
     public void setSn(String sn) {
         this.sn = sn;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public boolean checkValid() {
+        return mac != null && sn != null;
+    }
+
+    @Override
+    public String toString() {
+        return "Feeder{" +
+                "mac='" + mac + '\'' +
+                ", sn='" + sn + '\'' +
+                ", date='" + date + '\'' +
+                '}';
     }
 }
