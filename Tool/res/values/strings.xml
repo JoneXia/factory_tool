@@ -242,7 +242,7 @@
 	<string name="Hint_input_account">请输入账号</string>
 	<string name="Hint_input_password">请输入密码</string>
 
-	<string name="Feeder_test_info_format">工厂名：<xliff:g id="prefix">%s</xliff:g>，工位：<xliff:g id="prefix">%s</xliff:g></string>
+	<string name="Feeder_test_info_format">请选择工站</string>
 
 	<string-array name="Feeder_test_items">
 		<item>门马达</item>

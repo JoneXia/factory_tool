@@ -109,9 +109,9 @@ public class AsyncHttpRespHandler extends AsyncHttpResponseHandler {
 
 	public void onFailure(int statusCode, Header[] headers,
 			byte[] responseBody, Throwable error) {
-		PetkitLog.d(TAG, "onFailure " + error);
+		PetkitLog.d(TAG, "statusCode:" + statusCode + ", onFailure " + error);
 
-		if (context != null) {
+		if (context != null && statusCode == 0) {
 			CommonUtils.showShortToast(context, R.string.Hint_network_failed);
 		}
 	}

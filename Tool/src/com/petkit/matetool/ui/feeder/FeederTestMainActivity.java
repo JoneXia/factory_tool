@@ -136,6 +136,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
                 break;
             case R.id.connect_dev:
                 refreshView();
+                testSN();
                 break;
             case R.id.test_auto:
                 if(mTestState == TEST_STATE_CONNECTED) {
@@ -185,11 +186,13 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
 
     private void refreshView() {
         String apSsid = mWifiAdminSimple.getWifiConnectedSsid();
-        if(apSsid == null || !apSsid.startsWith("PETKIT_AP_")) { //PETKIT_AP_
+        if(apSsid == null || !apSsid.startsWith("PETKIT_AP_")) {
             mInfoTestTextView.setText("请先连接到特定的WIFI，再进行测试！");
         } else {
             connectAp();
         }
+
+        mAdapter.notifyDataSetChanged();
     }
 
     private void connectAp() {
@@ -357,5 +360,32 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
         }
     }
 
+    private void testSN() {
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+
+                if(mCurFeeder == null) {
+                    mCurFeeder = new Feeder("5ecf7f9d5f54", "");
+                }
+
+                int i = 0;
+                while (i < 1) {
+                    i++;
+                    mCurFeeder.setMac(String.valueOf(System.currentTimeMillis()).substring(0, 12));
+                    mCurFeeder.setSn(FeederUtils.generateSNForTester(mTester));
+                    mCurFeeder.setCreation(System.currentTimeMillis());
+                    FeederUtils.storeSucceedFeederInfo(mCurFeeder);
+
+                    try {
+                        sleep(20);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
+    }
 
 }

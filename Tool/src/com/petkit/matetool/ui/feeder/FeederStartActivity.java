@@ -45,7 +45,7 @@ public class FeederStartActivity extends BaseActivity {
         setTitle(R.string.Title_select_mode);
 
         TextView testInfo = (TextView) findViewById(R.id.test_info);
-        testInfo.setText(getString(R.string.Feeder_test_info_format, mTester.getName(), String.valueOf(mTester.getStation())));
+        testInfo.setText(getString(R.string.Feeder_test_info_format));
 
         findViewById(R.id.test_case1).setOnClickListener(this);
         findViewById(R.id.test_case2).setOnClickListener(this);

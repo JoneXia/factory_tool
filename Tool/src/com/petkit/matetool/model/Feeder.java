@@ -10,7 +10,7 @@ public class Feeder implements Serializable {
 
     private String mac;
     private String sn;
-    private String date;
+    private long creation;
 
     public Feeder(String mac, String sn) {
         this.mac = mac;
@@ -33,12 +33,12 @@ public class Feeder implements Serializable {
         this.sn = sn;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setCreation(long creation) {
+        this.creation = creation;
     }
 
-    public String getDate() {
-        return date;
+    public long getCreation() {
+        return creation;
     }
 
     public boolean checkValid() {
@@ -50,7 +50,7 @@ public class Feeder implements Serializable {
         return "Feeder{" +
                 "mac='" + mac + '\'' +
                 ", sn='" + sn + '\'' +
-                ", date='" + date + '\'' +
+                ", creation='" + creation + '\'' +
                 '}';
     }
 }

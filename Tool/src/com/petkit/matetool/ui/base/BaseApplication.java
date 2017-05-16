@@ -5,6 +5,7 @@ import android.util.DisplayMetrics;
 
 import com.orm.SugarApp;
 import com.petkit.android.utils.CommonUtils;
+import com.petkit.matetool.utils.CrashHandler;
 import com.petkit.matetool.utils.CustomLog;
 
 public class BaseApplication extends SugarApp {
@@ -24,8 +25,8 @@ public class BaseApplication extends SugarApp {
 		CustomLog.init(this);
 		mNetWorkState = CommonUtils.getAPNType();
 
-//        CrashHandler crashHandler = CrashHandler.getInstance();
-//		crashHandler.init(this);
+        CrashHandler crashHandler = CrashHandler.getInstance();
+		crashHandler.init(this);
 	}
 
 	public static DisplayMetrics getDisplayMetrics(Activity activity){

@@ -24,14 +24,12 @@ import com.petkit.matetool.ui.feeder.mode.FeederTester;
 import com.petkit.matetool.ui.feeder.mode.ModuleStateStruct;
 import com.petkit.matetool.ui.feeder.utils.FeederUtils;
 import com.petkit.matetool.ui.feeder.utils.PetkitSocketInstance;
-import com.petkit.matetool.utils.DateUtil;
 import com.petkit.matetool.utils.JSONUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 
 import static com.petkit.matetool.ui.feeder.utils.PrintUtils.isPrinterConnected;
@@ -244,7 +242,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                                 payload.put("mac", mFeeder.getMac());
                                 payload.put("sn", sn);
                                 mFeeder.setSn(sn);
-                                mFeeder.setDate(DateUtil.formatISO8601DateWithMills(new Date()));
+                                mFeeder.setCreation(System.currentTimeMillis());
                                 FeederUtils.storeSucceedFeederInfo(mFeeder);
                                 PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(161, payload));
 //                                showSNSetDialog();
@@ -537,9 +535,9 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
 //        api.endJob();
         api.startJob(48 * 100, 30 * 100);
         api.setItemHorizontalAlignment(IAtBitmap.ItemAlignment.MIDDLE);
-        api.draw2DQRCode(twodBarcde, 17 * 100, 2 * 100, 14 * 100);
-        api.draw1DBarcode(onedBarcde, IAtBitmap.BarcodeType1D.CODE128, 0 * 100, 18 * 100, 48 * 100, 8 * 100, 0);
-        api.drawText(onedBarcde, 0 * 100, 26 * 100, 48 * 100, 4 *100, 3 * 100, IAtBitmap.FontStyle.REGULAR);
+        api.draw2DQRCode(twodBarcde, 16 * 100, 2 * 100, 15 * 100);
+        api.draw1DBarcode(onedBarcde, IAtBitmap.BarcodeType1D.CODE128, 0 * 100, 18 * 100, 48 * 100, 7 * 100, 0);
+        api.drawText(onedBarcde, 0 * 100, 25 * 100, 48 * 100, 3 *100, 280, IAtBitmap.FontStyle.REGULAR);
         api.endJob();
 
         return IDzPrinter.Factory.getInstance().print(api, getPrintParam());
@@ -622,7 +620,6 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                         public void run() {
 
                             LoadDialog.dismissDialog();
-                            FeederUtils.storeSucceedFeederInfo(mFeeder);
 
                             mDescTextView.append("\n" + getString(R.string.printsuccess));
                             mFeederTestUnits.get(mCurTestStep).setResult(1);

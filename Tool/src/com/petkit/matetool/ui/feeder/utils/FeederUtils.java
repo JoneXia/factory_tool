@@ -30,6 +30,8 @@ public class FeederUtils {
 
     private static final int MAX_SN_NUMBER_SESSION = 200;
 
+    public static final String SHARED_FEEDER_TESTER = "SHARED_FEEDER_TESTER";
+
     public enum FeederTestModes {
         TEST_MODE_KEY,
         TEST_MODE_DOOR,
@@ -237,5 +239,21 @@ public class FeederUtils {
         }
     }
 
+    public static boolean checkHasSnCache() {
+        String dir = CommonUtils.getAppCacheDirPath() + ".sn/";
+        if(new File(dir).exists()) {
+            String filename = getFileName();
+            String[] files = new File(dir).list();
+            if (files != null && files.length > 0) {
+                for (String item : files) {
+                    if(!item.startsWith(filename)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
 
 }
