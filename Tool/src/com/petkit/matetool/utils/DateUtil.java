@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 @SuppressLint("SimpleDateFormat") public class DateUtil {
@@ -65,6 +66,21 @@ import java.util.TimeZone;
         dateFormat.setTimeZone(GMT_TIMEZONE);
         return dateFormat.format(date);
     }
+
+    /**
+     * 格式：yyyy-MM-dd HH:mm
+     *
+     * @param dateString
+     * @return
+     */
+    public static String getFormatDateFromString(String dateString) {
+        try {
+            DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, Locale.getDefault());//new SimpleDateFormat(DATE_FORMAT_2);
+            return dateFormat.format(parseISO8601Date(dateString));
+        } catch (Exception e) {
+            return dateString;
+        }
+    }
     
     /**
      * 格式：yyyy-MM-dd
@@ -79,19 +95,19 @@ import java.util.TimeZone;
 		}
     }
     
-    /**
-     * 格式：yyyy-MM-dd HH:mm
-     * @param dateString
-     * @return
-     */
-    public static String getFormatDateFromString(String dateString){
-    	try {
-    		DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_2);
-			return dateFormat.format(parseISO8601Date(dateString));
-		} catch (Exception e) {
-			return dateString;
-		}
-    }
+//    /**
+//     * 格式：yyyy-MM-dd HH:mm
+//     * @param dateString
+//     * @return
+//     */
+//    public static String getFormatDateFromString(String dateString){
+//    	try {
+//    		DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_2);
+//			return dateFormat.format(parseISO8601Date(dateString));
+//		} catch (Exception e) {
+//			return dateString;
+//		}
+//    }
     
     /**
      * 格式：yyyy.MM.dd

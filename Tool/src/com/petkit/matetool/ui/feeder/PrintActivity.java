@@ -288,16 +288,24 @@ public class PrintActivity extends BaseActivity {
 
     // 打印文本一维码
     private boolean printText1DBarcode(String text, String onedBarcde, Bundle param) {
-        // 创建IAtBitmap对象
+//        // 创建IAtBitmap对象
+//        IAtBitmap api = IAtBitmap.Factory.createInstance();
+//
+//        api.startJob(50 * 100, 30 * 100);
+//        api.draw2DQRCode(default2dBarcode, 4 * 100, 4 * 100, 16 * 100);
+//        api.draw1DBarcode(onedBarcde, IAtBitmap.BarcodeType1D.AUTO, 22 * 100, 4 * 100, 24 * 100, 16 * 100, 150);
+//        api.drawText(text, 4 * 100, 22 * 100, 40 * 100, 10 * 100, 4 * 100, IAtBitmap.FontStyle.REGULAR);
+//        api.endJob();
+
         IAtBitmap api = IAtBitmap.Factory.createInstance();
 
-        api.startJob(50 * 100, 30 * 100);
-        api.draw2DQRCode(default2dBarcode, 4 * 100, 4 * 100, 16 * 100);
-        api.draw1DBarcode(onedBarcde, IAtBitmap.BarcodeType1D.AUTO, 22 * 100, 4 * 100, 24 * 100, 16 * 100, 150);
-        api.drawText(text, 4 * 100, 22 * 100, 40 * 100, 10 * 100, 4 * 100, IAtBitmap.FontStyle.REGULAR);
+        api.startJob(48 * 100, 30 * 100);
+        api.setItemHorizontalAlignment(IAtBitmap.ItemAlignment.MIDDLE);
+        api.draw2DQRCode(text, 16 * 100, 2 * 100, 15 * 100);
+        api.draw1DBarcode(onedBarcde, IAtBitmap.BarcodeType1D.CODE128, 0 * 100, 18 * 100, 48 * 100, 7 * 100, 0);
+        api.drawText(onedBarcde, 0 * 100, 25 * 100, 48 * 100, 3 *100, 280, IAtBitmap.FontStyle.REGULAR);
         api.endJob();
 
-        // 打印
         return IDzPrinter.Factory.getInstance().print(api, param);
     }
 
@@ -463,7 +471,7 @@ public class PrintActivity extends BaseActivity {
                 defaultText2 = et1.getText().toString();
                 default1dBarcode = et2.getText().toString();
                 if (isPrinterConnected()) {
-                    if (printText1DBarcode(defaultText2, default1dBarcode, getPrintParam(1, 90))) {
+                    if (printText1DBarcode(defaultText2, default1dBarcode, getPrintParam(1, 0))) {
                         onPrintStart();
                     } else {
                         onPrintFailed();

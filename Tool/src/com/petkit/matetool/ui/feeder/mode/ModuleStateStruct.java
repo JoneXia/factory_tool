@@ -8,6 +8,7 @@ public class ModuleStateStruct {
 
     private int module;
     private int sub0, sub1, sub2;
+    private String time;
 
     public int getModule() {
         return module;
@@ -39,6 +40,14 @@ public class ModuleStateStruct {
 
     public void setSub2(int sub2) {
         this.sub2 = sub2;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public String getTime() {
+        return time;
     }
 }
 

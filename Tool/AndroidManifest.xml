@@ -1,149 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.petkit.matetool"
-    android:versionCode="204"
-    android:versionName="2.0.4" >
+          package="com.petkit.matetool"
+          android:versionCode="300"
+          android:versionName="2.1">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-feature android:name="android.hardware.usb.host" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
-    <uses-permission android:name="android.hardware.usb.accessory" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-feature android:name="android.hardware.usb.host"/>
+
+    <uses-permission android:name="android.hardware.usb.accessory"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
     <uses-sdk
         android:minSdkVersion="16"
-        android:targetSdkVersion="23" />
+        android:targetSdkVersion="23"/>
 
     <application
-        android:allowBackup="true"
         android:name=".ui.base.BaseApplication"
+        android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".ui.StartActivity"
-            android:label="@string/activity_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".ui.mate.SelectActivity"
-            android:label="@string/activity_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".ui.mate.MainActivity"
-            android:label="@string/activity_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".ui.mate.InputActivity"
-            android:label="@string/activity_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".ui.mate.SpotActivity"
-            android:label="@string/activity_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".ui.mate.SettingActivity"
-            android:label="@string/activity_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".ui.mate.WriteSnActivity"
-            android:label="@string/activity_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".ui.mate.ImageTestActivity"
-            android:label="@string/activity_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".ui.mate.FocusTestActivity"
-            android:label="@string/activity_name"
-            android:screenOrientation="landscape" >
+            android:screenOrientation="landscape">
         </activity>
         <activity
             android:name=".ui.mate.PlayActivity"
-            android:label="@string/activity_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".ui.mate.BroadcastDisplayActivity"
-            android:label="@string/activity_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
         </activity>
 
         <activity
             android:name=".ui.feeder.FeederStartActivity"
-            android:label="@string/activity_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
         </activity>
 
         <activity
             android:name=".ui.feeder.PrintActivity"
-            android:label="@string/activity_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
         </activity>
 
         <activity
             android:name=".ui.feeder.FeederTestMainActivity"
-            android:label="@string/activity_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
         </activity>
 
         <activity
             android:name=".ui.feeder.FeederTestDetailActivity"
-            android:label="@string/activity_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".ui.feeder.FeederTestPrepareActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".ui.feeder.FeederErrorListActivity"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".ui.permission.PermissionDialogActivity"
-            android:theme="@style/petkit_theme_dialog"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@style/petkit_theme_dialog">
         </activity>
 
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="5637205067e58e76b6001e76" />
+            android:value="5637205067e58e76b6001e76"/>
 
         <service
             android:name="com.petkit.matetool.service.DatagramProcessService"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true"/>
 
         <service
             android:name="com.petkit.android.ble.service.AndroidBLEActionService"
             android:enabled="true"
-            android:exported="true" >
+            android:exported="true">
         </service>
         <service
             android:name="com.petkit.android.ble.samsung.SSBluetoothLeService"
-            android:enabled="true" />
+            android:enabled="true"/>
         <service
             android:name="com.petkit.android.ble.service.ActivityDataProcessService"
-            android:enabled="true" />
+            android:enabled="true"/>
     </application>
 
 </manifest>

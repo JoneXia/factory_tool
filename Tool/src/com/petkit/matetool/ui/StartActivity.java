@@ -70,7 +70,7 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
 
     @Override
     protected void setupViews() {
-        setTitle(R.string.activity_name);
+        setTitle(R.string.app_name);
 
         imb_titleleft.setVisibility(View.GONE);
         fixtureNumberEditText = (EditText) findViewById(R.id.fixture_number_edittxt);

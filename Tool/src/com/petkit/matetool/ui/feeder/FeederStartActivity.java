@@ -23,7 +23,7 @@ public class FeederStartActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(savedInstanceState != null){
+        if(savedInstanceState != null) {
             mTester = (FeederTester) savedInstanceState.getSerializable(FeederUtils.EXTRA_FEEDER_TESTER);
         } else {
             mTester = (FeederTester) getIntent().getSerializableExtra(FeederUtils.EXTRA_FEEDER_TESTER);

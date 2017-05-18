@@ -21,6 +21,7 @@ import com.petkit.matetool.http.ApiTools;
 import com.petkit.matetool.http.AsyncHttpRespHandler;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.feeder.mode.FeederTester;
+import com.petkit.matetool.ui.feeder.mode.FeedersError;
 import com.petkit.matetool.ui.feeder.utils.FeederUtils;
 import com.petkit.matetool.utils.FileUtils;
 import com.petkit.matetool.utils.JSONUtils;
@@ -46,6 +47,8 @@ public class FeederTestPrepareActivity extends BaseActivity {
     private EditText nameEdit, pwEdit;
     private TextView promptText;
     private Button actionBtn, uploadBtn;
+
+    private FeedersError mFeedersError;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +78,8 @@ public class FeederTestPrepareActivity extends BaseActivity {
             mTester = new Gson().fromJson(tester, FeederTester.class);
             AsyncHttpUtil.addHttpHeader("F-Session", CommonUtils.getSysMap(Consts.SHARED_SESSION_ID));
         }
+
+        mFeedersError = FeederUtils.getFeedersErrorMsg();
     }
 
     @Override
@@ -103,32 +108,47 @@ public class FeederTestPrepareActivity extends BaseActivity {
                         return;
                     }
                     if(isEmpty(pw)) {
-                        showShortToast("请输入用户名");
+                        showShortToast("请输入密码");
                         return;
                     }
                     login(name, pw);
                 }
                 break;
             case R.id.logout:
-                if(FeederUtils.checkHasSnCache()) {
-                    showShortToast("本机还有未上传的测试数据，需要先上传完成才能登出！");
+                if(mFeedersError != null) {
+                    showShortToast("还有异常数据需要处理，完成后才能登出！");
+                } else if(FeederUtils.checkHasSnCache()) {
+                    showShortToast("还有未上传的测试数据，需要先上传完成才能登出！");
                 } else {
                     logout();
                 }
                 break;
             case R.id.upload:
-                LoadDialog.show(this);
-                startUploadSn();
+                if(mFeedersError != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(FeederUtils.EXTRA_FEEDER_TESTER, mTester);
+                    startActivityWithData(FeederErrorListActivity.class, bundle, false);
+                } else {
+                    LoadDialog.show(this);
+                    startUploadSn();
+                }
                 break;
         }
     }
 
     private void updateView () {
         if(mTester != null) {
-            if(FeederUtils.checkHasSnCache()) {
-                promptText.setText("本机还有未上传的测试数据，需要先上传完成才能开始测试！");
+            mFeedersError = FeederUtils.getFeedersErrorMsg();
+            if(mFeedersError != null) {
+                promptText.setText("检测到异常数据，需要先处理，才能开始测试！");
                 actionBtn.setVisibility(View.GONE);
                 uploadBtn.setVisibility(View.VISIBLE);
+                uploadBtn.setText("处理异常");
+            } else if(FeederUtils.checkHasSnCache()) {
+                promptText.setText("还有未上传的测试数据，需要先上传完成才能开始测试！");
+                actionBtn.setVisibility(View.GONE);
+                uploadBtn.setVisibility(View.VISIBLE);
+                uploadBtn.setText("开始上传");
             } else {
                 promptText.setText("可以开始测试啦！");
                 actionBtn.setText("进入测试");
@@ -138,6 +158,7 @@ public class FeederTestPrepareActivity extends BaseActivity {
                 String[] files = dir.list();
                 if(files != null && files.length > 0) {
                     uploadBtn.setVisibility(View.VISIBLE);
+                    uploadBtn.setText("开始上传");
                 } else {
                     uploadBtn.setVisibility(View.GONE);
                 }
@@ -345,6 +366,16 @@ public class FeederTestPrepareActivity extends BaseActivity {
                                     startUploadSn();
                                     break;
                                 default:
+                                    if(!result.isNull("data")) {
+                                        mFeedersError = gson.fromJson(result.getString("data"), FeedersError.class);
+                                        FeederUtils.storeDuplicatedInfo(mFeedersError);
+                                        file.delete();
+                                        LoadDialog.dismissDialog();
+                                        updateView();
+                                    } else {
+                                        file.delete();
+                                        startUploadSn();
+                                    }
                                     break;
                             }
                         }

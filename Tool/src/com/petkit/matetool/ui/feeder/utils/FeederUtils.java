@@ -4,9 +4,10 @@ import com.google.gson.Gson;
 import com.petkit.android.utils.CommonUtils;
 import com.petkit.android.utils.FileUtils;
 import com.petkit.android.utils.PetkitLog;
-import com.petkit.matetool.model.Feeder;
+import com.petkit.matetool.ui.feeder.mode.Feeder;
 import com.petkit.matetool.ui.feeder.mode.FeederTestUnit;
 import com.petkit.matetool.ui.feeder.mode.FeederTester;
+import com.petkit.matetool.ui.feeder.mode.FeedersError;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,12 +22,15 @@ import static com.petkit.android.utils.LogcatStorageHelper.getFileName;
  */
 public class FeederUtils {
 
-    public static final int TYPE_TEST_PARTIALLY    = 1;
-    public static final int TYPE_TEST    = 2;
-    public static final int TYPE_MAINTAIN    = 3;
-    public static final int TYPE_CHECK    = 4;
+    public static final int TYPE_TEST_PARTIALLY         = 1;
+    public static final int TYPE_TEST                   = 2;
+    public static final int TYPE_MAINTAIN               = 3;
+    public static final int TYPE_CHECK                  = 4;
+    public static final int TYPE_DUPLICATE_MAC          = 5;
+    public static final int TYPE_DUPLICATE_SN           = 6;
 
     public static final String EXTRA_FEEDER_TESTER   = "EXTRA_FEEDER_TESTER";
+    public static final String EXTRA_FEEDER   = "EXTRA_FEEDER";
 
     private static final int MAX_SN_NUMBER_SESSION = 200;
 
@@ -42,7 +46,8 @@ public class FeederUtils {
         TEST_MODE_BALANCE,
         TEST_MODE_LID,
         TEST_MODE_SN,
-        TEST_MODE_PRINT
+        TEST_MODE_PRINT,
+        TEST_MODE_MAC
     }
 
     public static String getDefaultResponseForKey(int key) {
@@ -88,23 +93,31 @@ public class FeederUtils {
     public static ArrayList<FeederTestUnit> generateFeederTestUnitsForType(int type) {
         ArrayList<FeederTestUnit> results = new ArrayList<>();
 
-        results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_KEY, "按键测试", 0, 1));
-        results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_LIGHT, "外设测试", 1, 1));
-        results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_DOOR, "门马达", 5, 1));
-        results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_MOTOR, "叶轮马达", 6, 1));
-        results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_LID, "粮盖测试", 14, 1));
-        results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_DC, "直流电压", 9, 1));
-        results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_BAT, "电池电压", 10, 1));
-        if(type != TYPE_TEST_PARTIALLY) {
-            if (type != TYPE_CHECK) {
-                results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_BALANCE, "秤校准", 7, 1));
-            } else {
-                results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_BALANCE, "秤读取", 7, 3));
-            }
-            if (type == TYPE_TEST) {
-                results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_SN, "写入SN", 12, 1));
-            }
+        if(type == TYPE_DUPLICATE_MAC) {
+            results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_MAC, "设置重复", 99, 1));
+        } else if(type == TYPE_DUPLICATE_SN){
+            results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_SN, "写入SN", 12, 2));
             results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
+        } else {
+            results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_KEY, "按键测试", 0, 1));
+            results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_LIGHT, "外设测试", 1, 1));
+            results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_DOOR, "门马达", 5, 1));
+            results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_MOTOR, "叶轮马达", 6, 1));
+            results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_LID, "粮盖测试", 14, 1));
+            results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_DC, "直流电压", 9, 1));
+            results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_BAT, "电池电压", 10, 1));
+            results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_BAT, "时钟测试", 15, 1));
+            if (type != TYPE_TEST_PARTIALLY) {
+                if (type != TYPE_CHECK) {
+                    results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_BALANCE, "秤校准", 7, 1));
+                } else {
+                    results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_BALANCE, "秤读取", 7, 3));
+                }
+                if (type == TYPE_TEST) {
+                    results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_SN, "写入SN", 12, 2));
+                }
+                results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
+            }
         }
         return results;
     }
@@ -136,6 +149,7 @@ public class FeederUtils {
             throw  new RuntimeException("generate SN failed!");
         }
 
+//        return "0A170516P10022";
         return stringBuilder.toString();
     }
 
@@ -239,6 +253,15 @@ public class FeederUtils {
         }
     }
 
+    public static boolean checkMacIsDuplicate(String mac) {
+        String fileName = CommonUtils.getSysMap("SnFileName");
+        if(!CommonUtils.isEmpty(fileName)) {
+            return FileUtils.readFileToString(new File(CommonUtils.getAppCacheDirPath() + ".sn/" + fileName)).contains(mac);
+        }
+
+        return false;
+    }
+
     public static boolean checkHasSnCache() {
         String dir = CommonUtils.getAppCacheDirPath() + ".sn/";
         if(new File(dir).exists()) {
@@ -254,6 +277,24 @@ public class FeederUtils {
         }
 
         return false;
+    }
+
+    public static void storeDuplicatedInfo(FeedersError feedersError) {
+        if(feedersError == null || ((feedersError.getMac() == null || feedersError.getMac().size() == 0)
+                        && (feedersError.getSn() == null || feedersError.getSn().size() == 0))) {
+            CommonUtils.addSysMap("FeedersError", "");
+        } else {
+            CommonUtils.addSysMap("FeedersError", new Gson().toJson(feedersError));
+        }
+    }
+
+    public static FeedersError getFeedersErrorMsg() {
+        String msg = CommonUtils.getSysMap("FeedersError");
+        if(CommonUtils.isEmpty(msg)) {
+            return null;
+        }
+
+        return new Gson().fromJson(msg, FeedersError.class);
     }
 
 }

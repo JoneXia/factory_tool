@@ -127,7 +127,6 @@
 	<string name="Tap_to_load_more">点击加载更多</string>
 	<string name="No_more_data">无更多数据</string>
 
-    <string name="activity_name">产测工具 v2.0.4 </string>
     <string name="fixture_number">工位号</string>
     <string name="start_test">开始测试</string>
     <string name="self_test">系统自测，等待测试结果\n请稍后。。。</string>

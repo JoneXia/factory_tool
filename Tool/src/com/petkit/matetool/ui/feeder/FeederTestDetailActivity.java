@@ -17,19 +17,21 @@ import com.dothantech.printer.IDzPrinter;
 import com.google.gson.Gson;
 import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
-import com.petkit.matetool.model.Feeder;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.feeder.mode.Feeder;
 import com.petkit.matetool.ui.feeder.mode.FeederTestUnit;
 import com.petkit.matetool.ui.feeder.mode.FeederTester;
 import com.petkit.matetool.ui.feeder.mode.ModuleStateStruct;
 import com.petkit.matetool.ui.feeder.utils.FeederUtils;
 import com.petkit.matetool.ui.feeder.utils.PetkitSocketInstance;
+import com.petkit.matetool.utils.DateUtil;
 import com.petkit.matetool.utils.JSONUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import static com.petkit.matetool.ui.feeder.utils.PrintUtils.isPrinterConnected;
@@ -44,7 +46,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
     private int mCurTestStep;
     private ArrayList<FeederTestUnit> mFeederTestUnits;
     private int mTempResult;
-    private Feeder mFeeder;
+    private Feeder mFeeder, mErrorFeeder;
     private boolean isWriteEndCmd = false;
     private boolean isAutoTest = false;
 
@@ -62,12 +64,14 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
             mFeeder = (Feeder) savedInstanceState.getSerializable("Feeder");
             isAutoTest = savedInstanceState.getBoolean("AutoTest");
             mTester = (FeederTester) savedInstanceState.getSerializable(FeederUtils.EXTRA_FEEDER_TESTER);
+            mErrorFeeder = (Feeder) savedInstanceState.getSerializable(FeederUtils.EXTRA_FEEDER);
         } else {
             mFeederTestUnits = (ArrayList<FeederTestUnit>) getIntent().getSerializableExtra("TestUnits");
             mCurTestStep = getIntent().getIntExtra("CurrentTestStep", 0);
             mFeeder = (Feeder) getIntent().getSerializableExtra("Feeder");
             isAutoTest = getIntent().getBooleanExtra("AutoTest", true);
             mTester = (FeederTester) getIntent().getSerializableExtra(FeederUtils.EXTRA_FEEDER_TESTER);
+            mErrorFeeder = (Feeder) getIntent().getSerializableExtra(FeederUtils.EXTRA_FEEDER);
         }
 
         setContentView(R.layout.activity_feeder_test_detail);
@@ -92,6 +96,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
         outState.putSerializable("Feeder", mFeeder);
         outState.putBoolean("AutoTest", isAutoTest);
         outState.putSerializable(FeederUtils.EXTRA_FEEDER_TESTER, mTester);
+        outState.putSerializable(FeederUtils.EXTRA_FEEDER, mErrorFeeder);
     }
 
     @Override
@@ -121,7 +126,9 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                 break;
             case TEST_MODE_SN:
                 if(!isEmpty(mFeeder.getSn())) {
-                    mFeederTestUnits.get(mCurTestStep).setResult(1);
+                    if(mFeederTestUnits.get(mCurTestStep).getState() != 2 || (mErrorFeeder != null && !mFeeder.getSn().equals(mErrorFeeder.getSn()))) {
+                        mFeederTestUnits.get(mCurTestStep).setResult(1);
+                    }
                     mDescTextView.setText("mac:" + mFeeder.getMac() + "\n" + "sn:" + mFeeder.getSn());
                 } else {
                     mDescTextView.setText("mac:" + mFeeder.getMac());
@@ -219,7 +226,8 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                         }
                         break;
                     case TEST_MODE_SN:
-                        if(isEmpty(mFeeder.getSn())) {
+                        if(isEmpty(mFeeder.getSn()) || (mFeederTestUnits.get(mCurTestStep).getState() == 2
+                                        && mErrorFeeder != null && mFeeder.getSn().equals(mErrorFeeder.getSn()))) {
                             boolean result = true;
                             for (FeederTestUnit unit : mFeederTestUnits) {
                                 if(unit.getType() != FeederUtils.FeederTestModes.TEST_MODE_SN &&
@@ -241,6 +249,9 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                                 HashMap<String, Object> payload = new HashMap<>();
                                 payload.put("mac", mFeeder.getMac());
                                 payload.put("sn", sn);
+                                if(mFeederTestUnits.get(mCurTestStep).getState() == 2) {
+                                    payload.put("force", 100);
+                                }
                                 mFeeder.setSn(sn);
                                 mFeeder.setCreation(System.currentTimeMillis());
                                 FeederUtils.storeSucceedFeederInfo(mFeeder);
@@ -253,6 +264,11 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                             params.put("sn", mFeeder.getSn());
                             PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(161, params));
                         }
+                        break;
+                    case TEST_MODE_MAC:
+                        HashMap<String, Object> params = new HashMap<>();
+                        params.put("mac", mFeeder.getMac());
+                        PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(165, params));
                         break;
                     default:
                         startTestModule();
@@ -277,8 +293,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
             case R.id.test_btn_3:
                 switch (mFeederTestUnits.get(mCurTestStep).getType()) {
                     case TEST_MODE_SN:
-                        gotoNextTestModule();
-                        break;
+                    case TEST_MODE_MAC:
                     case TEST_MODE_PRINT:
                         gotoNextTestModule();
                         break;
@@ -301,6 +316,9 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
         HashMap<String, Object> params = new HashMap<>();
         params.put("module", mFeederTestUnits.get(mCurTestStep).getModule());
         params.put("state", mFeederTestUnits.get(mCurTestStep).getState());
+        if(mFeederTestUnits.get(mCurTestStep).getModule() == 15) {
+            params.put("time", DateUtil.formatISO8601DateWithMills(new Date()));
+        }
         PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(163, params));
     }
 
@@ -318,6 +336,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
     public void finish() {
         Intent intent = new Intent();
         intent.putExtra("TestUnits", mFeederTestUnits);
+        intent.putExtra("Feeder", mFeeder);
         setResult(RESULT_OK, intent);
         super.finish();
     }
@@ -340,13 +359,18 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                 JSONObject jsonObject = JSONUtils.getJSONObject(data);
                 if(!jsonObject.isNull("state")) {
                     try {
-                        if(jsonObject.getInt("state") == 1) {
-                            if(isWriteEndCmd) {
-                                isWriteEndCmd = false;
-                                gotoNextTestModule();
-                            } else {
-                                mDescTextView.append("\n指令发送成功！");
-                            }
+                        switch (jsonObject.getInt("state")) {
+                            case 1:
+                                if(isWriteEndCmd) {
+                                    isWriteEndCmd = false;
+                                    gotoNextTestModule();
+                                } else {
+                                    mDescTextView.append("\n指令发送成功！");
+                                }
+                                break;
+                            default:
+                                mDescTextView.append("\n指令处理失败！");
+                                break;
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -400,7 +424,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                             }
                         }
                         if(moduleStateStruct.getSub2() > -1) {
-                            desc.append("\n").append("门马达").append("-").append("门信号").append("-").append(moduleStateStruct.getSub2() == 1 ? "遮挡" : "不遮挡");
+                            desc.append("\n").append("门马达").append("-").append("门信号").append("-").append(moduleStateStruct.getSub2() != 1 ? "遮挡" : "不遮挡");
                         }
                         break;
                     case 6:
@@ -426,7 +450,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                             }
                         }
                         if(moduleStateStruct.getSub2() > -1) {
-                            desc.append("\n").append("叶轮马达").append("-").append("叶轮信号").append("-").append(moduleStateStruct.getSub2() == 1 ? "遮挡" : "不遮挡");
+                            desc.append("\n").append("叶轮马达").append("-").append("叶轮信号").append("-").append(moduleStateStruct.getSub2() != 1 ? "遮挡" : "不遮挡");
                         }
                         break;
                     case 7:
@@ -470,6 +494,12 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                             result = mTempResult == 0x11;
                         }
                         break;
+                    case 15:
+                        if(!isEmpty(moduleStateStruct.getTime())) {
+                            desc.append("\n").append(DateUtil.getFormatDateFromString(moduleStateStruct.getTime()));
+                            result = true;
+                        }
+                        break;
                 }
                 mDescTextView.append(desc.toString());
                 new Handler().post(new Runnable() {
@@ -491,7 +521,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                     try {
                         switch (jsonObject.getInt("state")) {
                             case 0:
-                                mDescTextView.append("\n数据命令失败");
+                                mDescTextView.append("\n写入命令失败");
                                 break;
                             case 1:
                                 mDescTextView.append("\n写入SN成功");
@@ -503,6 +533,25 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                                 break;
                             case 3:
                                 mDescTextView.append("\nSN存在不允许写入");
+                                break;
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+            case 165:
+                jsonObject = JSONUtils.getJSONObject(data);
+                if(!jsonObject.isNull("state")) {
+                    try {
+                        switch (jsonObject.getInt("state")) {
+                            case 1:
+                                mDescTextView.append("\n指令发送成功");
+                                mFeederTestUnits.get(mCurTestStep).setResult(1);
+                                refershBtnView();
+                                break;
+                            default:
+                                mDescTextView.append("\n指令发送失败");
                                 break;
                         }
                     } catch (JSONException e) {

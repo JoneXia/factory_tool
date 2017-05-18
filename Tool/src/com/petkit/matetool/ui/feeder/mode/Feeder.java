@@ -1,4 +1,4 @@
-package com.petkit.matetool.model;
+package com.petkit.matetool.ui.feeder.mode;
 
 import java.io.Serializable;
 
@@ -26,6 +26,9 @@ public class Feeder implements Serializable {
     }
 
     public String getSn() {
+        if(sn == null) {
+            sn = "";
+        }
         return sn;
     }
 

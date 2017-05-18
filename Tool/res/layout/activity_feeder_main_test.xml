@@ -55,6 +55,11 @@
         android:numColumns="4" >
     </GridView>
 
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="0dip"
+        android:layout_weight="1"/>
+
     <Button
         android:id="@+id/test_auto"
         style="@style/Text_Middle_Black"

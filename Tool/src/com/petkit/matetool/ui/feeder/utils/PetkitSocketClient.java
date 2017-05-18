@@ -1,6 +1,5 @@
 package com.petkit.matetool.ui.feeder.utils;
 
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 
@@ -111,27 +110,27 @@ public class PetkitSocketClient {
                 public void onDisconnected(final SocketClient client) {
                     Logger.log("onDisconnected", "SocketClient: onDisconnected");
 
-                    if(!isCanceled) {
-                        new AsyncTask<Void, Void, Void>() {
-                            @Override
-                            protected Void doInBackground(Void... params) {
-                                try {
-                                    Thread.sleep(3 * 1000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-
-                                client.connect();
-                                return null;
-                            }
-
-                            @Override
-                            protected void onPostExecute(Void aVoid) {
-                                super.onPostExecute(aVoid);
-
-                            }
-                        }.execute();
-                    }
+//                    if(!isCanceled) {
+//                        new AsyncTask<Void, Void, Void>() {
+//                            @Override
+//                            protected Void doInBackground(Void... params) {
+//                                try {
+//                                    Thread.sleep(3 * 1000);
+//                                } catch (InterruptedException e) {
+//                                    e.printStackTrace();
+//                                }
+//
+//                                client.connect();
+//                                return null;
+//                            }
+//
+//                            @Override
+//                            protected void onPostExecute(Void aVoid) {
+//                                super.onPostExecute(aVoid);
+//
+//                            }
+//                        }.execute();
+//                    }
                 }
 
                 @Override
