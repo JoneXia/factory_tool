@@ -273,8 +273,22 @@ public class FeederTestPrepareActivity extends BaseActivity {
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                 super.onFailure(statusCode, headers, responseBody, error);
 
-                if(statusCode == 401) {
-
+                switch (statusCode) {
+                    case 463:
+                        showShortToast("密码错误");
+                        break;
+                    case 461:
+                        showShortToast("账号被锁定，不能在多个设备上登录同一个账号！");
+                        break;
+                    case 462:
+                        showShortToast("账号已被禁用！");
+                        break;
+                    case 464:
+                        showShortToast("账号不存在！");
+                        break;
+                    default:
+                        showShortToast("登出失败！");
+                        break;
                 }
             }
         });

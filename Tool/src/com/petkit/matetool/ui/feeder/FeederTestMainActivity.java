@@ -145,7 +145,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
                 break;
             case R.id.connect_dev:
                 refreshView();
-                testSN();
+//                testSN();
                 break;
             case R.id.test_auto:
                 startTestDetail(true, 0);
@@ -173,6 +173,10 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
 
     private void startTestDetail(boolean isAuto, int pos) {
         if(mTestState == TEST_STATE_CONNECTED) {
+            if(mCurFeeder == null) {
+                return;
+            }
+
             if(isAuto) {
                 int position = 0;
 
@@ -310,7 +314,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
                         return;
                     }
 
-                    if(FeederUtils.checkMacIsDuplicate(mac)) {
+                    if(sn == null && FeederUtils.checkMacIsDuplicate(mac)) {
                         mInfoTestTextView.setText("设备MAC出现重复，该设备属于故障设备，不能正常测试！");
                         PetkitSocketInstance.getInstance().disconnect();
                         return;
@@ -425,9 +429,9 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
                 }
 
                 int i = 0;
-                while (i < 1) {
+                while (i < 1000) {
                     i++;
-//                    mCurFeeder.setMac(String.valueOf(System.currentTimeMillis()).substring(0, 12));
+                    mCurFeeder.setMac(String.valueOf(System.currentTimeMillis()).substring(0, 12));
                     mCurFeeder.setSn(FeederUtils.generateSNForTester(mTester));
                     mCurFeeder.setCreation(System.currentTimeMillis());
                     FeederUtils.storeSucceedFeederInfo(mCurFeeder);
