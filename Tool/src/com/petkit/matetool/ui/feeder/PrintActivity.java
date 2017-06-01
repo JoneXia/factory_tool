@@ -302,8 +302,8 @@ public class PrintActivity extends BaseActivity {
         api.startJob(48 * 100, 30 * 100);
         api.setItemHorizontalAlignment(IAtBitmap.ItemAlignment.MIDDLE);
         api.draw2DQRCode(text, 16 * 100, 2 * 100, 15 * 100);
-        api.draw1DBarcode(onedBarcde, IAtBitmap.BarcodeType1D.CODE128, 0 * 100, 18 * 100, 48 * 100, 7 * 100, 0);
-        api.drawText(onedBarcde, 0 * 100, 25 * 100, 48 * 100, 3 *100, 280, IAtBitmap.FontStyle.REGULAR);
+        api.draw1DBarcode(onedBarcde, IAtBitmap.BarcodeType1D.CODE128, 0 * 100, 18 * 100, 480 * 10, 7 * 100, 0);
+        api.drawText(onedBarcde, 0 * 100, 25 * 100, 48 * 100, 3 *100, 280, IAtBitmap.FontStyle.BOLD);
         api.endJob();
 
         return IDzPrinter.Factory.getInstance().print(api, param);
@@ -471,7 +471,7 @@ public class PrintActivity extends BaseActivity {
                 defaultText2 = et1.getText().toString();
                 default1dBarcode = et2.getText().toString();
                 if (isPrinterConnected()) {
-                    if (printText1DBarcode(defaultText2, default1dBarcode, getPrintParam(1, 0))) {
+                    if (printText1DBarcode(default2dBarcode, default1dBarcode, getPrintParam(1, 0))) {
                         onPrintStart();
                     } else {
                         onPrintFailed();

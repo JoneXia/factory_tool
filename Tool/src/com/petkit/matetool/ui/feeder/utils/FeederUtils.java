@@ -107,12 +107,12 @@ public class FeederUtils {
             results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_DC, "直流电压", 9, 1));
             results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_BAT, "电池电压", 10, 1));
             results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_BAT, "时钟测试", 15, 1));
+            if (type != TYPE_CHECK) {
+                results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_BALANCE, "秤校准", 7, 1));
+            } else {
+                results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_BALANCE, "秤读取", 7, 3));
+            }
             if (type != TYPE_TEST_PARTIALLY) {
-                if (type != TYPE_CHECK) {
-                    results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_BALANCE, "秤校准", 7, 1));
-                } else {
-                    results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_BALANCE, "秤读取", 7, 3));
-                }
                 if (type == TYPE_TEST) {
                     results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_SN, "写入SN", 12, 2));
                 }

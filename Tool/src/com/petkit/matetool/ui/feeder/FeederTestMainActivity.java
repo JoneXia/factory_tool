@@ -146,6 +146,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
             case R.id.connect_dev:
                 refreshView();
 //                testSN();
+                startActivity(PrintActivity.class);
                 break;
             case R.id.test_auto:
                 startTestDetail(true, 0);
