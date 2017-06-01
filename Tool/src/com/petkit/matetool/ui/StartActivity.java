@@ -24,6 +24,7 @@ import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.feeder.FeederTestPrepareActivity;
 import com.petkit.matetool.ui.mate.SelectActivity;
 import com.petkit.matetool.ui.permission.PermissionDialogActivity;
+import com.petkit.matetool.ui.catlitter.CatLitterMainActivity;
 import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.Utils;
 import com.petkit.matetool.widget.LoadDialog;
@@ -112,6 +113,11 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
                         bundle.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
                         startActivityWithData(FeederTestPrepareActivity.class, bundle, false);
                         break;
+                    case Globals.CAT_LITTER:
+                        bundle = new Bundle();
+                        bundle.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
+                        startActivityWithData(CatLitterMainActivity.class, bundle, false);
+                        break;
                 }
                 collapseSoftInputMethod(fixtureNumberEditText);
                 break;
@@ -129,6 +135,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
                 break;
             case R.id.feeder:
                 testStyle = Globals.FEEDER;
+                break;
+            case R.id.cat_litter:
+                testStyle = Globals.CAT_LITTER;
                 break;
             default:
                 break;
