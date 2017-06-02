@@ -218,7 +218,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                                 showShortToast("MAC为空，不能打印！");
                             } else {
                                 String oneBarCode = "SN:" + mFeeder.getSn();
-                                String twoBarCode = "SN:" + mFeeder.getSn() + ",MAC:" + mFeeder.getMac();
+                                String twoBarCode = "SN:" + mFeeder.getSn() + ";MAC:" + mFeeder.getMac();
                                 printBarcode(oneBarCode, twoBarCode);
                             }
                         } else {

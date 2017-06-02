@@ -7,6 +7,7 @@ dependencies {
     compile files('libs/petkit_share_lib.jar')
     compile files('libs/asyncHttp.jar')
     compile files('libs/DzPrinter-2017-05-11.jar')
+    compile project(':zxingsupport')
 }
 
 android {

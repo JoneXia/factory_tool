@@ -1,5 +1,6 @@
 package com.petkit.matetool.ui.feeder;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -9,6 +10,11 @@ import com.petkit.matetool.R;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.feeder.mode.FeederTester;
 import com.petkit.matetool.ui.feeder.utils.FeederUtils;
+import com.petkit.matetool.ui.permission.PermissionDialogActivity;
+import com.petkit.matetool.ui.permission.mode.PermissionBean;
+import com.petkit.matetool.utils.Globals;
+
+import java.util.ArrayList;
 
 /**
  * 喂食器测试，选择工站
@@ -51,6 +57,7 @@ public class FeederStartActivity extends BaseActivity {
         findViewById(R.id.test_case2).setOnClickListener(this);
         findViewById(R.id.test_case3).setOnClickListener(this);
         findViewById(R.id.test_case4).setOnClickListener(this);
+        findViewById(R.id.test_case5).setOnClickListener(this);
     }
 
     @Override
@@ -79,6 +86,28 @@ public class FeederStartActivity extends BaseActivity {
                 bundle.putSerializable(FeederUtils.EXTRA_FEEDER_TESTER, mTester);
                 bundle.putInt("TestType", FeederUtils.TYPE_CHECK);
                 startActivityWithData(FeederTestMainActivity.class, bundle, false);
+                break;
+            case R.id.test_case5:
+                if(!Globals.checkPermission(this, Manifest.permission.CAMERA)
+                        || !Globals.checkPermission(this, Manifest.permission.RECORD_AUDIO)) {
+                    bundle = new Bundle();
+                    ArrayList<PermissionBean> permissionBeens = new ArrayList<>();
+                    if(!Globals.checkPermission(this, Manifest.permission.CAMERA)) {
+                        permissionBeens.add(new PermissionBean(Manifest.permission.CAMERA, R.string.Camera, R.drawable.permission_camera));
+                    }
+
+                    if(!Globals.checkPermission(this, Manifest.permission.RECORD_AUDIO)) {
+                        permissionBeens.add(new PermissionBean(Manifest.permission.RECORD_AUDIO, R.string.Mate_microphone, R.drawable.permission_mic));
+                    }
+
+                    bundle.putSerializable(Globals.EXTRA_PERMISSION_CONTENT, permissionBeens);
+                    startActivityWithData(PermissionDialogActivity.class, bundle, false);
+                    return;
+                }
+                
+                bundle = new Bundle();
+                bundle.putSerializable(FeederUtils.EXTRA_FEEDER_TESTER, mTester);
+                startActivityWithData(FeederScanActivity.class, bundle, false);
                 break;
         }
     }
