@@ -236,7 +236,7 @@ public class CatLitterMainActivity extends BaseActivity implements PetkitSocketI
                 desc = new StringBuilder();
                 desc.append("\n").append(info.toString()).append("\n");
 
-                FileUtils.writeStringToFile(mCacheFileName, getDateEN() + "  " + data, true);
+                FileUtils.writeStringToFile(mCacheFileName, convertDataToFileContent(data), true);
                 if(mDescTextView.getLineCount() > 100) {
                     mDescTextView.setText("");
                 }
@@ -249,6 +249,14 @@ public class CatLitterMainActivity extends BaseActivity implements PetkitSocketI
                 });
                 break;
         }
+    }
+
+    private String convertDataToFileContent(String data) {
+        String newData = data.replaceAll(":", ";");
+        newData = newData.replaceAll(",", ";");
+        StringBuilder builder = new StringBuilder(getDateEN());
+        builder.append("  ").append(newData).append("\n");
+        return builder.toString();
     }
 
 
