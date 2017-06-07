@@ -35,9 +35,10 @@ import java.util.HashMap;
 import cz.msebera.android.httpclient.Header;
 
 /**
+ * 扫描入库
+ *
  * Created by Jone on 17/6/2.
  */
-
 public class FeederScanActivity extends BaseActivity implements ScanListener {
 
     private FeederTester mTester;
@@ -50,16 +51,9 @@ public class FeederScanActivity extends BaseActivity implements ScanListener {
     TextView iv_light;
     TextView qrcode_g_gallery;
     TextView qrcode_ic_back;
-    final int PHOTOREQUESTCODE = 1111;
 
     Button rescan;
     ImageView scan_image;
-    private int scanMode;//扫描模型（条形，二维码，全部）
-
-    TextView tv_scan_result;
-
-    private int mScanType;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +67,6 @@ public class FeederScanActivity extends BaseActivity implements ScanListener {
 
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        scanMode=0x300;
 
         setContentView(R.layout.activity_feeder_scan);
     }
@@ -108,7 +101,7 @@ public class FeederScanActivity extends BaseActivity implements ScanListener {
 //        tv_scan_result = (TextView) findViewById(R.id.tv_scan_result);
 
         //构造出扫描管理器
-        scanManager = new ScanManager(this, scanPreview, scanContainer, scanCropView, scanLine, scanMode,this);
+        scanManager = new ScanManager(this, scanPreview, scanContainer, scanCropView, scanLine, 0x300, this);
 
     }
 
@@ -231,17 +224,17 @@ public class FeederScanActivity extends BaseActivity implements ScanListener {
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        uploadSnFailed("statusCode： " + statusCode);
+                        uploadSnFailed("解析数据错误");
                     }
                 } else {
-                    uploadSnFailed("statusCode： " + statusCode);
+                    uploadSnFailed("网络请求结果： " + statusCode);
                 }
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                 super.onFailure(statusCode, headers, responseBody, error);
-                uploadSnFailed("statusCode： " + statusCode);
+                uploadSnFailed("网络请求结果： " + statusCode);
             }
         });
     }

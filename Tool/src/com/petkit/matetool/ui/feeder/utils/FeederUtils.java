@@ -253,6 +253,11 @@ public class FeederUtils {
         }
     }
 
+    /**
+     * 校验MAC是否存在重复
+     * @param mac mac
+     * @return bool
+     */
     public static boolean checkMacIsDuplicate(String mac) {
         String fileName = CommonUtils.getSysMap("SnFileName");
         if(!CommonUtils.isEmpty(fileName)) {
@@ -262,6 +267,10 @@ public class FeederUtils {
         return false;
     }
 
+    /**
+     * 检查本地是否有SN缓存
+     * @return bool
+     */
     public static boolean checkHasSnCache() {
         String dir = CommonUtils.getAppCacheDirPath() + ".sn/";
         if(new File(dir).exists()) {
@@ -279,6 +288,10 @@ public class FeederUtils {
         return false;
     }
 
+    /**
+     * 存储重复的信息
+     * @param feedersError error
+     */
     public static void storeDuplicatedInfo(FeedersError feedersError) {
         if(feedersError == null || ((feedersError.getMac() == null || feedersError.getMac().size() == 0)
                         && (feedersError.getSn() == null || feedersError.getSn().size() == 0))) {
@@ -288,6 +301,10 @@ public class FeederUtils {
         }
     }
 
+    /**
+     * 获取重复的错误信息
+     * @return FeedersError
+     */
     public static FeedersError getFeedersErrorMsg() {
         String msg = CommonUtils.getSysMap("FeedersError");
         if(CommonUtils.isEmpty(msg)) {
@@ -295,6 +312,40 @@ public class FeederUtils {
         }
 
         return new Gson().fromJson(msg, FeedersError.class);
+    }
+
+
+    private static final String FILE_MAINTAIN_INFO_NAME     = "feeder_maintain_info.txt";
+    private static final String FILE_CHECK_INFO_NAME     = "feeder_check_info.txt";
+
+
+    public static void storeMainTainInfo(Feeder feeder) {
+        if(feeder == null || !feeder.checkValid()) {
+            return;
+        }
+
+        String fileName = CommonUtils.getAppCacheDirPath() + ".sn/" + FILE_MAINTAIN_INFO_NAME;
+        if(FileUtils.readFileToString(new File(fileName)).contains(feeder.getMac())) {
+            return;
+        }
+        String info = new Gson().toJson(feeder);
+        PetkitLog.d("store feeder info: " + info);
+        FileUtils.writeStringToFile(fileName, info + ",", true);
+
+    }
+
+    public static void storeCheckInfo(Feeder feeder) {
+        if(feeder == null || !feeder.checkValid()) {
+            return;
+        }
+
+        String fileName = CommonUtils.getAppCacheDirPath() + ".sn/" + FILE_CHECK_INFO_NAME;
+        if(FileUtils.readFileToString(new File(fileName)).contains(feeder.getMac())) {
+            return;
+        }
+        String info = new Gson().toJson(feeder);
+        PetkitLog.d("store feeder info: " + info);
+        FileUtils.writeStringToFile(fileName, info + ",", true);
     }
 
 }

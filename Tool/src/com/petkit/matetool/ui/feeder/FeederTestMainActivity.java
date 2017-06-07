@@ -133,6 +133,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
     protected void onDestroy() {
         super.onDestroy();
 
+        checkTestComplete();
         disconnectAp();
         unregisterBroadcastReceiver();
     }
@@ -146,7 +147,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
             case R.id.connect_dev:
                 refreshView();
 //                testSN();
-                startActivity(PrintActivity.class);
+//                startActivity(PrintActivity.class);
                 break;
             case R.id.test_auto:
                 startTestDetail(true, 0);
@@ -199,6 +200,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
             intent.putExtra("TestUnits", mFeederTestUnits);
             intent.putExtra("CurrentTestStep", pos);
             intent.putExtra("Feeder", mCurFeeder);
+            intent.putExtra("AutoTest", isAuto);
             intent.putExtra(FeederUtils.EXTRA_FEEDER_TESTER, mTester);
             intent.putExtra(FeederUtils.EXTRA_FEEDER, mErrorFeeder);
             startActivityForResult(intent, 0x12);
@@ -281,6 +283,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
     public void onDisconnected() {
         mInfoTestTextView.append("\n设备已断开连接");
         mTestState = TEST_STATE_INVALID;
+        checkTestComplete();
     }
 
     @Override
@@ -419,32 +422,24 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
         }
     }
 
-    private void testSN() {
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
 
-                if(mCurFeeder == null) {
-                    mCurFeeder = new Feeder("5ecf7f9d5f54", "");
-                }
-
-                int i = 0;
-                while (i < 1000) {
-                    i++;
-                    mCurFeeder.setMac(String.valueOf(System.currentTimeMillis()).substring(0, 12));
-                    mCurFeeder.setSn(FeederUtils.generateSNForTester(mTester));
-                    mCurFeeder.setCreation(System.currentTimeMillis());
-                    FeederUtils.storeSucceedFeederInfo(mCurFeeder);
-
-                    try {
-                        sleep(20);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
+    private void checkTestComplete() {
+        int position = 0;
+        for (FeederTestUnit unit : mFeederTestUnits) {
+            if(unit.getResult() == 1) {
+                position++;
+            } else {
+                break;
             }
-        }.start();
+        }
+
+        if(position == mFeederTestUnits.size() - 1) {       //维修和抽检，最后一项打印标签可以不执行，其他项都完成了就算成功
+            if (mTestType == FeederUtils.TYPE_MAINTAIN) {
+                FeederUtils.storeMainTainInfo(mCurFeeder);
+            } else if (mTestType == FeederUtils.TYPE_CHECK) {
+                FeederUtils.storeCheckInfo(mCurFeeder);
+            }
+        }
     }
 
 }

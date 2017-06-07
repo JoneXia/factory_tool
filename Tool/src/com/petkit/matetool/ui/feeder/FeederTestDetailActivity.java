@@ -25,6 +25,7 @@ import com.petkit.matetool.ui.feeder.mode.ModuleStateStruct;
 import com.petkit.matetool.ui.feeder.utils.FeederUtils;
 import com.petkit.matetool.ui.feeder.utils.PetkitSocketInstance;
 import com.petkit.matetool.utils.DateUtil;
+import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.JSONUtils;
 
 import org.json.JSONException;
@@ -34,7 +35,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import static com.petkit.matetool.ui.feeder.utils.FeederUtils.FeederTestModes.TEST_MODE_BALANCE;
 import static com.petkit.matetool.ui.feeder.utils.PrintUtils.isPrinterConnected;
+import static com.petkit.matetool.utils.Globals.TEST_PASS;
 
 /**
  *
@@ -127,7 +130,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
             case TEST_MODE_SN:
                 if(!isEmpty(mFeeder.getSn())) {
                     if(mFeederTestUnits.get(mCurTestStep).getState() != 2 || (mErrorFeeder != null && !mFeeder.getSn().equals(mErrorFeeder.getSn()))) {
-                        mFeederTestUnits.get(mCurTestStep).setResult(1);
+                        mFeederTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                     }
                     mDescTextView.setText("mac:" + mFeeder.getMac() + "\n" + "sn:" + mFeeder.getSn());
                 } else {
@@ -193,12 +196,21 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
             default:
                 mBtn1.setText(R.string.Start);
                 mBtn2.setVisibility(View.INVISIBLE);
-                if(mFeederTestUnits.get(mCurTestStep).getResult() == 1) {
+                if(TEST_MODE_BALANCE == mFeederTestUnits.get(mCurTestStep).getType()
+                        && mFeederTestUnits.get(mCurTestStep).getState() == 3) {
+                    mBtn2.setText(R.string.Failure);
+                    mBtn2.setBackgroundResource(R.drawable.selector_red);
+                    mBtn2.setVisibility(View.VISIBLE);
                     mBtn3.setText(R.string.Succeed);
                     mBtn3.setBackgroundResource(R.drawable.selector_blue);
                 } else {
-                    mBtn3.setText(R.string.Failure);
-                    mBtn3.setBackgroundResource(R.drawable.selector_red);
+                    if (mFeederTestUnits.get(mCurTestStep).getResult() == 1) {
+                        mBtn3.setText(R.string.Succeed);
+                        mBtn3.setBackgroundResource(R.drawable.selector_blue);
+                    } else {
+                        mBtn3.setText(R.string.Failure);
+                        mBtn3.setBackgroundResource(R.drawable.selector_red);
+                    }
                 }
                 break;
         }
@@ -278,7 +290,9 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
             case R.id.test_btn_2:
                 switch (mFeederTestUnits.get(mCurTestStep).getType()) {
                     case TEST_MODE_LIGHT:
+                    case TEST_MODE_BALANCE:
                         isWriteEndCmd = true;
+                        mFeederTestUnits.get(mCurTestStep).setResult(Globals.TEST_FAILED);
 
                         HashMap<String, Object> params = new HashMap<>();
                         params.put("module", mFeederTestUnits.get(mCurTestStep).getModule());
@@ -298,7 +312,8 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                         gotoNextTestModule();
                         break;
                     case TEST_MODE_LIGHT:
-                        mFeederTestUnits.get(mCurTestStep).setResult(1);
+                    case TEST_MODE_BALANCE:
+                        mFeederTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                     default:
                         isWriteEndCmd = true;
 
@@ -467,7 +482,9 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                                 break;
                             case 3:
                                 desc.append("校准完成");
-                                result = true;
+                                if(mFeederTestUnits.get(mCurTestStep).getState() == 1) {
+                                    result = true;
+                                }
 
                                 //校准完成，发送去皮命令
 //                                HashMap<String, Object> params = new HashMap<>();
@@ -481,7 +498,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                         break;
                     case 9:
                         desc.append("\n").append("直流电压").append("-").append(moduleStateStruct.getSub0()).append("mv");
-                        result = moduleStateStruct.getSub0() > 6000;
+                        result = moduleStateStruct.getSub0() > 5000;
                         break;
                     case 10:
                         desc.append("\n").append("电池电压").append("-").append(moduleStateStruct.getSub0()).append("mv");
@@ -511,7 +528,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
 
 
                 if(result) {
-                    mFeederTestUnits.get(mCurTestStep).setResult(1);
+                    mFeederTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                     refershBtnView();
                 }
                 break;
@@ -525,7 +542,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                                 break;
                             case 1:
                                 mDescTextView.append("\n写入SN成功");
-                                mFeederTestUnits.get(mCurTestStep).setResult(1);
+                                mFeederTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                                 refershBtnView();
                                 break;
                             case 2:
@@ -547,7 +564,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                         switch (jsonObject.getInt("state")) {
                             case 1:
                                 mDescTextView.append("\n指令发送成功");
-                                mFeederTestUnits.get(mCurTestStep).setResult(1);
+                                mFeederTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                                 refershBtnView();
                                 break;
                             default:
@@ -671,7 +688,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                             LoadDialog.dismissDialog();
 
                             mDescTextView.append("\n" + getString(R.string.printsuccess));
-                            mFeederTestUnits.get(mCurTestStep).setResult(1);
+                            mFeederTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                             refershBtnView();
                         }
                     });
