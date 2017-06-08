@@ -433,7 +433,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
             }
         }
 
-        if(position == mFeederTestUnits.size() - 1) {       //维修和抽检，最后一项打印标签可以不执行，其他项都完成了就算成功
+        if(position >= mFeederTestUnits.size() - 1) {       //维修和抽检，最后一项打印标签可以不执行，其他项都完成了就算成功
             if (mTestType == FeederUtils.TYPE_MAINTAIN) {
                 FeederUtils.storeMainTainInfo(mCurFeeder);
             } else if (mTestType == FeederUtils.TYPE_CHECK) {
