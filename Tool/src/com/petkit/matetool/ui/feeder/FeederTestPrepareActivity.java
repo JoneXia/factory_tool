@@ -36,6 +36,9 @@ import java.util.HashMap;
 
 import cz.msebera.android.httpclient.Header;
 
+import static com.petkit.matetool.ui.feeder.utils.FeederUtils.FILE_CHECK_INFO_NAME;
+import static com.petkit.matetool.ui.feeder.utils.FeederUtils.FILE_MAINTAIN_INFO_NAME;
+
 /**
  * 喂食器测试，测试准备，需要登录，已经缓存数据处理
  *
@@ -360,10 +363,19 @@ public class FeederTestPrepareActivity extends BaseActivity {
             return;
         }
 
+        String api;
+        if(FILE_MAINTAIN_INFO_NAME.equals(file.getName())) {
+            api = "/api/sn/maintain/repair";
+        } else if(FILE_CHECK_INFO_NAME.equals(file.getName())) {
+            api = "/api/sn/maintain/inspect";
+        } else {
+            api = "/api/sn/batch";
+        }
+
         HashMap<String, String> params = new HashMap<>();
         params.put("snList", "{\"snList\":[" + content.substring(0, content.length() - 1) + "]}");
 
-        AsyncHttpUtil.post("/api/sn/batch", params, new AsyncHttpRespHandler(this) {
+        AsyncHttpUtil.post(api, params, new AsyncHttpRespHandler(this) {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {

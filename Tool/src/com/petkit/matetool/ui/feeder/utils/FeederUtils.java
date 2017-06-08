@@ -261,7 +261,8 @@ public class FeederUtils {
     public static boolean checkMacIsDuplicate(String mac) {
         String fileName = CommonUtils.getSysMap("SnFileName");
         if(!CommonUtils.isEmpty(fileName)) {
-            return FileUtils.readFileToString(new File(CommonUtils.getAppCacheDirPath() + ".sn/" + fileName)).contains(mac);
+            String content = FileUtils.readFileToString(new File(CommonUtils.getAppCacheDirPath() + ".sn/" + fileName));
+            return content != null && content.contains(mac);
         }
 
         return false;
@@ -278,7 +279,9 @@ public class FeederUtils {
             String[] files = new File(dir).list();
             if (files != null && files.length > 0) {
                 for (String item : files) {
-                    if(!item.startsWith(filename)) {
+                    if(!item.startsWith(filename)
+                            && !FILE_MAINTAIN_INFO_NAME.equals(item)
+                            && !FILE_CHECK_INFO_NAME.equals(item)) {
                         return true;
                     }
                 }
@@ -315,20 +318,25 @@ public class FeederUtils {
     }
 
 
-    private static final String FILE_MAINTAIN_INFO_NAME     = "feeder_maintain_info.txt";
-    private static final String FILE_CHECK_INFO_NAME     = "feeder_check_info.txt";
+    public static final String FILE_MAINTAIN_INFO_NAME     = "feeder_maintain_info.txt";
+    public static final String FILE_CHECK_INFO_NAME     = "feeder_check_info.txt";
 
 
     public static void storeMainTainInfo(Feeder feeder) {
         if(feeder == null || !feeder.checkValid()) {
             return;
         }
+        String dir = CommonUtils.getAppCacheDirPath() + ".sn/";
+        if(!new File(dir).exists()) {
+            new File(dir).mkdirs();
+        }
 
         String fileName = CommonUtils.getAppCacheDirPath() + ".sn/" + FILE_MAINTAIN_INFO_NAME;
-        if(FileUtils.readFileToString(new File(fileName)).contains(feeder.getMac())) {
+        String content = FileUtils.readFileToString(new File(fileName));
+        if(content != null && content.contains(feeder.getMac())) {
             return;
         }
-        String info = new Gson().toJson(feeder);
+        String info = feeder.generateJson();
         PetkitLog.d("store feeder info: " + info);
         FileUtils.writeStringToFile(fileName, info + ",", true);
 
@@ -339,11 +347,16 @@ public class FeederUtils {
             return;
         }
 
+        String dir = CommonUtils.getAppCacheDirPath() + ".sn/";
+        if(!new File(dir).exists()) {
+            new File(dir).mkdirs();
+        }
         String fileName = CommonUtils.getAppCacheDirPath() + ".sn/" + FILE_CHECK_INFO_NAME;
-        if(FileUtils.readFileToString(new File(fileName)).contains(feeder.getMac())) {
+        String content = FileUtils.readFileToString(new File(fileName));
+        if(content != null && content.contains(feeder.getMac())) {
             return;
         }
-        String info = new Gson().toJson(feeder);
+        String info = feeder.generateJson();
         PetkitLog.d("store feeder info: " + info);
         FileUtils.writeStringToFile(fileName, info + ",", true);
     }

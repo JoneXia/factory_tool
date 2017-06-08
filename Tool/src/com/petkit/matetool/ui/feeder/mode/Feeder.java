@@ -2,6 +2,8 @@ package com.petkit.matetool.ui.feeder.mode;
 
 import java.io.Serializable;
 
+import static java.security.CryptoPrimitive.MAC;
+
 /**
  * Created by Jone on 17/5/3.
  */
@@ -46,6 +48,10 @@ public class Feeder implements Serializable {
 
     public boolean checkValid() {
         return mac != null && sn != null;
+    }
+
+    public String generateJson() {
+        return String.format("{\"sn\":\"%s\",\"mac\":\"%s\"}", sn, mac);
     }
 
     @Override
