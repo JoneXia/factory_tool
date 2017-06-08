@@ -224,6 +224,7 @@
 	<string name="feeder_test_case2">成品测试</string>
 	<string name="feeder_test_case3">维修</string>
 	<string name="feeder_test_case4">抽检</string>
+	<string name="feeder_test_case5">入库</string>
 
 	<string name="Set_wifi">设置WIFI</string>
 	<string name="Test_auto">自动模式</string>
@@ -289,7 +290,11 @@
 	<string name="defaulttextone">小佩智能喂食器 Feeder</string>
 	<string name="defaulttexttwo">小佩智能喂食器 Feeder</string>
 	<string name="defaultonedbarcode">SN:0A170511P10000</string>
-	<string name="defaulttwodbarcode">SN:0A170511P10000,MAC:5ecf7f24eafc</string>
+	<string name="defaulttwodbarcode">SN:0A170511P10000;MAC:5ecf7f24eafc</string>
 	<string name="print_param_default">随打印机设置</string>
+
+	<string name="scan_allcode_hint">将标签对入取景框，即可自动扫描</string>
+
+	<string name="Mate_microphone">麦克风</string>
 
 </resources>

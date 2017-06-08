@@ -1,7 +1,9 @@
 package com.petkit.matetool.utils;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Environment;
 
 import com.petkit.android.utils.CommonUtils;
@@ -112,5 +114,11 @@ public class Globals {
 		
 		return dateString.substring(2);
 	}
-	
+
+	public static boolean checkPermission(Activity activity, String permission) {
+		PackageManager pm = activity.getPackageManager();
+		return (PackageManager.PERMISSION_GRANTED ==
+				pm.checkPermission(permission, activity.getPackageName()));
+	}
+
 }

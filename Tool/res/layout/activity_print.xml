@@ -101,6 +101,7 @@
         android:background="@color/border_color_on_light"
         android:gravity="center"
         android:onClick="printTextOnClick"
+        android:visibility="invisible"
         android:text="@string/printtext" />
 
     <Button
@@ -112,6 +113,7 @@
         android:layout_marginTop="5dp"
         android:background="@color/border_color_on_light"
         android:gravity="center"
+        android:visibility="invisible"
         android:onClick="printText1DBarcodeOnClick"
         android:text="@string/printtext1dbarcode" />
 
@@ -124,6 +126,7 @@
         android:layout_marginTop="5dp"
         android:background="@color/border_color_on_light"
         android:gravity="center"
+        android:visibility="invisible"
         android:onClick="print2DBarcodeOnClick"
         android:text="@string/print2dbarcode" />
 </LinearLayout>

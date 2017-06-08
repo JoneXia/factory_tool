@@ -253,15 +253,25 @@ public class FeederUtils {
         }
     }
 
+    /**
+     * 校验MAC是否存在重复
+     * @param mac mac
+     * @return bool
+     */
     public static boolean checkMacIsDuplicate(String mac) {
         String fileName = CommonUtils.getSysMap("SnFileName");
         if(!CommonUtils.isEmpty(fileName)) {
-            return FileUtils.readFileToString(new File(CommonUtils.getAppCacheDirPath() + ".sn/" + fileName)).contains(mac);
+            String content = FileUtils.readFileToString(new File(CommonUtils.getAppCacheDirPath() + ".sn/" + fileName));
+            return content != null && content.contains(mac);
         }
 
         return false;
     }
 
+    /**
+     * 检查本地是否有SN缓存
+     * @return bool
+     */
     public static boolean checkHasSnCache() {
         String dir = CommonUtils.getAppCacheDirPath() + ".sn/";
         if(new File(dir).exists()) {
@@ -269,7 +279,9 @@ public class FeederUtils {
             String[] files = new File(dir).list();
             if (files != null && files.length > 0) {
                 for (String item : files) {
-                    if(!item.startsWith(filename)) {
+                    if(!item.startsWith(filename)
+                            && !FILE_MAINTAIN_INFO_NAME.equals(item)
+                            && !FILE_CHECK_INFO_NAME.equals(item)) {
                         return true;
                     }
                 }
@@ -279,6 +291,10 @@ public class FeederUtils {
         return false;
     }
 
+    /**
+     * 存储重复的信息
+     * @param feedersError error
+     */
     public static void storeDuplicatedInfo(FeedersError feedersError) {
         if(feedersError == null || ((feedersError.getMac() == null || feedersError.getMac().size() == 0)
                         && (feedersError.getSn() == null || feedersError.getSn().size() == 0))) {
@@ -288,6 +304,10 @@ public class FeederUtils {
         }
     }
 
+    /**
+     * 获取重复的错误信息
+     * @return FeedersError
+     */
     public static FeedersError getFeedersErrorMsg() {
         String msg = CommonUtils.getSysMap("FeedersError");
         if(CommonUtils.isEmpty(msg)) {
@@ -295,6 +315,50 @@ public class FeederUtils {
         }
 
         return new Gson().fromJson(msg, FeedersError.class);
+    }
+
+
+    public static final String FILE_MAINTAIN_INFO_NAME     = "feeder_maintain_info.txt";
+    public static final String FILE_CHECK_INFO_NAME     = "feeder_check_info.txt";
+
+
+    public static void storeMainTainInfo(Feeder feeder) {
+        if(feeder == null || !feeder.checkValid()) {
+            return;
+        }
+        String dir = CommonUtils.getAppCacheDirPath() + ".sn/";
+        if(!new File(dir).exists()) {
+            new File(dir).mkdirs();
+        }
+
+        String fileName = CommonUtils.getAppCacheDirPath() + ".sn/" + FILE_MAINTAIN_INFO_NAME;
+        String content = FileUtils.readFileToString(new File(fileName));
+        if(content != null && content.contains(feeder.getMac())) {
+            return;
+        }
+        String info = feeder.generateJson();
+        PetkitLog.d("store feeder info: " + info);
+        FileUtils.writeStringToFile(fileName, info + ",", true);
+
+    }
+
+    public static void storeCheckInfo(Feeder feeder) {
+        if(feeder == null || !feeder.checkValid()) {
+            return;
+        }
+
+        String dir = CommonUtils.getAppCacheDirPath() + ".sn/";
+        if(!new File(dir).exists()) {
+            new File(dir).mkdirs();
+        }
+        String fileName = CommonUtils.getAppCacheDirPath() + ".sn/" + FILE_CHECK_INFO_NAME;
+        String content = FileUtils.readFileToString(new File(fileName));
+        if(content != null && content.contains(feeder.getMac())) {
+            return;
+        }
+        String info = feeder.generateJson();
+        PetkitLog.d("store feeder info: " + info);
+        FileUtils.writeStringToFile(fileName, info + ",", true);
     }
 
 }

@@ -17,5 +17,6 @@
     <color name="gray_pressed">#ffa7a3a3</color>
 
     <color name="border_color_on_light">#ff3bb3c3</color>
+    <color name="scan_bg">#7f000000</color>
 
 </resources>

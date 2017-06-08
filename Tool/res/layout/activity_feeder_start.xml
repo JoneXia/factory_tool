@@ -59,6 +59,14 @@
                 android:layout_marginTop="10dip"
                 android:text="@string/feeder_test_case4" />
 
+            <Button
+                android:id="@+id/test_case5"
+                style="@style/Text_Large_Black"
+                android:layout_width="match_parent"
+                android:layout_height="70dip"
+                android:layout_marginTop="10dip"
+                android:text="@string/feeder_test_case5" />
+
         </LinearLayout>
 
     </ScrollView>
