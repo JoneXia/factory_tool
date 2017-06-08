@@ -498,11 +498,11 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                         break;
                     case 9:
                         desc.append("\n").append("直流电压").append("-").append(moduleStateStruct.getSub0()).append("mv");
-                        result = moduleStateStruct.getSub0() > 5000;
+                        result = moduleStateStruct.getSub0() > 5500;
                         break;
                     case 10:
                         desc.append("\n").append("电池电压").append("-").append(moduleStateStruct.getSub0()).append("mv");
-                        result = moduleStateStruct.getSub0() > 5000;
+                        result = moduleStateStruct.getSub0() > 5500;
                         break;
                     case 14:
                         if(moduleStateStruct.getSub0() > -1) {
