@@ -18,19 +18,20 @@ public class DailyDetailUtils {
 	public static DailyDetailItem getDailyDetailItem(String petId, String day){
 		
 		DailyDetailItem item = Select.from(DailyDetailItem.class)
-									.where(Condition.prop("dogId").eq(petId), Condition.prop("day").eq(day)).first();
+									.where(Condition.prop("dogId").eq(Long.valueOf(petId)), Condition.prop("day").eq(Long.valueOf(day))).first();
 		if(item == null){
 			item = new DailyDetailItem();
 			item.setDogId(petId);
 			item.setDay(day);
+            item.setDogindex(Long.valueOf(petId));
+            item.setDayindex(Long.valueOf(day));
 		}
 		
 		if(item.getDataString() != null){
 			List<Integer> data = new Gson().fromJson(item.getDataString(), new TypeToken<List<Integer>>(){}.getType());
 			item.setData(data);
 		}else {
-			List<Integer> data = new ArrayList<Integer>();
-			data = new ArrayList<Integer>();
+			List<Integer> data = new ArrayList<>();
 			for(int i = 0; i < Consts.ACTIVITY_DATA_LENGTH_PER_DAY; i++){
 				data.add(-1);
 			}

@@ -5,12 +5,16 @@ import java.io.Serializable;
 public class WifiInfo implements Serializable {
 	private static final long serialVersionUID = -4523460236390521750L;
 	
-	private String ssid;
+	private byte[] ssid;
 	private String capabilities;
 	private String address;
 	private String bssid;
 	private int password;
 	private int level;
+
+	private String displayName;
+    private String deviceMac;
+
 
 	public WifiInfo() {
 		super();
@@ -24,11 +28,11 @@ public class WifiInfo implements Serializable {
 		this.address = address;
 	}
 
-	public String getSSID() {
+	public byte[] getSSID() {
 		return ssid;
 	}
 	
-	public void setSSID(String ssid) {
+	public void setSSID(byte[] ssid) {
 		this.ssid = ssid;
 	}
 	
@@ -63,4 +67,20 @@ public class WifiInfo implements Serializable {
 	public void setLevel(int level) {
 		this.level = level;
 	}
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getDeviceMac() {
+        return deviceMac;
+    }
+
+    public void setDeviceMac(String deviceMac) {
+        this.deviceMac = deviceMac;
+    }
 }

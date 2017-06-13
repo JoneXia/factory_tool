@@ -4,7 +4,6 @@ public class MResource {
 	@SuppressWarnings("rawtypes")
 	public static int getResourceIdByName(String packageName, String className,
 			String name) {
-//		LogcatStorageHelper.addLog("getResourceIdByName " + packageName + ".R." + className + "." + name);
 		Class r = null;
 		int id = 0;
 		try {

@@ -1,15 +1,24 @@
 package com.petkit.android.ble;
 
-import java.io.IOException;
-import java.util.UUID;
-
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
+import android.text.TextUtils;
+
+import com.petkit.android.utils.DateUtil;
+import com.petkit.android.utils.LogcatStorageHelper;
+import com.petkit.android.utils.PetkitLog;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
 
 public class BLEConsts {
 
 	public final static boolean DEBUG = true;
-	
+
+    public final static int WRITE_M_CMD_TIMES = 1;
+
 	public static final int BLE_ACTION_SYNC				= 0x1;
 	public static final int BLE_ACTION_CHECK			= 0x2;
 	public static final int BLE_ACTION_OTA				= 0x3;
@@ -21,6 +30,12 @@ public class BLEConsts {
 	public static final int BLE_ACTION_HS_INIT_WIFI	    = 0x9;
 	public static final int BLE_ACTION_INIT_HS			= 0x0A;
 	public static final int BLE_ACTION_CHANGE_HS		= 0x0B;
+	public static final int BLE_ACTION_OTA_GO			= 0x0C;
+	public static final int BLE_ACTION_OTA_GO_RECONNECT			= 0x0D;
+	public static final int BLE_ACTION_GO_INIT				= 0xE;
+	public static final int BLE_ACTION_GO_CHANGE			= 0xF;
+	public static final int BLE_ACTION_GO_SAMPLING			= 0x10;
+
 
 	public static final int ACTION_PAUSE = 0;
 	public static final int ACTION_RESUME = 1;
@@ -29,7 +44,7 @@ public class BLEConsts {
 	public static final int NOTIFICATIONS = 1;
 	public static final int INDICATIONS = 2;
 
-	public final static long SCAN_DURATION = 30000;
+	public final static long SCAN_DURATION = 10000;
 	
 	public final static int MAX_RECONNECT_TIMES = 2;
 
@@ -37,6 +52,8 @@ public class BLEConsts {
 	public static final String EXTRA_DEVICE_ADDRESS = "com.petkit.android.extra.EXTRA_DEVICE_ADDRESS";
 	/** The secret key of the device. */
 	public static final String EXTRA_SECRET_KEY = "com.petkit.android.extra.EXTRA_SECRET_KEY";
+	/** The secret key of the device. */
+	public static final String EXTRA_WIFI_SECRET_KEY = "com.petkit.android.extra.EXTRA_WIFI_SECRET_KEY";
 	/** The secret of the device. */
 	public static final String EXTRA_SECRET = "com.petkit.android.extra.EXTRA_SECRET";
 	/** The device id of the device. */
@@ -182,13 +199,11 @@ public class BLEConsts {
 	 * The number of currently transferred part. The SoftDevice and Bootloader may be send together as one part. If user wants to upload them together with an application it has to be sent
 	 * in another connection as the second part.
 	 * 
-	 * @see DfuBaseService#EXTRA_PARTS_TOTAL
 	 */
 	public static final String EXTRA_PART_CURRENT = "no.nordicsemi.android.dfu.extra.EXTRA_PART_CURRENT";
 	/**
 	 * Number of parts in total.
 	 * 
-	 * @see DfuBaseService#EXTRA_PART_CURRENT
 	 */
 	public static final String EXTRA_PARTS_TOTAL = "no.nordicsemi.android.dfu.extra.EXTRA_PARTS_TOTAL";
 	/** The current upload speed in bytes/millisecond. */
@@ -213,6 +228,48 @@ public class BLEConsts {
 	public static final String BROADCAST_SCANED_WIFI_COMPLETED  = "com.petkit.android.broadcast.BROADCAST_SCANED_WIFI_COMPLETED";
 	public static final String EXTRA_WIFI_INFO	 = "com.petkit.android.extra.EXTRA_WIFI_INFO";
 	////////////////
+    public static final String EXTRA_MATE_VERSION	 = "com.petkit.android.extra.EXTRA_MATE_VERSION";
+
+	/** An extra private field indicating which attempt is being performed. In case of error 133 the service will retry to connect one more time. */
+	public static final String EXTRA_ATTEMPT = "no.nordicsemi.android.dfu.extra.EXTRA_ATTEMPT";
+
+	/**
+	 * <p>This flag indicated whether the bond information should be kept or removed after an upgrade of the Application.
+	 * If an application is being updated on a bonded device with the DFU Bootloader that has been configured to preserve the bond information for the new application,
+	 * set it to <code>true</code>.</p>
+	 *
+	 * <p>By default the DFU Bootloader clears the whole application's memory. It may be however configured in the \Nordic\nrf51\components\libraries\bootloader_dfu\dfu_types.h
+	 * file (line 56: <code>#define DFU_APP_DATA_RESERVED 0x0000</code>) to preserve some pages. The BLE_APP_HRM_DFU sample app stores the LTK and System Attributes in the first
+	 * two pages, so in order to preserve the bond information this value should be changed to 0x0800 or more.
+	 * When those data are preserved, the new Application will notify the app with the Service Changed indication when launched for the first time. Otherwise this
+	 * service will remove the bond information from the phone and force to refresh the device cache (see {@link #(android.bluetooth.BluetoothGatt, boolean)}).</p>
+	 *
+	 * <p>In contrast to {@link #EXTRA_RESTORE_BOND} this flag will not remove the old bonding and recreate a new one, but will keep the bond information untouched.</p>
+	 * <p>The default value of this flag is <code>false</code></p>
+	 */
+	public static final String EXTRA_KEEP_BOND = "no.nordicsemi.android.dfu.extra.EXTRA_KEEP_BOND";
+
+	/**
+	 * See {@link #EXTRA_FILE_PATH} for details.
+	 */
+	public static final String EXTRA_FILE_RES_ID = "no.nordicsemi.android.dfu.extra.EXTRA_FILE_RES_ID";
+	/**
+	 * The Init packet URI. This file is required if the Extended Init Packet is required (SDK 7.0+). Must point to a 'dat' file corresponding with the selected firmware.
+	 * The Init packet may contain just the CRC (in case of older versions of DFU) or the Extended Init Packet in binary format (SDK 7.0+).
+	 */
+	public static final String EXTRA_INIT_FILE_RES_ID = "no.nordicsemi.android.dfu.extra.EXTRA_INIT_FILE_RES_ID";
+	/**
+	 * This property must contain a boolean value.
+	 * <p>The {@link DfuBaseService}, when connected to a DFU target will check whether it is in application or in DFU bootloader mode. For DFU implementations from SDK 7.0 or newer
+	 * this is done by reading the value of DFU Version characteristic. If the returned value is equal to 0x0100 (major = 0, minor = 1) it means that we are in the application mode and
+	 * jump to the bootloader mode is required.
+	 * <p>However, for DFU implementations from older SDKs, where there was no DFU Version characteristic, the service must guess. If this option is set to false (default) it will count
+	 * number of device's services. If the count is equal to 3 (Generic Access, Generic Attribute, DFU Service) it will assume that it's in DFU mode. If greater than 3 - in app mode.
+	 * This guessing may not be always correct. One situation may be when the nRF chip is used to flash update on external MCU using DFU. The DFU procedure may be implemented in the
+	 * application, which may (and usually does) have more services. In such case set the value of this property to true.
+	 */
+	public static final String SETTINGS_ASSUME_DFU_NODE = "settings_assume_dfu_mode";
+
 
 	public final static int STATE_DISCONNECTED = 0;
 	public final static int STATE_CONNECTING = -1;
@@ -295,7 +352,10 @@ public class BLEConsts {
 	public static final int PROGRESS_WIFI_SET_START 		= -27;
 
 	public static final int PROGRESS_MATE_SERVER_SET_COMPLETE 		= -28;
-	
+
+    public static final int PROGRESS_MATE_WIFI_MAC_COMPLETE 		= -29;
+
+
 	/**
 	 * If this bit is set than the progress value indicates an error. Use {@link GattError#parse(int)} to obtain error name.
 	 */
@@ -328,20 +388,42 @@ public class BLEConsts {
 	public static final int ERROR_REMOTE_MASK = 0x2000;
 	/** The flag set when one of {@link BluetoothGattCallback} methods was called with status other than {@link BluetoothGatt#GATT_SUCCESS}. */
 	public static final int ERROR_CONNECTION_MASK = 0x4000;
-	
-	public static final int ERROR_SYNC_TIMEOUT = ERROR_MASK | 0x0c;
-	
-	public static final int ERROR_PREPARE_FAILED = ERROR_MASK | 0x0d;
 
-	public static final int ERROR_NETWORK_FAILED = ERROR_MASK | 0x0e;
-	
-	public static final int ERROR_UNSUPPORTED_ENCODING = ERROR_MASK | 0x0f;
-	
-	
+	/**
+	 * The flag set when the {@link android.bluetooth.BluetoothGattCallback#onConnectionStateChange(android.bluetooth.BluetoothGatt, int, int)} method was called with
+	 * status other than {@link android.bluetooth.BluetoothGatt#GATT_SUCCESS}.
+	 */
+	public static final int ERROR_CONNECTION_STATE_MASK = 0x8000;
+	/**
+	 * Thrown when the the Bluetooth adapter is disabled.
+	 */
+	public static final int ERROR_BLUETOOTH_DISABLED = ERROR_MASK | 0x0c;
+	/**
+	 * DFU Bootloader version 0.6+ requires sending the Init packet. If such bootloader version is detected, but the init packet has not been set this error is thrown.
+	 */
+	public static final int ERROR_INIT_PACKET_REQUIRED = ERROR_MASK | 0x0d;
+	/**
+	 * Thrown when the firmware file is not word-aligned. The firmware size must be dividable by 4 bytes.
+	 */
+	public static final int ERROR_FILE_SIZE_INVALID = ERROR_MASK | 0x0e;
+
+
+	public static final int ERROR_SYNC_TIMEOUT = ERROR_MASK | 0x0f;
+
+	public static final int ERROR_PREPARE_FAILED = ERROR_MASK | 0x11;
+
+	public static final int ERROR_NETWORK_FAILED = ERROR_MASK | 0x12;
+
+	public static final int ERROR_UNSUPPORTED_ENCODING = ERROR_MASK | 0x13;
+
 	public static final UUID GENERIC_ATTRIBUTE_SERVICE_UUID = new UUID(0x0000180100001000l, 0x800000805F9B34FBl);
 	public static final UUID SERVICE_CHANGED_UUID = new UUID(0x00002A0500001000l, 0x800000805F9B34FBl);
 
-	
+
+	/**
+	 * The upload has been aborted. Previous software version will be restored on the target.
+	 */
+	public static final int PROGRESS_ABORTED = ERROR_ABORTED;
 	
 	/*--------------------------------------DFU----------------------------------------*/
 	
@@ -395,6 +477,7 @@ public class BLEConsts {
 	/*--------------------------------------SYNC----------------------------------------*/
 
 	public final static String BASE_TIMELINE = "2000-01-01 00:00:00";
+	public final static String BASE_TIMELINE_NEW = "2000-01-01T00:00:00.000+0000";
 	
 	
 	public static final String PET_HOME = "pethome";
@@ -403,7 +486,9 @@ public class BLEConsts {
 	public static final String PET_FIT2 = "PETKIT2";
 	public static final String PET_FIT_DISPLAY_NAME = "Fit P1";
 	public static final String PET_FIT2_DISPLAY_NAME = "Fit P2";
-	public static final String[] DeviceFilter = new String[]{"PETKIT", "PETKIT2", PET_HOME, PET_MATE};
+	public static final String GO_DISPLAY_NAME = "petGO";
+
+	public static final String[] DeviceFilter = new String[]{"PETKIT", "PETKIT2", PET_FIT_DISPLAY_NAME, PET_FIT2_DISPLAY_NAME, PET_HOME, PET_MATE, GO_DISPLAY_NAME};
 	
 	public static final UUID ACC_SERVICE_UUID = UUID.fromString("0000aaa0-0000-1000-8000-00805f9b34fb");
 	public static final UUID ACC_DATA_UUID = UUID.fromString("0000aaa1-0000-1000-8000-00805f9b34fb");
@@ -462,17 +547,168 @@ public class BLEConsts {
 	public static final int WIFI_DO_CONNECTING      = 21;
 	public static final int WIFI_DO_IDLE            = 22;
 	public static final int WIFI_DO_CLEAN           = 23;
-	public static final int ST_WIFI_MAX              = 24;  //默认-不定义说明
+//	public static final int ST_WIFI_MAX              = 24;  //默认-不定义说明
 
 
 	public static final int MATE_OP_CODE_REQUEST_KEY			= 'X';
 	public static final int MATE_OP_CODE_CONFIRM_KEY			= 'Y';
 	public static final int MATE_OP_CODE_COMPLETE_KEY			= 'Z';
 
+	public static final int MATE_COMMAND_GET_WIFI_PAIRED 	= 304;
 	public static final int MATE_COMMAND_GET_WIFI 			= 305;
 	public static final int MATE_COMMAND_GET_SN 			= 324;
 	public static final int MATE_COMMAND_WRITE_WIFI 		= 301;
 	public static final int MATE_COMMAND_WRITE_WIFI_CONFIRM 		= 302;
 	public static final int MATE_COMMAND_WRITE_SERVER 		= 622;
-	
+    public static final int MATE_COMMAND_WRITE_ALIVE 		= 624;
+
+    public static final String MATE_BASE_VERSION_FOR_ALIVE_CMD        = "1.1550.1";
+    public static final String MATE_BASE_VERSION_FOR_GET_WIFI        = "1.1550.1";
+
+    public static String convertErrorCode(int code){
+        switch (code){
+            case ERROR_ABORTED:
+                return "abort";
+            case ERROR_CHARACTERISTICS_NOT_FOUND:
+                return "characteristics not found";
+            case ERROR_DEVICE_DISCONNECTED:
+                return "device disconnected";
+            case ERROR_DEVICE_ID_NULL:
+                return "device id is null";
+            case ERROR_FILE_ERROR:
+                return "file error";
+            case ERROR_FILE_INVALID:
+                return "file invalid";
+            case ERROR_FILE_NOT_FOUND:
+                return "file not found";
+            case ERROR_FILE_IO_EXCEPTION:
+                return "file io exception";
+            case ERROR_FILE_TYPE_UNSUPPORTED:
+                return "file type unsupported";
+            case ERROR_INVALID_PARAMETERS:
+                return "invalid parameters";
+            case ERROR_INVALID_RESPONSE:
+                return "invalid response";
+            case ERROR_NETWORK_FAILED:
+                return "network failed";
+            case ERROR_SERVICE_DISCOVERY_NOT_STARTED:
+                return "service discovery not started";
+            case ERROR_PREPARE_FAILED:
+                return "prepare failed";
+            case ERROR_SYNC_TIMEOUT:
+                return "sync timeout";
+            case ERROR_SYNC_INIT_FAIL:
+                return "sync init failed";
+            case ERROR_SERVICE_NOT_FOUND:
+                return "service not found";
+            case ERROR_SYNC_VERIFY_FAIL:
+                return "sync verify failed";
+            case ERROR_UNSUPPORTED_ENCODING:
+                return "unsupported encoding";
+        }
+
+        if(BLEConsts.ERROR_CONNECTION_MASK < code){
+            return String.valueOf(code - BLEConsts.ERROR_CONNECTION_MASK);
+        }
+        return String.valueOf(code);
+    }
+
+
+
+	/**
+	 * 版本比较，根据.分割version，然后对每位进行比较
+	 *
+	 * 版本的格式为：xxx.xxx.xxx
+	 *
+	 * @param curVersion  当前版本
+	 * @param baseVersion  基础版本
+	 * @return  返回-1 0 1
+	 */
+	public static int compareMateVersion(String curVersion, String baseVersion){
+		PetkitLog.d("compareMateVersion current version: " + curVersion + " base version: " + baseVersion);
+		LogcatStorageHelper.addLog("compareMateVersion current version: " + curVersion + " base version: " + baseVersion);
+		if(TextUtils.isEmpty(curVersion)){
+			return -1;
+		}
+
+		String[] split = curVersion.split("\\.");
+		if(split.length != 3){
+			return -1;
+		}
+
+		String[] splitBase = baseVersion.split("\\.");
+
+		try {
+			int split1 = Integer.valueOf(split[0]);
+			int split2 = Integer.valueOf(split[1]);
+			int split3 = Integer.valueOf(split[2]);
+
+			int splitBase1 = Integer.valueOf(splitBase[0]);
+			int splitBase2 = Integer.valueOf(splitBase[1]);
+			int splitBase3 = Integer.valueOf(splitBase[2]);
+
+			if(split1 == splitBase1 && split2 == splitBase2 && split3 == splitBase3){
+				return 0;
+			} else if(split1 >= splitBase1){
+				if(split1 == splitBase1) {
+					if(split2 >= splitBase2) {
+						if (split2 == splitBase2) {
+							if (split3 >= splitBase3) {
+								return 1;
+							}
+						} else {
+							return 1;
+						}
+					}
+				} else {
+					return 1;
+				}
+			}
+		} catch (NumberFormatException e) {
+			return -1;
+		}
+
+		return -1;
+	}
+
+
+	/**
+	 * 获取写入设备中的时间，基于BLEConsts.BASE_TIMELINE
+	 *
+	 * @return
+	 */
+	public static int getSeconds() {
+		long quot;
+		int seconds = 0;
+		SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		try {
+			Date date1 = ft.parse(BLEConsts.BASE_TIMELINE);
+			Date date2 = ft.parse(ft.format(new Date()));
+			quot = date2.getTime() - date1.getTime();
+			seconds = (int) (quot / 1000);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return seconds;
+	}
+
+	public static int getSecondsWithoutTimeZone() {
+		long quot = 0;
+		int seconds = 0;
+		SimpleDateFormat ft = new SimpleDateFormat(DateUtil.ISO8601DATE_WITH_ZONE_MILLS_FORMAT);
+		try {
+			Date date1 = ft.parse(BASE_TIMELINE_NEW);
+			Date date2 = ft.parse(ft.format(new Date()));
+			quot = date2.getTime() - date1.getTime();
+			seconds = (int) (quot / 1000);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		LogcatStorageHelper.addLog("write device time ： " + seconds);
+		PetkitLog.d("write device time ： " + seconds);
+		return seconds;
+	}
+
+
 }

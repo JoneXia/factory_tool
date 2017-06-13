@@ -9,8 +9,7 @@ public class Poi implements Serializable{
 	private String poiName;
 	private String poiAddress;
 	private String poiLocation;
-	
-	
+
 	public String getPoiName() {
 		return poiName;
 	}
@@ -29,5 +28,5 @@ public class Poi implements Serializable{
 	public void setPoiLocation(String poiLocation) {
 		this.poiLocation = poiLocation;
 	}
-	
+
 }

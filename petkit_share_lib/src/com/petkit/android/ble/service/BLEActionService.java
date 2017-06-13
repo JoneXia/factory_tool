@@ -1,23 +1,5 @@
 package com.petkit.android.ble.service;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Method;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import org.apache.http.util.ByteArrayBuffer;
-
 import android.annotation.SuppressLint;
 import android.app.IntentService;
 import android.bluetooth.BluetoothAdapter;
@@ -26,9 +8,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.os.Build;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -37,9 +19,7 @@ import com.petkit.android.ble.BLEConsts;
 import com.petkit.android.ble.Conversion;
 import com.petkit.android.ble.DeviceInfo;
 import com.petkit.android.ble.FormatTransfer;
-import com.petkit.android.ble.HexInputStream;
 import com.petkit.android.ble.WifiInfo;
-import com.petkit.android.ble.ZipHexInputStream;
 import com.petkit.android.ble.exception.BLEAbortedException;
 import com.petkit.android.ble.exception.BLEErrorException;
 import com.petkit.android.ble.exception.DeviceDisconnectedException;
@@ -54,6 +34,17 @@ import com.petkit.android.utils.Consts;
 import com.petkit.android.utils.DeviceActivityDataUtils;
 import com.petkit.android.utils.LogcatStorageHelper;
 import com.petkit.android.utils.PetkitLog;
+
+import org.apache.http.util.ByteArrayBuffer;
+
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TimeZone;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @SuppressLint("SimpleDateFormat")
 public abstract class BLEActionService extends IntentService {
@@ -160,8 +151,39 @@ public abstract class BLEActionService extends IntentService {
 	protected String mateServer;
 	
 	protected int reconnectTimes = 0;
-	
-	
+
+    //用于mate功能控制，为当前mate对应的版本号
+    protected String curMateVersion = null;
+	protected int mGetWifiStep;
+
+	private byte[] mWifiSecretKey;
+
+
+	/**
+	 * <p>
+	 * Flag set to <code>true</code> when the DFU target had send a notification with status other than {@link #}. Setting it to <code>true</code> will abort sending firmware and
+	 * stop logging notifications (read below for explanation).
+	 * </p>
+	 * <p>
+	 * The onCharacteristicWrite(..) callback is called when Android writes the packet into the outgoing queue, not when it physically sends the data.
+	 * This means that the service will first put up to N* packets, one by one, to the queue, while in fact the first one is transmitted.
+	 * In case the DFU target is in an invalid state it will notify Android with a notification 10-03-02 for each packet of firmware that has been sent.
+	 * After receiving the first such notification, the DFU service will add the reset command to the outgoing queue, but it will still be receiving such notifications
+	 * until all the data packets are sent. Those notifications should be ignored. This flag will prevent from logging "Notification received..." more than once.
+	 * </p>
+	 * <p>
+	 * Additionally, sometimes after writing the command 6 ({@link #}), Android will receive a notification and update the characteristic value with 10-03-02 and the callback for write
+	 * reset command will log "[DFU] Data written to ..., value (0x): 10-03-02" instead of "...(x0): 06". But this does not matter for the DFU process.
+	 * </p>
+	 * <p>
+	 * N* - Value of Packet Receipt Notification, 10 by default.
+	 * </p>
+	 */
+	protected boolean mRemoteErrorOccurred;
+
+
+
+
 	private final BroadcastReceiver mDfuActionReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(final Context context, final Intent intent) {
@@ -176,14 +198,17 @@ public abstract class BLEActionService extends IntentService {
 			case BLEConsts.ACTION_RESUME:
 				mPaused = false;
 				refreshHeartbeatTime();
-				stopKeepAlive();
 
 				secretKey = intent.getStringExtra(BLEConsts.EXTRA_SECRET_KEY);
+				mWifiSecretKey = intent.getByteArrayExtra(BLEConsts.EXTRA_WIFI_SECRET_KEY);
 				secret = intent.getStringExtra(BLEConsts.EXTRA_SECRET);
 				deviceId = intent.getStringExtra(BLEConsts.EXTRA_DEVICE_ID);
 				filePath = intent.getStringExtra(BLEConsts.EXTRA_FILE_PATH);
 				
 				address = intent.getStringExtra(BLEConsts.EXTRA_DEVICE_ADDRESS);
+                if(TextUtils.isEmpty(curMateVersion)){
+                    curMateVersion = intent.getStringExtra(BLEConsts.EXTRA_MATE_VERSION);
+                }
 				
 				// notify waiting thread
 				synchronized (mLock) {
@@ -335,6 +360,7 @@ public abstract class BLEActionService extends IntentService {
 		dailyDetailUrl = intent.getStringExtra(BLEConsts.EXTRA_URL_DAILY_DETAIL);
 		mDebugSyncProgressCompleteCount  = 0;
 		reconnectTimes = intent.getIntExtra(BLEConsts.EXTRA_DEVICE_RECONNECT_TIMES, 0);
+        curMateVersion = intent.getStringExtra(BLEConsts.EXTRA_MATE_VERSION);
 		
 		if(reconnectTimes == 0){
 			mBleDevice = null;
@@ -364,6 +390,17 @@ public abstract class BLEActionService extends IntentService {
 			
 			if(mAborted){
 				sendErrorBroadcast(BLEConsts.ERROR_ABORTED);
+			} else if(mBleDevice == null){
+				LogcatStorageHelper.addLog("scan failed, retry times: " + reconnectTimes);
+
+				if(reconnectTimes < BLEConsts.MAX_RECONNECT_TIMES){
+					final Intent newIntent = new Intent();
+					newIntent.fillIn(intent, Intent.FILL_IN_COMPONENT | Intent.FILL_IN_PACKAGE);
+					newIntent.putExtra(BLEConsts.EXTRA_DEVICE_RECONNECT_TIMES, ++reconnectTimes);
+					startService(newIntent);
+				} else {
+					updateProgressNotification(BLEConsts.PROGRESS_SCANING_FAILED);
+				}
 			} else {
 				startSyncDevice(intent);
 				if(isNeedStoreProgress){
@@ -387,7 +424,15 @@ public abstract class BLEActionService extends IntentService {
 			if(mAborted){
 				sendErrorBroadcast(BLEConsts.ERROR_ABORTED);
 			}else if(mBleDevice == null){
-				updateProgressNotification(BLEConsts.PROGRESS_SCANING_FAILED);
+				LogcatStorageHelper.addLog("scan failed, retry times: " + reconnectTimes);
+				if(reconnectTimes < BLEConsts.MAX_RECONNECT_TIMES){
+					final Intent newIntent = new Intent();
+					newIntent.fillIn(intent, Intent.FILL_IN_COMPONENT | Intent.FILL_IN_PACKAGE);
+					newIntent.putExtra(BLEConsts.EXTRA_DEVICE_RECONNECT_TIMES, ++reconnectTimes);
+					startService(newIntent);
+				} else {
+					updateProgressNotification(BLEConsts.PROGRESS_SCANING_FAILED);
+				}
 			}else {
 				startOTA(intent);
 			}
@@ -433,6 +478,46 @@ public abstract class BLEActionService extends IntentService {
 				startMateWifiInit(intent);
 			}
 			break;
+		case BLEConsts.BLE_ACTION_OTA_GO:
+		case BLEConsts.BLE_ACTION_OTA_GO_RECONNECT:
+			targetDeviceId = intent.getLongExtra(BLEConsts.EXTRA_DEVICE_ID, 0);
+			deviceState.setId(targetDeviceId);
+			if(mBleDevice == null){
+				mBleDevice = startScan(intent);
+			}
+
+			if(mAborted){
+				sendErrorBroadcast(BLEConsts.ERROR_ABORTED);
+			}else if(mBleDevice == null){
+				LogcatStorageHelper.addLog("scan failed, retry times: " + reconnectTimes);
+				if(reconnectTimes < BLEConsts.MAX_RECONNECT_TIMES){
+					final Intent newIntent = new Intent();
+					newIntent.fillIn(intent, Intent.FILL_IN_COMPONENT | Intent.FILL_IN_PACKAGE);
+					newIntent.putExtra(BLEConsts.EXTRA_DEVICE_RECONNECT_TIMES, ++reconnectTimes);
+					startService(newIntent);
+				} else {
+					updateProgressNotification(BLEConsts.PROGRESS_SCANING_FAILED);
+				}
+			}else {
+				startGoOTA(intent);
+			}
+			break;
+		case BLEConsts.BLE_ACTION_GO_INIT:
+		case BLEConsts.BLE_ACTION_GO_CHANGE:
+			mBleDevice = (DeviceInfo) intent.getSerializableExtra(BLEConsts.EXTRA_DEVICE_INFO);
+			if(mBleDevice == null || mBleDevice.getAddress() == null){
+				updateProgressNotification(BLEConsts.ERROR_DEVICE_ID_NULL);
+				return;
+			}
+			startInitAndChangeGo(intent);
+			break;
+		case BLEConsts.BLE_ACTION_GO_SAMPLING:
+			mBleDevice = (DeviceInfo) intent.getSerializableExtra(BLEConsts.EXTRA_DEVICE_INFO);
+			if(mBleDevice == null || mBleDevice.getAddress() == null){
+				updateProgressNotification(BLEConsts.ERROR_DEVICE_ID_NULL);
+				return;
+			}
+			startGoSampling(intent);
 		default:
 			break;
 		}
@@ -463,6 +548,8 @@ public abstract class BLEActionService extends IntentService {
 	 * Wait until the connection state will change to or until an error occurs.
 	 */
 	protected void waitUntilDisconnected() {
+        stopHeartbeat();
+
 		try {
 			synchronized (mLock) {
 				while (mConnectionState != BLEConsts.STATE_DISCONNECTED && mError == 0)
@@ -493,10 +580,6 @@ public abstract class BLEActionService extends IntentService {
 	}
 	
 	protected void waitIfPaused(boolean isKeepAlive) {
-		if(isKeepAlive){
-			startKeepAlive();// start send keepAlive message
-		}
-
 		synchronized (mLock) {
 			try {
 				while (mPaused && !mAborted)
@@ -506,55 +589,7 @@ public abstract class BLEActionService extends IntentService {
 			}
 		}
 	}
-	
-	/**
-	 * Opens the binary input stream that returns the firmware image content. A Path to the file is given.
-	 * 
-	 * @param filePath
-	 *            the path to the HEX or BIN file
-	 * @param mimeType
-	 *            the file type
-	 * @param mbrSize
-	 *            the size of MBR, by default 0x1000
-	 * @param types
-	 *            the content files types in ZIP
-	 * @return the input stream with binary image content
-	 */
-	protected InputStream openInputStream(final String filePath, final String mimeType, final int mbrSize, final int types) throws FileNotFoundException, IOException {
-		if(filePath == null){
-			throw new FileNotFoundException();
-		}
-		final InputStream is = new FileInputStream(filePath);
-		if (BLEConsts.MIME_TYPE_ZIP.equals(mimeType))
-			return new ZipHexInputStream(is, mbrSize, types);
-		if (filePath.toString().toLowerCase(Locale.US).endsWith("hex"))
-			return new HexInputStream(is, mbrSize);
-		return is;
-	}
-	
-	/**
-	 * Opens the binary input stream. A Uri to the stream is given.
-	 * 
-	 * @param stream
-	 *            the Uri to the stream
-	 * @param mimeType
-	 *            the file type
-	 * @param mbrSize
-	 *            the size of MBR, by default 0x1000
-	 * @param types
-	 *            the content files types in ZIP
-	 * @return the input stream with binary image content
-	 */
-	protected InputStream openInputStream(final Uri stream, final String mimeType, final int mbrSize, final int types) throws FileNotFoundException, IOException {
-		final InputStream is = getContentResolver().openInputStream(stream);
-		if (BLEConsts.MIME_TYPE_ZIP.equals(mimeType))
-			return new ZipHexInputStream(is, mbrSize, types);
-		if (stream.toString().toLowerCase(Locale.US).endsWith("hex"))
-			return new HexInputStream(is, mbrSize);
-		return is;
-	}
-	
-	
+
 	/** Stores the last progress percent. Used to lower number of calls of {@link #updateProgressNotification(int)}. */
 	protected int mLastProgress = -1;
 	
@@ -568,7 +603,7 @@ public abstract class BLEActionService extends IntentService {
 		}
 		if (mLastProgress == progress)
 			return;
-		
+
 		LogcatStorageHelper.addLog(String.format("[R-D] data sync progress: %d.", progress));
 
 		mLastProgress = progress;
@@ -616,7 +651,7 @@ public abstract class BLEActionService extends IntentService {
 		broadcast.putExtra(BLEConsts.EXTRA_DEVICE_INFO, mBleDevice);
 		LocalBroadcastManager.getInstance(this).sendBroadcast(broadcast);
 		
-		LogcatStorageHelper.addLog("Unexpected error : " + error);
+		LogcatStorageHelper.addLog("Unexpected error : " + BLEConsts.convertErrorCode(error));
 	}
 	
 	protected void sendScanedDeviceBroadcast(final DeviceInfo deviceInfo) {
@@ -633,6 +668,7 @@ public abstract class BLEActionService extends IntentService {
 	
 	protected void sendScanedWifiCompletedBroadcast() {
 		final Intent broadcast = new Intent(BLEConsts.BROADCAST_SCANED_WIFI_COMPLETED);
+		broadcast.putExtra(Consts.MATE_GET_WIFI_STEP_KEY, mGetWifiStep);
 		LocalBroadcastManager.getInstance(this).sendBroadcast(broadcast);
 	}
 	
@@ -820,23 +856,39 @@ public abstract class BLEActionService extends IntentService {
 	
 	/*----------------------------Scan part-------------------------------------------*/
 
-	protected List<DeviceInfo> mDeviceInfoList = new ArrayList<DeviceInfo>();;
+	protected List<DeviceInfo> mDeviceInfoList = new ArrayList<>();
+
+    protected boolean checkDeviceFilter(BluetoothDevice device) {
+        return checkDeviceFilter(device.getName());
+    }
 	
-	protected boolean checkDeviceFilter(BluetoothDevice device) {
+	protected boolean checkDeviceFilter(String deviceName) {
 		int n = BLEConsts.DeviceFilter.length;
-		if(device.getName() == null){
+		if(deviceName == null){
 			return false;
 		}
 		if (n > 0) {
 			boolean found = false;
 			for (int i = 0; i < n && !found; i++) {
-				found = device.getName().equalsIgnoreCase(BLEConsts.DeviceFilter[i]);
+				found = deviceName.equalsIgnoreCase(BLEConsts.DeviceFilter[i]);
 			}
 			return found;
 		} else
 			// Allow all devices if the device filter is empty
 			return true;
 	}
+
+    protected String getDeviceNameByScanRecord(int value){
+        LogcatStorageHelper.addLog("getDeviceNameByScanRecord, value: " + value);
+        switch (value){
+            case 0xC5:
+                return BLEConsts.PET_FIT_DISPLAY_NAME;
+            case 0xC3:
+                return BLEConsts.PET_FIT2_DISPLAY_NAME;
+            default:
+                return BLEConsts.PET_MATE;
+        }
+    }
 	
 	protected boolean deviceInfoExists(String address) {
 		for (int i = 0; i < mDeviceInfoList.size(); i++) {
@@ -861,6 +913,7 @@ public abstract class BLEActionService extends IntentService {
 
 	protected void addScanedDevice(DeviceInfo device) {
 		LogcatStorageHelper.addLog("find device: " + (device == null ? "device == null" : device.toString()));
+		PetkitLog.d("find device: " + (device == null ? "device == null" : device.toString()));
 
 //		if(device != null){
 //			InforCollectUtils.insertBeaconsInfor(this, CommonUtils.getCurrentUserId(), device);
@@ -913,9 +966,9 @@ public abstract class BLEActionService extends IntentService {
 			int offset = 0;
 			codeBuffer[offset++] = BLEConsts.OP_CODE_DEVICE_INIT_KEY;
 
-			String hexString = Integer.toHexString(Integer.valueOf(params[0]));
+			String hexString = Long.toHexString(Long.valueOf(params[0]));
 			int idLength = hexString.length();
-			int total = (int) Math.ceil(((float)idLength)/2);
+			int total;
 			if(params[0].length() == 16){
 				total = 8;
 				for(int i = 0; i < 16 - idLength;i++){
@@ -940,10 +993,14 @@ public abstract class BLEActionService extends IntentService {
 //			codeBuffer[offset++] = ((Integer)Integer.parseInt(params[1].substring(4, 6), 16)).byteValue();
 //			codeBuffer[offset++] = ((Integer)Integer.parseInt(params[1].substring(6, 8), 16)).byteValue();
 
-			codeBuffer[9] = ((Integer)Integer.parseInt(params[2].substring(0, 2), 16)).byteValue();
-			codeBuffer[10] = ((Integer)Integer.parseInt(params[2].substring(2, 4), 16)).byteValue();
-			codeBuffer[11] = ((Integer)Integer.parseInt(params[2].substring(4, 6), 16)).byteValue();
-			codeBuffer[12] = ((Integer)Integer.parseInt(params[2].substring(6, 8), 16)).byteValue();
+			for(int i = 0; i < params[2].length()/2; i++) {
+				codeBuffer[9 + i] = ((Integer)Integer.parseInt(params[2].substring(i*2, i*2+2), 16)).byteValue();
+			}
+
+//			codeBuffer[9] = ((Integer)Integer.parseInt(params[2].substring(0, 2), 16)).byteValue();
+//			codeBuffer[10] = ((Integer)Integer.parseInt(params[2].substring(2, 4), 16)).byteValue();
+//			codeBuffer[11] = ((Integer)Integer.parseInt(params[2].substring(4, 6), 16)).byteValue();
+//			codeBuffer[12] = ((Integer)Integer.parseInt(params[2].substring(6, 8), 16)).byteValue();
 			break;
 		case BLEConsts.OP_CODE_VERIFY_KEY:
 			if(params == null || params.length != 1 || params[0] == null || params[0].length() < 8){
@@ -951,10 +1008,13 @@ public abstract class BLEActionService extends IntentService {
 			}
 			
 			codeBuffer[0] = BLEConsts.OP_CODE_VERIFY_KEY;
-			codeBuffer[1] = ((Integer)Integer.parseInt(params[0].substring(0, 2), 16)).byteValue();
-			codeBuffer[2] = ((Integer)Integer.parseInt(params[0].substring(2, 4), 16)).byteValue();
-			codeBuffer[3] = ((Integer)Integer.parseInt(params[0].substring(4, 6), 16)).byteValue();
-			codeBuffer[4] = ((Integer)Integer.parseInt(params[0].substring(6, 8), 16)).byteValue();
+			for(int i = 0; i < params[0].length()/2; i++) {
+				codeBuffer[1 + i] = ((Integer)Integer.parseInt(params[0].substring(i*2, i*2+2), 16)).byteValue();
+			}
+//			codeBuffer[1] = ((Integer)Integer.parseInt(params[0].substring(0, 2), 16)).byteValue();
+//			codeBuffer[2] = ((Integer)Integer.parseInt(params[0].substring(2, 4), 16)).byteValue();
+//			codeBuffer[3] = ((Integer)Integer.parseInt(params[0].substring(4, 6), 16)).byteValue();
+//			codeBuffer[4] = ((Integer)Integer.parseInt(params[0].substring(6, 8), 16)).byteValue();
 			break;
 		case BLEConsts.OP_CODE_DEBUG_INFOR_KEY:
 			int address = (deviceState.getExtra().getImageType().equals("B") ? 0x8c00 : 0x2000) + mComdLength * 2;
@@ -1004,13 +1064,21 @@ public abstract class BLEActionService extends IntentService {
 			
 			break;
 		case BLEConsts.OP_CODE_TIME_SYNC_KEY:
-			int sec = getSeconds();
+			int sec = BLEConsts.getSeconds();
+
+			if(mBleDevice.getType() == DeviceInfo.DEVICE_TYPE_GO) {
+				sec = BLEConsts.getSecondsWithoutTimeZone();
+
+				TimeZone timeZone = TimeZone.getDefault();
+				offset = timeZone.getRawOffset();
+				int offsetHour = (int) ((offset) / (3600 * 1000f));
+				codeBuffer[6] = (byte) ((offsetHour + 12) & 0xff);
+			}
 			codeBuffer[0] = BLEConsts.OP_CODE_TIME_SYNC_KEY;
 			codeBuffer[2] = (byte) ((sec >> 24) & 0xFF);
 			codeBuffer[3] = (byte) ((sec >> 16) & 0xFF);
 			codeBuffer[4] = (byte) ((sec >> 8) & 0xFF);
 			codeBuffer[5] = (byte) ((sec >> 0) & 0xFF);
-			
 			break;
 		case BLEConsts.OP_CODE_DEBUG_INFOR_2_KEY:
 		case BLEConsts.OP_CODE_DATA_READ_KEY:
@@ -1018,6 +1086,7 @@ public abstract class BLEActionService extends IntentService {
 		case BLEConsts.OP_CODE_DATA_COMPLETE_KEY:
 		case BLEConsts.OP_CODE_BATTERY_KEY:
 		case BLEConsts.MATE_OP_CODE_COMPLETE_KEY:
+		case 213:
 			codeBuffer[0] = (byte) key;
 			break;
 		case BLEConsts.OP_CODE_TRUN_OFF_SENSOR_KEY:
@@ -1046,6 +1115,7 @@ public abstract class BLEActionService extends IntentService {
 			break;
 
 		default:
+			codeBuffer[0] = (byte) key;
 			break;
 		}
 
@@ -1066,6 +1136,7 @@ public abstract class BLEActionService extends IntentService {
 		case BLEConsts.MATE_OP_CODE_REQUEST_KEY:
 			if(mWriteData != null && mWriteData.size() > 0){
 				if(mPartCurrent < mWriteData.size()){
+                    LogcatStorageHelper.addLog("[W-" + (char) mWriteData.get(mPartCurrent)[0] + "] : " + parse(mWriteData.get(mPartCurrent)));
 					return mWriteData.get(mPartCurrent);
 				}
 			}
@@ -1077,21 +1148,44 @@ public abstract class BLEActionService extends IntentService {
 				}
 			}
 			
-			if(params == null || params.length != 2 || params[0] == null || params[1] == null){
+			if(params == null || params.length < 2 || mWifiSecretKey == null){
 				throw new UnknownParametersException("Invalid parameters", key, params);
 			}
 			
 			try {
-				byte[] curOriBuffer3 = params[0].getBytes("UTF8");
-				byte[] curOriBuffer4 = params[1].getBytes("UTF8");
+				byte[] curOriBuffer3 = mWifiSecretKey;
+				byte[] curOriBuffer4 = null;
+				byte[] curOriBuffer5 = null;
 
-				byte[] oriBuffer1 = new byte[curOriBuffer3.length + curOriBuffer4.length + 4];
-				oriBuffer1[0] = 0x0;
+				int buffer4Length = 0;
+				int buffer5Length = 0;
+
+				if(params[1] != null){
+					curOriBuffer4 = params[1].getBytes("UTF-8");
+					buffer4Length = curOriBuffer4.length;
+				}
+
+				if(params.length == 3 && params[2] != null){
+					curOriBuffer5 = params[2].getBytes("UTF-8");
+					buffer5Length = curOriBuffer5.length;
+				}
+
+				byte[] oriBuffer1 = new byte[curOriBuffer3.length + buffer4Length + buffer5Length + 6];
+				oriBuffer1[0] = 0x0;                //SSID
 				oriBuffer1[1] = (byte) (curOriBuffer3.length & 0xff);
 				System.arraycopy(curOriBuffer3, 0, oriBuffer1, 2, curOriBuffer3.length);
-				oriBuffer1[curOriBuffer3.length + 2] = 0x3;
-				oriBuffer1[curOriBuffer3.length + 3] = (byte) (curOriBuffer4.length & 0xff);
-				System.arraycopy(curOriBuffer4, 0, oriBuffer1, curOriBuffer3.length + 4, curOriBuffer4.length);
+
+				oriBuffer1[curOriBuffer3.length + 2] = 0x3;   //secret
+				if(curOriBuffer4 != null) {
+					oriBuffer1[curOriBuffer3.length + 3] = (byte) (buffer4Length & 0xff);
+					System.arraycopy(curOriBuffer4, 0, oriBuffer1, curOriBuffer3.length + 4, buffer4Length);
+				}
+
+				if (curOriBuffer5 != null) {  //mac
+					oriBuffer1[curOriBuffer3.length + buffer4Length + 4] = 0x4;
+					oriBuffer1[curOriBuffer3.length + buffer4Length + 5] = (byte) (buffer5Length & 0xff);
+					System.arraycopy(curOriBuffer5, 0, oriBuffer1, curOriBuffer3.length + buffer4Length + 6, buffer5Length);
+				}
 
 				LogcatStorageHelper.addLog("set wifi name: " + params[0] + "  wifi pw: " + params[1]);
 				buildWriteDataArray(BLEConsts.MATE_COMMAND_GET_WIFI, oriBuffer1);
@@ -1107,7 +1201,7 @@ public abstract class BLEActionService extends IntentService {
 			} catch (UnsupportedEncodingException e) {
 				throw new UnknownParametersException("Invalid parameters", key, params);
 			}
-		case BLEConsts.MATE_COMMAND_GET_WIFI:
+		case BLEConsts.MATE_COMMAND_GET_WIFI_PAIRED:
 			codeBuffer[0] = BLEConsts.MATE_OP_CODE_REQUEST_KEY;
 			codeBuffer[1] = (byte) (0 & 0xff);
 			codeBuffer[2] = (byte) (1 & 0x0f);
@@ -1117,11 +1211,29 @@ public abstract class BLEActionService extends IntentService {
 			
 			codeBuffer[11] = (byte) 0xC8;////200
 			codeBuffer[12] = (byte) 0x01;
-			codeBuffer[13] = (byte) 0x05;
+			codeBuffer[13] = (byte) 0x06;
 			codeBuffer[14] = (byte) 0x05;
 			codeBuffer[15] = (byte) 0x01;
 			codeBuffer[16] = (byte) 0x20;
 			
+			PetkitLog.d("[X]" + parse(codeBuffer));
+			LogcatStorageHelper.addLog("[W-" + (char) codeBuffer[0] + "] get wifi paired send data: " + parse(codeBuffer));
+			break;
+		case BLEConsts.MATE_COMMAND_GET_WIFI:
+			codeBuffer[0] = BLEConsts.MATE_OP_CODE_REQUEST_KEY;
+			codeBuffer[1] = (byte) (0 & 0xff);
+			codeBuffer[2] = (byte) (1 & 0x0f);
+
+			System.arraycopy(FormatTransfer.toHH(301), 0, codeBuffer, 3, 4);
+			System.arraycopy(FormatTransfer.toHH(6), 0, codeBuffer, 7, 4);
+
+			codeBuffer[11] = (byte) 0xC8;////200
+			codeBuffer[12] = (byte) 0x01;
+			codeBuffer[13] = (byte) 0x05;
+			codeBuffer[14] = (byte) 0x05;
+			codeBuffer[15] = (byte) 0x01;
+			codeBuffer[16] = (byte) 0x20;
+
 			PetkitLog.d("[X]" + parse(codeBuffer));
 			LogcatStorageHelper.addLog("[W-" + (char) codeBuffer[0] + "] get wifi send data: " + parse(codeBuffer));
 			break;
@@ -1159,6 +1271,18 @@ public abstract class BLEActionService extends IntentService {
 			} catch (UnsupportedEncodingException e) {
 				throw new UnknownParametersException("Invalid parameters", key, params);
 			}
+        case BLEConsts.MATE_COMMAND_WRITE_ALIVE:
+            writeBuf1 = new byte[20];
+            writeBuf1[0] = BLEConsts.MATE_OP_CODE_REQUEST_KEY;
+            writeBuf1[1] = (byte) (0 & 0xff);
+            writeBuf1[2] = (byte) (1 & 0x0f);
+
+            System.arraycopy(FormatTransfer.toHH(BLEConsts.MATE_COMMAND_WRITE_ALIVE), 0, writeBuf1, 3, 4);
+            System.arraycopy(FormatTransfer.toHH(0), 0, writeBuf1, 7, 4);
+
+            LogcatStorageHelper.addLog("[W-" + (char) codeBuffer[0] + "] write alive code: " + parse(writeBuf1));
+            return writeBuf1;
+
 		default:
 			throw new UnknownParametersException("invalid mate op code", key);
 		}
@@ -1167,13 +1291,12 @@ public abstract class BLEActionService extends IntentService {
 	
 	
 	protected void buildWriteDataArray(int cmd, byte[] data) {
-		mWriteData = new ArrayList<byte[]>();
+		mWriteData = new ArrayList<>();
 		mPartCurrent = 0;
 		
 		int index = 0, tempSize = 0;
 		int totalBlockSize = 0;
 		byte[] writeBuf = null;
-		
 		while (index < data.length) {
 			writeBuf = new byte[20];
 			writeBuf[0] = BLEConsts.MATE_OP_CODE_REQUEST_KEY;
@@ -1237,6 +1360,9 @@ public abstract class BLEActionService extends IntentService {
 			}
 			break;
 		default:
+			if(response[0] != request){
+				throw new UnknownResponseException("Invalid response received", response, request);
+			}
 			break;
 		}
 		
@@ -1302,8 +1428,8 @@ public abstract class BLEActionService extends IntentService {
 			
 			deviceState.setHardware(byteChar[1]);
 			deviceState.setFirmware((byteChar[2]));
-			
-			if(deviceState.getHardware() == 1){
+
+			if(BLEConsts.PET_FIT_DISPLAY_NAME.equals(mBleDevice.getName()) && deviceState.getHardware() == 1){
 				deviceState.setExtra(new Extra(deviceState.getFirmware() % 2 == 0 ? "A" : "B"));
 				deviceState.setFirmware(deviceState.getFirmware() / 2);
 			}else {
@@ -1353,7 +1479,7 @@ public abstract class BLEActionService extends IntentService {
 			}
 			mDebugInfor.append(stringBuilder.toString());
 			
-			if(mComdLength >= 6){
+			if(mComdLength >= BLEConsts.WRITE_M_CMD_TIMES){
 				LogcatStorageHelper.addLog("[R-M] debug information: " + mDebugInfor.toString());
 			}
 			break;
@@ -1410,21 +1536,20 @@ public abstract class BLEActionService extends IntentService {
 //			LogcatStorageHelper.addLog("[R-Z] " + stringBuilder.toString());
 			parseReceiveData();
 			break;
-//		case BLEConsts.OP_CODE_READ_SN:
-//			if(mReceivedWifiData != null && mReceivedWifiData.length() > 0){
-//				byte[] data = mReceivedWifiData.toByteArray();
-//				byte[] temp = new byte[3];
-//				if(data.length >= 3){
-//					System.arraycopy(data, 0, temp, 0, 3);
-////					int len = data[1];
-////					byte[] temp = new byte[len];
-////					System.arraycopy(data, 2, temp, 0, len);
-//					updateProgressNotification(BLEConsts.PROGRESS_SYNC_DATA, new String(temp));
-//					mReceivedWifiData.clear();
-//				}
-//			}
-//			break;
-			
+		case (byte) 200:
+			mBleDevice.setHardware(byteChar[1]);
+			mBleDevice.setFireware(byteChar[2]);
+			byte[] dateArray = new byte[7];
+			byte[] timeArray = new byte[8];
+
+			System.arraycopy(byteChar, 3, dateArray, 0, 7);
+			System.arraycopy(byteChar, 10, timeArray, 0, 8);
+
+			PetkitLog.d("dateString: " + new String(dateArray));
+			PetkitLog.d("timeString " + new String(timeArray));
+			mBleDevice.setBuildDate(new String(dateArray) + " " + new String(timeArray));
+			break;
+
 		default:
 			break;
 		}
@@ -1612,17 +1737,19 @@ public abstract class BLEActionService extends IntentService {
 			while(index < data.length) {
 				byte type = data[index++];
 				if(start == type) {
-					if(wifiinfo != null && wifiinfo.getSSID() != null) {
+					if(wifiinfo != null && wifiinfo.getLevel() > 0) {
 						LogcatStorageHelper.addLog("[R-Z] parse wifi: " + new Gson().toJson(wifiinfo));
 						sendScanedWifiBroadcast(wifiinfo);
 					}
 					wifiinfo = new WifiInfo();
 				}
-				
+
+                if(index >= data.length) {
+                    break;
+                }
 				int len = data[index++];
 				
 				if(len == 0) {
-//					wifiinfo = null;
 					continue;
 				}
 				
@@ -1635,7 +1762,8 @@ public abstract class BLEActionService extends IntentService {
 				}
 				switch(type) {
 				case 0:
-					wifiinfo.setSSID(new String(temp, "gbk"));
+					wifiinfo.setSSID(temp);
+                    wifiinfo.setDisplayName(new String(temp, "UTF8"));
 					break;
 				case 1:
 					wifiinfo.setLevel(temp[0]);
@@ -1653,16 +1781,22 @@ public abstract class BLEActionService extends IntentService {
 				case 6:
 					wifiinfo.setAddress(new String(temp));
 					break;
+                case 7:
+                    wifiinfo.setDeviceMac(new String(temp));
+                    break;
+				case 8:
+					wifiinfo.setDisplayName(new String(temp, "GBK"));
+					break;
 				default:
-					mReceivedWifiData.clear();
-					sendScanedWifiCompletedBroadcast();
-					return;
+//					mReceivedWifiData.clear();
+//					sendScanedWifiCompletedBroadcast();
+//					return;
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			if(wifiinfo != null && wifiinfo.getSSID() != null) {
+			if(wifiinfo != null && wifiinfo.getLevel() > 0) {
 				LogcatStorageHelper.addLog("[R-Z] parse wifi: " + new Gson().toJson(wifiinfo));
 				sendScanedWifiBroadcast(wifiinfo);
 			}
@@ -1671,7 +1805,7 @@ public abstract class BLEActionService extends IntentService {
 	}
 	
 	protected void saveConfirmedData(Pet dog){
-		if(mDataBuffers != null && mDataBuffers.size() == 0){
+		if(mDataBuffers == null || mDataBuffers.size() == 0){
 			return;
 		}
 		
@@ -1695,45 +1829,6 @@ public abstract class BLEActionService extends IntentService {
 			startService(intent2);
 		}
 	}
-	
-
-	private int getSeconds() {
-		long quot = 0;
-		int seconds = 0;
-		SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		try {
-			Date date1 = ft.parse(BLEConsts.BASE_TIMELINE);
-			Date date2 = ft.parse(ft.format(new Date()));
-			quot = date2.getTime() - date1.getTime();
-			seconds = (int) (quot / 1000);
-			
-			getOffsetByTime(quot);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return seconds;
-	}
-	
-	
-	@SuppressWarnings("deprecation")
-	private int getOffsetByTime(long timestamp){
-		GregorianCalendar gc = new GregorianCalendar();
-		java.text.SimpleDateFormat format = new java.text.SimpleDateFormat(
-				"yyyy-MM-dd HH:mm:ss");
-
-		try {
-			timestamp += format.parse(BLEConsts.BASE_TIMELINE).getTime();
-			Date date = new Date(timestamp);
-			gc.setTime(date);
-			int offset = (date.getHours() * 3600 + date.getMinutes() * 60 + date.getSeconds())/10;
-			return offset;
-			
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		return 0;
-	}
-	
 	
 	/********************************** PETKIT V1 OTA  ****************************************/
 	protected ImgHdr mFileImgHdr = new ImgHdr();
@@ -1835,7 +1930,9 @@ public abstract class BLEActionService extends IntentService {
 	
 	
 	protected void refreshHeartbeatTime() {
-		lastHeartbeatTimeMillis = System.currentTimeMillis();
+        if(mKeepAliveTimer == null) {
+            lastHeartbeatTimeMillis = System.currentTimeMillis();
+        }
 	}
 	
 	protected void stopHeartbeat() {
@@ -1875,8 +1972,10 @@ public abstract class BLEActionService extends IntentService {
 
 		@Override
 		public void run() {
-			PetkitLog.d("KeepAliveTimerTask sendKeepAliveMessage -> write_duration : " + write_duration + ", currentTimeMillis： " + System.currentTimeMillis());
-			sendKeepAliveMessage();
+			if(mPaused && !mAborted && mError == 0){
+				sendKeepAliveMessage();
+			}
+
 		}
 	}
 
@@ -1894,6 +1993,12 @@ public abstract class BLEActionService extends IntentService {
 	}
 
 	protected void startKeepAlive() {
+
+        if(BLEConsts.compareMateVersion(curMateVersion, BLEConsts.MATE_BASE_VERSION_FOR_ALIVE_CMD) < 0){
+            return;
+        }
+        LogcatStorageHelper.addLog("startKeepAlive");
+
 		if(mKeepAliveTimer == null){
 			mKeepAliveTimer = new Timer();
 			mKeepAliveTimerTask = new KeepAliveTimerTask();
@@ -1901,6 +2006,9 @@ public abstract class BLEActionService extends IntentService {
 			PetkitLog.d("startKeepAlive");
 		}
 	}
+
+
+
 	
 	protected abstract void startOTA(final Intent intent); 
 	protected abstract void startSyncDevice(final Intent intent); 
@@ -1910,6 +2018,9 @@ public abstract class BLEActionService extends IntentService {
 	protected abstract void startInitAndChangeMate(final Intent intent);
 	protected abstract void stop();
 	protected abstract void sendKeepAliveMessage();
+	protected abstract void startGoOTA(final Intent intent);
+	protected abstract void startInitAndChangeGo(final Intent intent);
+	protected abstract void startGoSampling(final Intent intent);
 
 	protected abstract void onBlockTimer();
 	

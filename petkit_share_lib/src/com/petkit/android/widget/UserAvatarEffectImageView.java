@@ -1,7 +1,5 @@
 package com.petkit.android.widget;
 
-import com.petkit.android.utils.ConvertDipPx;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -15,7 +13,10 @@ import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
+import com.petkit.android.utils.ConvertDipPx;
+
 public class UserAvatarEffectImageView extends ImageView{
+	private int cornerRadius = -1;
 
 	public UserAvatarEffectImageView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
@@ -25,6 +26,13 @@ public class UserAvatarEffectImageView extends ImageView{
 	public UserAvatarEffectImageView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		init();
+		int count = attrs.getAttributeCount();
+		for(int i =0;i<count;i++){
+			String attrName = attrs.getAttributeName(i);
+			if("cornerWeight".equals(attrName)){
+				cornerRadius = attrs.getAttributeIntValue(i,-1);
+			}
+		}
 	}
 
 	public UserAvatarEffectImageView(Context context) {
@@ -50,7 +58,7 @@ public class UserAvatarEffectImageView extends ImageView{
             final Paint paint = new Paint();
             final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
             final RectF rectF = new RectF(rect);
-            final float roundPx = ConvertDipPx.dip2px(getContext(), 6);
+			float roundPx = ConvertDipPx.dip2px(getContext(), cornerRadius==-1?6:cornerRadius);
 
             paint.setAntiAlias(true);
             canvas.drawARGB(0, 0, 0, 0);
@@ -78,6 +86,5 @@ public class UserAvatarEffectImageView extends ImageView{
 		Bitmap bm = bd.getBitmap();
 		this.setImageBitmap(bm);
 	}
-	
 
 }

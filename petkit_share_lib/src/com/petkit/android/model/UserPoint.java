@@ -12,7 +12,7 @@ public class UserPoint implements Serializable {
 	private String icon2;
 	private int startGrowth;
 	private int endGrowth;
-	
+
 	public String getHonour() {
 		return honour;
 	}

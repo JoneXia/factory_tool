@@ -14,40 +14,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cz.msebera.android.httpclient.client.HttpClient;
-
 public class AsyncHttpUtil {
 
 	private static AsyncHttpClient client = new AsyncHttpClient();
 	private static String baseUrl;
 
 	static{
+        client.setLoggingEnabled(false);
 		client.setTimeout(1000* 30);
+		client.setConnectTimeout(1000 * 10);
 	}
 	
 	public static void setBaseUrl(String baseUrl){
 		AsyncHttpUtil.baseUrl = baseUrl;
 	}
 	
-	public static String sessionID = null; 
-
 	public static void get(String url, Map<String, String> params,
 			AsyncHttpResponseHandler responseHandler) {
-		get(url, params, responseHandler, false);
+        PetkitLog.d("HttpUtil", "get url --> " + getAbsoluteUrl(url));
+        PetkitLog.d("HttpUtil", "params --> " + params.toString());
+        client.get(getAbsoluteUrl(url), new RequestParams(params),
+                responseHandler);
 	}
-	public static void get(String url, Map<String, String> params,
-			AsyncHttpResponseHandler responseHandler, boolean isReadCache) {
-		PetkitLog.d("HttpUtil", "get url --> " + getAbsoluteUrl(url));
-		PetkitLog.d("HttpUtil", "params --> " + params.toString());
-		client.get(getAbsoluteUrl(url), new RequestParams(params),
-				responseHandler);
-	}
-
 
 	public static void get(String url, AsyncHttpResponseHandler responseHandler) {
-		get(url, responseHandler, true);
-	}
-	public static void get(String url, AsyncHttpResponseHandler responseHandler, boolean isReadCache) {
 		PetkitLog.d("HttpUtil", "get url --> " + getAbsoluteUrl(url));
 		client.get(getAbsoluteUrl(url), responseHandler);
 	}
@@ -79,7 +69,7 @@ public class AsyncHttpUtil {
 	
 	public static void post(Context context, String url, Map<String, String> params, ResponseHandlerInterface responseHandler, boolean isReadCache){
 		PetkitLog.d("HttpUtil", "get url --> " + getAbsoluteUrl(url));
-		PetkitLog.d("HttpUtil", "params --> " + params.toString());
+		PetkitLog.d("HttpUtil", "params --> " + (params != null ? params.toString() : ""));
 		client.post(context, getAbsoluteUrl(url), new RequestParams(params), responseHandler, isReadCache);
 	}
 	
@@ -113,7 +103,6 @@ public class AsyncHttpUtil {
 			}
 		}
 		client.post(getAbsoluteUrl(url), params2, responseHandler, isReadCache);
-//		client.post(getAbsoluteUrl(url), params2, responseHandler);
 	}
 	
 	private static String getAbsoluteUrl(String relativeUrl) {
@@ -123,10 +112,6 @@ public class AsyncHttpUtil {
 		return relativeUrl;
 	}
 
-	public static HttpClient getHttpClient(){
-		return client.getHttpClient();
-	}
-	
 	public static void addHttpHeader(String name, String value){
 		client.addHeader(name, value);
 	}

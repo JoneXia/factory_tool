@@ -1,6 +1,8 @@
 package com.petkit.matetool.ui.base;
 
 import android.app.Activity;
+import android.content.Context;
+import android.support.multidex.MultiDex;
 import android.util.DisplayMetrics;
 
 import com.orm.SugarApp;
@@ -27,6 +29,12 @@ public class BaseApplication extends SugarApp {
 
         CrashHandler crashHandler = CrashHandler.getInstance();
 		crashHandler.init(this);
+	}
+
+	@Override
+	protected void attachBaseContext(Context base) {
+		super.attachBaseContext(base);
+		MultiDex.install(this);
 	}
 
 	public static DisplayMetrics getDisplayMetrics(Activity activity){

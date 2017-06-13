@@ -23,9 +23,9 @@ public class CheckImageLoaderConfiguration {
 			// ImageLoaderConfiguration.createDefault(this);
 			// method.
 			ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
-					.threadPriority(Thread.NORM_PRIORITY)
+					.threadPriority(Thread.NORM_PRIORITY - 2)
+                    .threadPoolSize(3)
 					.denyCacheImageMultipleSizesInMemory()
-                    .memoryCache(new WeakMemoryCache())
 					.diskCacheFileNameGenerator(new Md5FileNameGenerator())
 					.diskCache(new LimitedAgeDiskCache(StorageUtils.getCacheDirectory(context), null, new Md5FileNameGenerator(), discCacheLimitTime))
 					.tasksProcessingOrder(QueueProcessingType.LIFO)

@@ -100,7 +100,7 @@ public class ActivityDataProcessService extends Service {
 		broadcast.putExtra(BLEConsts.EXTRA_LOG_MESSAGE, logoutMsg);
 		LocalBroadcastManager.getInstance(this).sendBroadcast(broadcast);
 		
-		LogcatStorageHelper.addLog("Unexpected error : " + error);
+		LogcatStorageHelper.addLog("Unexpected error : " + BLEConsts.convertErrorCode(error));
 	}
 
 	/**

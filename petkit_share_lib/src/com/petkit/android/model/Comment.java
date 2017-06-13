@@ -14,7 +14,8 @@ public class Comment implements Serializable{
 	private String id;
 	private String img;
 	private Author replyTo;
-	
+	private Emotion bigEmotion;
+
 	
 	public Author getCommentor() {
 		return commentor;
@@ -55,5 +56,10 @@ public class Comment implements Serializable{
 	public void setReplyTo(Author replyTo) {
 		this.replyTo = replyTo;
 	}
-	
+	public Emotion getBigEmotion() {
+		return bigEmotion;
+	}
+	public void setBigEmotion(Emotion bigEmotion) {
+		this.bigEmotion = bigEmotion;
+	}
 }

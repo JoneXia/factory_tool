@@ -36,6 +36,10 @@ public final class PetkitLog {
     //------------------------------------------------------
 	
     private static boolean sLogEnabled = true;
+
+    public static boolean isLogEnabled(){
+        return sLogEnabled;
+    }
     
     /**
      * Initialize the DebugLog by enabling it if the debuggable attribute is set in the manifest, or disabling it
@@ -68,7 +72,6 @@ public final class PetkitLog {
      * @param tag Used to identify the source of a log message.  It usually identifies
      *        the class or activity where the log call occurs.
      * @param text The text for the message being logged.
-     * @param args Arguments of the format string.
      */
     public static void d(String tag, String text) {
         if(sLogEnabled) {
@@ -101,9 +104,9 @@ public final class PetkitLog {
     		Log.w(tag, text);
     	}
     }
-    
+
     /**
-     * 
+     *
      * @param tag
      * @param text
      */
@@ -111,5 +114,58 @@ public final class PetkitLog {
     	if(sLogEnabled){
     		Log.i(tag, text);
     	}
+    }
+
+    /**
+     * 使用“类名_方法名_行数“作为tag打印日志
+     * @param string 需要打印的信息（一般）
+     */
+
+    public static void info(String string)
+    {
+        if(sLogEnabled) Log.i(getLogTag(),string);
+    }
+
+    /**
+     * 使用“类名_方法名_行数“作为tag打印日志
+     * @param string 需要打印的信息(警告)
+     */
+    public static void warn(String string) {
+        if(sLogEnabled) Log.w(getLogTag(), string);
+    }
+
+    /**
+     ** 使用“类名_方法名_行数“作为tag打印日志
+     * @param string 需要打印的信息（错误）
+     */
+    public static void er(String string) {
+        if(sLogEnabled) Log.e(getLogTag(),string);
+    }
+
+    /**
+     * 获取打印log的语句的类名+方法名+行数，将其作为tag
+     * @return “类名_方法名_行数“
+     */
+    private static String getLogTag()
+    {
+        try
+        {
+            Exception exception = new Exception();
+            StackTraceElement[] elements = exception.getStackTrace();
+            if(elements.length<3)
+            {
+                return "LogTag_error";
+            }
+            String className = elements[2].getClassName();
+            int index = className.lastIndexOf(".");
+            className = className.substring(index+1);
+            String tag = className+"_"+elements[2].getMethodName()+"_"+elements[2].getLineNumber();
+            return tag;
+        }
+        catch (Throwable e)
+        {
+            e.printStackTrace();
+            return "LogTag_error";
+        }
     }
 }

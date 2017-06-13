@@ -2,6 +2,7 @@ package com.petkit.android.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class PostItem implements Serializable{
 	private static final long serialVersionUID = -4490724465877684976L;
@@ -15,7 +16,10 @@ public class PostItem implements Serializable{
 	private int recommend;
 	private int favor;
 	private String id;
-	private ArrayList<String> imgs;
+
+	//delete by v6.3
+//	private ArrayList<String> imgs;
+
 	private int myfavor;
 	private Tag tag;
 	private String title;
@@ -26,16 +30,27 @@ public class PostItem implements Serializable{
 	private int followed;
 	
 	private ArrayList<Topic> topics;
-	private Comment postComment;
+
+	//delete from v6.3
+//	private Comment postComment;
 	
 	private String link;
 	private String summary;
 	
 	private Video video;
+	private int videoSource;
 	
 	//5.4 add
 	private Poi poi;
-	
+
+	//v6.3 add
+	private int distance;
+	private List<Comment> comments;
+	private ArrayList<ImageDetail> images;
+
+	//v6.5 add
+	private boolean hideTime;
+
 	public String getSummary() {
 		return summary;
 	}
@@ -78,12 +93,12 @@ public class PostItem implements Serializable{
 	public void setId(String id) {
 		this.id = id;
 	}
-	public ArrayList<String> getImgs() {
-		return imgs;
-	}
-	public void setImgs(ArrayList<String> imgs) {
-		this.imgs = imgs;
-	}
+//	public ArrayList<String> getImgs() {
+//		return imgs;
+//	}
+//	public void setImgs(ArrayList<String> imgs) {
+//		this.imgs = imgs;
+//	}
 	public int getMyfavor() {
 		return myfavor;
 	}
@@ -144,12 +159,12 @@ public class PostItem implements Serializable{
 	public void setTopics(ArrayList<Topic> topics) {
 		this.topics = topics;
 	}
-	public Comment getPostComment() {
-		return postComment;
-	}
-	public void setPostComment(Comment postComment) {
-		this.postComment = postComment;
-	}
+//	public Comment getPostComment() {
+//		return postComment;
+//	}
+//	public void setPostComment(Comment postComment) {
+//		this.postComment = postComment;
+//	}
 	public int getFollowed() {
 		return followed;
 	}
@@ -181,7 +196,73 @@ public class PostItem implements Serializable{
 	public void setPoi(Poi poi) {
 		this.poi = poi;
 	}
-	
-	
-	
+
+	public void setVideoSource(int videoSource){
+		this.videoSource = videoSource;
+	}
+
+	public int getVideoSource(){
+		return videoSource;
+	}
+
+	public List<Comment> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
+	}
+
+	public int getDistance() {
+		return distance;
+	}
+
+	public void setDistance(int distance) {
+		this.distance = distance;
+	}
+
+	public void addComment(Comment comment) {
+		if(comments == null) {
+			comments = new ArrayList<>();
+		} else if(comments.size() == 2) {
+			comments.remove(0);
+		}
+
+		comments.add(comment);
+	}
+
+	public void addFavorUser(Author author) {
+		if(latestFavorUsers == null) {
+			latestFavorUsers = new ArrayList<>();
+		}
+
+		latestFavorUsers.add(author);
+	}
+
+	public void removeFavorUser(Author author) {
+		if(latestFavorUsers != null && author != null && author.getId() != null) {
+			for (Author author1 : latestFavorUsers) {
+				if(author1.getId().equals(author.getId())) {
+					latestFavorUsers.remove(author1);
+					break;
+				}
+			}
+		}
+	}
+
+	public ArrayList<ImageDetail> getImages() {
+		return images;
+	}
+
+	public void setImages(ArrayList<ImageDetail> images) {
+		this.images = images;
+	}
+
+	public void setHideTime(boolean hideTime) {
+		this.hideTime = hideTime;
+	}
+
+	public boolean isHideTime() {
+		return hideTime;
+	}
 }

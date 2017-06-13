@@ -3,14 +3,21 @@ package com.petkit.android.utils;
 public class Consts {
 	
 	public static final String HTTP_HEADER_SESSION = "X-Session";
-	public static final String HTTP_HEADER_LOCATION = "X-Location";
+    public static final String HTTP_HEADER_API_VERSION = "X-Api-Version";
+    public static final String HTTP_HEADER_LOCATION = "X-Location";
 	public static final String HTTP_HEADER_LOCATE_KEY = "X-Locale";
 	public static final String HTTP_HEADER_TIMEZONE_KEY = "X-Timezone";
 	public static final String HTTP_HEADER_IMAGE = "X-Img-Version";
+	public static final String HTTP_HEADER_CLIENT = "X-Client";
 	
 	public static final String IMAGE_VERSION = "1";
+
+    public static final int MAX_POST_IMAGE_COUNT = 9;
 	
 	public static final int LIMIT = 20;
+	public static final int DEFAULT_POST_FAVOR_LIST_COUNT = 8;
+	public static final int MESSAGE_PAGE_COUNT = 100;
+
 	public static final int GENDER_MALE = 1;
 	public static final int GENDER_FEMALE = 2;
 	public static final int PREGNANT_LACTATION = 2;
@@ -23,6 +30,13 @@ public class Consts {
 	public static final int FEMALE_PREGNANT =3;
 	public static final int WEIGHT_KG =0;
 	public static final int WEIGHT_POUND =1;
+	public static final int SPORTS_LAZY =1;
+	public static final int SPORTS_NORMAL =2;
+	public static final int SPORTS_ACTIVE =3;
+	public static final int EMOTION_LAD = 1;
+	public static final int EMOTION_FIRST_LOVER = 2;
+	public static final int EMOTION_EXPERIENCED_LOVER = 3;
+	public static final int EMOTION_PROFESSIONAL_PRARENT = 4;
 
 	public static final int ACTIVITY_DATA_LENGTH_PER_DAY = 96;
 	public static final long PETKIT_DATA_SYNC_INTERVAL = 3600 * 1000 * 1L;	//1 hour
@@ -71,9 +85,11 @@ public class Consts {
 	public static final String SHARED_USER_ID	= "SHARED_USER_ID";
 	public static final String SHARED_DEVICE_CONNECT_STATE	= "SHARED_DEVICE_CONNECT_STATE";
 	public static final String SHARED_DEVICE_BATTERY_LOW_FLAG	= "SHARED_DEVICE_BATTERY_LOW_FLAG";
+	public static final String SHARED_POST_BLOCKED_ID_LIST	= "SHARED_POST_BLOCKED_ID_LIST";
 
 	public static final String SHARED_DEFAULT_FEED_DOG_ID = "SHARED_DEFAULT_FEED_DOG_ID";
-	
+	public static final String SHARED_EMOTION_GROUP_RESULT = "SHARED_EMOTION_GROUP_RESULT";
+
 	public static final String Characteristic_TYPE_CALORIE = "calorie";
 	public static final String Characteristic_TYPE_MOOD = "mood";
 	public static final String Characteristic_TYPE_DISEASE = "disease";
@@ -86,9 +102,9 @@ public class Consts {
 	public static final String TEMP_DAILY_DETAIL_FILE_NAME = "tempDailyDetail.json";
 	
 
-	public static final int NETWORN_NONE = 0;
-	public static final int NETWORN_MOBILE = 1;
-	public static final int NETWORN_WIFI = 2;
+	public static final int NETWORK_NONE = 0;
+	public static final int NETWORK_MOBILE = 1;
+	public static final int NETWORK_WIFI = 2;
 	
 	
 	public static final String IMAGE_STYLE_AVATAR = "@!120-120";
@@ -149,14 +165,58 @@ public class Consts {
 	public static final int CACHE_TYPE_BATTERY			= 1;
 	
 	public static final String ANDROID_SUPPORTED_DEVICES = "android_supported_devices";
-	
+
+	public static final int PET_TYPE_NULL			= 0;
 	public static final int PET_TYPE_DOG			= 1;
 	public static final int PET_TYPE_CAT			= 2;
-	
-	
-	
+
+	public static final String MATE_GET_WIFI_STEP_KEY		= "get_wifi_step";
+	public static final int MATE_GET_WIFI_STEP_ONE			= 1;
+	public static final int MATE_GET_WIFI_STEP_TWO			= 2;
 	/**  ------------------------------------ home station api ---------------------------------- */
 	public static final String SHARED_HS_DEVICE_LIST			= "SHARED_HS_DEVICE_LIST";	
 	public static final String PETKIT_VERSION_CODE = "5";
-	
+
+	public static final int WIFI_CONFIG_SUCCESS			 = 0;
+	public static final int WIFI_CONFIG_FAIL			 = 1;
+
+	public static final int NETWORK_CLOSE				 = 0;
+	public static final int NETWORK_WIFI_ONLY			 = 1;
+	public static final int NETWORK_WIFI_AND_DATA		 = 2;
+
+	public static final int VIDEO_SOURCE_CAPTURE		= 0;
+	public static final int VIDEO_SOURCE_IMPORT			= 1;
+
+	public static final int LOCATION_MYSELFFRAGMENT = 0;
+	public static final int LOCATION_PERSONALACTIVITY = 1;
+
+	public static final int FRAGMENT_REGISTERTYPE_1   = 1;
+	public static final int FRAGMENT_REGISTERTYPE_2   = 2;
+	public static final int FRAGMENT_CATEGORY         = 3;
+	public static final int FRAGMENT_BIRTHDAY         = 4;
+	public static final int FRAGMENT_GENDER           = 5;
+	public static final int FRAGMENT_WEIGHT           = 6;
+
+	public static final int FRAGMENT_ACTIVITY = 7;
+	public static final int FRAGMENT_FOOD_1   = 8;
+	public static final int FRAGMENT_FOOD_2   = 9;
+
+	public static final String PET_NAME                      = "name";
+	public static final String PET_GENDER                    = "gender";
+	public static final String PET_CATEGORY                  = "category";
+	public static final String PET_WEIGHT                    = "weight";
+	public static final String PET_BIRTH                     = "birth";
+	public static final String PET_FOOD                      = "food";
+	public static final String PET_PRIVATE_FOOD              = "privateFood";
+	public static final String PET_MALE_STATE                = "maleState";
+	public static final String PET_FEMALE_STATE              = "femaleState";
+	public static final String PET_PREGNANT_STATE            = "pregnantStart";
+	public static final String PET_LACTATION_STATE           = "lactationStart";
+	public static final String PET_ACTIVEDEGREE              = "activeDegree";
+	public static final String PET_TYPE                      = "type";
+	public static final String PET_SIZE                      = "size";
+	public static final String PET_AVATAR                    = "avatar";
+
+	public static final int VIEW_FROM_ACCOUNT_FIRST_REGISTER_PET = 1;  //用户注册完善信息后直接第一次进入添加宠物界面
+
 }

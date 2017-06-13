@@ -15,7 +15,7 @@ public class CustomImageDownloader extends BaseImageDownloader {
 		super(context);
 	}
 	
-	public static HashMap<String, String> header = new HashMap<String, String>();
+	public static HashMap<String, String> header = new HashMap<>();
 	
 	@Override
 	protected HttpURLConnection createConnection(String url, Object extra)

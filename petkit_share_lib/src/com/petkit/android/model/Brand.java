@@ -10,6 +10,7 @@ public class Brand implements Serializable{
 	private String name;
 	private String icon;
 	private int id;
+    private int privated;
 	
 	public String getIndex() {
 		return index;
@@ -35,5 +36,12 @@ public class Brand implements Serializable{
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
+    public int getPrivated() {   // 0 表示公有的宠粮种类， 1 表示用户自己添加的宠粮， 2表示添加项
+        return privated;
+    }
+
+    public void setPrivated(int privated) {
+        this.privated = privated;
+    }
 }

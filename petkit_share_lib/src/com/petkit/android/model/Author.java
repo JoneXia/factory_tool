@@ -10,12 +10,15 @@ public class Author implements Serializable {
 	private String avatar;
 	private int gender;
 	private String id;
-	private String nick;
-	private Address addr;
+	private String nick = "";
 	private int coin;
 	private int official;
 	
 	private UserPoint point;
+    private String locality;
+
+	//v6.2 add
+	private int[] roles;
 	
 	public String getAvatar() {
 		return avatar;
@@ -47,12 +50,6 @@ public class Author implements Serializable {
 			nick = "u" + id;
 		}
 	}
-	public Address getAddr() {
-		return addr;
-	}
-	public void setAddr(Address addr) {
-		this.addr = addr;
-	}
 	public int getCoin() {
 		return coin;
 	}
@@ -71,5 +68,19 @@ public class Author implements Serializable {
 	public void setPoint(UserPoint point) {
 		this.point = point;
 	}
-	
+
+    public String getLocality() {
+        return locality;
+    }
+
+    public void setLocality(String locality) {
+        this.locality = locality;
+    }
+	public int[] getRoles() {
+		return roles;
+	}
+
+	public void setRoles(int[] roles) {
+		this.roles = roles;
+	}
 }

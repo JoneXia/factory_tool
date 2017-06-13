@@ -28,6 +28,7 @@ public class DateUtil {
 	public static final String DATE_FORMAT_9 = "yyyy/M/d";
 	public static final String DATE_FORMAT_10 = "yyyy-MM-dd HH:mm:ss";
 	public static final String DATE_FORMAT_11 = "yyyy年MM月dd日";
+	public static final String DATE_FORMAT_12 = "MM月dd日";
 	public static final int ISO8601DATE_FORMAT_VALUE_LENGTH = ISO8601DATE_FORMAT.length() - 4;
 
 	public static Date parseISO8601Date(String s) throws Exception {
@@ -114,6 +115,7 @@ public class DateUtil {
 			DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_3);
 			return dateFormat.format(parseISO8601Date(dateString));
 		} catch (Exception e) {
+			LogcatStorageHelper.addLog("[WARNING]  getFormatDate3FromString exception dateString: " + dateString + " format: " + DATE_FORMAT_3);
 			return dateString;
 		}
 	}
@@ -269,6 +271,7 @@ public class DateUtil {
 			return sdf.parse(str);
 		} catch (ParseException e) {
 			e.printStackTrace();
+			LogcatStorageHelper.addLog("[WARNING]  str2Date exception str: " + str + " format: " + format);
 		}
 		return null;
 	}
@@ -339,6 +342,20 @@ public class DateUtil {
 		}
 		return millionSeconds;
 	}
+
+    /**
+     * 日期的毫秒值
+     *
+     * @param dateString
+     * @return
+     */
+    public static long getMillisecondByDateString(String dateString){
+        try {
+            return parseISO8601Date(dateString).getTime();
+        } catch (Exception e) {
+            return System.currentTimeMillis();
+        }
+    }
 	
 	/**
 	 * 两个日期相差的天数

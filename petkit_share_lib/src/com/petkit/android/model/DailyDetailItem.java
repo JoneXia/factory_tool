@@ -1,5 +1,6 @@
 package com.petkit.android.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,7 @@ import com.orm.dsl.Table;
 
 
 @Table(name = "DailyDetailItem")
-public class DailyDetailItem extends SugarRecord {
+public class DailyDetailItem extends SugarRecord implements Serializable{
 
 	@Column(name = "dogId", unique = false, notNull = true)
 	private String dogId;
@@ -68,6 +69,10 @@ public class DailyDetailItem extends SugarRecord {
 	//v7 add 
 	private int lazyrank;
 	private int lazyscore;
+
+    //v11 add, used to search
+    private long dogindex;
+    private long dayindex;
 
 	public String getDogId() {
 		return dogId;
@@ -349,4 +354,19 @@ public class DailyDetailItem extends SugarRecord {
 		this.lazyscore = lazyscore;
 	}
 
+    public long getDogindex() {
+        return dogindex;
+    }
+
+    public void setDogindex(long dogindex) {
+        this.dogindex = dogindex;
+    }
+
+    public long getDayindex() {
+        return dayindex;
+    }
+
+    public void setDayindex(long dayindex) {
+        this.dayindex = dayindex;
+    }
 }

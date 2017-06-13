@@ -1,6 +1,7 @@
 package com.petkit.android.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Pet implements Serializable{
 
@@ -10,6 +11,7 @@ public class Pet implements Serializable{
 	private String birth;
 	private Device device;
 	private Food food;
+	private PrivateFood privateFood;
 	private int gender;
 	private String id;
 	private String name;
@@ -22,9 +24,50 @@ public class Pet implements Serializable{
 	private String maleState;
 	private String pregnantStart;
 	private String lactationStart;
-	
+	private int activeDegree;
 	private Author owner;
-	
+	private String weightLabel;
+	private int emotion;
+	private PetSize size;
+	private int weightControl;//体重控制，1增肥，2减肥，3保持
+	private ArrayList<Integer> states;//1生病，2发情，3怀孕，4哺乳
+
+	public static long getSerialVersionUID() {
+		return serialVersionUID;
+	}
+
+	public PrivateFood getPrivateFood() {
+		return privateFood;
+	}
+
+	public void setPrivateFood(PrivateFood privateFood) {
+		this.privateFood = privateFood;
+	}
+
+	public void setWeightLabel(String weightLabel) {
+		this.weightLabel = weightLabel;
+	}
+
+	public void setEmotion(int emotion) {
+		this.emotion = emotion;
+	}
+
+	public void setSize(PetSize size) {
+		this.size = size;
+	}
+
+	public String getWeightLabel() {
+		return weightLabel;
+	}
+
+	public int getEmotion() {
+		return emotion;
+	}
+
+	public PetSize getSize() {
+		return size;
+	}
+
 	public String getAvatar() {
 		if(avatar == null || avatar.length() == 0){
 			if(category != null){
@@ -131,5 +174,23 @@ public class Pet implements Serializable{
 	}
 	public String getLactationStart() {
 		return lactationStart;
+	}
+	public void setActiveDegree(int activeDegree) {
+		this.activeDegree = activeDegree;
+	}
+	public int getActiveDegree() {
+		return activeDegree;
+	}
+	public int getWeightControl() {
+		return weightControl;
+	}
+	public void setWeightControl(int weightControl) {
+		this.weightControl = weightControl;
+	}
+	public ArrayList<Integer> getStates() {
+		return states;
+	}
+	public void setStates(ArrayList<Integer> states) {
+		this.states = states;
 	}
 }

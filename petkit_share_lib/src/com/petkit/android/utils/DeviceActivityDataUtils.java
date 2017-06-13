@@ -81,12 +81,12 @@ public class DeviceActivityDataUtils {
 	
 	private static ArrayList<ActivityData> getTempActivityData(String petId){
 		if(petId == null || petId.length() == 0){
-			return new ArrayList<ActivityData>();
+			return new ArrayList<>();
 		}
 		
 		String data = FileUtils.readFileToString(new File(CommonUtils.getAppCacheActivityDataDirPath() + petId +  "-" + Consts.TEMP_ACTIVITY_DATA_FILE_NAME));
 		if(data == null || data.length() == 0){
-			return new ArrayList<ActivityData>();
+			return new ArrayList<>();
 		}
 		
 		Gson gson = new Gson();

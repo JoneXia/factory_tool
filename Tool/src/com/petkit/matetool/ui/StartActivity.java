@@ -18,13 +18,14 @@ import android.widget.RadioGroup;
 import com.petkit.android.utils.LogcatStorageHelper;
 import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.R;
+import com.petkit.matetool.ui.go.GoTestMainActivity;
 import com.petkit.matetool.service.DatagramConsts;
 import com.petkit.matetool.service.DatagramProcessService;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.catlitter.CatLitterMainActivity;
 import com.petkit.matetool.ui.feeder.FeederTestPrepareActivity;
 import com.petkit.matetool.ui.mate.SelectActivity;
 import com.petkit.matetool.ui.permission.PermissionDialogActivity;
-import com.petkit.matetool.ui.catlitter.CatLitterMainActivity;
 import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.Utils;
 import com.petkit.matetool.widget.LoadDialog;
@@ -50,7 +51,7 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
         if(!checkSelfPermissionComplete(this)) {
             startActivity(PermissionDialogActivity.class);
         } else {
-            LogcatStorageHelper.getInstance(this, "http://www.baidu.com").start();
+            LogcatStorageHelper.getInstance(this, "", "").start();
         }
 
     }
@@ -118,6 +119,11 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
                         bundle.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
                         startActivityWithData(CatLitterMainActivity.class, bundle, false);
                         break;
+                    case Globals.GO:
+                        bundle = new Bundle();
+                        bundle.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
+                        startActivityWithData(GoTestMainActivity.class, bundle, false);
+                        break;
                 }
                 collapseSoftInputMethod(fixtureNumberEditText);
                 break;
@@ -132,6 +138,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
                 break;
             case R.id.mate_pro:
                 testStyle = Globals.MATE_PRO;
+                break;
+            case R.id.go:
+                testStyle = Globals.GO;
                 break;
             case R.id.feeder:
                 testStyle = Globals.FEEDER;
@@ -181,7 +190,7 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
                 } else if(arg1.getAction().equals(Globals.BROADCAST_PERMISSION_FINISHED)) {
                     boolean result = arg1.getBooleanExtra("result", false);
                     if(result){
-                        LogcatStorageHelper.getInstance(StartActivity.this, "http://www.baidu.com").start();
+                        LogcatStorageHelper.getInstance(StartActivity.this, "", "").start();
                     } else {
                         finish();
                     }

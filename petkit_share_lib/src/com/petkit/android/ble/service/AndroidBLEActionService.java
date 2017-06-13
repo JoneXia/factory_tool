@@ -1,39 +1,5 @@
 package com.petkit.android.ble.service;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.UUID;
-
-import org.apache.http.util.ByteArrayBuffer;
-
-import com.petkit.android.ble.BLEConsts;
-import com.petkit.android.ble.Conversion;
-import com.petkit.android.ble.DeviceInfo;
-import com.petkit.android.ble.GattError;
-import com.petkit.android.ble.ZipHexInputStream;
-import com.petkit.android.ble.exception.DeviceDisconnectedException;
-import com.petkit.android.ble.exception.BLEErrorException;
-import com.petkit.android.ble.exception.HexFileValidationException;
-import com.petkit.android.ble.exception.RemoteDfuException;
-import com.petkit.android.ble.exception.UnexpectedCompleteException;
-import com.petkit.android.ble.exception.UnknownParametersException;
-import com.petkit.android.ble.exception.UnknownResponseException;
-import com.petkit.android.ble.exception.BLEAbortedException;
-import com.petkit.android.model.Pet;
-import com.petkit.android.utils.CommonUtils;
-import com.petkit.android.utils.Consts;
-import com.petkit.android.utils.FileUtils;
-import com.petkit.android.utils.LogcatStorageHelper;
-import com.petkit.android.utils.PetkitLog;
-import com.umeng.analytics.MobclickAgent;
-
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -43,13 +9,63 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.BluetoothLeScanner;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanFilter;
+import android.bluetooth.le.ScanResult;
+import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.util.Log;
+
+import com.google.gson.Gson;
+import com.petkit.android.ble.ArchiveInputStream;
+import com.petkit.android.ble.BLEConsts;
+import com.petkit.android.ble.Conversion;
+import com.petkit.android.ble.DeviceInfo;
+import com.petkit.android.ble.GattError;
+import com.petkit.android.ble.HexInputStream;
+import com.petkit.android.ble.ZipHexInputStream;
+import com.petkit.android.ble.exception.BLEAbortedException;
+import com.petkit.android.ble.exception.BLEErrorException;
+import com.petkit.android.ble.exception.DeviceDisconnectedException;
+import com.petkit.android.ble.exception.DfuException;
+import com.petkit.android.ble.exception.HexFileValidationException;
+import com.petkit.android.ble.exception.RemoteDfuException;
+import com.petkit.android.ble.exception.SizeValidationException;
+import com.petkit.android.ble.exception.UnexpectedCompleteException;
+import com.petkit.android.ble.exception.UnknownParametersException;
+import com.petkit.android.ble.exception.UnknownResponseException;
+import com.petkit.android.ble.exception.UploadAbortedException;
+import com.petkit.android.ble.scanner.BootloaderScannerFactory;
+import com.petkit.android.model.Pet;
+import com.petkit.android.utils.CommonUtils;
+import com.petkit.android.utils.Consts;
+import com.petkit.android.utils.FileUtils;
+import com.petkit.android.utils.LogcatStorageHelper;
+import com.petkit.android.utils.PetkitLog;
+import com.umeng.analytics.MobclickAgent;
+
+import org.apache.http.util.ByteArrayBuffer;
+
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
 
 @SuppressLint("NewApi")
 public class AndroidBLEActionService extends BLEActionService {
@@ -345,8 +361,9 @@ public class AndroidBLEActionService extends BLEActionService {
 			if(deviceState.getHardware() == 1 && responseType == BLEConsts.OP_CODE_PACKET_RECEIPT_NOTIF_KEY){
 				responseType = 0;
 			}
-			
-			PetkitLog.d("onCharacteristicChanged responseType: " + responseType);
+            refreshHeartbeatTime();
+
+            PetkitLog.d("onCharacteristicChanged responseType: " + responseType);
 			switch (responseType) {
 			case BLEConsts.OP_CODE_PACKET_RECEIPT_NOTIF_KEY:
 				final BluetoothGattCharacteristic packetCharacteristic = gatt.getService(BLEConsts.DFU_SERVICE_UUID).getCharacteristic(BLEConsts.DFU_PACKET_UUID);
@@ -385,7 +402,7 @@ public class AndroidBLEActionService extends BLEActionService {
 				} catch (UnsupportedEncodingException e) {
 				}
 				
-				if(mComdLength < 6){
+				if(mComdLength < BLEConsts.WRITE_M_CMD_TIMES){
 					try {
 						writePacket(gatt, controlCharacteristic, buildOpCodeBuffer(BLEConsts.OP_CODE_DEBUG_INFOR_KEY), BLEConsts.MAX_DATA_CONTROL_WRITE_SIZE);
 						return;
@@ -399,7 +416,7 @@ public class AndroidBLEActionService extends BLEActionService {
 				}
 				break;
 			////////////////
-//			case BLEConsts.MATE_OP_CODE_COMPLETE_KEY:
+//            case BLEConsts.MATE_OP_CODE_COMPLETE_KEY:
 //				controlCharacteristic = gatt.getService(BLEConsts.ACC_SERVICE_UUID).getCharacteristic(BLEConsts.ACC_CONTROL_UUID);
 //				try {
 //					writePacket(gatt, controlCharacteristic, buildOpCodeBuffer(BLEConsts.MATE_OP_CODE_COMPLETE_KEY), 1);
@@ -414,19 +431,22 @@ public class AndroidBLEActionService extends BLEActionService {
 				controlCharacteristic = gatt.getService(BLEConsts.ACC_SERVICE_UUID).getCharacteristic(BLEConsts.ACC_CONTROL_UUID);
 				
 				try {
+                    if(mAborted){
+                        mError = BLEConsts.ERROR_ABORTED;
+                        synchronized (mLock) {
+                            mLock.notifyAll();
+                            return;
+                        }
+                    }
 					checkResponseValid(characteristic.getValue(), BLEConsts.MATE_OP_CODE_REQUEST_KEY);
-//					if(!mIsPetHomeInit) {
-						parserReceivedData(characteristic.getValue());
-						if(checkSectionDataComplete(characteristic.getValue())){
-							if(DataConfirmFlag == 0){
-								return;
-							}
-							writePacket(gatt, controlCharacteristic, buildOpCodeBuffer(BLEConsts.MATE_OP_CODE_CONFIRM_KEY), 
-									BLEConsts.MAX_DATA_CONTROL_WRITE_SIZE);
-						}
-//					}else {
-//						mReceivedData = characteristic.getValue();
-//					}
+                    parserReceivedData(characteristic.getValue());
+                    if(checkSectionDataComplete(characteristic.getValue())){
+                        if(DataConfirmFlag == 0){
+                            return;
+                        }
+                        writePacket(gatt, controlCharacteristic, buildOpCodeBuffer(BLEConsts.MATE_OP_CODE_CONFIRM_KEY),
+                                BLEConsts.MAX_DATA_CONTROL_WRITE_SIZE);
+                    }
 				} catch (UnknownResponseException e) {
 					mError = BLEConsts.ERROR_INVALID_RESPONSE;
 				} catch (UnknownParametersException e) {
@@ -438,7 +458,7 @@ public class AndroidBLEActionService extends BLEActionService {
 				} catch (UnsupportedEncodingException e) {
 					mError = BLEConsts.ERROR_INVALID_RESPONSE;
 				}
-				break;
+				return;
 				////////////////			
 			case BLEConsts.OP_CODE_DATA_READ_KEY:
 				controlCharacteristic = gatt.getService(BLEConsts.ACC_SERVICE_UUID).getCharacteristic(BLEConsts.ACC_CONTROL_UUID);
@@ -479,13 +499,28 @@ public class AndroidBLEActionService extends BLEActionService {
 					mError = BLEConsts.ERROR_INVALID_RESPONSE;
 				}
 				break;
-			case BLEConsts.OP_CODE_RESPONSE_CODE_KEY:
-
 			case BLEConsts.OP_CODE_DEBUG_INFOR_2_KEY:
-				if(mKeepAliveTimer != null){
-					PetkitLog.d("KeepAlive  onCharacteristicChanged -> value (0x): " + parse(characteristic));
-					return;
+                if(mKeepAliveTimer != null){
+                    PetkitLog.d("KeepAlive  onCharacteristicChanged -> value (0x): " + parse(characteristic));
+                    return;
+                }
+                mReceivedData = characteristic.getValue();
+                break;
+            case BLEConsts.MATE_OP_CODE_COMPLETE_KEY:
+				if(mPaused || mKeepAliveTimer != null){
+                    final byte[] data = mReceivedWifiData.toByteArray();
+
+                    byte[] cmdArray = new byte[4];
+                    System.arraycopy(data, 0, cmdArray, 0, 4);
+                    int cmd = (int) (cmdArray[0] * Math.pow(16, 6) + cmdArray[1] * Math.pow(16, 4) + cmdArray[2] * Math.pow(16, 2) + cmdArray[3]);//Integer.valueOf(new String(cmdArray), 16);
+
+                    if(cmd == BLEConsts.MATE_COMMAND_WRITE_ALIVE){
+                        mReceivedWifiData.clear();
+                        return;
+                    }
 				}
+                mReceivedData = characteristic.getValue();
+                break;
 			default:
 				
 				if (BLEConsts.DFU_PACKET_UUID.equals(characteristic.getUuid())
@@ -507,8 +542,7 @@ public class AndroidBLEActionService extends BLEActionService {
 				break;
 			}
 
-			refreshHeartbeatTime();
-			stopKeepAlive();
+            stopKeepAlive();
 			// notify waiting thread
 			synchronized (mLock) {
 				mLock.notifyAll();
@@ -535,91 +569,7 @@ public class AndroidBLEActionService extends BLEActionService {
 			return new String(out);
 		}
 	};
-	
-	/**
-	 * Callback for scanned devices class {@link ScannerServiceParser} will be used to filter devices with custom BLE service UUID then the device will be added in a list.
-	 */
-	private BluetoothAdapter.LeScanCallback mLEScanCallback = new BluetoothAdapter.LeScanCallback() {
-		@Override
-		public void onLeScan(final BluetoothDevice device, final int rssi, final byte[] scanRecord) {
-			if (device != null && checkDeviceFilter(device)) {
-				if(deviceInfoExists(device.getAddress())){
-					DeviceInfo deviceInfo = findDeviceInfo(device);
-					deviceInfo.updateRssi(rssi);
-				}else {
-					DeviceInfo deviceInfo = createDeviceInfo(device, rssi, scanRecord);
-					addScanedDevice(deviceInfo);
-					sendScanedDeviceBroadcast(deviceInfo);
-					Log.d("petkit", "device name:" + deviceInfo.getName());
-					if((targetDeviceId != 0 && targetDeviceId == deviceInfo.getDeviceId())){		//BLEConsts.PET_HOME.equals(deviceInfo.getName())
-						mBleDevice = deviceInfo;
-						mConnectionState = BLEConsts.STATE_SCANED;
-						mDeviceAddress = deviceInfo.getAddress();
-					}
-				}
-			}else {
-				if(device != null && scanRecord != null){	//oppo n3 ble special, no device name and no scan record response
-					if(deviceInfoExists(device.getAddress())){
-						DeviceInfo deviceInfo = findDeviceInfo(device);
-						deviceInfo.updateRssi(rssi);
-					}else {
-						int i = 0; 
-						while(i < scanRecord.length - 1){
-							int length = scanRecord[i];
-							int type = scanRecord[i+1];
-							if((type == -1) && length == 26){
-								byte[] standardByte = new byte[]{0x00, 0x02, 0x15, (byte) 0xBB, 0x3E, (byte) 0xE6, 0x08, 0x05, 0x72, 0x4D, (byte) 0x9F, (byte) 0x89, (byte) 0xE7, (byte) 0xBF, (byte) 0x91, (byte) 0xD8, (byte) 0xBD, 0x70, 0x5B};
-								int j = 0;
-								for (; j < standardByte.length; j++) {
-									if(scanRecord[i+3+j] != standardByte[j]){
-										break;
-									}
-								}
-								if(j == standardByte.length){
-									int curDeviceId = 0;
-									for(int z = 0; z < 4; z++){
-										curDeviceId += ((scanRecord[j + i + 3 + z] & 0xFF) << 8 * (3 - z));
-									}
-									if(curDeviceId <= 0x10102){
-										curDeviceId = 0;
-									}
-									if(scanRecord[i+26] != (byte)0xC5
-											&& scanRecord[i+26] != (byte)0xC3){
-										break;
-									}
-									DeviceInfo deviceInfo = new DeviceInfo();
-									deviceInfo.setName(scanRecord[i+26] == (byte)0xC5 ? BLEConsts.PET_FIT_DISPLAY_NAME : BLEConsts.PET_FIT2_DISPLAY_NAME);
-									deviceInfo.setMac(device.getAddress());
-									deviceInfo.setDeviceId(curDeviceId);
-									if(curDeviceId == 0){
-										deviceInfo.setChecked(true);
-									}
-									deviceInfo.setAddress(device.getAddress());
-									addScanedDevice(deviceInfo);
-									sendScanedDeviceBroadcast(deviceInfo);
-									if((targetDeviceId != 0 && targetDeviceId == deviceInfo.getDeviceId())){
-										mBleDevice = deviceInfo;
-										mConnectionState = BLEConsts.STATE_SCANED;
-										mDeviceAddress = deviceInfo.getAddress();
-									}
-								}
-								break;
-							}else{
-								i += (length + 1);
-							}
-						}
-					}
-				}
-			}
-			// notify waiting thread
-			synchronized (mLock) {
-				mLock.notifyAll();
-				return;
-			}
-		}
-	};
-	
-	@SuppressLint("NewApi")
+
 	protected boolean initialize(final int action) {
 		// For API level 18 and above, get a reference to BluetoothAdapter through
 		// BluetoothManager.
@@ -666,12 +616,34 @@ public class AndroidBLEActionService extends BLEActionService {
 	@Override
 	protected DeviceInfo startScan(Intent intent) {
 		mIsScanning = true;
-		
 		updateProgressNotification(BLEConsts.PROGRESS_SCANING);
+        LogcatStorageHelper.addLog("startScan");
+//		if(android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
+			startScanLowerOfLollipop();
+//		} else {
+//			startScanForLollipop();
+//		}
+
+		LogcatStorageHelper.addLog("stopScan");
+		stopScan();
+		return mBleDevice;
+	}
+
+	private void startScanLowerOfLollipop(){
+
+		BluetoothAdapter.LeScanCallback mLEScanCallback = new BluetoothAdapter.LeScanCallback() {
+			@Override
+			public void onLeScan(final BluetoothDevice device, final int rssi, final byte[] scanRecord) {
+
+				processScanResult(device, rssi, scanRecord);
+			}
+		};
+
 		mBluetoothAdapter.startLeScan(mLEScanCallback);
+
 		mConnectionState = BLEConsts.STATE_SCANING;
 		mStartTime = SystemClock.elapsedRealtime();
-		
+
 		try {
 			waitUntilTimeOut(BLEConsts.SCAN_DURATION);
 			synchronized (mLock) {
@@ -681,16 +653,7 @@ public class AndroidBLEActionService extends BLEActionService {
 		} catch (final InterruptedException e) {
 			loge("Sleeping interrupted", e);
 		}
-		
-		stopScan();
-		return mBleDevice;
-	}
-	
-	
-	/**
-	 * Stop scan if user tap Cancel button.
-	 */
-	private void stopScan() {
+
 		if (mIsScanning) {
 			try {
 				mBluetoothAdapter.stopLeScan(mLEScanCallback);
@@ -700,7 +663,90 @@ public class AndroidBLEActionService extends BLEActionService {
 			}
 			mIsScanning = false;
 		}
-		
+	}
+
+	private void startScanForLollipop(){
+		List<ScanFilter> bleScanFilters = new ArrayList<>();
+//		bleScanFilters.add(
+//			new ScanFilter.Builder().setServiceUuid(new ParcelUuid(BLEConsts.ACC_SERVICE_UUID)).build()
+//		);
+
+		BluetoothLeScanner mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
+		ScanSettings bleScanSettings = new ScanSettings.Builder()
+				.setScanMode(ScanSettings.SCAN_MODE_LOW_POWER)
+			.build();
+		Log.d("android", "Starting scanning with settings:" + bleScanSettings + " and filters:" + bleScanFilters);
+
+		ScanCallback scanCallback = new ScanCallback() {
+			@Override
+			public void onScanResult(int callbackType, ScanResult result) {
+				super.onScanResult(callbackType, result);
+
+				if(result == null || result.getScanRecord() == null){
+					return;
+				}
+
+				processScanResult(result.getDevice(), result.getRssi(), result.getScanRecord().getBytes());
+			}
+		};
+		mBluetoothLeScanner.startScan(bleScanFilters, bleScanSettings, scanCallback);
+
+		mConnectionState = BLEConsts.STATE_SCANING;
+		mStartTime = SystemClock.elapsedRealtime();
+
+		try {
+			waitUntilTimeOut(BLEConsts.SCAN_DURATION);
+			synchronized (mLock) {
+				while (((mConnectionState == BLEConsts.STATE_SCANING && !timeOut) && mError == 0 && !mAborted) || mPaused)
+					mLock.wait();
+			}
+		} catch (final InterruptedException e) {
+			loge("Sleeping interrupted", e);
+		}
+
+		if (mIsScanning) {
+			try {
+				mBluetoothLeScanner.stopScan(scanCallback);
+			}catch (Exception e){
+				PetkitLog.d("petkit stop scan exception");
+				e.printStackTrace();
+			}
+			mIsScanning = false;
+		}
+	}
+
+	private void processScanResult(final BluetoothDevice device, final int rssi, final byte[] scanRecord){
+
+		if (device != null && !deviceInfoExists(device.getAddress())) {
+			LogcatStorageHelper.addLog("onLeScan, scanRecord: " + parse(scanRecord));
+			PetkitLog.d("onLeScan, scanRecord: " + parse(scanRecord));
+			DeviceInfo deviceInfo = createDeviceInfo(device, rssi, scanRecord);
+			if(!checkDeviceFilter(deviceInfo.getName())){
+				return;
+			}
+			addScanedDevice(deviceInfo);
+			sendScanedDeviceBroadcast(deviceInfo);
+			if((targetDeviceId != 0 && targetDeviceId == deviceInfo.getDeviceId())){		//BLEConsts.PET_HOME.equals(deviceInfo.getName())
+				mBleDevice = deviceInfo;
+				mConnectionState = BLEConsts.STATE_SCANED;
+				mDeviceAddress = deviceInfo.getAddress();
+			}
+
+		}
+
+		// notify waiting thread
+		synchronized (mLock) {
+			mLock.notifyAll();
+		}
+
+	}
+
+
+	/**
+	 * Stop scan if user tap Cancel button.
+	 */
+	private void stopScan() {
+
 		if(mTimer != null){
 			mTimer.cancel();
 			mTimer = null;
@@ -750,6 +796,12 @@ public class AndroidBLEActionService extends BLEActionService {
 		
 		if (mError <= 0) { // error occurred
 			// We have connected to data device and services are discoverer
+            PetkitLog.d("serviceUUID = " + serviceUUID.toString());
+            for (BluetoothGattService service : gatt.getServices()) {
+                PetkitLog.d("service.getUuid() = " + service.getUuid().toString());
+                PetkitLog.d("service.getUuid() == serviceUUID ? " + (service.getUuid() == serviceUUID));
+            }
+
 			final BluetoothGattService dataService = gatt.getService(serviceUUID); 
 			if (dataService != null) {
 				controlCharacteristic = dataService.getCharacteristic(controlUUID);
@@ -768,6 +820,8 @@ public class AndroidBLEActionService extends BLEActionService {
 		loge("An error occurred while connecting to the device:" + error);
 		sendLogBroadcast(String.format("Connection failed (0x%02X): %s", error, GattError.parse(error)));
 
+        LogcatStorageHelper.addLog("An error occurred while connecting to the device:" + error);
+        LogcatStorageHelper.addLog(String.format("Connection failed (0x%02X): %s", error, GattError.parse(error)));
 		LogcatStorageHelper.addLog("reconnect device times: " + reconnectTimes);
 		if(reconnectTimes < BLEConsts.MAX_RECONNECT_TIMES){
 			terminateConnection(gatt, 0);
@@ -852,7 +906,8 @@ public class AndroidBLEActionService extends BLEActionService {
 
 			updateProgressNotification(BLEConsts.PROGRESS_CONNECTED);
 			startHeartbeatToCheckActionInNormal(5000);
-			
+
+            startKeepAlive();// start send keepAlive message
 			mPaused = true;
 			waitIfPaused(true);
 			
@@ -961,11 +1016,7 @@ public class AndroidBLEActionService extends BLEActionService {
 		DataConfirmFlag = 0; 
 		mComdLength = 0;
 		mBytesSent = 0;
-		
-		if(mBleDevice == null){
-			updateProgressNotification(BLEConsts.PROGRESS_SCANING_FAILED);
-			return;
-		}
+
 		
 		/*
 		 * Now let's connect to the device.
@@ -1144,11 +1195,6 @@ public class AndroidBLEActionService extends BLEActionService {
 
 //		filePath = intent.getStringExtra(BLEConsts.EXTRA_FILE_PATH);
 
-		if(mBleDevice == null){
-			updateProgressNotification(BLEConsts.PROGRESS_SCANING_FAILED);
-			return;
-		}
-		
 		/*
 		 * Now let's connect to the device.
 		 * All the methods below are synchronous. The mLock object is used to wait for asynchronous calls.
@@ -1160,6 +1206,22 @@ public class AndroidBLEActionService extends BLEActionService {
 		}
 
 		if(action == BLEConsts.BLE_ACTION_OTA_RECONNECT){
+//            gatt = connect(mBleDevice.getAddress());
+//            // Are we connected?
+//            if (mError > 0) { // error occurred
+//                final int error = mError & ~BLEConsts.ERROR_CONNECTION_MASK;
+//                loge("An error occurred while connecting to the device:" + error);
+//                sendLogBroadcast(String.format("Connection failed (0x%02X): %s", error, GattError.parse(error)));
+//                terminateConnection(gatt, mError);
+//                return;
+//            }
+//            if (mAborted) {
+//                logi("Upload aborted");
+//                sendLogBroadcast("Upload aborted");
+//                terminateConnection(gatt, BLEConsts.ERROR_ABORTED);
+//                return;
+//            }
+
 			startP2OTA(intent);
 			return;
 		}
@@ -1182,13 +1244,14 @@ public class AndroidBLEActionService extends BLEActionService {
 			
 			updateProgressNotification();
 			startServiceToUploadData();
-			
+
+            startKeepAlive();// start send keepAlive message
 			mPaused = true;
 			waitIfPaused(true);
-			
-			if (mAborted) {
-				logi("Upload aborted");
-				sendLogBroadcast("Upload aborted");
+
+            if (mAborted) {
+                logi("Upload aborted");
+                sendLogBroadcast("Upload aborted");
 				terminateConnection(gatt, BLEConsts.ERROR_ABORTED);
 				return;
 			}
@@ -1218,10 +1281,11 @@ public class AndroidBLEActionService extends BLEActionService {
 				// Close the device
 				close(gatt);
 
-				logi("Starting service that will connect to the DFU bootloader");
+                logi("Starting service that will connect to the DFU bootloader");
 				final Intent newIntent = new Intent();
 				newIntent.fillIn(intent, Intent.FILL_IN_COMPONENT | Intent.FILL_IN_PACKAGE);
 				newIntent.putExtra(BLEConsts.EXTRA_ACTION, BLEConsts.BLE_ACTION_OTA_RECONNECT);
+                newIntent.putExtra(BLEConsts.EXTRA_DEVICE_RECONNECT_TIMES, 0);
 				startService(newIntent);
 			}else {
 				/*
@@ -1287,7 +1351,7 @@ public class AndroidBLEActionService extends BLEActionService {
 			saveConfirmedData(mCurDog);
 			terminateConnection(gatt, BLEConsts.ERROR_FILE_ERROR);
 		}
-				
+
 	}
 	
 	private void startP1OTA(final BluetoothGatt gatt, final BluetoothGattCharacteristic controlCharacteristic) throws DeviceDisconnectedException, BLEErrorException, BLEAbortedException, UnknownParametersException, UnknownResponseException, UnexpectedCompleteException, IOException{
@@ -1371,7 +1435,7 @@ public class AndroidBLEActionService extends BLEActionService {
 		} catch (InterruptedException e) {
 		}
 		
-		uploadP1FirmwareImage(gatt, dataCharacteristic, mFileBuffer);
+		uploadP1FirmwareImage(gatt, dataCharacteristic);
 		
 		updateProgressNotification(100);
 	}
@@ -1415,7 +1479,7 @@ public class AndroidBLEActionService extends BLEActionService {
 		// Read preferences
 		final boolean packetReceiptNotificationEnabled = preferences.getBoolean(BLEConsts.SETTINGS_PACKET_RECEIPT_NOTIFICATION_ENABLED, true);
 		String value = preferences.getString(BLEConsts.SETTINGS_NUMBER_OF_PACKETS, String.valueOf(BLEConsts.SETTINGS_NUMBER_OF_PACKETS_DEFAULT));
-		int numberOfPackets = BLEConsts.SETTINGS_NUMBER_OF_PACKETS_DEFAULT;
+		int numberOfPackets;
 		try {
 			numberOfPackets = Integer.parseInt(value);
 			if (numberOfPackets < 0 || numberOfPackets > 0xFFFF)
@@ -1429,7 +1493,7 @@ public class AndroidBLEActionService extends BLEActionService {
 		// The Soft Device starts where MBR ends (by default from the address 0x1000). Before there is a MBR section, which should not be transmitted over DFU. 
 		// Applications and bootloader starts from bigger address. However, in custom DFU implementations, user may want to transmit the whole whole data, even from address 0x0000.
 		value = preferences.getString(BLEConsts.SETTINGS_MBR_SIZE, String.valueOf(BLEConsts.SETTINGS_DEFAULT_MBR_SIZE));
-		int mbrSize = BLEConsts.SETTINGS_DEFAULT_MBR_SIZE;
+		int mbrSize;
 		try {
 			mbrSize = Integer.parseInt(value);
 			if (mbrSize < 0)
@@ -1453,9 +1517,9 @@ public class AndroidBLEActionService extends BLEActionService {
 			try {
 				sendLogBroadcast("Opening file...");
 				if (fileUri != null) {
-					is = openInputStream(fileUri, mimeType, mbrSize, fileType);
+					is = openP2InputStream(fileUri, mimeType, mbrSize, fileType);
 				} else {
-					is = openInputStream(filePath, mimeType, mbrSize, fileType);
+					is = openP2InputStream(filePath, mimeType, mbrSize, fileType);
 				}
 
 				if (initFileUri != null) {
@@ -1487,17 +1551,14 @@ public class AndroidBLEActionService extends BLEActionService {
 				}
 				sendLogBroadcast("Image file opened (" + mImageSizeInBytes + " bytes in total)");
 			} catch (final SecurityException e) {
-				initIs = null;
 				loge("A security exception occured while opening file", e);
 				updateProgressNotification(BLEConsts.ERROR_FILE_NOT_FOUND);
 				return;
 			} catch (final FileNotFoundException e) {
-				initIs = null;
 				loge("An exception occured while opening file", e);
 				updateProgressNotification(BLEConsts.ERROR_FILE_NOT_FOUND);
 				return;
 			} catch (final IOException e) {
-				initIs = null;
 				loge("An exception occured while calculating file size", e);
 				updateProgressNotification(BLEConsts.ERROR_FILE_ERROR);
 				return;
@@ -1645,8 +1706,8 @@ public class AndroidBLEActionService extends BLEActionService {
 
 				try {
 					// Set up the temporary variable that will hold the responses
-					byte[] response = null;
-					int status = 0;
+					byte[] response;
+					int status;
 
 					/*
 					 * DFU v.1 supports updating only an Application.
@@ -1842,7 +1903,7 @@ public class AndroidBLEActionService extends BLEActionService {
 
 						try {
 							byte[] data = new byte[20];
-							int size = 0;
+							int size;
 							while ((size = initIs.read(data, 0, data.length)) != -1) {
 								writeInitPacket(gatt, packetCharacteristic, data, size);
 							}
@@ -2045,13 +2106,11 @@ public class AndroidBLEActionService extends BLEActionService {
 				mInputStream = null;
 				if (is != null)
 					is.close();
-				is = null;
 			} catch (final IOException e) {
 				// do nothing
 			}
 		}
 	}
-	
 	private BluetoothGatt gatt;
 	private BluetoothGattCharacteristic dataCharacteristic;
 	
@@ -2095,8 +2154,11 @@ public class AndroidBLEActionService extends BLEActionService {
 		}
 
 		// Close the device
-		refreshDeviceCache(gatt, false);
-		close(gatt);
+		if(gatt != null) {
+			refreshDeviceCache(gatt, false);
+			close(gatt);
+		}
+
 		if(error > 0){
 			if(error == 16517){		//TODO:
 				mBluetoothAdapter.disable();
@@ -2108,15 +2170,14 @@ public class AndroidBLEActionService extends BLEActionService {
 	
 	/**
 	 * Enables or disables the notifications for given characteristic. This method is SYNCHRONOUS and wait until the
-	 * {@link BluetoothGattCallback#onDescriptorWrite(BluetoothGatt, BluetoothGattDescriptor, int)} will be called or the connection state will change from {@link #STATE_CONNECTED_AND_READY}. If
+	 * {@link BluetoothGattCallback#onDescriptorWrite(BluetoothGatt, BluetoothGattDescriptor, int)} will be called or the connection state will change from. If
 	 * connection state will change, or an error will occur, an exception will be thrown.
 	 * 
 	 * @param gatt
 	 *            the GATT device
 	 * @param characteristic
 	 *            the characteristic to enable or disable notifications for
-	 * @param enable
-	 *            <code>true</code> to enable notifications, <code>false</code> to disable them
+	 * @param type type
 	 * @throws BLEErrorException
 	 * @throws BLEAbortedException
 	 */
@@ -2206,15 +2267,15 @@ public class AndroidBLEActionService extends BLEActionService {
 		if (mConnectionState == BLEConsts.STATE_DISCONNECTED)
 			return;
 
+        stopKeepAlive(); // stop mKeepAliveTimer
 		mConnectionState = BLEConsts.STATE_DISCONNECTING;
 
-		logi("Disconnecting from the device...");
+        logi("Disconnecting from the device...");
 		gatt.disconnect();
 
 		// We have to wait until device gets disconnected or an error occur
 		waitUntilDisconnected();
 
-		stopKeepAlive(); // stop mKeepAliveTimer
 	}
 	
 	/**
@@ -2232,7 +2293,7 @@ public class AndroidBLEActionService extends BLEActionService {
 	
 	/**
 	 * Writes the operation code to the characteristic. This method is SYNCHRONOUS and wait until the
-	 * {@link BluetoothGattCallback#onCharacteristicWrite(BluetoothGatt, BluetoothGattCharacteristic, int)} will be called or the connection state will change from {@link #STATE_CONNECTED_AND_READY}.
+	 * {@link BluetoothGattCallback#onCharacteristicWrite(BluetoothGatt, BluetoothGattCharacteristic, int)} will be called or the connection state will change from.
 	 * If connection state will change, or an error will occur, an exception will be thrown.
 	 * 
 	 * @param gatt
@@ -2252,7 +2313,7 @@ public class AndroidBLEActionService extends BLEActionService {
 
 	/**
 	 * Writes the operation code to the characteristic. This method is SYNCHRONOUS and wait until the
-	 * {@link BluetoothGattCallback#onCharacteristicWrite(BluetoothGatt, BluetoothGattCharacteristic, int)} will be called or the connection state will change from {@link #STATE_CONNECTED_AND_READY}.
+	 * {@link BluetoothGattCallback#onCharacteristicWrite(BluetoothGatt, BluetoothGattCharacteristic, int)} will be called or the connection state will change from.
 	 * If connection state will change, or an error will occur, an exception will be thrown.
 	 * 
 	 * @param gatt
@@ -2286,7 +2347,7 @@ public class AndroidBLEActionService extends BLEActionService {
 		// We have to wait for confirmation
 		try {
 			synchronized (mLock) {
-				while ((mRequestCompleted == false && mConnectionState == BLEConsts.STATE_CONNECTED_AND_READY && mError == 0 && !mAborted) || mPaused)
+				while ((!mRequestCompleted && mConnectionState == BLEConsts.STATE_CONNECTED_AND_READY && mError == 0 && !mAborted) || mPaused)
 					mLock.wait();
 			}
 		} catch (final InterruptedException e) {
@@ -2331,7 +2392,7 @@ public class AndroidBLEActionService extends BLEActionService {
 		// We have to wait until device gets disconnected or an error occur
 		try {
 			synchronized (mLock) {
-				while ((mRequestCompleted == false && mConnectionState == BLEConsts.STATE_CONNECTED_AND_READY && mError == 0 && !mAborted) || mPaused)
+				while ((!mRequestCompleted && mConnectionState == BLEConsts.STATE_CONNECTED_AND_READY && mError == 0 && !mAborted) || mPaused)
 					mLock.wait();
 			}
 		} catch (final InterruptedException e) {
@@ -2355,10 +2416,10 @@ public class AndroidBLEActionService extends BLEActionService {
 	 *            the GATT device
 	 * @param characteristic
 	 *            the characteristic to read
-	 * @return battery
 	 * @throws DeviceDisconnectedException
 	 * @throws BLEErrorException
 	 * @throws BLEAbortedException
+     * @return battery
 	 */
 	private int readBattery(final BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic) throws DeviceDisconnectedException, BLEErrorException, BLEAbortedException {
 		if (mConnectionState != BLEConsts.STATE_CONNECTED_AND_READY)
@@ -2379,7 +2440,7 @@ public class AndroidBLEActionService extends BLEActionService {
 		// We have to wait until device gets disconnected or an error occur
 		try {
 			synchronized (mLock) {
-				while ((mRequestCompleted == false && mConnectionState == BLEConsts.STATE_CONNECTED_AND_READY && mError == 0 && !mAborted) || mPaused)
+				while ((!mRequestCompleted && mConnectionState == BLEConsts.STATE_CONNECTED_AND_READY && mError == 0 && !mAborted) || mPaused)
 					mLock.wait();
 			}
 		} catch (final InterruptedException e) {
@@ -2397,7 +2458,7 @@ public class AndroidBLEActionService extends BLEActionService {
 	
 	/**
 	 * Writes the image size to the characteristic. This method is SYNCHRONOUS and wait until the {@link BluetoothGattCallback#onCharacteristicWrite(BluetoothGatt, BluetoothGattCharacteristic, int)}
-	 * will be called or the connection state will change from {@link #STATE_CONNECTED_AND_READY}. If connection state will change, or an error will occur, an exception will be thrown.
+	 * will be called or the connection state will change from . If connection state will change, or an error will occur, an exception will be thrown.
 	 * 
 	 * @param gatt
 	 *            the GATT device
@@ -2425,7 +2486,7 @@ public class AndroidBLEActionService extends BLEActionService {
 		// We have to wait for confirmation
 		try {
 			synchronized (mLock) {
-				while ((mImageSizeSent == false && mConnectionState == BLEConsts.STATE_CONNECTED_AND_READY && mError == 0 && !mAborted) || mPaused)
+				while ((!mImageSizeSent && mConnectionState == BLEConsts.STATE_CONNECTED_AND_READY && mError == 0 && !mAborted) || mPaused)
 					mLock.wait();
 			}
 		} catch (final InterruptedException e) {
@@ -2446,7 +2507,7 @@ public class AndroidBLEActionService extends BLEActionService {
 	 * </p>
 	 * <p>
 	 * This method is SYNCHRONOUS and wait until the {@link BluetoothGattCallback#onCharacteristicWrite(BluetoothGatt, BluetoothGattCharacteristic, int)} will be called or the connection state will
-	 * change from {@link #STATE_CONNECTED_AND_READY}. If connection state will change, or an error will occur, an exception will be thrown.
+	 * change from. If connection state will change, or an error will occur, an exception will be thrown.
 	 * </p>
 	 * 
 	 * @param gatt
@@ -2481,7 +2542,7 @@ public class AndroidBLEActionService extends BLEActionService {
 		// We have to wait for confirmation
 		try {
 			synchronized (mLock) {
-				while ((mImageSizeSent == false && mConnectionState == BLEConsts.STATE_CONNECTED_AND_READY && mError == 0 && !mAborted) || mPaused)
+				while ((!mImageSizeSent && mConnectionState == BLEConsts.STATE_CONNECTED_AND_READY && mError == 0 && !mAborted) || mPaused)
 					mLock.wait();
 			}
 		} catch (final InterruptedException e) {
@@ -2497,14 +2558,14 @@ public class AndroidBLEActionService extends BLEActionService {
 
 	/**
 	 * Writes the Init packet to the characteristic. This method is SYNCHRONOUS and wait until the {@link BluetoothGattCallback#onCharacteristicWrite(BluetoothGatt, BluetoothGattCharacteristic, int)}
-	 * will be called or the connection state will change from {@link #STATE_CONNECTED_AND_READY}. If connection state will change, or an error will occur, an exception will be thrown.
+	 * will be called or the connection state will change from. If connection state will change, or an error will occur, an exception will be thrown.
 	 * 
 	 * @param gatt
 	 *            the GATT device
 	 * @param characteristic
 	 *            the characteristic to write to. Should be the DFU PACKET
-	 * @param initPacket
-	 *            the init packet as a byte array. This must be shorter or equal to 20 bytes (TODO check this restriction).
+	 * @param buffer buffer
+     * @param size size
 	 * @throws DeviceDisconnectedException
 	 * @throws BLEErrorException
 	 * @throws BLEAbortedException
@@ -2530,7 +2591,7 @@ public class AndroidBLEActionService extends BLEActionService {
 		// We have to wait for confirmation
 		try {
 			synchronized (mLock) {
-				while ((mInitPacketSent == false && mConnectionState == BLEConsts.STATE_CONNECTED_AND_READY && mError == 0 && !mAborted) || mPaused)
+				while ((!mInitPacketSent && mConnectionState == BLEConsts.STATE_CONNECTED_AND_READY && mError == 0 && !mAborted) || mPaused)
 					mLock.wait();
 			}
 		} catch (final InterruptedException e) {
@@ -2545,7 +2606,7 @@ public class AndroidBLEActionService extends BLEActionService {
 	}
 
 	/**
-	 * Starts sending the data. This method is SYNCHRONOUS and terminates when the whole file will be uploaded or the connection status will change from {@link #STATE_CONNECTED_AND_READY}. If
+	 * Starts sending the data. This method is SYNCHRONOUS and terminates when the whole file will be uploaded or the connection status will change from. If
 	 * connection state will change, or an error will occur, an exception will be thrown.
 	 * 
 	 * @param gatt
@@ -2596,9 +2657,8 @@ public class AndroidBLEActionService extends BLEActionService {
 	}
 	
 	private byte[] uploadP1FirmwareImage(final BluetoothGatt gatt,
-			final BluetoothGattCharacteristic packetCharacteristic,
-			final byte[] fileBuffer) throws DeviceDisconnectedException,
-			BLEErrorException, BLEAbortedException, HexFileValidationException, IOException {
+			final BluetoothGattCharacteristic packetCharacteristic) throws DeviceDisconnectedException,
+			BLEErrorException, BLEAbortedException, IOException {
 		mReceivedData = null;
 		mError = 0;
 
@@ -2607,7 +2667,7 @@ public class AndroidBLEActionService extends BLEActionService {
 		buffer[0] = Conversion.loUint16(mProgInfo.iBlocks);
 		buffer[1] = Conversion.hiUint16(mProgInfo.iBlocks);
 		System.arraycopy(mFileBuffer, mProgInfo.iBytes, buffer, 2,
-				OAD_BLOCK_SIZE);
+                OAD_BLOCK_SIZE);
 		sendLogBroadcast("Sending firmware to characteristic "
 						+ packetCharacteristic.getUuid() + "...");
 		writePacket(gatt, packetCharacteristic, buffer, buffer.length);
@@ -2663,7 +2723,7 @@ public class AndroidBLEActionService extends BLEActionService {
 		// We have to wait for confirmation
 		try {
 			synchronized (mLock) {
-				while ((mRequestCompleted == false && mConnectionState == BLEConsts.STATE_CONNECTED_AND_READY
+				while ((!mRequestCompleted && mConnectionState == BLEConsts.STATE_CONNECTED_AND_READY
 						&& mError == 0 && !mAborted) || mPaused)
 					mLock.wait();
 			}
@@ -2740,7 +2800,7 @@ public class AndroidBLEActionService extends BLEActionService {
 			startHeartbeatToCheckActionInNormal(5000);
 			
 			// Set up the temporary variable that will hold the responses
-			byte[] response = null;
+			byte[] response;
 
 			writeSyncCode(gatt, controlCharacteristic, buildOpCodeBuffer(BLEConsts.OP_CODE_VERIFY_KEY, secret));
 			response = readNotificationResponse();
@@ -2839,34 +2899,22 @@ public class AndroidBLEActionService extends BLEActionService {
 			response = readNotificationResponse();
 			checkResponseValid(response, BLEConsts.MATE_OP_CODE_COMPLETE_KEY);
 			parserReceivedData(response);
-			
+
 			if(action == BLEConsts.BLE_ACTION_CHANGE_HS){
 				writeSyncCode(gatt, controlCharacteristic, buildOpCodeBuffer(BLEConsts.OP_CODE_VERIFY_KEY, secret));
 				response = readNotificationResponse();
 				checkResponseValid(response, BLEConsts.OP_CODE_VERIFY_KEY);
 				parserReceivedData(response);
-				
-				////////////////
-				if(mateServer == null){
-					throw new UnknownParametersException("mate server is null", BLEConsts.MATE_COMMAND_WRITE_SERVER);
-				}
-				writeSyncCode(gatt, controlCharacteristic, buildMateOpCodeBuffer(BLEConsts.MATE_COMMAND_WRITE_SERVER, mateServer));
-				response = readNotificationResponse();
-				checkResponseValid(response, BLEConsts.MATE_OP_CODE_COMPLETE_KEY);
-				parserReceivedData(response);
-			////////////////////////	
 			}
 
 			updateProgressNotification(BLEConsts.PROGRESS_CONNECTED);
-			PetkitLog.d("mate init pause 1");
-			
+
+            startKeepAlive();
 			mPaused = true;
 			waitIfPaused(true);
 			
-			PetkitLog.d("mate init continue 1");
-			
+
 			if (mAborted) {
-				logi("Upload aborted");
 				sendLogBroadcast("Upload aborted");
 				terminateConnection(gatt, BLEConsts.ERROR_ABORTED);
 				return;
@@ -2885,28 +2933,24 @@ public class AndroidBLEActionService extends BLEActionService {
 				response = readNotificationResponse();
 				checkResponseValid(response, BLEConsts.MATE_OP_CODE_COMPLETE_KEY);
 				parserReceivedData(response);
+			} else {
+				////////////////
+				if(mateServer == null){
+					throw new UnknownParametersException("mate server is null", BLEConsts.MATE_COMMAND_WRITE_SERVER);
+				}
+				writeSyncCode(gatt, controlCharacteristic, buildMateOpCodeBuffer(BLEConsts.MATE_COMMAND_WRITE_SERVER, mateServer));
+				response = readNotificationResponse();
+				checkResponseValid(response, BLEConsts.MATE_OP_CODE_COMPLETE_KEY);
+				parserReceivedData(response);
+				////////////////////////
 			}
-			
-//			writeSyncCode(gatt, controlCharacteristic, buildOpCodeBuffer(BLEConsts.OP_CODE_VERIFY_KEY, secret));
-//			response = readNotificationResponse();
-//			checkResponseValid(response, BLEConsts.OP_CODE_VERIFY_KEY);
-//			parserReceivedData(response);
-//			
-//			if(mateServer == null){
-//				throw new UnknownParametersException("mate server is null", BLEConsts.MATE_COMMAND_WRITE_SERVER);
-//			}
-//			writeSyncCode(gatt, controlCharacteristic, buildMateOpCodeBuffer(BLEConsts.MATE_COMMAND_WRITE_SERVER, mateServer));
-//			response = readNotificationResponse();
-//			checkResponseValid(response, BLEConsts.MATE_OP_CODE_COMPLETE_KEY);
-//			parserReceivedData(response);
 			
 			if(action == BLEConsts.BLE_ACTION_INIT_HS){
 				updateProgressNotification(BLEConsts.PROGRESS_MATE_SERVER_SET_COMPLETE);
-				
-				PetkitLog.d("mate init pause 2");
+
+                startKeepAlive();
 				mPaused = true;
-				waitIfPaused(true);
-				PetkitLog.d("mate init continue 2");
+                waitIfPaused(true);
 			}
 			
 			doMateWifiInit(gatt, controlCharacteristic);
@@ -2968,24 +3012,35 @@ public class AndroidBLEActionService extends BLEActionService {
 		
 		updateProgressNotification(BLEConsts.PROGRESS_WIFI_SET_START);
 
-		PetkitLog.d("mate init pause 3");
 		mPaused = true;
 		waitIfPaused(true);
 
-		PetkitLog.d("mate init continue 3");
 		if (mAborted) {
 			throw new BLEAbortedException();
 		}
 		
-		//branker add
 		mReceivedWifiData = new ByteArrayBuffer(1500);
 
-		startHeartbeatToCheckActionInNormal(10000);
+        startHeartbeatToCheckActionInNormal(10000);
+        if(BLEConsts.compareMateVersion(curMateVersion, BLEConsts.MATE_BASE_VERSION_FOR_GET_WIFI) >= 0){
+            mGetWifiStep = Consts.MATE_GET_WIFI_STEP_ONE;
+            writeSyncCode(gatt, controlCharacteristic, buildMateOpCodeBuffer(BLEConsts.MATE_COMMAND_GET_WIFI_PAIRED));
+            response = readNotificationResponse();
+            checkResponseValid(response, BLEConsts.MATE_OP_CODE_COMPLETE_KEY);
+            parserReceivedData(response);
+        }
+
+        if (mAborted) {
+            throw new BLEAbortedException();
+        }
+
+		mGetWifiStep = Consts.MATE_GET_WIFI_STEP_TWO;
 		writeSyncCode(gatt, controlCharacteristic, buildMateOpCodeBuffer(BLEConsts.MATE_COMMAND_GET_WIFI));
 		response = readNotificationResponse();
 		checkResponseValid(response, BLEConsts.MATE_OP_CODE_COMPLETE_KEY);
 		parserReceivedData(response);
-		
+
+        startKeepAlive();
 		mPaused = true;
 		waitIfPaused(true);
 
@@ -2995,12 +3050,13 @@ public class AndroidBLEActionService extends BLEActionService {
 		
 		startHeartbeatToCheckActionInNormal(30000);
 		while (!mAborted) {
-			writeSyncCode(gatt, controlCharacteristic, buildMateOpCodeBuffer(BLEConsts.MATE_COMMAND_WRITE_WIFI, secretKey, secret));
+			writeSyncCode(gatt, controlCharacteristic, buildMateOpCodeBuffer(BLEConsts.MATE_COMMAND_WRITE_WIFI, secretKey, secret, address));
 			response = readNotificationResponse();
 			checkResponseValid(response, BLEConsts.MATE_OP_CODE_COMPLETE_KEY);
 			parserReceivedData(response);
 			
 			if(!isWriteWifiSuccess){
+                startKeepAlive();
 				mPaused = true;
 				waitIfPaused(true);
 			} else {
@@ -3012,19 +3068,1497 @@ public class AndroidBLEActionService extends BLEActionService {
 	@Override
 	protected void sendKeepAliveMessage() {
 		try {
-			if(gatt != null && controlCharacteristic != null){
-				writeKeepAliveCode(gatt, controlCharacteristic, buildOpCodeBuffer(BLEConsts.OP_CODE_DEBUG_INFOR_2_KEY));
+			if(mPaused && gatt != null && controlCharacteristic != null && mBleDevice != null){
+                if(BLEConsts.PET_FIT_DISPLAY_NAME.equals(mBleDevice.getName())
+                        || BLEConsts.PET_FIT2_DISPLAY_NAME.equals(mBleDevice.getName())){
+                    writeKeepAliveCode(gatt, controlCharacteristic, buildOpCodeBuffer(BLEConsts.OP_CODE_DEBUG_INFOR_2_KEY));
+                } else if(BLEConsts.PET_MATE.equals(mBleDevice.getName())){
+                    writeKeepAliveCode(gatt, controlCharacteristic, buildMateOpCodeBuffer(BLEConsts.MATE_COMMAND_WRITE_ALIVE));
+                }
 			}
 		} catch (DeviceDisconnectedException e) {
-			e.printStackTrace();
+			mError = BLEConsts.ERROR_DEVICE_DISCONNECTED;
 		} catch (BLEErrorException e) {
-			e.printStackTrace();
+            mError = BLEConsts.ERROR_DEVICE_DISCONNECTED;
 		} catch (BLEAbortedException e) {
-			e.printStackTrace();
+			mError = BLEConsts.ERROR_ABORTED;
 		} catch (UnknownParametersException e) {
-			e.printStackTrace();
+			mError = BLEConsts.ERROR_INVALID_PARAMETERS;
 		}
 
 	}
+
+
+	/**************************  Go ******************************/
+
+
+
+	protected void startInitAndChangeGo(final Intent intent){
+
+		// Read input parameters
+		final int action = intent.getIntExtra(BLEConsts.EXTRA_ACTION, BLEConsts.BLE_ACTION_CHECK);
+
+		deviceId = null;
+		secretKey = null;
+		secret = null;
+
+	/*
+	 * Now let's connect to the device.
+	 * All the methods below are synchronous. The mLock object is used to wait for asynchronous calls.
+	 */
+		sendLogBroadcast("Connecting to target...");
+
+		try {
+
+			if(startConnectAndReconnect(intent, mBleDevice.getAddress(), BLEConsts.ACC_SERVICE_UUID, BLEConsts.ACC_CONTROL_UUID, BLEConsts.ACC_DATA_UUID)){
+				return;
+			}
+
+			if (mAborted) {
+				logi("Upload aborted");
+				sendLogBroadcast("Upload aborted");
+				terminateConnection(gatt, BLEConsts.ERROR_ABORTED);
+				return;
+			}
+			// Set up the temporary variable that will hold the responses
+			byte[] response = null;
+
+			// Enable notifications
+			enableCCCD(gatt, dataCharacteristic, BLEConsts.NOTIFICATIONS);
+			sendLogBroadcast("Notifications enabled");
+
+			updateProgressNotification(BLEConsts.PROGRESS_CONNECTED);
+			startHeartbeatToCheckActionInNormal(5000);
+
+			writeSyncCode(gatt, controlCharacteristic, buildOpCodeBuffer(213));
+			response = readNotificationResponse();
+			checkResponseValid(response, 213);
+
+			startKeepAlive();// start send keepAlive message
+			mPaused = true;
+			waitIfPaused(true);
+
+			if (mAborted) {
+				logi("Upload aborted");
+				sendLogBroadcast("Upload aborted");
+				terminateConnection(gatt, BLEConsts.ERROR_ABORTED);
+				return;
+			}
+
+			if(action == BLEConsts.BLE_ACTION_GO_INIT){
+				writeSyncCode(gatt, controlCharacteristic, buildOpCodeBuffer(BLEConsts.OP_CODE_DEVICE_INIT_KEY, deviceId, secretKey, secret));
+				response = readNotificationResponse();
+				checkResponseValid(response, BLEConsts.OP_CODE_DEVICE_INIT_KEY);
+				parserReceivedData(response);
+			}
+
+			writeSyncCode(gatt, controlCharacteristic, buildOpCodeBuffer(BLEConsts.OP_CODE_VERIFY_KEY, secret));
+			response = readNotificationResponse();
+			checkResponseValid(response, BLEConsts.OP_CODE_VERIFY_KEY);
+			parserReceivedData(response);
+
+			writeSyncCode(gatt, controlCharacteristic, buildOpCodeBuffer(BLEConsts.OP_CODE_TIME_SYNC_KEY));
+			response = readNotificationResponse();
+			checkResponseValid(response, BLEConsts.OP_CODE_TIME_SYNC_KEY);
+			parserReceivedData(response);
+
+			writeSyncCode(gatt, controlCharacteristic, buildOpCodeBuffer(BLEConsts.OP_CODE_BATTERY_KEY));
+			response = readNotificationResponse();
+			checkResponseValid(response, BLEConsts.OP_CODE_BATTERY_KEY);
+			parserReceivedData(response);
+			updateProgressNotification(BLEConsts.PROGRESS_SYNC_BATTERY, new Gson().toJson(deviceState));
+
+			gatt.setCharacteristicNotification(dataCharacteristic, false);
+			disconnect(gatt);
+
+			// Close the device
+			refreshDeviceCache(gatt, false);
+			close(gatt);
+			updateProgressNotification(BLEConsts.PROGRESS_BLE_COMPLETED);
+
+		} catch (DeviceDisconnectedException e) {
+			sendLogBroadcast("Device has disconneted");
+			loge(e.getMessage());
+			if (mNotificationsEnabled)
+				gatt.setCharacteristicNotification(dataCharacteristic, false);
+			close(gatt);
+			updateProgressNotification(BLEConsts.ERROR_DEVICE_DISCONNECTED); //TODO:
+		} catch (UnknownParametersException e) {
+			final int error = BLEConsts.ERROR_INVALID_PARAMETERS;
+			loge(e.getMessage());
+			sendLogBroadcast(e.getMessage());
+			terminateConnection(gatt, error);
+		} catch (UnknownResponseException e) {
+			final int error = BLEConsts.ERROR_INVALID_RESPONSE;
+			loge(e.getMessage());
+			sendLogBroadcast(e.getMessage());
+			terminateConnection(gatt, error);
+		} catch (BLEErrorException e) {
+			final int error = e.getErrorNumber() & ~ BLEConsts.ERROR_CONNECTION_MASK;
+			sendLogBroadcast(String.format("Error (0x%02X): %s", error, GattError.parse(error)));
+			terminateConnection(gatt, e.getErrorNumber());
+		} catch (BLEAbortedException e) {
+			sendLogBroadcast("action aborted");
+			terminateConnection(gatt, BLEConsts.ERROR_ABORTED);
+		} catch (UnexpectedCompleteException e) {
+			final int error = e.getErrorNumber();
+			sendLogBroadcast(String.format("Error (0x%02X): %s", error, GattError.parse(error)));
+			loge(e.getMessage());
+			terminateConnection(gatt, e.getErrorNumber());
+		} catch (UnsupportedEncodingException e) {
+			final int error = BLEConsts.ERROR_UNSUPPORTED_ENCODING;
+			sendLogBroadcast(String.format("Error (0x%02X): %s", error, GattError.parse(error)));
+			loge(e.getMessage());
+			terminateConnection(gatt, error);
+		}
+
+
+	}
+
+	protected void startGoOTA(Intent intent) {
+
+		final int action = intent.getIntExtra(BLEConsts.EXTRA_ACTION, 0);
+		if(action != BLEConsts.BLE_ACTION_OTA_GO_RECONNECT){
+			sendLogBroadcast("Connecting to target...");
+			updateProgressNotification(BLEConsts.PROGRESS_CONNECTING);
+
+			try {
+				if(startConnectAndReconnect(intent, mBleDevice.getAddress(),
+                        BLEConsts.ACC_SERVICE_UUID, BLEConsts.ACC_CONTROL_UUID, BLEConsts.ACC_DATA_UUID)){
+                    return;
+                }
+
+				// Enable notifications
+				enableCCCD(gatt, dataCharacteristic, BLEConsts.NOTIFICATIONS);
+				sendLogBroadcast("Notifications enabled");
+
+				updateProgressNotification(BLEConsts.PROGRESS_CONNECTED);
+
+				updateProgressNotification(BLEConsts.PROGRESS_SYNC_DATA_COMPLETED);
+				startKeepAlive();// start send keepAlive message
+				mPaused = true;
+				waitIfPaused(true);
+
+				if (mAborted) {
+					logi("Upload aborted");
+					sendLogBroadcast("Upload aborted");
+					terminateConnection(gatt, BLEConsts.ERROR_ABORTED);
+					return;
+				}
+
+				writeSyncCode(gatt, controlCharacteristic, buildOpCodeBuffer(BLEConsts.OP_CODE_DEVICE_DOWNLOAD_KEY));
+				waitUntilDisconnected();
+
+				if (mAborted) {
+					logi("Upload aborted");
+					sendLogBroadcast("Upload aborted");
+					terminateConnection(gatt, BLEConsts.ERROR_ABORTED);
+					return;
+				}
+
+				disconnect(gatt);
+
+				refreshDeviceCache(gatt, false);
+
+				// Close the device
+				close(gatt);
+
+				logi("Starting service that will connect to the DFU bootloader");
+				final Intent newIntent = new Intent();
+				newIntent.fillIn(intent, Intent.FILL_IN_COMPONENT | Intent.FILL_IN_PACKAGE);
+				newIntent.putExtra(BLEConsts.EXTRA_ACTION, BLEConsts.BLE_ACTION_OTA_GO_RECONNECT);
+				newIntent.putExtra(BLEConsts.EXTRA_DEVICE_RECONNECT_TIMES, 0);
+				startService(newIntent);
+
+			} catch (BLEErrorException e) {
+				e.printStackTrace();
+			} catch (BLEAbortedException e) {
+				e.printStackTrace();
+			} catch (DeviceDisconnectedException e) {
+				e.printStackTrace();
+			} catch (UnknownParametersException e) {
+				e.printStackTrace();
+			}
+
+		} else {
+			startGoOTA2(intent);
+		}
+
+	}
+
+
+	protected void startGoOTA2 (Intent intent) {
+		final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+		// Read input parameters
+		final String deviceAddress = intent.getStringExtra(BLEConsts.EXTRA_DEVICE_ADDRESS);
+		final String deviceName = intent.getStringExtra(BLEConsts.EXTRA_DEVICE_NAME);
+//		final String filePath = intent.getStringExtra(BLEConsts.EXTRA_FILE_PATH);
+		final Uri fileUri = intent.getParcelableExtra(BLEConsts.EXTRA_FILE_URI);
+		final int fileResId = intent.getIntExtra(BLEConsts.EXTRA_FILE_RES_ID, 0);
+		final String initFilePath = intent.getStringExtra(BLEConsts.EXTRA_INIT_FILE_PATH);
+		final Uri initFileUri = intent.getParcelableExtra(BLEConsts.EXTRA_INIT_FILE_URI);
+		final int initFileResId = intent.getIntExtra(BLEConsts.EXTRA_INIT_FILE_RES_ID, 0);
+		int fileType = intent.getIntExtra(BLEConsts.EXTRA_FILE_TYPE, BLEConsts.TYPE_AUTO);
+		if (filePath != null && fileType == BLEConsts.TYPE_AUTO)
+			fileType = filePath.toLowerCase(Locale.US).endsWith("zip") ? BLEConsts.TYPE_AUTO : BLEConsts.TYPE_APPLICATION;
+		String mimeType = intent.getStringExtra(BLEConsts.EXTRA_FILE_MIME_TYPE);
+		mimeType = mimeType != null ? mimeType : (fileType == BLEConsts.TYPE_AUTO ? BLEConsts.MIME_TYPE_ZIP : BLEConsts.MIME_TYPE_OCTET_STREAM);
+		mPartCurrent = intent.getIntExtra(BLEConsts.EXTRA_PART_CURRENT, 1);
+		mPartsTotal = intent.getIntExtra(BLEConsts.EXTRA_PARTS_TOTAL, 1);
+
+		// Check file type and mime-type
+		if ((fileType & ~(BLEConsts.TYPE_SOFT_DEVICE | BLEConsts.TYPE_BOOTLOADER | BLEConsts.TYPE_APPLICATION)) > 0 || !(BLEConsts.MIME_TYPE_ZIP.equals(mimeType) || BLEConsts.MIME_TYPE_OCTET_STREAM.equals(mimeType))) {
+			logw("File type or file mime-type not supported");
+			sendLogBroadcast("File type or file mime-type not supported");
+			sendErrorBroadcast(BLEConsts.ERROR_FILE_TYPE_UNSUPPORTED);
+			return;
+		}
+		if (BLEConsts.MIME_TYPE_OCTET_STREAM.equals(mimeType) && fileType != BLEConsts.TYPE_SOFT_DEVICE && fileType != BLEConsts.TYPE_BOOTLOADER && fileType != BLEConsts.TYPE_APPLICATION) {
+			logw("Unable to determine file type");
+			sendLogBroadcast("Unable to determine file type");
+			sendErrorBroadcast(BLEConsts.ERROR_FILE_TYPE_UNSUPPORTED);
+			return;
+		}
+
+		mBuffer = new byte[OAD_BLOCK_SIZE];
+		mDeviceAddress = deviceAddress;
+		mDeviceName = deviceName;
+		mConnectionState = BLEConsts.STATE_DISCONNECTED;
+		mBytesSent = 0;
+		mBytesConfirmed = 0;
+		mPacketsSentSinceNotification = 0;
+		mError = 0;
+		mLastProgressTime = 0;
+		mAborted = false;
+		mPaused = false;
+		mNotificationsEnabled = false;
+		mResetRequestSent = false;
+		mRequestCompleted = false;
+		mImageSizeSent = false;
+		mRemoteErrorOccurred = false;
+
+		// Read preferences
+		final boolean packetReceiptNotificationEnabled = preferences.getBoolean(BLEConsts.SETTINGS_PACKET_RECEIPT_NOTIFICATION_ENABLED, true);
+		String value = preferences.getString(BLEConsts.SETTINGS_NUMBER_OF_PACKETS, String.valueOf(BLEConsts.SETTINGS_NUMBER_OF_PACKETS_DEFAULT));
+		int numberOfPackets;
+		try {
+			numberOfPackets = Integer.parseInt(value);
+			if (numberOfPackets < 0 || numberOfPackets > 0xFFFF)
+				numberOfPackets = BLEConsts.SETTINGS_NUMBER_OF_PACKETS_DEFAULT;
+		} catch (final NumberFormatException e) {
+			numberOfPackets = BLEConsts.SETTINGS_NUMBER_OF_PACKETS_DEFAULT;
+		}
+		if (!packetReceiptNotificationEnabled)
+			numberOfPackets = 0;
+		mPacketsBeforeNotification = numberOfPackets;
+		// The Soft Device starts where MBR ends (by default from the address 0x1000). Before there is a MBR section, which should not be transmitted over DFU.
+		// Applications and bootloader starts from bigger address. However, in custom DFU implementations, user may want to transmit the whole whole data, even from address 0x0000.
+		value = preferences.getString(BLEConsts.SETTINGS_MBR_SIZE, String.valueOf(BLEConsts.SETTINGS_DEFAULT_MBR_SIZE));
+		int mbrSize;
+		try {
+			mbrSize = Integer.parseInt(value);
+			if (mbrSize < 0)
+				mbrSize = 0;
+		} catch (final NumberFormatException e) {
+			mbrSize = BLEConsts.SETTINGS_DEFAULT_MBR_SIZE;
+		}
+		/*
+		 * In case of old DFU bootloader versions, where there was no DFU Version characteristic, the service was unable to determine whether it was in the application mode, or in
+		 * bootloader mode. In that case, if the following boolean value is set to false (default) the bootloader will count number of services on the device. In case of 3 service
+		 * it will start the DFU procedure (Generic Access, Generic Attribute, DFU Service). If more services will be found, it assumes that a jump to the DFU bootloader is required.
+		 *
+		 * However, in some cases, the DFU bootloader is used to flash firmware on other chip via nRF5x. In that case the application may support DFU operation without switching
+		 * to the bootloader mode itself.
+		 *
+		 * For newer implementations of DFU in such case the DFU Version should return value other than 0x0100 (major 0, minor 1) which means that the application does not support
+		 * DFU process itself but rather support jump to the bootloader mode.
+		 */
+		final boolean assumeDfuMode = preferences.getBoolean(BLEConsts.SETTINGS_ASSUME_DFU_NODE, false);
+
+		sendLogBroadcast("DFU service started");
+
+		/*
+		 * First the service is trying to read the firmware and init packet files.
+		 */
+		InputStream is = null;
+		InputStream initIs = null;
+		int imageSizeInBytes;
+		try {
+			// Prepare data to send, calculate stream size
+			try {
+				sendLogBroadcast("Opening file...");
+				if (fileUri != null) {
+					is = openGoInputStream(fileUri, mimeType, mbrSize, fileType);
+				} else if (filePath != null) {
+					is = openGoInputStream(filePath, mimeType, mbrSize, fileType);
+				} else if (fileResId > 0) {
+					is = openGoInputStream(fileResId, mimeType, mbrSize, fileType);
+				}
+
+				if (initFileUri != null) {
+					// Try to read the Init Packet file from URI
+					initIs = getContentResolver().openInputStream(initFileUri);
+				} else if (initFilePath != null) {
+					// Try to read the Init Packet file from path
+					initIs = new FileInputStream(initFilePath);
+				} else if (initFileResId > 0) {
+					// Try to read the Init Packet file from given resource
+					initIs = getResources().openRawResource(initFileResId);
+				}
+
+				mInputStream = is;
+				imageSizeInBytes = mImageSizeInBytes = is.available();
+
+				if ((imageSizeInBytes % 4) != 0)
+					throw new SizeValidationException("The new firmware is not word-aligned.");
+
+				// Update the file type bit field basing on the ZIP content
+				if (fileType == BLEConsts.TYPE_AUTO && BLEConsts.MIME_TYPE_ZIP.equals(mimeType)) {
+					final ArchiveInputStream zhis = (ArchiveInputStream) is;
+					fileType = zhis.getContentType();
+				}
+				mFileType = fileType;
+				// Set the Init packet stream in case of a ZIP file
+				if (BLEConsts.MIME_TYPE_ZIP.equals(mimeType)) {
+					final ArchiveInputStream zhis = (ArchiveInputStream) is;
+
+					// Validate sizes
+					if ((fileType & BLEConsts.TYPE_APPLICATION) > 0 && (zhis.applicationImageSize() % 4) != 0)
+						throw new SizeValidationException("Application firmware is not word-aligned.");
+					if ((fileType & BLEConsts.TYPE_BOOTLOADER) > 0 && (zhis.bootloaderImageSize() % 4) != 0)
+						throw new SizeValidationException("Bootloader firmware is not word-aligned.");
+					if ((fileType & BLEConsts.TYPE_SOFT_DEVICE) > 0 && (zhis.softDeviceImageSize() % 4) != 0)
+						throw new SizeValidationException("Soft Device firmware is not word-aligned.");
+
+					if (fileType == BLEConsts.TYPE_APPLICATION) {
+						if (zhis.getApplicationInit() != null)
+							initIs = new ByteArrayInputStream(zhis.getApplicationInit());
+					} else {
+						if (zhis.getSystemInit() != null)
+							initIs = new ByteArrayInputStream(zhis.getSystemInit());
+					}
+				}
+				sendLogBroadcast("Image file opened (" + mImageSizeInBytes + " bytes in total)");
+			} catch (final SecurityException e) {
+				loge("A security exception occurred while opening file", e);
+				updateProgressNotification(BLEConsts.ERROR_FILE_NOT_FOUND);
+				return;
+			} catch (final FileNotFoundException e) {
+				loge("An exception occurred while opening file", e);
+				updateProgressNotification(BLEConsts.ERROR_FILE_NOT_FOUND);
+				return;
+			} catch (final SizeValidationException e) {
+				loge("Firmware not word-aligned", e);
+				updateProgressNotification(BLEConsts.ERROR_FILE_SIZE_INVALID);
+				return;
+			} catch (final IOException e) {
+				loge("An exception occurred while calculating file size", e);
+				updateProgressNotification(BLEConsts.ERROR_FILE_ERROR);
+				return;
+			} catch (final Exception e) {
+				loge("An exception occurred while opening files. Did you set the firmware file?", e);
+				updateProgressNotification(BLEConsts.ERROR_FILE_ERROR);
+				return;
+			}
+
+			// Wait a second... If we were connected before it's good to give some time before we start reconnecting.
+			synchronized (this) {
+				try {
+					sendLogBroadcast("wait(1000)");
+					wait(1000);
+				} catch (final InterruptedException e) {
+					// do nothing
+				}
+			}
+
+			/*
+			 * Now let's connect to the device.
+			 * All the methods below are synchronous. The mLock object is used to wait for asynchronous calls.
+			 */
+			sendLogBroadcast("Connecting to DFU target...");
+			updateProgressNotification(BLEConsts.PROGRESS_CONNECTING);
+
+			final BluetoothGatt gatt = connect(mBleDevice.getAddress());
+			// Are we connected?
+			if (gatt == null) {
+				loge("Bluetooth adapter disabled");
+				sendLogBroadcast("Bluetooth adapter disabled");
+				updateProgressNotification(BLEConsts.ERROR_BLUETOOTH_DISABLED);
+				return;
+			}
+			if (mError > 0) { // error occurred
+				final int error = mError & ~BLEConsts.ERROR_CONNECTION_STATE_MASK;
+				loge("An error occurred while connecting to the device:" + error);
+				sendLogBroadcast(String.format("Connection failed (0x%02X): %s", error, GattError.parseConnectionError(error)));
+				// Connection usually fails due to a 133 error (device unreachable, or.. something else went wrong).
+				// Usually trying the same for the second time works.
+				if (intent.getIntExtra(BLEConsts.EXTRA_ATTEMPT, 0) == 0) {
+					sendLogBroadcast("Retrying...");
+
+					if (mConnectionState != BLEConsts.STATE_DISCONNECTED) {
+						// Disconnect from the device
+						disconnect(gatt);
+					}
+					// Close the device
+					refreshDeviceCache(gatt, true);
+					close(gatt);
+
+					logi("Restarting the service");
+					final Intent newIntent = new Intent();
+					newIntent.fillIn(intent, Intent.FILL_IN_COMPONENT | Intent.FILL_IN_PACKAGE);
+					newIntent.putExtra(BLEConsts.EXTRA_ATTEMPT, 1);
+					startService(newIntent);
+					return;
+				}
+				terminateConnection(gatt, mError);
+				return;
+			}
+			if (mAborted) {
+				logi("Upload aborted");
+				sendLogBroadcast("Upload aborted");
+				terminateConnection(gatt, BLEConsts.PROGRESS_ABORTED);
+				return;
+			}
+			// Reset the attempt counter
+			intent.putExtra(BLEConsts.EXTRA_ATTEMPT, 0);
+
+			// We have connected to DFU device and services are discoverer
+			final BluetoothGattService dfuService = gatt.getService(BLEConsts.DFU_SERVICE_UUID); // there was a case when the service was null. I don't know why
+			if (dfuService == null) {
+				loge("DFU service does not exists on the device");
+				sendLogBroadcast("Connected. DFU Service not found");
+				terminateConnection(gatt, BLEConsts.ERROR_SERVICE_NOT_FOUND);
+				return;
+			}
+			final BluetoothGattCharacteristic controlPointCharacteristic = dfuService.getCharacteristic(BLEConsts.DFU_CONTROL_POINT_UUID);
+			final BluetoothGattCharacteristic packetCharacteristic = dfuService.getCharacteristic(BLEConsts.DFU_PACKET_UUID);
+			if (controlPointCharacteristic == null || packetCharacteristic == null) {
+				loge("DFU characteristics not found in the DFU service");
+				sendLogBroadcast("Connected. DFU Characteristics not found");
+				terminateConnection(gatt, BLEConsts.ERROR_CHARACTERISTICS_NOT_FOUND);
+				return;
+			}
+			/*
+			 * The DFU Version characteristic has been added in SDK 7.0.
+			 *
+			 * It may return version number in 2 bytes (f.e. 0x05-00), where the first one is the minor version and the second one is the major version.
+			 * In case of 0x05-00 the DFU has the version 0.5.
+			 *
+			 * Currently the following version numbers are supported:
+			 *
+			 *   - 0.1 (0x01-00) - The service is connected to the device in application mode, not to the DFU Bootloader. The application supports Long Term Key (LTK)
+			 *                     sharing and buttonless update. Enable notifications on the DFU Control Point characteristic and write 0x01-04 into it to jump to the Bootloader.
+			 *                     Check the Bootloader version again for more info about the Bootloader version.
+			 *
+			 *   - 0.5 (0x05-00) - The device is in the OTA-DFU Bootloader mode. The Bootloader supports LTK sharing and requires the Extended Init Packet. It supports
+			 *                     a SoftDevice, Bootloader or an Application update. SoftDevice and a Bootloader may be sent together.
+			 *
+			 *   - 0.6 (0x06-00) - The device is in the OTA-DFU Bootloader mode. The DFU Bootloader is from SDK 8.0 and has the same features as version 0.5. It also
+			 *                     supports also sending Service Changed notification in application mode after successful or aborted upload so no refreshing services is required.
+			 */
+			final BluetoothGattCharacteristic versionCharacteristic = dfuService.getCharacteristic(BLEConsts.DFU_VERSION); // this may be null for older versions of the Bootloader
+
+			sendLogBroadcast("Services discovered");
+
+			// Add one second delay to avoid the traffic jam before the DFU mode is enabled
+			// Related:
+			//   issue:        https://github.com/NordicSemiconductor/Android-DFU-Library/issues/10
+			//   pull request: https://github.com/NordicSemiconductor/Android-DFU-Library/pull/12
+			synchronized (this) {
+				try {
+					sendLogBroadcast("wait(1000)");
+					wait(1000);
+				} catch (final InterruptedException e) {
+					// Do nothing
+				}
+			}
+			// End
+
+			try {
+				updateProgressNotification(BLEConsts.PROGRESS_STARTING);
+
+				/*
+				 * Read the version number if available.
+				 * The version number consists of 2 bytes: major and minor. Therefore f.e. the version 5 (00-05) can be read as 0.5.
+				 *
+				 * Currently supported versions are:
+				 *  * no DFU Version characteristic - we may be either in the bootloader mode or in the app mode. The DFU Bootloader from SDK 6.1 did not have this characteristic,
+				 *                                    but it also supported the buttonless update. Usually, the application must have had some additional services (like Heart Rate, etc)
+				 *                                    so if the number of services greater is than 3 (Generic Access, Generic Attribute, DFU Service) we can also assume we are in
+				 *                                    the application mode and jump is required.
+				 *
+				 *  * version = 1 (major = 0, minor = 1) - Application with DFU buttonless update supported. A jump to DFU mode is required.
+				 *
+				 *  * version = 5 (major = 0, minor = 5) - Since version 5 the Extended Init Packet is required. Keep in mind that if we are in the app mode the DFU Version characteristic
+				 *  								  still returns version = 1, as it is independent from the DFU Bootloader. The version = 5 is reported only after successful jump to
+				 *  								  the DFU mode. In version = 5 the bond information is always lost. Released in SDK 7.0.0.
+				 *
+				 *  * version = 6 (major = 0, minor = 6) - The DFU Bootloader may be configured to keep the bond information after application update. Please, see the {@link #EXTRA_KEEP_BOND}
+				 *  								  documentation for more information about how to enable the feature (disabled by default). A change in the DFU bootloader source and
+				 *  								  setting the {@link DfuServiceInitiator#setKeepBond} to true is required. Released in SDK 8.0.0.
+				 *
+				 *  * version = 7 (major = 0, minor = 7) - The SHA-256 firmware hash is used in the Extended Init Packet instead of CRC-16. This feature is transparent for the DFU Service.
+				 *
+				 *  * version = 8 (major = 0, minor = 8) - The Extended Init Packet is signed using the private key. The bootloader, using the public key, is able to verify the content.
+				 *  								  Released in SDK 9.0.0 as experimental feature.
+				 *  								  Caution! The firmware type (Application, Bootloader, SoftDevice or SoftDevice+Bootloader) is not encrypted as it is not a part of the
+				 *  								  Extended Init Packet. A change in the protocol will be required to fix this issue.
+				 */
+				int version = 0;
+				if (versionCharacteristic != null) {
+					version = readVersion(gatt, versionCharacteristic);
+					final int minor = (version & 0x0F);
+					final int major = (version >> 8);
+					logi("Version number read: " + major + "." + minor);
+					sendLogBroadcast("Version number read: " + major + "." + minor);
+				} else {
+					sendLogBroadcast("DFU Version characteristic not found");
+				}
+
+				/*
+				 *  Check if we are in the DFU Bootloader or in the Application that supports the buttonless update.
+				 *
+				 *  In the DFU from SDK 6.1, which was also supporting the buttonless update, there was no DFU Version characteristic. In that case we may find out whether
+				 *  we are in the bootloader or application by simply checking the number of characteristics. This may be overridden by setting the DfuSettingsConstants.SETTINGS_ASSUME_DFU_NODE
+				 *  property to true in Shared Preferences.
+				 */
+				if (version == 1 || (!assumeDfuMode && version == 0 && gatt.getServices().size() > 3 /* No DFU Version char but more services than Generic Access, Generic Attribute, DFU Service */)) {
+					// The service is connected to the application, not to the bootloader
+					logw("Application with buttonless update found");
+					sendLogBroadcast("Application with buttonless update found");
+
+					// If we are bonded we may want to enable Service Changed characteristic indications.
+					// Note: This feature will be introduced in the SDK 8.0 as this is the proper way to refresh attribute list on the phone.
+					boolean hasServiceChanged = false;
+					if (gatt.getDevice().getBondState() == BluetoothDevice.BOND_BONDED) {
+						final BluetoothGattService genericAttributeService = gatt.getService(BLEConsts.GENERIC_ATTRIBUTE_SERVICE_UUID);
+						if (genericAttributeService != null) {
+							final BluetoothGattCharacteristic serviceChangedCharacteristic = genericAttributeService.getCharacteristic(BLEConsts.SERVICE_CHANGED_UUID);
+							if (serviceChangedCharacteristic != null) {
+								// Let's read the current value of the Service Changed CCCD
+								final boolean serviceChangedIndicationsEnabled = isServiceChangedCCCDEnabled(gatt, serviceChangedCharacteristic);
+
+								if (!serviceChangedIndicationsEnabled) {
+									enableCCCD(gatt, serviceChangedCharacteristic, BLEConsts.INDICATIONS);
+									sendLogBroadcast("Service Changed indications enabled");
+
+									/*
+									 * NOTE: The DFU Bootloader from SDK 8.0 (v0.6 and 0.5) has the following issue:
+									 *
+									 * When the central device (phone) connects to a bonded device (or connects and bonds) which supports the Service Changed characteristic,
+									 * but does not have the Service Changed indications enabled, the phone must enable them, disconnect and reconnect before starting the
+									 * DFU operation. This is because the current version of the Soft Device saves the ATT table on the DISCONNECTED event.
+									 * Sending the "jump to Bootloader" command (0x01-04) will cause the disconnect followed be a reset. The Soft Device does not
+									 * have time to store the ATT table on Flash memory before the reset.
+									 *
+									 * This applies only if:
+									 * - the device was bonded before an upgrade,
+									 * - the Application or the Bootloader is upgraded (upgrade of the Soft Device will erase the bond information anyway),
+									 *     - Application:
+									  *        if the DFU Bootloader has been modified and compiled to preserve the LTK and the ATT table after application upgrade (at least 2 pages)
+									 *         See: \Nordic\nrf51\components\libraries\bootloader_dfu\dfu_types.h, line 56:
+									 *          #define DFU_APP_DATA_RESERVED           0x0000  ->  0x0800+   //< Size of Application Data that must be preserved between application updates...
+									 *     - Bootloader:
+									 *         The Application memory should not be removed when the Bootloader is upgraded, so the Bootloader configuration does not matter.
+									 *
+									 * If the bond information is not to be preserved between the old and new applications, we may skip this disconnect/reconnect process.
+									 * The DFU Bootloader will send the SD indication anyway when we will just continue here, as the information whether it should send it or not it is not being
+									 * read from the application's ATT table, but rather passed as an argument of the "reboot to bootloader" method.
+									 */
+									final boolean keepBond = intent.getBooleanExtra(BLEConsts.EXTRA_KEEP_BOND, false);
+									if (keepBond && (fileType & BLEConsts.TYPE_SOFT_DEVICE) == 0) {
+										sendLogBroadcast("Restarting service...");
+
+										// Disconnect
+										disconnect(gatt);
+
+										// Close the device
+										close(gatt);
+
+										logi("Restarting service");
+										sendLogBroadcast("Restarting service...");
+										final Intent newIntent = new Intent();
+										newIntent.fillIn(intent, Intent.FILL_IN_COMPONENT | Intent.FILL_IN_PACKAGE);
+										startService(newIntent);
+										return;
+									}
+								} else {
+									sendLogBroadcast("Service Changed indications enabled");
+								}
+								hasServiceChanged = true;
+							}
+						}
+					}
+
+					sendLogBroadcast("Jumping to the DFU Bootloader...");
+
+					// Enable notifications
+					enableCCCD(gatt, controlPointCharacteristic, BLEConsts.NOTIFICATIONS);
+					sendLogBroadcast("Notifications enabled");
+
+					// Wait a second here before going further
+					// Related:
+					//   pull request: https://github.com/NordicSemiconductor/Android-DFU-Library/pull/11
+					synchronized (this) {
+						try {
+							sendLogBroadcast("wait(1000)");
+							wait(1000);
+						} catch (final InterruptedException e) {
+							// Do nothing
+						}
+					}
+					// End
+
+					// Send 'jump to bootloader command' (Start DFU)
+					updateProgressNotification(BLEConsts.PROGRESS_ENABLING_DFU_MODE);
+					BLEConsts.OP_CODE_START_DFU[1] = 0x04;
+					logi("Sending Start DFU command (Op Code = 1, Upload Mode = 4)");
+					writeOpCode(gatt, controlPointCharacteristic, BLEConsts.OP_CODE_START_DFU, true);
+					sendLogBroadcast("Jump to bootloader sent (Op Code = 1, Upload Mode = 4)");
+
+					// The device will reset so we don't have to send Disconnect signal.
+					waitUntilDisconnected();
+					sendLogBroadcast("Disconnected by the remote device");
+
+					/*
+					 * We would like to avoid using the hack with refreshing the device (refresh method is not in the public API). The refresh method clears the cached services and causes a
+					 * service discovery afterwards (when connected). Android, however, does it itself when receive the Service Changed indication when bonded.
+					 * In case of unpaired device we may either refresh the services manually (using the hack), or include the Service Changed characteristic.
+					 *
+					 * According to Bluetooth Core 4.0 (and 4.1) specification:
+					 *
+					 * [Vol. 3, Part G, 2.5.2 - Attribute Caching]
+					 * Note: Clients without a trusted relationship must perform service discovery on each connection if the server supports the Services Changed characteristic.
+					 *
+					 * However, as up to Android 5 the system does NOT respect this requirement and servers are cached for every device, even if Service Changed is enabled -> Android BUG?
+					 * For bonded devices Android performs service re-discovery when SC indication is received.
+					 */
+					refreshDeviceCache(gatt, !hasServiceChanged);
+
+					// Close the device
+					close(gatt);
+
+					logi("Starting service that will connect to the DFU bootloader");
+					final Intent newIntent = new Intent();
+					newIntent.fillIn(intent, Intent.FILL_IN_COMPONENT | Intent.FILL_IN_PACKAGE);
+					startService(newIntent);
+					return;
+				}
+
+				/*
+				 * If the DFU Version characteristic is present and the version returned from it is greater or equal to 0.5, the Extended Init Packet is required.
+				 * If the InputStream with init packet is null we may safely abort sending and reset the device as it would happen eventually in few moments.
+				 * The DFU target would send DFU INVALID STATE error if the init packet would not be sent before starting file transmission.
+				 */
+				if (version >= 5 && initIs == null) {
+					logw("Init packet not set for the DFU Bootloader version " + version);
+					sendLogBroadcast("The Init packet is required by this version DFU Bootloader");
+					terminateConnection(gatt, BLEConsts.ERROR_INIT_PACKET_REQUIRED);
+					return;
+				}
+
+				// Enable notifications
+				enableCCCD(gatt, controlPointCharacteristic, BLEConsts.NOTIFICATIONS);
+				sendLogBroadcast("Notifications enabled");
+
+				// Wait a second here before going further
+				// Related:
+				//   pull request: https://github.com/NordicSemiconductor/Android-DFU-Library/pull/11
+				synchronized (this) {
+					try {
+						sendLogBroadcast("wait(1000)");
+						wait(1000);
+					} catch (final InterruptedException e) {
+						// Do nothing
+					}
+				}
+				// End
+
+				try {
+					// Set up the temporary variable that will hold the responses
+					byte[] response;
+					int status;
+
+					/*
+					 * The first version of DFU supported only an Application update.
+					 * Initializing procedure:
+					 * [DFU Start (0x01)] -> DFU Control Point
+					 * [App size in bytes (UINT32)] -> DFU Packet
+					 * ---------------------------------------------------------------------
+					 * Since SDK 6.0 and Soft Device 7.0+ the DFU supports upgrading Soft Device, Bootloader and Application.
+					 * Initializing procedure:
+					 * [DFU Start (0x01), <Update Mode>] -> DFU Control Point
+					 * [SD size in bytes (UINT32), Bootloader size in bytes (UINT32), Application size in bytes (UINT32)] -> DFU Packet
+					 * where <Upload Mode> is a bit mask:
+					 * 0x01 - Soft Device update
+					 * 0x02 - Bootloader update
+					 * 0x04 - Application update
+					 * so that
+					 * 0x03 - Soft Device and Bootloader update
+					 * If <Upload Mode> equals 5, 6 or 7 DFU target may return OPERATION_NOT_SUPPORTED [10, 01, 03]. In that case service will try to send
+					 * Soft Device and/or Bootloader first, reconnect to the new Bootloader and send the Application in the second connection.
+					 * --------------------------------------------------------------------
+					 * If DFU target supports only the old DFU, a response [10, 01, 03] will be send as a notification on DFU Control Point characteristic, where:
+					 * 10 - Response for...
+					 * 01 - DFU Start command
+					 * 03 - Operation Not Supported
+					 * (see table below)
+					 * In that case:
+					 * 1. If this is application update - service will try to upload using the old DFU protocol.
+					 * 2. In case of SD or BL update an error is returned.
+					 */
+
+					// Obtain size of image(s)
+					int softDeviceImageSize = (fileType & BLEConsts.TYPE_SOFT_DEVICE) > 0 ? imageSizeInBytes : 0;
+					int bootloaderImageSize = (fileType & BLEConsts.TYPE_BOOTLOADER) > 0 ? imageSizeInBytes : 0;
+					int appImageSize = (fileType & BLEConsts.TYPE_APPLICATION) > 0 ? imageSizeInBytes : 0;
+					// The sizes above may be overwritten if a ZIP file was passed
+					if (BLEConsts.MIME_TYPE_ZIP.equals(mimeType)) {
+						final ArchiveInputStream zhis = (ArchiveInputStream) is;
+						softDeviceImageSize = zhis.softDeviceImageSize();
+						bootloaderImageSize = zhis.bootloaderImageSize();
+						appImageSize = zhis.applicationImageSize();
+					}
+
+					try {
+						BLEConsts.OP_CODE_START_DFU[1] = (byte) fileType;
+
+						// Send Start DFU command to Control Point
+						logi("Sending Start DFU command (Op Code = 1, Upload Mode = " + fileType + ")");
+						writeOpCode(gatt, controlPointCharacteristic, BLEConsts.OP_CODE_START_DFU);
+						sendLogBroadcast("DFU Start sent (Op Code = 1, Upload Mode = " + fileType + ")");
+
+						// Send image size in bytes to DFU Packet
+						logi("Sending image size array to DFU Packet (" + softDeviceImageSize + "b, " + bootloaderImageSize + "b, " + appImageSize + "b)");
+						writeImageSize(gatt, packetCharacteristic, softDeviceImageSize, bootloaderImageSize, appImageSize);
+						sendLogBroadcast("Firmware image size sent (" + softDeviceImageSize + "b, " + bootloaderImageSize + "b, " + appImageSize + "b)");
+
+						// A notification will come with confirmation. Let's wait for it a bit
+						response = readNotificationResponse();
+
+						/*
+						 * The response received from the DFU device contains:
+						 * +---------+--------+----------------------------------------------------+
+						 * | byte no | value  | description                                        |
+						 * +---------+--------+----------------------------------------------------+
+						 * | 0       | 16     | Response code                                      |
+						 * | 1       | 1      | The Op Code of a request that this response is for |
+						 * | 2       | STATUS | See DFU_STATUS_* for status codes                  |
+						 * +---------+--------+----------------------------------------------------+
+						 */
+						status = getStatusCode(response, BLEConsts.OP_CODE_START_DFU_KEY);
+						sendLogBroadcast("Response received (Op Code = " + response[1] + " Status = " + status + ")");
+						// If upload was not completed in the previous connection the DFU_STATUS_INVALID_STATE status will be reported.
+						// Theoretically, the connection could be resumed from that point, but there is no guarantee, that the same firmware
+						// is to be uploaded now. It's safer to reset the device and start DFU again.
+						if (status == BLEConsts.DFU_STATUS_INVALID_STATE) {
+							sendLogBroadcast("Last upload interrupted. Restarting device...");
+							// Send 'jump to bootloader command' (Start DFU)
+							updateProgressNotification(BLEConsts.PROGRESS_DISCONNECTING);
+							logi("Sending Reset command (Op Code = 6)");
+							writeOpCode(gatt, controlPointCharacteristic, BLEConsts.OP_CODE_RESET);
+							sendLogBroadcast("Reset request sent");
+
+							// The device will reset so we don't have to send Disconnect signal.
+							waitUntilDisconnected();
+							sendLogBroadcast("Disconnected by the remote device");
+
+							refreshDeviceCache(gatt, true); // not sure if bonded device will send Service Changed indication in this case
+							// Close the device
+							close(gatt);
+
+							logi("Restarting the service");
+							final Intent newIntent = new Intent();
+							newIntent.fillIn(intent, Intent.FILL_IN_COMPONENT | Intent.FILL_IN_PACKAGE);
+							startService(newIntent);
+							return;
+						}
+						if (status != BLEConsts.DFU_STATUS_SUCCESS)
+							throw new RemoteDfuException("Starting DFU failed", status);
+					} catch (final RemoteDfuException e) {
+						try {
+							if (e.getErrorNumber() != BLEConsts.DFU_STATUS_NOT_SUPPORTED)
+								throw e;
+
+							// If user wants to send the Soft Device and/or the Bootloader + Application we may try to send the Soft Device/Bootloader files first,
+							// and then reconnect and send the application in the second connection.
+							if ((fileType & BLEConsts.TYPE_APPLICATION) > 0 && (fileType & (BLEConsts.TYPE_SOFT_DEVICE | BLEConsts.TYPE_BOOTLOADER)) > 0) {
+								// Clear the remote error flag
+								mRemoteErrorOccurred = false;
+
+								logw("DFU target does not support (SD/BL)+App update");
+								sendLogBroadcast("DFU target does not support (SD/BL)+App update");
+
+								fileType &= ~BLEConsts.TYPE_APPLICATION; // clear application bit
+								mFileType = fileType;
+								BLEConsts.OP_CODE_START_DFU[1] = (byte) fileType;
+								mPartsTotal = 2;
+
+								// Set new content type in the ZIP Input Stream and update sizes of images
+								final ArchiveInputStream zhis = (ArchiveInputStream) is;
+								zhis.setContentType(fileType);
+								try {
+									appImageSize = 0;
+									mImageSizeInBytes = is.available();
+								} catch (final IOException e1) {
+									// never happen
+								}
+
+								// Send Start DFU command to Control Point
+								sendLogBroadcast("Sending only SD/BL");
+								logi("Resending Start DFU command (Op Code = 1, Upload Mode = " + fileType + ")");
+								writeOpCode(gatt, controlPointCharacteristic, BLEConsts.OP_CODE_START_DFU);
+								sendLogBroadcast("DFU Start sent (Op Code = 1, Upload Mode = " + fileType + ")");
+
+								// Send image size in bytes to DFU Packet
+								logi("Sending image size array to DFU Packet: [" + softDeviceImageSize + "b, " + bootloaderImageSize + "b, " + appImageSize + "b]");
+								writeImageSize(gatt, packetCharacteristic, softDeviceImageSize, bootloaderImageSize, appImageSize);
+								sendLogBroadcast("Firmware image size sent [" + softDeviceImageSize + "b, " + bootloaderImageSize + "b, " + appImageSize + "b]");
+
+								// A notification will come with confirmation. Let's wait for it a bit
+								response = readNotificationResponse();
+								status = getStatusCode(response, BLEConsts.OP_CODE_START_DFU_KEY);
+								sendLogBroadcast("Response received (Op Code = " + response[1] + " Status = " + status + ")");
+								if (status != BLEConsts.DFU_STATUS_SUCCESS)
+									throw new RemoteDfuException("Starting DFU failed", status);
+							} else
+								throw e;
+						} catch (final RemoteDfuException e1) {
+							if (e1.getErrorNumber() != BLEConsts.DFU_STATUS_NOT_SUPPORTED)
+								throw e1;
+
+							// If operation is not supported by DFU target we may try to upload application with legacy mode, using the old DFU protocol
+							if (fileType == BLEConsts.TYPE_APPLICATION) {
+								// Clear the remote error flag
+								mRemoteErrorOccurred = false;
+
+								// The DFU target does not support DFU v.2 protocol
+								logw("DFU target does not support DFU v.2");
+								sendLogBroadcast("DFU target does not support DFU v.2");
+
+								// Send Start DFU command to Control Point
+								sendLogBroadcast("Switching to DFU v.1");
+								logi("Resending Start DFU command (Op Code = 1)");
+								writeOpCode(gatt, controlPointCharacteristic, BLEConsts.OP_CODE_START_DFU); // If has 2 bytes, but the second one is ignored
+								sendLogBroadcast("DFU Start sent (Op Code = 1)");
+
+								// Send image size in bytes to DFU Packet
+								logi("Sending application image size to DFU Packet: " + imageSizeInBytes + " bytes");
+								writeImageSize(gatt, packetCharacteristic, mImageSizeInBytes);
+								sendLogBroadcast("Firmware image size sent (" + imageSizeInBytes + " bytes)");
+
+								// A notification will come with confirmation. Let's wait for it a bit
+								response = readNotificationResponse();
+								status = getStatusCode(response, BLEConsts.OP_CODE_START_DFU_KEY);
+								sendLogBroadcast("Response received (Op Code = " + response[1] + ", Status = " + status + ")");
+								if (status != BLEConsts.DFU_STATUS_SUCCESS)
+									throw new RemoteDfuException("Starting DFU failed", status);
+							} else
+								throw e1;
+						}
+					}
+
+					// Since SDK 6.1 this delay is no longer required as the Receive Start DFU notification is postponed until the memory is clear.
+
+					//		if ((fileType & TYPE_SOFT_DEVICE) > 0) {
+					//			// In the experimental version of bootloader (SDK 6.0.0) we must wait some time until we can proceed with Soft Device update. Bootloader must prepare the RAM for the new firmware.
+					//			// Most likely this step will not be needed in the future as the notification received a moment before will be postponed until Bootloader is ready.
+					//			synchronized (this) {
+					//				try {
+					//					wait(6000);
+					//				} catch (final InterruptedException e) {
+					//					// do nothing
+					//				}
+					//			}
+					//		}
+
+					/*
+					 * If the DFU Version characteristic is present and the version returned from it is greater or equal to 0.5, the Extended Init Packet is required.
+					 * For older versions, or if the DFU Version characteristic is not present (pre SDK 7.0.0), the Init Packet (which could have contained only the firmware CRC) was optional.
+					 * Deprecated: To calculate the CRC (CRC-CCTII-16 0xFFFF) the following application may be used: http://www.lammertbies.nl/comm/software/index.html -> CRC library.
+					 * New: To calculate the CRC (CRC-CCTII-16 0xFFFF) the 'nrf utility' may be used (see below).
+					 *
+					 * The Init Packet is read from the *.dat file as a binary file. This service you allows to specify the init packet file in two ways.
+					 * Since SDK 8.0 and the DFU Library v0.6 using the Distribution packet (ZIP) is recommended. The distribution packet can be created using the
+					 * *nrf utility* tool, available together with Master Control Panel v 3.8.0+. See the DFU documentation at http://developer.nordicsemi.com for more details.
+					 * An init file may be also provided as a separate file using the {@link #EXTRA_INIT_FILE_PATH} or {@link #EXTRA_INIT_FILE_URI} or in the ZIP file
+					 * with the deprecated fixed naming convention:
+					 *
+					 *    a) If the ZIP file contain a softdevice.hex (or .bin) and/or bootloader.hex (or .bin) the 'system.dat' must also be included.
+					 *       In case when both files are present the CRC should be calculated from the two BIN contents merged together.
+					 *       This means: if there are softdevice.hex and bootloader.hex files in the ZIP file you have to convert them to BIN
+					 *       (e.g. using: http://hex2bin.sourceforge.net/ application), copy them into a single file where the soft device is placed as the first one and calculate
+					 *       the CRC for the whole file.
+					 *
+					 *    b) If the ZIP file contains a application.hex (or .bin) file the 'application.dat' file must be included and contain the Init packet for the application.
+					 */
+					// Send DFU Init Packet
+					if (initIs != null) {
+						sendLogBroadcast("Writing Initialize DFU Parameters...");
+
+						logi("Sending the Initialize DFU Parameters START (Op Code = 2, Value = 0)");
+						writeOpCode(gatt, controlPointCharacteristic, BLEConsts.OP_CODE_INIT_DFU_PARAMS_START);
+
+						try {
+							byte[] data = new byte[20];
+							int size;
+							while ((size = initIs.read(data, 0, data.length)) != -1) {
+								writeInitPacket(gatt, packetCharacteristic, data, size);
+							}
+						} catch (final IOException e) {
+							loge("Error while reading Init packet file");
+							throw new DfuException("Error while reading Init packet file", BLEConsts.ERROR_FILE_ERROR);
+						}
+						logi("Sending the Initialize DFU Parameters COMPLETE (Op Code = 2, Value = 1)");
+						writeOpCode(gatt, controlPointCharacteristic, BLEConsts.OP_CODE_INIT_DFU_PARAMS_COMPLETE);
+						sendLogBroadcast("Initialize DFU Parameters completed");
+
+						// A notification will come with confirmation. Let's wait for it a bit
+						response = readNotificationResponse();
+						status = getStatusCode(response, BLEConsts.OP_CODE_INIT_DFU_PARAMS_KEY);
+						sendLogBroadcast("Response received (Op Code = " + response[1] + ", Status = " + status + ")");
+						if (status != BLEConsts.DFU_STATUS_SUCCESS)
+							throw new RemoteDfuException("Device returned error after sending init packet", status);
+					} else
+						mInitPacketSent = true;
+
+					// Send the number of packets of firmware before receiving a receipt notification
+					final int numberOfPacketsBeforeNotification = mPacketsBeforeNotification;
+					if (numberOfPacketsBeforeNotification > 0) {
+						logi("Sending the number of packets before notifications (Op Code = 8, Value = " + numberOfPacketsBeforeNotification + ")");
+						setNumberOfPackets(BLEConsts.OP_CODE_PACKET_RECEIPT_NOTIF_REQ, numberOfPacketsBeforeNotification);
+						writeOpCode(gatt, controlPointCharacteristic, BLEConsts.OP_CODE_PACKET_RECEIPT_NOTIF_REQ);
+						sendLogBroadcast("Packet Receipt Notif Req (Op Code = 8) sent (Value = " + numberOfPacketsBeforeNotification + ")");
+					}
+
+					// Initialize firmware upload
+					logi("Sending Receive Firmware Image request (Op Code = 3)");
+					writeOpCode(gatt, controlPointCharacteristic, BLEConsts.OP_CODE_RECEIVE_FIRMWARE_IMAGE);
+					sendLogBroadcast("Receive Firmware Image request sent");
+
+					// Send the firmware. The method below sends the first packet and waits until the whole firmware is sent.
+					final long startTime = mLastProgressTime = mStartTime = SystemClock.elapsedRealtime();
+					updateProgressNotification();
+					try {
+						logi("Uploading firmware...");
+						sendLogBroadcast("Uploading firmware...");
+						response = uploadGoFirmwareImage(gatt, packetCharacteristic, is);
+					} catch (final DeviceDisconnectedException e) {
+						loge("Disconnected while sending data");
+						throw e;
+						// TODO reconnect?
+					}
+					final long endTime = SystemClock.elapsedRealtime();
+
+					updateProgressNotification(100);
+					// Check the result of the operation
+					status = getStatusCode(response, BLEConsts.OP_CODE_RECEIVE_FIRMWARE_IMAGE_KEY);
+					logi("Response received. Op Code: " + response[0] + " Req Op Code = " + response[1] + ", Status = " + response[2]);
+					sendLogBroadcast("Response received (Op Code = " + response[1] + ", Status = " + status + ")");
+					if (status != BLEConsts.DFU_STATUS_SUCCESS)
+						throw new RemoteDfuException("Device returned error after sending file", status);
+
+					logi("Transfer of " + mBytesSent + " bytes has taken " + (endTime - startTime) + " ms");
+					sendLogBroadcast("Upload completed in " + (endTime - startTime) + " ms");
+
+					// Send Validate request
+					logi("Sending Validate request (Op Code = 4)");
+					writeOpCode(gatt, controlPointCharacteristic, BLEConsts.OP_CODE_VALIDATE);
+					sendLogBroadcast("Validate request sent");
+
+					// A notification will come with status code. Let's wait for it a bit.
+					response = readNotificationResponse();
+					status = getStatusCode(response, BLEConsts.OP_CODE_VALIDATE_KEY);
+					logi("Response received. Op Code: " + response[0] + " Req Op Code = " + response[1] + ", Status = " + response[2]);
+					sendLogBroadcast("Response received (Op Code = " + response[1] + ", Status = " + status + ")");
+					if (status != BLEConsts.DFU_STATUS_SUCCESS)
+						throw new RemoteDfuException("Device returned validation error", status);
+
+					// Send Activate and Reset signal.
+					updateProgressNotification(BLEConsts.PROGRESS_DISCONNECTING);
+					logi("Sending Activate and Reset request (Op Code = 5)");
+					writeOpCode(gatt, controlPointCharacteristic, BLEConsts.OP_CODE_ACTIVATE_AND_RESET);
+					sendLogBroadcast("Activate and Reset request sent");
+
+					// The device will reset so we don't have to send Disconnect signal.
+					waitUntilDisconnected();
+					sendLogBroadcast("Disconnected by the remote device");
+
+					// In the DFU version 0.5, in case the device is bonded, the target device does not send the Service Changed indication after
+					// a jump from bootloader mode to app mode. This issue has been fixed in DFU version 0.6 (SDK 8.0). If the DFU bootloader has been
+					// configured to preserve the bond information we do not need to enforce refreshing services, as it will notify the phone using the
+					// Service Changed indication.
+					final boolean keepBond = intent.getBooleanExtra(BLEConsts.EXTRA_KEEP_BOND, false);
+					refreshDeviceCache(gatt, version == 5 || !keepBond);
+
+					// Close the device
+					close(gatt);
+
+					// During the update the bonding information on the target device may have been removed.
+					// To create bond with the new application set the EXTRA_RESTORE_BOND extra to true.
+					// In case the bond information is copied to the new application the new bonding is not required.
+					if (gatt.getDevice().getBondState() == BluetoothDevice.BOND_BONDED) {
+						final boolean restoreBond = intent.getBooleanExtra(BLEConsts.EXTRA_RESTORE_BOND, false);
+
+						if (restoreBond || !keepBond || (fileType & BLEConsts.TYPE_SOFT_DEVICE) > 0) {
+							// The bond information was lost.
+							removeBond(gatt.getDevice());
+
+							// Give some time for removing the bond information. 300ms was to short, let's set it to 2 seconds just to be sure.
+							synchronized (this) {
+								try {
+									wait(2000);
+								} catch (InterruptedException e) {
+									// do nothing
+								}
+							}
+						}
+
+						if (restoreBond && (fileType & BLEConsts.TYPE_APPLICATION) > 0) {
+							// Restore pairing when application was updated.
+							createBond(gatt.getDevice());
+						}
+					}
+
+					/*
+					 * We need to send PROGRESS_COMPLETED message only when all files has been transmitted.
+					 * In case you want to send the Soft Device and/or Bootloader and the Application, the service will be started twice: one to send SD+BL, and the
+					 * second time to send the Application only (using the new Bootloader). In the first case we do not send PROGRESS_COMPLETED notification.
+					 */
+					if (mPartCurrent == mPartsTotal) {
+						// Delay this event a little bit. Android needs some time to prepare for reconnection.
+						synchronized (mLock) {
+							try {
+								mLock.wait(1400);
+							} catch (final InterruptedException e) {
+								// do nothing
+							}
+						}
+						updateProgressNotification(BLEConsts.PROGRESS_BLE_COMPLETED);
+					} else {
+						/*
+						 * In case when the Soft Device has been upgraded, and the application should be send in the following connection, we have to
+						 * make sure that we know the address the device is advertising with. Depending on the method used to start the DFU bootloader the first time
+						 * the new Bootloader may advertise with the same address or one incremented by 1.
+						 * When the buttonless update was used, the bootloader will use the same address as the application. The cached list of services on the Android device
+						 * should be cleared thanks to the Service Changed characteristic (the fact that it exists if not bonded, or the Service Changed indication on bonded one).
+						 * In case of forced DFU mode (using a button), the Bootloader does not know whether there was the Service Changed characteristic present in the list of
+						 * application's services so it must advertise with a different address. The same situation applies when the new Soft Device was uploaded and the old
+						 * application has been removed in this process.
+						 *
+						 * We could have save the fact of jumping as a parameter of the service but it ma be that some Android devices must first scan a device before connecting to it.
+						 * It a device with the address+1 has never been detected before the service could have failed on connection.
+						 */
+						sendLogBroadcast("Scanning for the DFU Bootloader...");
+						final String newAddress = BootloaderScannerFactory.getScanner().searchFor(mDeviceAddress);
+						if (newAddress != null)
+							sendLogBroadcast("DFU Bootloader found with address " + newAddress);
+						else {
+							sendLogBroadcast("DFU Bootloader not found. Trying the same address...");
+						}
+
+						/*
+						 * The current service instance has uploaded the Soft Device and/or Bootloader.
+						 * We need to start another instance that will try to send application only.
+						 */
+						logi("Starting service that will upload application");
+						final Intent newIntent = new Intent();
+						newIntent.fillIn(intent, Intent.FILL_IN_COMPONENT | Intent.FILL_IN_PACKAGE);
+						newIntent.putExtra(BLEConsts.EXTRA_FILE_MIME_TYPE, BLEConsts.MIME_TYPE_ZIP); // ensure this is set (e.g. for scripts)
+						newIntent.putExtra(BLEConsts.EXTRA_FILE_TYPE, BLEConsts.TYPE_APPLICATION); // set the type to application only
+						if (newAddress != null)
+							newIntent.putExtra(BLEConsts.EXTRA_DEVICE_ADDRESS, newAddress);
+						newIntent.putExtra(BLEConsts.EXTRA_PART_CURRENT, mPartCurrent + 1);
+						newIntent.putExtra(BLEConsts.EXTRA_PARTS_TOTAL, mPartsTotal);
+						startService(newIntent);
+					}
+				} catch (final UnknownResponseException e) {
+					final int error = BLEConsts.ERROR_INVALID_RESPONSE;
+					loge(e.getMessage());
+					sendLogBroadcast(e.getMessage());
+
+					logi("Sending Reset command (Op Code = 6)");
+					controlPointCharacteristic.setValue(BLEConsts.OP_CODE_RESET);
+					gatt.writeCharacteristic(controlPointCharacteristic);
+					sendLogBroadcast("Reset request sent");
+					terminateConnection(gatt, error);
+				} catch (final RemoteDfuException e) {
+					final int error = BLEConsts.ERROR_REMOTE_MASK | e.getErrorNumber();
+					loge(e.getMessage());
+					sendLogBroadcast(String.format("Remote DFU error: %s", GattError.parse(error)));
+
+					logi("Sending Reset command (Op Code = 6)");
+					controlPointCharacteristic.setValue(BLEConsts.OP_CODE_RESET);
+					gatt.writeCharacteristic(controlPointCharacteristic);
+					sendLogBroadcast("Reset request sent");
+					terminateConnection(gatt, error);
+				}
+			} catch (final UploadAbortedException e) {
+				logi("Upload aborted");
+				sendLogBroadcast("Upload aborted");
+				if (mConnectionState == BLEConsts.STATE_CONNECTED_AND_READY)
+					try {
+						mAborted = false;
+						logi("Sending Reset command (Op Code = 6)");
+						controlPointCharacteristic.setValue(BLEConsts.OP_CODE_RESET);
+						gatt.writeCharacteristic(controlPointCharacteristic);
+						sendLogBroadcast("Reset request sent");
+					} catch (final Exception e1) {
+						// do nothing
+					}
+				terminateConnection(gatt, BLEConsts.PROGRESS_ABORTED);
+			} catch (final DeviceDisconnectedException e) {
+				sendLogBroadcast("Device has disconnected");
+				// TODO reconnect n times?
+				loge(e.getMessage());
+				close(gatt);
+				updateProgressNotification(BLEConsts.ERROR_DEVICE_DISCONNECTED);
+			} catch (final DfuException e) {
+				int error = e.getErrorNumber();
+				// Connection state errors and other Bluetooth GATT callbacks share the same error numbers. Therefore we are using bit masks to identify the type.
+				if ((error & BLEConsts.ERROR_CONNECTION_STATE_MASK) > 0) {
+					error &= ~BLEConsts.ERROR_CONNECTION_STATE_MASK;
+					sendLogBroadcast(String.format("Error (0x%02X): %s", error, GattError.parseConnectionError(error)));
+				} else {
+					error &= ~BLEConsts.ERROR_CONNECTION_MASK;
+					sendLogBroadcast(String.format("Error (0x%02X): %s", error, GattError.parse(error)));
+				}
+				loge(e.getMessage());
+				if (mConnectionState == BLEConsts.STATE_CONNECTED_AND_READY)
+					try {
+						logi("Sending Reset command (Op Code = 6)");
+//						writeOpCode(gatt, controlPointCharacteristic, BLEConsts.OP_CODE_RESET);
+						controlPointCharacteristic.setValue(BLEConsts.OP_CODE_RESET);
+						gatt.writeCharacteristic(controlPointCharacteristic);
+						sendLogBroadcast("Reset request sent");
+					} catch (final Exception e1) {
+						// do nothing
+					}
+				terminateConnection(gatt, e.getErrorNumber() /* we return the whole error number, including the error type mask */);
+			} catch (BLEErrorException e) {
+				e.printStackTrace();
+			} catch (BLEAbortedException e) {
+				e.printStackTrace();
+			}
+		} finally {
+			try {
+				// Ensure that input stream is always closed
+				mInputStream = null;
+				if (is != null)
+					is.close();
+			} catch (final IOException e) {
+				// do nothing
+			}
+		}
+
+	}
+
+	/**
+	 * Reads the value of the Service Changed Client Characteristic Configuration descriptor (CCCD).
+	 *
+	 * @param gatt           the GATT device
+	 * @param characteristic the Service Changed characteristic
+	 * @return <code>true</code> if Service Changed CCCD is enabled ans set to INDICATE
+	 * @throws DeviceDisconnectedException
+	 * @throws DfuException
+	 * @throws UploadAbortedException
+	 */
+	private boolean isServiceChangedCCCDEnabled(final BluetoothGatt gatt, final BluetoothGattCharacteristic characteristic) throws DeviceDisconnectedException, DfuException, UploadAbortedException {
+		if (mConnectionState != BLEConsts.STATE_CONNECTED_AND_READY)
+			throw new DeviceDisconnectedException("Unable to read Service Changed CCCD", mConnectionState);
+		// If the Service Changed characteristic or the CCCD is not available we return false.
+		if (characteristic == null)
+			return false;
+
+		final BluetoothGattDescriptor descriptor = characteristic.getDescriptor(BLEConsts.CLIENT_CHARACTERISTIC_CONFIG);
+		if (descriptor == null)
+			return false;
+
+		mRequestCompleted = false;
+		mError = 0;
+
+		logi("Reading Service Changed CCCD value...");
+		sendLogBroadcast("Reading Service Changed CCCD value...");
+
+		gatt.readDescriptor(descriptor);
+
+		// We have to wait until device receives a response or an error occur
+		try {
+			synchronized (mLock) {
+				while ((!mRequestCompleted && mConnectionState == BLEConsts.STATE_CONNECTED_AND_READY && mError == 0 && !mAborted) || mPaused)
+					mLock.wait();
+			}
+		} catch (final InterruptedException e) {
+			loge("Sleeping interrupted", e);
+		}
+		if (mAborted)
+			throw new UploadAbortedException();
+		if (mError != 0)
+			throw new DfuException("Unable to read Service Changed CCCD", mError);
+		if (mConnectionState != BLEConsts.STATE_CONNECTED_AND_READY)
+			throw new DeviceDisconnectedException("Unable to read Service Changed CCCD", mConnectionState);
+
+		return mServiceChangedIndicationsEnabled;
+	}
+
+
+	/**
+	 * Starts sending the data. This method is SYNCHRONOUS and terminates when the whole file will be uploaded or the connection status will change from {@link #}. If
+	 * connection state will change, or an error will occur, an exception will be thrown.
+	 *
+	 * @param gatt                 the GATT device (DFU target)
+	 * @param packetCharacteristic the characteristic to write file content to. Must be the DFU PACKET
+	 * @return The response value received from notification with Op Code = 3 when all bytes will be uploaded successfully.
+	 * @throws DeviceDisconnectedException Thrown when the device will disconnect in the middle of the transmission. The error core will be saved in {@link #mConnectionState}.
+	 * @throws DfuException                Thrown if DFU error occur
+	 * @throws UploadAbortedException
+	 */
+	private byte[] uploadGoFirmwareImage(final BluetoothGatt gatt, final BluetoothGattCharacteristic packetCharacteristic, final InputStream inputStream) throws DeviceDisconnectedException,
+			DfuException, UploadAbortedException {
+		mReceivedData = null;
+		mError = 0;
+
+		final byte[] buffer = mBuffer;
+		try {
+			final int size = inputStream.read(buffer);
+			sendLogBroadcast("Sending firmware to characteristic " + packetCharacteristic.getUuid() + "...");
+			writePacket(gatt, packetCharacteristic, buffer, size);
+		} catch (final HexFileValidationException e) {
+			throw new DfuException("HEX file not valid", BLEConsts.ERROR_FILE_INVALID);
+		} catch (final IOException e) {
+			throw new DfuException("Error while reading file", BLEConsts.ERROR_FILE_IO_EXCEPTION);
+		}
+
+		try {
+			synchronized (mLock) {
+				while ((mReceivedData == null && mConnectionState == BLEConsts.STATE_CONNECTED_AND_READY && mError == 0 && !mAborted) || mPaused)
+					mLock.wait();
+			}
+		} catch (final InterruptedException e) {
+			loge("Sleeping interrupted", e);
+		}
+		if (mAborted)
+			throw new UploadAbortedException();
+		if (mError != 0)
+			throw new DfuException("Uploading Firmware Image failed", mError);
+		if (mConnectionState != BLEConsts.STATE_CONNECTED_AND_READY)
+			throw new DeviceDisconnectedException("Uploading Firmware Image failed: device disconnected", mConnectionState);
+
+		return mReceivedData;
+	}
+
+
+	/**
+	 * Opens the binary input stream that returns the firmware image content. A Path to the file is given.
+	 *
+	 * @param filePath
+	 *            the path to the HEX or BIN file
+	 * @param mimeType
+	 *            the file type
+	 * @param mbrSize
+	 *            the size of MBR, by default 0x1000
+	 * @param types
+	 *            the content files types in ZIP
+	 * @return the input stream with binary image content
+	 */
+	protected InputStream openP2InputStream(final String filePath, final String mimeType, final int mbrSize, final int types) throws FileNotFoundException, IOException {
+		if(filePath == null){
+			throw new FileNotFoundException();
+		}
+		final InputStream is = new FileInputStream(filePath);
+		if (BLEConsts.MIME_TYPE_ZIP.equals(mimeType))
+			return new ZipHexInputStream(is, mbrSize, types);
+		if (filePath.toString().toLowerCase(Locale.US).endsWith("hex"))
+			return new HexInputStream(is, mbrSize);
+		return is;
+	}
+
+	/**
+	 * Opens the binary input stream. A Uri to the stream is given.
+	 *
+	 * @param stream
+	 *            the Uri to the stream
+	 * @param mimeType
+	 *            the file type
+	 * @param mbrSize
+	 *            the size of MBR, by default 0x1000
+	 * @param types
+	 *            the content files types in ZIP
+	 * @return the input stream with binary image content
+	 */
+	protected InputStream openP2InputStream(final Uri stream, final String mimeType, final int mbrSize, final int types) throws FileNotFoundException, IOException {
+		final InputStream is = getContentResolver().openInputStream(stream);
+		if (BLEConsts.MIME_TYPE_ZIP.equals(mimeType))
+			return new ZipHexInputStream(is, mbrSize, types);
+		if (stream.toString().toLowerCase(Locale.US).endsWith("hex"))
+			return new HexInputStream(is, mbrSize);
+		return is;
+	}
+
+
+	/**
+	 * Opens the binary input stream that returns the firmware image content. A Path to the file is given.
+	 *
+	 * @param filePath the path to the HEX, BIN or ZIP file
+	 * @param mimeType the file type
+	 * @param mbrSize  the size of MBR, by default 0x1000
+	 * @param types    the content files types in ZIP
+	 * @return the input stream with binary image content
+	 */
+	private InputStream openGoInputStream(final String filePath, final String mimeType, final int mbrSize, final int types) throws IOException {
+		final InputStream is = new FileInputStream(filePath);
+		if (BLEConsts.MIME_TYPE_ZIP.equals(mimeType))
+			return new ArchiveInputStream(is, mbrSize, types);
+		if (filePath.toLowerCase(Locale.US).endsWith("hex"))
+			return new HexInputStream(is, mbrSize);
+		return is;
+	}
+
+	/**
+	 * Opens the binary input stream. A Uri to the stream is given.
+	 *
+	 * @param stream   the Uri to the stream
+	 * @param mimeType the file type
+	 * @param mbrSize  the size of MBR, by default 0x1000
+	 * @param types    the content files types in ZIP
+	 * @return the input stream with binary image content
+	 */
+	private InputStream openGoInputStream(final Uri stream, final String mimeType, final int mbrSize, final int types) throws IOException {
+		final InputStream is = getContentResolver().openInputStream(stream);
+		if (BLEConsts.MIME_TYPE_ZIP.equals(mimeType))
+			return new ArchiveInputStream(is, mbrSize, types);
+
+		final String[] projection = {MediaStore.Images.Media.DISPLAY_NAME};
+		final Cursor cursor = getContentResolver().query(stream, projection, null, null, null);
+		try {
+			if (cursor.moveToNext()) {
+				final String fileName = cursor.getString(0 /* DISPLAY_NAME*/);
+
+				if (fileName.toLowerCase(Locale.US).endsWith("hex"))
+					return new HexInputStream(is, mbrSize);
+			}
+		} finally {
+			cursor.close();
+		}
+		return is;
+	}
+
+	/**
+	 * Opens the binary input stream that returns the firmware image content. A resource id in the res/raw is given.
+	 *
+	 * @param resId the if of the resource file
+	 * @param mimeType the file type
+	 * @param mbrSize  the size of MBR, by default 0x1000
+	 * @param types    the content files types in ZIP
+	 * @return the input stream with binary image content
+	 */
+	private InputStream openGoInputStream(final int resId, final String mimeType, final int mbrSize, final int types) throws IOException {
+		final InputStream is = getResources().openRawResource(resId);
+		if (BLEConsts.MIME_TYPE_ZIP.equals(mimeType))
+			return new ArchiveInputStream(is, mbrSize, types);
+		is.mark(2);
+		int firstByte = is.read();
+		is.reset();
+		if (firstByte == ':')
+			return new HexInputStream(is, mbrSize);
+		return is;
+	}
+
+	@Override
+	protected void startGoSampling(Intent intent) {
+
+		deviceId = null;
+		secretKey = null;
+		secret = null;
+
+	/*
+	 * Now let's connect to the device.
+	 * All the methods below are synchronous. The mLock object is used to wait for asynchronous calls.
+	 */
+		sendLogBroadcast("Connecting to target...");
+
+		try {
+
+			if(startConnectAndReconnect(intent, mBleDevice.getAddress(), BLEConsts.ACC_SERVICE_UUID, BLEConsts.ACC_CONTROL_UUID, BLEConsts.ACC_DATA_UUID)){
+				return;
+			}
+
+			if (mAborted) {
+				logi("Upload aborted");
+				sendLogBroadcast("Upload aborted");
+				terminateConnection(gatt, BLEConsts.ERROR_ABORTED);
+				return;
+			}
+			// Set up the temporary variable that will hold the responses
+			byte[] response = null;
+
+			// Enable notifications
+			enableCCCD(gatt, dataCharacteristic, BLEConsts.NOTIFICATIONS);
+			sendLogBroadcast("Notifications enabled");
+
+			updateProgressNotification(BLEConsts.PROGRESS_CONNECTED);
+
+			writeSyncCode(gatt, controlCharacteristic, buildOpCodeBuffer('L'));
+			response = readNotificationResponse();
+			checkResponseValid(response, 'L');
+
+			writeSyncCode(gatt, controlCharacteristic, buildOpCodeBuffer(200));
+			response = readNotificationResponse();
+			parserReceivedData(response);
+
+			updateProgressNotification(BLEConsts.PROGRESS_BLE_COMPLETED);
+
+			startKeepAlive();// start send keepAlive message
+			mPaused = true;
+			waitIfPaused(true);
+
+			gatt.setCharacteristicNotification(dataCharacteristic, false);
+			disconnect(gatt);
+
+			// Close the device
+			refreshDeviceCache(gatt, false);
+			close(gatt);
+
+		} catch (DeviceDisconnectedException e) {
+			sendLogBroadcast("Device has disconneted");
+			loge(e.getMessage());
+			if (mNotificationsEnabled)
+				gatt.setCharacteristicNotification(dataCharacteristic, false);
+			close(gatt);
+			updateProgressNotification(BLEConsts.ERROR_DEVICE_DISCONNECTED); //TODO:
+		} catch (UnknownParametersException e) {
+			final int error = BLEConsts.ERROR_INVALID_PARAMETERS;
+			loge(e.getMessage());
+			sendLogBroadcast(e.getMessage());
+			terminateConnection(gatt, error);
+		} catch (UnknownResponseException e) {
+			final int error = BLEConsts.ERROR_INVALID_RESPONSE;
+			loge(e.getMessage());
+			sendLogBroadcast(e.getMessage());
+			terminateConnection(gatt, error);
+		} catch (BLEErrorException e) {
+			final int error = e.getErrorNumber() & ~ BLEConsts.ERROR_CONNECTION_MASK;
+			sendLogBroadcast(String.format("Error (0x%02X): %s", error, GattError.parse(error)));
+			terminateConnection(gatt, e.getErrorNumber());
+		} catch (BLEAbortedException e) {
+			sendLogBroadcast("action aborted");
+			terminateConnection(gatt, BLEConsts.ERROR_ABORTED);
+		}  catch (UnexpectedCompleteException e) {
+			final int error = e.getErrorNumber();
+			sendLogBroadcast(String.format("Error (0x%02X): %s", error, GattError.parse(error)));
+			loge(e.getMessage());
+			terminateConnection(gatt, e.getErrorNumber());
+		} catch (UnsupportedEncodingException e) {
+			final int error = BLEConsts.ERROR_UNSUPPORTED_ENCODING;
+			sendLogBroadcast(String.format("Error (0x%02X): %s", error, GattError.parse(error)));
+			loge(e.getMessage());
+			terminateConnection(gatt, error);
+		}
+
+	}
+
+
+
 
 }

@@ -10,25 +10,12 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.display.SimpleBitmapDisplayer;
-import com.nostra13.universalimageloader.core.imageaware.ImageAware;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.petkit.android.utils.CommonUtils;
-import com.petkit.android.utils.PetkitLog;
 
 public class ImageLoadTool {
 
 	private static ImageLoader imageLoader = ImageLoader.getInstance();
-//	private static DisplayImageOptions options = new DisplayImageOptions.Builder()
-////            .resetViewBeforeLoading(true)
-//            .cacheInMemory(true)
-//            .cacheOnDisk(true)
-//            .considerExifParams(true)
-//            .bitmapConfig(Bitmap.Config.RGB_565)
-//            .displayer(new SimpleBitmapDisplayer())
-//            .imageScaleType(ImageScaleType.EXACTLY)
-//            .build();
 
 	public static ImageLoader getImageLoader(){
 		return imageLoader;
@@ -36,39 +23,17 @@ public class ImageLoadTool {
 	public static boolean checkImageLoader(){
 		return imageLoader.isInited();
 	}
-	
-//	public static void disPlay(String uri, ImageAware imageAware,int default_pic){
-//		disPlay(uri, imageAware, default_pic, default_pic);
-//	}
-//
-//	public static void disPlay(String uri, ImageAware imageAware,int default_pic, int load_pic){
-//		DisplayImageOptions options = new DisplayImageOptions.Builder()
-//			.showImageOnLoading(load_pic)
-//			.showImageForEmptyUri(default_pic)
-//			.showImageOnFail(default_pic)
-//			.cacheInMemory(true)
-//			.bitmapConfig(Bitmap.Config.RGB_565)
-//			.displayer(new SimpleBitmapDisplayer())
-//            .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
-//			.build();
-//
-//		imageLoader.displayImage(uri, imageAware, options);
-//	}
 
     public static void disPlay(String uri, final ImageViewAware imageViewAware, final View spinner, final int default_pic){
-//        if(CommonUtils.isEmpty(uri)){
-//            imageView.setImageResource(default_pic);
-//            return;
-//        }
-//        if(spinner == null){
-//            imageViewAware.setImageResource(default_pic);
-//        }
-
+        disPlay(uri,imageViewAware,spinner,default_pic,true);
+    }
+	
+    public static void disPlay(String uri, final ImageViewAware imageViewAware, final View spinner, final int default_pic,boolean isCacheInMemory){
         DisplayImageOptions options = new DisplayImageOptions.Builder()
 			.showImageOnLoading(default_pic)
 			.showImageForEmptyUri(default_pic)
 			.showImageOnFail(default_pic)
-			.cacheInMemory(true)
+			.cacheInMemory(isCacheInMemory)
             .cacheOnDisk(true)
             .considerExifParams(true)
 			.bitmapConfig(Bitmap.Config.RGB_565)
@@ -78,8 +43,6 @@ public class ImageLoadTool {
 
         imageViewAware.getWrappedView().setTag(uri);
         imageViewAware.setUri(uri);
-        PetkitLog.d("displayImage uri: " + uri);
-        PetkitLog.d("displayImage imageView: " + imageViewAware.getWrappedView().toString());
 
         imageLoader.displayImage(uri, imageViewAware, options, new ImageLoadingListener() {
             @Override
@@ -116,8 +79,33 @@ public class ImageLoadTool {
         disPlay(uri, new ImageViewAware(imageView), spinner, default_pic);
     }
 
+    public static void disPlay(String uri, final ImageView imageView, final View spinner, final int default_pic, boolean isCacheInMemory) {
+        disPlay(uri, new ImageViewAware(imageView), spinner, default_pic, isCacheInMemory);
+    }
+
     public static void disPlay(String uri, ImageView imageView, int default_pic){
         disPlay(uri, imageView, null, default_pic);
+    }
+
+    public static void disPlay(String uri, ImageView imageView, int default_pic, boolean isCacheInMemory){
+        disPlay(uri, imageView, null, default_pic, isCacheInMemory);
+    }
+
+    public static void disPlay(String uri, final ImageView imageView, final ImageLoadingListener listener){
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .considerExifParams(true)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .displayer(new SimpleBitmapDisplayer())
+                .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
+                .build();
+
+        ImageViewAware imageViewAware = new ImageViewAware(imageView);
+        imageViewAware.getWrappedView().setTag(uri);
+        imageViewAware.setUri(uri);
+
+        imageLoader.displayImage(uri, imageViewAware, options, listener);
     }
 
 	@SuppressWarnings("deprecation")
@@ -159,6 +147,13 @@ public class ImageLoadTool {
 	public static void stop(){
 		imageLoader.stop();
 	}
+
+    /**
+     * 停止加载
+     */
+    public static void destory(){
+        imageLoader.destroy();
+    }
 	/**
 	 * 销毁加载
 	 */

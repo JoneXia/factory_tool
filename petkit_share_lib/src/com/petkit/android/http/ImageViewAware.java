@@ -5,10 +5,10 @@ import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
+
 import com.nostra13.universalimageloader.core.assist.ViewScaleType;
 import com.nostra13.universalimageloader.core.imageaware.ViewAware;
 import com.nostra13.universalimageloader.utils.L;
-import com.petkit.android.utils.PetkitLog;
 
 import java.lang.reflect.Field;
 
@@ -105,7 +105,6 @@ public class ImageViewAware extends ViewAware {
     @Override
     protected void setImageDrawableInto(Drawable drawable, View view) {
         if(checkInvalid(view)){
-            PetkitLog.d("displayImage result invalid imageview: " + view.toString());
             return;
         }
 
@@ -125,8 +124,6 @@ public class ImageViewAware extends ViewAware {
     }
 
     private boolean checkInvalid(View view){
-        PetkitLog.d("displayImage result uri: " + uri);
-        PetkitLog.d("displayImage result imageView: " + view.toString());
         return uri != null && !uri.equals(view.getTag());
     }
 

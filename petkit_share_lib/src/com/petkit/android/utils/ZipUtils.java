@@ -22,8 +22,8 @@ import org.apache.http.protocol.HTTP;
 
 public class ZipUtils { 
 	
-    private static final int BUFF_SIZE = 1024 * 1024; // 1M Byte 
- 
+    private static final int BUFF_SIZE = 200 * 1024; // 1M Byte
+
     /**
      * 批量压缩文件（夹）
      * 
@@ -275,16 +275,19 @@ public class ZipUtils {
                     zipFile(file, zipout, rootpath); 
                 } 
             } else { 
-                byte buffer[] = new byte[BUFF_SIZE]; 
-                in = new BufferedInputStream(new FileInputStream(resFile), BUFF_SIZE); 
-                zipout.putNextEntry(new ZipEntry(rootpath)); 
-                int realLength; 
-                while ((realLength = in.read(buffer)) != -1) { 
-                    zipout.write(buffer, 0, realLength); 
-                } 
-                in.close(); 
-                zipout.flush(); 
-                zipout.closeEntry(); 
+                byte buffer[] = new byte[BUFF_SIZE];
+                FileInputStream fileInputStream = new FileInputStream(resFile);
+                if(fileInputStream.available() <= BUFF_SIZE){
+                    in = new BufferedInputStream(fileInputStream, BUFF_SIZE);
+                    zipout.putNextEntry(new ZipEntry(rootpath));
+                    int realLength;
+                    while ((realLength = in.read(buffer)) != -1) {
+                        zipout.write(buffer, 0, realLength);
+                    }
+                    in.close();
+                    zipout.flush();
+                    zipout.closeEntry();
+                }
             } 
         } finally { 
             if (in != null) 

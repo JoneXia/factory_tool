@@ -38,6 +38,8 @@ public class DogAvatarEffectImageView extends ImageView{
 
 	
 	public static Bitmap getRoundedCornerBitmap(Bitmap bitmap) {
+		if(bitmap == null)
+			return null;
 	    int length = bitmap.getWidth() <= bitmap.getHeight() ? bitmap.getWidth() : bitmap.getHeight();
 	    
 	    Bitmap output = Bitmap.createBitmap(length,

@@ -28,7 +28,7 @@ public abstract class BaseBluetoothLeUtils {
 	// Requests to other activities
 	public static final int REQ_ENABLE_BT = 0;
 
-	protected final int SCAN_TIMEOUT = 10000; // Seconds
+	protected final int SCAN_TIMEOUT = 20000; // Seconds
 
 	// BLE management
 	protected boolean mBleSupported = true;

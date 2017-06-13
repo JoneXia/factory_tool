@@ -1,30 +1,20 @@
 package com.petkit.android.utils;
 
-import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.http.client.CookieStore;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.NotificationManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.Rect;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -32,6 +22,7 @@ import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.MeasureSpec;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.GridView;
 import android.widget.ListAdapter;
@@ -41,10 +32,24 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.petkit.android.ble.BLEConsts;
-import com.petkit.android.model.Address;
 import com.petkit.android.model.Client;
 import com.petkit.android.model.PetSyncTime;
 import com.petkit.android.model.SupportBLEDevices.SupportBLEDevicesData;
+
+import java.io.File;
+import java.lang.reflect.Method;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -63,12 +68,13 @@ public class CommonUtils {
 	public static final String CACHE_IMAGE_PATH = "images/";
 	public static final String CACHE_INFOR_COLLECT_PATH = "infors/";
 	public static final String PETKIT_VIDEO_PATH = "video/";
+	public static final String PETKIT_EMOTION_PATH = "emotion/";
+	public static final String MATE_SCREENSHOT_PATH = "mate_screenshot/";
 
 	private static final boolean isDebug = false;
 	
 	public static String cookies;
-	public static CookieStore cookieStore;
-	
+
 	private static Context mContext;
 	private static boolean isAppActive = false;
 	
@@ -152,6 +158,14 @@ public class CommonUtils {
 			file.mkdirs();
 		}
 
+		file = new File(PETKIT_ROOT + PETKIT_EMOTION_PATH);
+		if (!file.isDirectory()) {
+			file.delete();
+		}
+		if (!file.exists()) {
+			file.mkdirs();
+		}
+
 		file = new File(CACHE_ROOT + CACHE_ACTIVITY_PATH);
 		if (!file.isDirectory()) {
 			file.delete();
@@ -183,7 +197,15 @@ public class CommonUtils {
 		if (!file.exists()) {
 			file.mkdirs();
 		}
-		
+
+		file = new File(CACHE_ROOT + MATE_SCREENSHOT_PATH);
+		if (!file.isDirectory()) {
+			file.delete();
+		}
+		if (!file.exists()) {
+			file.mkdirs();
+		}
+
 	}
 
 	/**
@@ -210,7 +232,7 @@ public class CommonUtils {
 
 
 	/**
-	 * 获取活动数据缓存目录
+	 * 获取视频缓存目录
 	 * @return
 	 */
 	public static String getAppVideoDataDirPath() {
@@ -219,7 +241,29 @@ public class CommonUtils {
 			file.mkdirs();
 		return getAppDirPath() + PETKIT_VIDEO_PATH;
 	}
-	
+
+	/**
+	 * 获取mate截图目录
+	 * @return
+	 */
+	public static String getMateScreenshotDirPath() {
+		File file = new File(getAppDirPath() + MATE_SCREENSHOT_PATH);
+		if(!file.exists())
+			file.mkdirs();
+		return getAppDirPath() + MATE_SCREENSHOT_PATH;
+	}
+
+	/**
+	 * 获取视频缓存目录
+	 * @return
+	 */
+	public static String getAppEmotionDataDirPath() {
+		File file = new File(getAppDirPath() + PETKIT_EMOTION_PATH);
+		if(!file.exists())
+			file.mkdirs();
+		return getAppDirPath() + PETKIT_EMOTION_PATH;
+	}
+
 	/**
 	 * 获取活动数据缓存目录
 	 * @return
@@ -325,6 +369,12 @@ public class CommonUtils {
 		sysEdit.putString(key, value);
 		sysEdit.commit();
 	}
+
+	public static void addSysSet(Context context , String key, Set<String> value){
+		Editor sysEdit =  getSysShare(context).edit();
+		sysEdit.putStringSet(key, value);
+		sysEdit.commit();
+	}
 	
 	/**
 	 * 得到系统缓存
@@ -349,6 +399,13 @@ public class CommonUtils {
 	public static void addSysIntMap(Context context , String key , int value){
 		Editor sysEdit =  getSysShare(context).edit();
 		sysEdit.putInt(key, value);
+		sysEdit.commit();
+	}
+
+	public static void addSysBoolMap(Context context, String key, boolean value)
+	{
+		Editor sysEdit =  getSysShare(context).edit();
+		sysEdit.putBoolean(key, value);
 		sysEdit.commit();
 	}
 	
@@ -377,7 +434,70 @@ public class CommonUtils {
 		}
 		return defValue;
 	}
-	
+
+	/**
+	 * 得到系统缓存
+	 * @param context
+	 * @param key
+	 * @return
+	 */
+	public static Set<String> getSysSet(Context context , String key){
+		SharedPreferences share = getSysShare(context);
+		if(share != null){
+			return share.getStringSet(key, new LinkedHashSet<String>());
+		}
+		return new LinkedHashSet<>();
+	}
+
+
+	/**
+	 * 删除系统缓存信息
+	 * @param context
+	 * @param key
+	 * @return
+	 */
+	public static boolean removeSysMap(Context context,String key)
+	{
+		SharedPreferences share = getSysShare(context);
+		if(share!=null)
+		{
+			Editor sysEdit =  getSysShare(context).edit();
+			sysEdit.remove(key);
+			sysEdit.commit();
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 添加boolean型系统缓存
+	 * @param context
+	 * @param key
+	 * @param defaultValue
+	 * @return
+	 */
+	public static boolean getSysBoolMap(Context context,String key,boolean defaultValue)
+	{
+		SharedPreferences share = getSysShare(context);
+		boolean bool = share.getBoolean(key, defaultValue);
+		return bool;
+	}
+
+	public static long getSysLongMap(Context context , String key){
+		SharedPreferences share = getSysShare(context);
+		if(share != null){
+			return share.getLong(key, 0L);
+		}
+		return 0;
+	}
+
+	public static void addSysLongMap(Context context , String key , long value){
+		SharedPreferences.Editor sysEdit =  getSysShare(context).edit();
+		sysEdit.putLong(key, value);
+		sysEdit.commit();
+	}
+
+
 	/**
 	 * 退出的时候清除通知
 	 */
@@ -451,7 +571,8 @@ public class CommonUtils {
      * @return
      */
     public static boolean checkPhoneNumber(String phoneNumber){
-    	return phoneNumber.matches("^((\\+86)|(86))?(13|14|15|18)\\d{9}$");
+		if(isEmpty(phoneNumber)) return false;
+    	return phoneNumber.matches("^((\\+86)|(86))?(13|14|15|17|18)\\d{9}$");
     }
     
     /**
@@ -557,7 +678,14 @@ public class CommonUtils {
 		Gson gson = new Gson();
 		return gson.toJson(client);
     }
-    
+
+	/**
+	 * 获取Http头中的Client信息
+	 * @return string
+	 */
+	public static String getHttpHeaderClientInfo() {
+		return String.format("Android(%s;%s)", getAppVersionName(mContext), Build.MODEL);
+	}
 
     /**
      * 获取offset天数以前的日期，格式是yyyyMMdd
@@ -572,6 +700,22 @@ public class CommonUtils {
 		String date = sdf.format(ts);
 		
 		return date;
+	}
+
+	public static String getDateStringByOffsetForDay(String day, int offset) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		long cur = 0;
+		try {
+			cur = sdf.parse(day).getTime();
+			long offsetT = ((long)offset) * 24*60*60*1000;
+			long ts = cur - offsetT;
+			String date = sdf.format(ts);
+			return date;
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		return "";
 	}
 	
 	/**
@@ -667,7 +811,7 @@ public class CommonUtils {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		
+
 		return -1;
 	}
 	
@@ -834,9 +978,10 @@ public class CommonUtils {
 			
 			Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
 			cal.setTimeInMillis(milliseconds);
-			
-			return String.format("%04d-%02d-%02dT%02d:%02d:%02d.%03dZ", cal.get(Calendar.YEAR), 
-					cal.get(Calendar.MONTH)+1, cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.HOUR_OF_DAY), 
+
+//			return DateUtil.formatISO8601DateWithMills(cal.getTime());
+			return String.format("%04d-%02d-%02dT%02d:%02d:%02d.%03dZ", cal.get(Calendar.YEAR),
+					cal.get(Calendar.MONTH)+1, cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.HOUR_OF_DAY),
 					cal.get(Calendar.MINUTE), cal.get(Calendar.SECOND), cal.get(Calendar.MILLISECOND));
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -1025,21 +1170,28 @@ public class CommonUtils {
 	
 	/**
 	 * 获取color
-	 * @param cId
-	 * @return
+	 * @param cId id
+	 * @return r
 	 */
 	public static int getColorById(int cId) {
     	return mContext.getResources().getColor(cId);
     }
+
+	public static int getPixelById(int dId){
+		return mContext.getResources().getDimensionPixelSize(dId);
+	}
 	
-	
+
 	/**
 	 * 获取当前联网类型
-	 * @return
+	 * @return r
+	 * Consts.NETWORK_NONE 无网路类型
+	 * Consts.NETWORK_MOBILE 手机流量
+	 * Consts.NETWORK_WIFI wifi
 	 */
 	public static int getAPNType() {
 
-		int netType = Consts.NETWORN_NONE;
+		int netType = Consts.NETWORK_NONE;
 		ConnectivityManager connMgr = (ConnectivityManager) mContext
 				.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -1051,48 +1203,25 @@ public class CommonUtils {
 			PetkitLog.d("networkInfo.getExtraInfo()",
 					"networkInfo.getExtraInfo() is "
 							+ networkInfo.getExtraInfo());
-			netType = Consts.NETWORN_MOBILE;
+			netType = Consts.NETWORK_MOBILE;
 		} else if (nType == ConnectivityManager.TYPE_WIFI) {
-			netType = Consts.NETWORN_WIFI;
+			netType = Consts.NETWORK_WIFI;
 		}
 
 		return netType;
 
-	} 
-	
-	
-	/**
-	 * 获取地址的描述
-	 * @param address
-	 * @return
-	 */
-	public static String getAddressInformation(Address address){
-		StringBuilder locBuilder = new StringBuilder();
-		if(address != null){
-			if(!isEmpty(address.getCity()) && !isEmpty(address.getProvince()) 
-					&& address.getCity().equals(address.getProvince())){
-				locBuilder.append(address.getCity());
-			}else{
-				if(!isEmpty(address.getCountry())){
-					locBuilder.append(address.getCountry());
-				}
-				if(!isEmpty(address.getProvince())){
-					locBuilder.append(address.getProvince());
-				}
-				if(!isEmpty(address.getCity())){
-					locBuilder.append(address.getCity());
-				}
-			}
-			
-			if(!isEmpty(address.getDistrict())){
-				locBuilder.append(address.getDistrict());
-			}
-		}else{
-			locBuilder.append(" ");
-		}
-		
-		return locBuilder.toString();
 	}
+
+	/**
+	 * 检测网络是否可用
+	 * @return boolean
+     */
+	public static boolean checkNetworkAvaliable(){
+		ConnectivityManager connectivityManager = (ConnectivityManager) CommonUtils.getAppContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+		return networkInfo != null && networkInfo.isAvailable();
+	}
+	
 	
 	/**
 	 * 设置App是否在前台
@@ -1104,57 +1233,15 @@ public class CommonUtils {
 	
 	
 	public static boolean isRunningForeground() {
-//		if(mContext == null){
-//			return false;
-//		}
-//		
-//		ActivityManager am = (ActivityManager) mContext
-//				.getSystemService(Context.ACTIVITY_SERVICE);
-//		if(am.getRunningTasks(1).size() > 0){
-//			ComponentName cn = am.getRunningTasks(1).get(0).topActivity;
-//			String currentPackageName = cn.getPackageName();
-//			if (!TextUtils.isEmpty(currentPackageName)
-//					&& currentPackageName.equals(mContext.getPackageName())) {
-//				return true;
-//			}
-//		}
-		return isTopActivity();
-	}
-	
-	/**
-	 * 判断App是否在前台
-	 * @return
-	 */
-	public static boolean isTopActivity(){
 		if(!isAppActive || mContext == null){
 			return false;
 		}
 
-//        PackageManager packageManager = mContext.getPackageManager();
-//        // getPackageName()是你当前类的包名，0代表是获取版本信息
-//        PackageInfo packInfo;
-//		try {
-//			packInfo = packageManager.getPackageInfo(mContext.getPackageName(),0);
-//		} catch (NameNotFoundException e) {
-//			return false;
-//		}
-//        String packageName = packInfo.packageName;
-//        
-//        ActivityManager activityManager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
-//        List<RunningTaskInfo>  tasksInfo = activityManager.getRunningTasks(1);  
-//        if(tasksInfo.size() > 0){  
-//            //应用程序位于堆栈的顶层  
-//            if(packageName.equals(tasksInfo.get(0).topActivity.getPackageName())){  
-//                return true;  
-//            }  
-//        }  
-//        return false;
-        
-        ActivityManager activityManager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
-        List<RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
-        if(appProcesses == null){
-            return false;
-        }
+		ActivityManager activityManager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+		List<RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
+		if(appProcesses == null){
+			return false;
+		}
 		for (RunningAppProcessInfo appProcess : appProcesses) {
 			if (appProcess.processName.equals(mContext.getPackageName())) {
 				if (appProcess.importance == RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
@@ -1164,17 +1251,24 @@ public class CommonUtils {
 				}
 			}
 		}
-        return false;
-    }
+		return false;
+	}
+	
+	/**
+	 * 判断App是否在前台
+	 * @return
+	 */
+	public static boolean isTopActivity(String className) {
+		ActivityManager manager = (ActivityManager)   mContext.getSystemService(Context.ACTIVITY_SERVICE);
+		List<ActivityManager.RunningTaskInfo> runningTasks = manager .getRunningTasks(1);
+		ActivityManager.RunningTaskInfo cinfo = runningTasks.get(0);
+		ComponentName component = cinfo.topActivity;
+		return component.getClassName().contains(className);
+	}
 	
 	
 	public static int getAndroidSDKVersion() {
-		int version = 0;
-		try {
-			version = Integer.valueOf(android.os.Build.VERSION.SDK_INT);
-		} catch (NumberFormatException e) {
-		}
-		return version;
+		return android.os.Build.VERSION.SDK_INT;
 	}
 	
 	
@@ -1264,6 +1358,62 @@ public class CommonUtils {
 			
 			return sBuilder.toString();
 			
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
+
+	/**
+	 * 根据出生日期取年龄，返回格式为：X岁X个月
+	 * @param context
+	 * @param dateString 格式为 yyyy-MM-dd
+	 * @return
+	 */
+	@SuppressWarnings("deprecation")
+	public static String getSimplifyAgeByBirthday(Context context, String dateString){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date date, curDate = new Date();
+		try {
+			date = sdf.parse(dateString);
+			int year, month;
+			month = curDate.getMonth() - date.getMonth();
+			year = curDate.getYear() - date.getYear();
+			if(month < 0){
+				year--;
+				month += 12;
+			}
+
+			if(year < 0){
+				return "";
+			}
+			StringBuilder sBuilder = new StringBuilder();
+			if(year > 0 ){
+				int resId = MResource.getResourceIdByName(context.getPackageName(), "string", "Unit_age_short");
+				sBuilder.append(year).append(context.getString(resId));
+			}
+			if(month > 0){
+				int resId = MResource.getResourceIdByName(context.getPackageName(), "string", "Unit_month_short");
+				if(year>0){
+					Locale locale = context.getResources().getConfiguration().locale;
+					String language = locale.getLanguage();
+					if(language!=null&&language.endsWith("en"))
+						sBuilder.append("-");
+				}
+				sBuilder.append(month).append(context.getString(resId));
+			}
+
+			if(year == 0 && month == 0){
+				int day = (int) ((curDate.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
+				if(day < 0){
+					return "";
+				}
+				int resId = MResource.getResourceIdByName(context.getPackageName(), "string", "Unit_day_short");
+				sBuilder.append(day).append(context.getString(resId));
+			}
+
+			return sBuilder.toString();
+
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -1375,7 +1525,7 @@ public class CommonUtils {
 	
 	/**
 	 * 获取狗狗最后同步时间的列表
-	 * @return
+	 * @return r
 	 */
 	public static List<PetSyncTime> getSyncTimeList(){
 		String lastSyncTimeString = CommonUtils.getSysMap(mContext, Consts.SHARED_LAST_SYNC_TIME);
@@ -1430,6 +1580,11 @@ public class CommonUtils {
 			return true;
 		else
 			return false;
+	}
+
+	public static String getSystemLanguage() {
+		Locale locale = mContext.getResources().getConfiguration().locale;
+		return locale.toString();
 	}
 	
 	public static void showLongToast(Activity activity,String msg) {
@@ -1500,6 +1655,172 @@ public class CommonUtils {
 		
 		return context.getString(resId);
 	}
-	
-	
+
+
+
+	/**
+	 *
+	 * @param s 需要检验的字符串
+	 * @return 字符中含有中文返回true，否则返回false
+	 */
+	public static boolean isContainChinese(String s)
+	{
+		boolean result;
+		String regex = ".*[\\u4e00-\\u9fa5]+.*";   //匹配含中文字符的任意字符串的正则表达式  .匹配任意单个字符  *匹配前面的子字符串任意次   +匹配前面的子字符串至少一次
+		result=s.matches(regex);
+		return result;
+	}
+	/**
+	 *
+	 * @return 获取系统状态栏的高度
+	 */
+	public static int getStatusHeight(){
+		int statusHeight = 0;
+		int resouceId = mContext.getResources().getIdentifier("status_bar_height","dimen","android");
+		if(resouceId>0) statusHeight = mContext.getResources().getDimensionPixelSize(resouceId);
+		return statusHeight;
+	}
+
+	/**
+	 *
+	 * @return  获取系统导航栏高度（虚拟按键的高度）
+	 */
+	public static int getNavigationBarHeight() {
+		if(Build.VERSION.SDK_INT<Build.VERSION_CODES.KITKAT) return 0;
+		if(!checkDeviceHasNavigationBar()) return 0;
+		Resources resources = mContext.getResources();
+		int resourceId = resources.getIdentifier("navigation_bar_height",
+				"dimen", "android");
+		//获取NavigationBar的高度
+		int height = resources.getDimensionPixelSize(resourceId);
+		return height;
+	}
+
+	/**
+	 * 检测系统是否有导航栏
+	 * @return true/false
+	 */
+	public static boolean checkDeviceHasNavigationBar() {
+		boolean hasNavigationBar = false;
+		Resources rs = mContext.getResources();
+		int id = rs.getIdentifier("config_showNavigationBar", "bool", "android");
+		if (id > 0) {
+			hasNavigationBar = rs.getBoolean(id);
+		}
+		try {
+			Class systemPropertiesClass = Class.forName("android.os.SystemProperties");
+			Method m = systemPropertiesClass.getMethod("get", String.class);
+			String navBarOverride = (String) m.invoke(systemPropertiesClass, "qemu.hw.mainkeys");
+			if ("1".equals(navBarOverride)) {
+				hasNavigationBar = false;
+			} else if ("0".equals(navBarOverride)) {
+				hasNavigationBar = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return hasNavigationBar;
+	}
+
+	public static int getBirthIntFromSring(String s ){
+		s = s.replaceAll("-","");
+		return Integer.valueOf(s);
+	}
+
+
+    /**
+     * 根据seconds计算小时数
+     * @param seconds 秒
+     * @return 小时
+     */
+    public static int convertHourFromSeconds(int seconds){
+        int hour = seconds / 3600;
+        int min = (seconds / 60) % 60 + (seconds % 60 >= 30 ? 1 : 0);
+        if(min == 60){
+            hour++;
+        }
+        return hour;
+    }
+
+    /**
+     * 根据seconds计算小时数
+     * @param seconds 秒
+     * @return 小时
+     */
+    public static int convertMinFromSeconds(int seconds){
+		int min = (seconds / 60) % 60 + (seconds % 60 >= 30 ? 1 : 0);
+		if(min == 60){
+			min = 0;
+		}
+		return min;
+	}
+
+
+	/**
+	 * 监听键盘高度
+	 * @param activity activity
+	 * @param listener listener
+	 */
+	public static void observeSoftKeyboard(Activity activity, final OnSoftKeyboardChangeListener listener) {
+		final View decorView = activity.getWindow().getDecorView();
+		decorView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+			int previousKeyboardHeight = -1;
+			@Override
+			public void onGlobalLayout() {
+				Rect rect = new Rect();
+				decorView.getWindowVisibleDisplayFrame(rect);
+				int displayHeight = rect.bottom - rect.top;
+				int height = decorView.getHeight();
+				int keyboardHeight = height - displayHeight;
+				if (previousKeyboardHeight != keyboardHeight) {
+					boolean hide = (double) displayHeight / height > 0.8;
+					listener.onSoftKeyBoardChange(keyboardHeight, !hide);
+				}
+
+				previousKeyboardHeight = height;
+
+			}
+		});
+	}
+
+	public interface OnSoftKeyboardChangeListener {
+		void onSoftKeyBoardChange(int softKeybardHeight, boolean visible);
+	}
+
+
+	/**
+	 * 检查key对应的时间，基于time，是否已经超时，超时为true
+	 *
+	 * @param key key
+	 * @param time time
+     * @return bool
+     */
+	public static boolean checkTimeIsValidForKey (String key, long time) {
+		SharedPreferences share = getSysShare(getAppContext());
+		long last = share.getLong(key, 0L);
+		return System.currentTimeMillis() - last > time;
+	}
+
+	/**
+	 * 保存key对应的时间
+	 *
+	 * @param key key
+	 * @param time time
+     */
+	public static void saveTimeForKey (String key, long time) {
+		Editor sysEdit =  getSysShare(getAppContext()).edit();
+		sysEdit.putLong(key, time);
+		sysEdit.commit();
+	}
+
+	/**
+	 * 检查GPS是否开启
+	 * @param context context
+	 * @return bool
+     */
+	public static boolean checkGPSIsOpened (Context context) {
+		LocationManager locationManager = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
+		return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+	}
+
 }

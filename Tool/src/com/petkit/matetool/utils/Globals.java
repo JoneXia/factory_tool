@@ -39,6 +39,7 @@ public class Globals {
 	public static final int MATE_PRO =2;
 	public static final int FEEDER =3;
 	public static final int CAT_LITTER =4;
+	public static final int GO =5;
 //	public static int g_testStyle = 0;
 
 	public static ArrayList<String> mTestItem = new ArrayList<String>();

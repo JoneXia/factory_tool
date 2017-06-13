@@ -29,13 +29,13 @@ public class ConfigCache {
             Log.d(TAG, file.getAbsolutePath() + " expiredTime:" + expiredTime/60000 + "min");
             //1. in case the system time is incorrect (the time is turn back long ago)
             //2. when the network is invalid, you can only read the cache
-            if (CommonUtils.getAPNType() != Consts.NETWORN_NONE && expiredTime < 0) {
+            if (CommonUtils.getAPNType() != Consts.NETWORK_NONE && expiredTime < 0) {
                 return null;
             }
-            if(CommonUtils.getAPNType() == Consts.NETWORN_WIFI
+            if(CommonUtils.getAPNType() == Consts.NETWORK_WIFI
                    && expiredTime > CONFIG_CACHE_WIFI_TIMEOUT) {
                 return null;
-            } else if (CommonUtils.getAPNType() == Consts.NETWORN_MOBILE
+            } else if (CommonUtils.getAPNType() == Consts.NETWORK_MOBILE
                    && expiredTime > CONFIG_CACHE_MOBILE_TIMEOUT) {
                 return null;
             }
