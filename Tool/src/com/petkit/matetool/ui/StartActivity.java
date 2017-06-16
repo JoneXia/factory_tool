@@ -18,17 +18,20 @@ import android.widget.RadioGroup;
 import com.petkit.android.utils.LogcatStorageHelper;
 import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.R;
-import com.petkit.matetool.ui.go.GoTestMainActivity;
 import com.petkit.matetool.service.DatagramConsts;
 import com.petkit.matetool.service.DatagramProcessService;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.catlitter.CatLitterMainActivity;
 import com.petkit.matetool.ui.feeder.FeederTestPrepareActivity;
+import com.petkit.matetool.ui.go.GoTestMainActivity;
 import com.petkit.matetool.ui.mate.SelectActivity;
 import com.petkit.matetool.ui.permission.PermissionDialogActivity;
+import com.petkit.matetool.ui.permission.mode.PermissionBean;
 import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.Utils;
 import com.petkit.matetool.widget.LoadDialog;
+
+import java.util.ArrayList;
 
 /**
  * 测试工具入口，设置测试mate类型和工位
@@ -120,6 +123,15 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
                         startActivityWithData(CatLitterMainActivity.class, bundle, false);
                         break;
                     case Globals.GO:
+                        if(!Globals.checkPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                            bundle = new Bundle();
+                            ArrayList<PermissionBean> permissionBeens = new ArrayList<>();
+                            permissionBeens.add(new PermissionBean(Manifest.permission.ACCESS_FINE_LOCATION, R.string.Permission_location, R.drawable.permission_location));
+
+                            bundle.putSerializable(Globals.EXTRA_PERMISSION_CONTENT, permissionBeens);
+                            startActivityWithData(PermissionDialogActivity.class, bundle, false);
+                            return;
+                        }
                         bundle = new Bundle();
                         bundle.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
                         startActivityWithData(GoTestMainActivity.class, bundle, false);

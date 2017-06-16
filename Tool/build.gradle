@@ -4,7 +4,6 @@ dependencies {
     compile fileTree(include: '*.jar', dir: 'libs')
     compile project(':socketclient')
     compile 'com.github.vilyever:AndroidLogger:1.0.9'
-    compile files('libs/asyncHttp.jar')
     compile files('libs/DzPrinter-2017-05-11.jar')
     compile project(':zxingsupport')
     compile 'com.android.support:multidex:1.0.1'
