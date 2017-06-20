@@ -306,7 +306,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
                         stringBuilder.append("hardware: ").append(jsonObject.getInt("hardware")).append("\n");
                     }
                     if (!jsonObject.isNull("version")) {
-                        stringBuilder.append("version: ").append(jsonObject.getInt("version")).append("\n");
+                        stringBuilder.append("version: ").append(jsonObject.getString("version")).append("\n");
                     }
                     if (!jsonObject.isNull("id")) {
                         stringBuilder.append("id: ").append(jsonObject.getInt("id")).append("\n");
