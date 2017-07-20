@@ -266,9 +266,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                                 }
                                 mFeeder.setSn(sn);
                                 mFeeder.setCreation(System.currentTimeMillis());
-                                FeederUtils.storeSucceedFeederInfo(mFeeder);
                                 PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(161, payload));
-//                                showSNSetDialog();
                             }
                         } else {
                             HashMap<String, Object> params = new HashMap<>();
@@ -485,12 +483,6 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                                 if(mFeederTestUnits.get(mCurTestStep).getState() == 1) {
                                     result = true;
                                 }
-
-                                //校准完成，发送去皮命令
-//                                HashMap<String, Object> params = new HashMap<>();
-//                                params.put("module", mFeederTestUnits.get(mCurTestStep).getModule());
-//                                params.put("state", 2);
-//                                PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(163, params));
                                 break;
                         }
                         desc.append("\n").append("秤").append("-").append("读取数值").append("-").append(moduleStateStruct.getSub1());
@@ -542,6 +534,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                                 break;
                             case 1:
                                 mDescTextView.append("\n写入SN成功");
+                                FeederUtils.storeSucceedFeederInfo(mFeeder);
                                 mFeederTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                                 refershBtnView();
                                 break;
