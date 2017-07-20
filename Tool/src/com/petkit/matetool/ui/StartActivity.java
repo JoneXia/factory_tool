@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.petkit.android.utils.CommonUtils;
 import com.petkit.android.utils.LogcatStorageHelper;
 import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.R;
@@ -70,7 +71,7 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
 
     @Override
     protected void setupViews() {
-        setTitle(R.string.app_name);
+        setTitle(getString(R.string.app_name) + " v" + CommonUtils.getAppVersionName(this));
 
         imb_titleleft.setVisibility(View.GONE);
         fixtureNumberEditText = (EditText) findViewById(R.id.fixture_number_edittxt);
