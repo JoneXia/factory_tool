@@ -25,7 +25,6 @@ import com.petkit.matetool.ui.feeder.mode.ModuleStateStruct;
 import com.petkit.matetool.ui.feeder.utils.FeederUtils;
 import com.petkit.matetool.ui.feeder.utils.PetkitSocketInstance;
 import com.petkit.matetool.utils.DateUtil;
-import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.JSONUtils;
 
 import org.json.JSONException;
@@ -36,6 +35,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 import static com.petkit.matetool.ui.feeder.utils.FeederUtils.FeederTestModes.TEST_MODE_BALANCE;
+import static com.petkit.matetool.ui.feeder.utils.FeederUtils.FeederTestModes.TEST_MODE_LIGHT;
 import static com.petkit.matetool.ui.feeder.utils.PrintUtils.isPrinterConnected;
 import static com.petkit.matetool.utils.Globals.TEST_FAILED;
 import static com.petkit.matetool.utils.Globals.TEST_PASS;
@@ -291,7 +291,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                     case TEST_MODE_LIGHT:
                     case TEST_MODE_BALANCE:
                         isWriteEndCmd = true;
-                        mFeederTestUnits.get(mCurTestStep).setResult(Globals.TEST_FAILED);
+                        mFeederTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
 
                         HashMap<String, Object> params = new HashMap<>();
                         params.put("module", mFeederTestUnits.get(mCurTestStep).getModule());
@@ -311,9 +311,10 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                         gotoNextTestModule();
                         break;
                     case TEST_MODE_LIGHT:
-                        mFeederTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                     case TEST_MODE_BALANCE:
-                        if(mFeederTestUnits.get(mCurTestStep).getState() == 3) {
+                        if(TEST_MODE_LIGHT == mFeederTestUnits.get(mCurTestStep).getType()) {
+                            mFeederTestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                        } else if(mFeederTestUnits.get(mCurTestStep).getState() == 3) {
                             mFeederTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         }
                     default:
