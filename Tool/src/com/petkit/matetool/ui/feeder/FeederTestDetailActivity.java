@@ -37,6 +37,7 @@ import java.util.HashMap;
 
 import static com.petkit.matetool.ui.feeder.utils.FeederUtils.FeederTestModes.TEST_MODE_BALANCE;
 import static com.petkit.matetool.ui.feeder.utils.PrintUtils.isPrinterConnected;
+import static com.petkit.matetool.utils.Globals.TEST_FAILED;
 import static com.petkit.matetool.utils.Globals.TEST_PASS;
 
 /**
@@ -310,10 +311,16 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                         gotoNextTestModule();
                         break;
                     case TEST_MODE_LIGHT:
-                    case TEST_MODE_BALANCE:
                         mFeederTestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                    case TEST_MODE_BALANCE:
+                        if(mFeederTestUnits.get(mCurTestStep).getState() == 3) {
+                            mFeederTestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                        }
                     default:
                         isWriteEndCmd = true;
+                        if(mFeederTestUnits.get(mCurTestStep).getResult() != TEST_PASS) {
+                            mFeederTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
+                        }
 
                         HashMap<String, Object> params = new HashMap<>();
                         params.put("module", mFeederTestUnits.get(mCurTestStep).getModule());
