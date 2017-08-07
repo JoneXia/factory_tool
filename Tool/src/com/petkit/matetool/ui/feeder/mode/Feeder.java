@@ -68,7 +68,7 @@ public class Feeder implements Serializable {
     }
 
     public String generateMainJson() {
-        return String.format("{\"sn\":\"%s\",\"mac\":\"%s\",\"creation\":%l}", sn, mac, creation);
+        return String.format("{\"sn\":\"%s\",\"mac\":\"%s\",\"creation\":%d}", sn, mac, creation);
     }
 
     @Override

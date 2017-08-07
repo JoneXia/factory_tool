@@ -210,12 +210,14 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
                                 finish();
                             }
                         })
-                        .setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.Cancel, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
                             }
                         }).show();
+            } else {
+                super.onBackPressed();
             }
         } else {
             super.onBackPressed();
@@ -542,4 +544,8 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
         }
     }
 
+    @Override
+    public void cancel(View view) {
+        onBackPressed();
+    }
 }
