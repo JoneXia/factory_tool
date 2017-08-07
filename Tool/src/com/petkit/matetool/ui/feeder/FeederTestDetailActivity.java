@@ -230,9 +230,12 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                             } else if(isEmpty(mFeeder.getMac())) {
                                 showShortToast("MAC为空，不能打印！");
                             } else {
+                                HashMap<String, String> params = new HashMap<>();
+                                params.put("SN", mFeeder.getSn());
+                                params.put("MAC", mFeeder.getMac());
                                 String oneBarCode = "SN:" + mFeeder.getSn();
-                                String twoBarCode = "SN:" + mFeeder.getSn() + ";MAC:" + mFeeder.getMac();
-                                printBarcode(oneBarCode, twoBarCode);
+//                                String twoBarCode = "SN:" + mFeeder.getSn() + ";MAC:" + mFeeder.getMac();
+                                printBarcode(oneBarCode, new Gson().toJson(params));
                             }
                         } else {
                             showShortToast("请先连接打印机！");
