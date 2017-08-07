@@ -10,9 +10,10 @@ import static java.security.CryptoPrimitive.MAC;
 
 public class Feeder implements Serializable {
 
-    private String mac;
-    private String sn;
-    private long creation;
+    private String mac = "";
+    private String sn = "";
+    private long creation = 0;
+    private int inspectStatus = 0;
 
     public Feeder(String mac, String sn) {
         this.mac = mac;
@@ -52,6 +53,22 @@ public class Feeder implements Serializable {
 
     public String generateJson() {
         return String.format("{\"sn\":\"%s\",\"mac\":\"%s\"}", sn, mac);
+    }
+
+    public void setInspectStatus(int inspectStatus) {
+        this.inspectStatus = inspectStatus;
+    }
+
+    public int getInspectStatus() {
+        return inspectStatus;
+    }
+
+    public String generateCheckJson() {
+        return String.format("{\"sn\":\"%s\",\"mac\":\"%s\",\"inspectStatus\":%d}", sn, mac, inspectStatus);
+    }
+
+    public String generateMainJson() {
+        return String.format("{\"sn\":\"%s\",\"mac\":\"%s\",\"creation\":%l}", sn, mac, creation);
     }
 
     @Override

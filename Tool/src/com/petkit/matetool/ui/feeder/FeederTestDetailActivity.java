@@ -584,7 +584,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
         Bundle param = new Bundle();
 
         param.putInt(IDzPrinter.PrintParamName.PRINT_DIRECTION, 0);
-        param.putInt(IDzPrinter.PrintParamName.PRINT_COPIES, 1);
+        param.putInt(IDzPrinter.PrintParamName.PRINT_COPIES, 2);
         param.putInt(IDzPrinter.PrintParamName.GAP_TYPE, 2);
         param.putInt(IDzPrinter.PrintParamName.PRINT_DENSITY, 14);
         param.putInt(IDzPrinter.PrintParamName.PRINT_SPEED, 2);

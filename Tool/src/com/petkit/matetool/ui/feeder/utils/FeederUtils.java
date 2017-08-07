@@ -213,9 +213,8 @@ public class FeederUtils {
             throw  new RuntimeException("store feeder failed, " + (feeder == null ? "feeder is null !" : feeder.toString()));
         }
 
-        String info = new Gson().toJson(feeder);
-        PetkitLog.d("store feeder info: " + info);
-        FileUtils.writeStringToFile(getStoreFeederInfoFilePath(), info + ",", true);
+        PetkitLog.d("store feeder info: " + feeder.generateMainJson());
+        FileUtils.writeStringToFile(getStoreFeederInfoFilePath(), feeder.generateMainJson() + ",", true);
     }
 
     /**
@@ -356,7 +355,7 @@ public class FeederUtils {
         if(content != null && content.contains(feeder.getMac())) {
             return;
         }
-        String info = feeder.generateJson();
+        String info = feeder.generateCheckJson();
         PetkitLog.d("store feeder info: " + info);
         FileUtils.writeStringToFile(fileName, info + ",", true);
     }

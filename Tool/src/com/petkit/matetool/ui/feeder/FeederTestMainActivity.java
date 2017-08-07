@@ -1,7 +1,9 @@
 package com.petkit.matetool.ui.feeder;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
@@ -15,9 +17,10 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
-import com.petkit.matetool.ui.feeder.mode.Feeder;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.feeder.mode.Feeder;
 import com.petkit.matetool.ui.feeder.mode.FeederTestUnit;
 import com.petkit.matetool.ui.feeder.mode.FeederTester;
 import com.petkit.matetool.ui.feeder.utils.FeederUtils;
@@ -53,6 +56,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
     private TestItemAdapter mAdapter;
 
     private TextView mInfoTestTextView;
+    private boolean testComplete = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,7 +137,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
     protected void onDestroy() {
         super.onDestroy();
 
-        checkTestComplete();
+        LoadDialog.dismissDialog();
         disconnectAp();
         unregisterBroadcastReceiver();
     }
@@ -150,8 +154,71 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
 //                startActivity(PrintActivity.class);
                 break;
             case R.id.test_auto:
-                startTestDetail(true, 0);
+                if (testComplete) {
+                    LoadDialog.show(this);
+                    HashMap<String, Object> params = new HashMap<>();
+                    params.put("mac", mCurFeeder.getMac());
+                    params.put("state", getTestTypeCode());
+                    params.put("opt", 1);
+
+                    PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(160, params));
+                } else {
+                    startTestDetail(true, 0);
+                }
                 break;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mCurFeeder != null && testComplete) {
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.Prompt)
+                    .setMessage("测试已完成，请先点击确认来完成测试项目！")
+                    .setNegativeButton(R.string.OK, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            LoadDialog.show(FeederTestMainActivity.this);
+                            HashMap<String, Object> params = new HashMap<>();
+                            params.put("mac", mCurFeeder.getMac());
+                            params.put("state", getTestTypeCode());
+                            params.put("opt", 1);
+
+                            PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(160, params));
+                        }
+                    })
+                    .show();
+        } else if (mCurFeeder != null && mTestType == FeederUtils.TYPE_CHECK) {
+            boolean hasError = false;
+            for (FeederTestUnit unit : mFeederTestUnits) {
+                if(unit.getResult() == Globals.TEST_FAILED) {
+                    hasError = true;
+                    break;
+                }
+            }
+
+            if (hasError) {
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.Prompt)
+                        .setMessage("当前抽检结果异常，退出将记录异常数据，确认吗？")
+                        .setNegativeButton(R.string.OK, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mCurFeeder.setInspectStatus(0);
+                                FeederUtils.storeCheckInfo(mCurFeeder);
+                                mCurFeeder = null;
+                                finish();
+                            }
+                        })
+                        .setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        }).show();
+            }
+        } else {
+            super.onBackPressed();
         }
     }
 
@@ -161,13 +228,12 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
 
         if(resultCode == RESULT_OK) {
             switch (requestCode) {
-                case 0x11:
-                    refreshView();
-                    break;
                 case 0x12:
                     mFeederTestUnits = (ArrayList<FeederTestUnit>) data.getSerializableExtra("TestUnits");
                     mCurFeeder = (Feeder) data.getSerializableExtra("Feeder");
                     mAdapter.notifyDataSetChanged();
+                    checkTestComplete();
+                    refreshBottomButton();
                     break;
             }
         }
@@ -211,13 +277,21 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
 
     private void refreshView() {
         String apSsid = mWifiAdminSimple.getWifiConnectedSsid();
-        if(apSsid == null || !apSsid.startsWith("PETKIT_AP_")) {
+        if(apSsid == null) {
             mInfoTestTextView.setText("请先连接到特定的WIFI，再进行测试！");
+        } else if (mTestType == FeederUtils.TYPE_TEST_PARTIALLY && !apSsid.toUpperCase().startsWith("PETKIT_AP_A_")){
+            mInfoTestTextView.setText("请先连接到PETKIT_AP_A_开头的WIFI，再进行测试！");
+        } else if (mTestType == FeederUtils.TYPE_TEST && !apSsid.toUpperCase().startsWith("PETKIT_AP_B_")){
+            mInfoTestTextView.setText("请先连接到PETKIT_AP_B_开头的WIFI，再进行测试！");
         } else {
             connectAp();
         }
 
         mAdapter.notifyDataSetChanged();
+    }
+
+    private void refreshBottomButton () {
+        ((TextView) findViewById(R.id.test_auto)).setText(testComplete ? "测试完成" : "自动模式");
     }
 
     private void connectAp() {
@@ -283,7 +357,6 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
     public void onDisconnected() {
         mInfoTestTextView.append("\n设备已断开连接");
         mTestState = TEST_STATE_INVALID;
-        checkTestComplete();
     }
 
     @Override
@@ -339,13 +412,35 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
                     HashMap<String, Object> params = new HashMap<>();
                     params.put("mac", mCurFeeder.getMac());
                     params.put("state", getTestTypeCode());
+                    params.put("opt", 0);
                     PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(160, params));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 break;
-            case 161:
+            case 160:
+                if(!testComplete) {
+                    return;
+                }
 
+                LoadDialog.dismissDialog();
+                JSONObject jsonObject = JSONUtils.getJSONObject(data);
+                if(!jsonObject.isNull("state")) {
+                    try {
+                        switch (jsonObject.getInt("state")) {
+                            case 1:
+                                testComplete = false;
+                                showShortToast("测试完成");
+                                finish();
+                                break;
+                            default:
+                                showShortToast("指令写入失败！");
+                                break;
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
                 break;
         }
     }
@@ -437,7 +532,12 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
             if (mTestType == FeederUtils.TYPE_MAINTAIN) {
                 FeederUtils.storeMainTainInfo(mCurFeeder);
             } else if (mTestType == FeederUtils.TYPE_CHECK) {
+                mCurFeeder.setInspectStatus(1);
                 FeederUtils.storeCheckInfo(mCurFeeder);
+            } else if (mTestType == FeederUtils.TYPE_TEST_PARTIALLY) {
+                testComplete = position >= mFeederTestUnits.size();
+            } else if (mTestType == FeederUtils.TYPE_TEST) {
+                testComplete = position >= mFeederTestUnits.size();
             }
         }
     }
