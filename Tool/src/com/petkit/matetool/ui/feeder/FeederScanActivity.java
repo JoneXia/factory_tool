@@ -189,10 +189,10 @@ public class FeederScanActivity extends BaseActivity implements ScanListener {
         if(!data.startsWith("SN:")) {
             try {
                 JSONObject result = JSONUtils.getJSONObject(data);
-                if (!result.isNull("MAC")) {
+                if (result != null && !result.isNull("MAC")) {
                     mac = result.getString("MAC");
                 }
-                if (!result.isNull("SN")) {
+                if (result != null && !result.isNull("SN")) {
                     sn = result.getString("SN");
                 }
             } catch (JSONException e) {
