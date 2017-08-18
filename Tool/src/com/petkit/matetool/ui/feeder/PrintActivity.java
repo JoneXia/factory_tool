@@ -299,11 +299,11 @@ public class PrintActivity extends BaseActivity {
 
         IAtBitmap api = IAtBitmap.Factory.createInstance();
 
-        api.startJob(40 * 100, 30 * 100);
+        api.startJob(48 * 100, 30 * 100);
         api.setItemHorizontalAlignment(IAtBitmap.ItemAlignment.MIDDLE);
-        api.draw2DQRCode(text, 125 * 10, 2 * 100, 15 * 100);
-        api.draw1DBarcode(onedBarcde, IAtBitmap.BarcodeType1D.CODE128, 0 * 100, 18 * 100, 4000, 7 * 100, 0);
-        api.drawText(onedBarcde, 0 * 100, 25 * 100, 40 * 100, 3 *100, 280, IAtBitmap.FontStyle.BOLD);
+        api.draw2DQRCode(text, 16 * 100, 2 * 100, 15 * 100);
+        api.draw1DBarcode(onedBarcde, IAtBitmap.BarcodeType1D.CODE128, 0 * 100, 18 * 100, 48 * 100, 7 * 100, 0);
+        api.drawText(onedBarcde, 0 * 100, 25 * 100, 48 * 100, 3 *100, 280, IAtBitmap.FontStyle.REGULAR);
         api.endJob();
 
         return IDzPrinter.Factory.getInstance().print(api, param);

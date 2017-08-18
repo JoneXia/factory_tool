@@ -181,15 +181,23 @@ public class FeederScanActivity extends BaseActivity implements ScanListener {
 
     private void uploadSn(String data) {
 
-        if(data == null || !data.startsWith("SN:")) {
+        if(data == null) {
             showShortToast("无效的内容！");
             return;
         }
-
-        String sn, mac = "";
-        if(data.contains(";")) {
-            sn = data.substring(3, data.indexOf(';'));
-            mac = data.substring(data.indexOf(';') + 5);
+        String sn = "", mac = "";
+        if(!data.startsWith("SN:")) {
+            try {
+                JSONObject result = JSONUtils.getJSONObject(data);
+                if (!result.isNull("MAC")) {
+                    mac = result.getString("MAC");
+                }
+                if (!result.isNull("SN")) {
+                    sn = result.getString("SN");
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         } else {
             sn = data.substring(3);
         }
