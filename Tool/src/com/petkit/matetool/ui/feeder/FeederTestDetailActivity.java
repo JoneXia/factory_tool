@@ -284,6 +284,11 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                         params.put("mac", mFeeder.getMac());
                         PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(165, params));
                         break;
+                    case TEST_MODE_RESET_ID:
+                        params = new HashMap<>();
+                        params.put("mac", mFeeder.getMac());
+                        PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(162, params));
+                        break;
                     default:
                         startTestModule();
                         break;
@@ -579,6 +584,11 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                         e.printStackTrace();
                     }
                 }
+                break;
+            case 162:
+                mDescTextView.append("\n指令发送成功");
+                mDescTextView.append("\n请重启设备，确认ID是否擦除！");
+                mDescTextView.append("\n擦除ID后需要重新测试！");
                 break;
         }
     }

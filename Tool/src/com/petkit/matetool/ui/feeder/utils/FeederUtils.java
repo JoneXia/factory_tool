@@ -47,7 +47,8 @@ public class FeederUtils {
         TEST_MODE_LID,
         TEST_MODE_SN,
         TEST_MODE_PRINT,
-        TEST_MODE_MAC
+        TEST_MODE_MAC,
+        TEST_MODE_RESET_ID
     }
 
     public static String getDefaultResponseForKey(int key) {
@@ -117,6 +118,10 @@ public class FeederUtils {
                     results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_SN, "写入SN", 12, 2));
                 }
                 results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
+            }
+
+            if (type == TYPE_MAINTAIN) {        //擦除ID选项先关闭，暂不开放
+//                results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_RESET_ID, "擦除ID", 98, 1));
             }
         }
         return results;
