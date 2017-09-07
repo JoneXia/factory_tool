@@ -471,7 +471,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                                     break;
                                 case 3:
                                     desc.append("成功");
-                                    result = true;
+                                    showMotorDirectionConfirmDialog();
                                     break;
                                 default:
                                     desc.append("异常");
@@ -495,8 +495,8 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                                 desc.append("4KG模式");
                                 break;
                             case 3:
-                                desc.append("校准完成");
                                 if(mFeederTestUnits.get(mCurTestStep).getState() == 1) {
+                                    desc.append("校准完成");
                                     result = true;
                                 }
                                 break;
@@ -753,6 +753,38 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
             }
         });
         builder.setNegativeButton(R.string.Cancel, null);
+        builder.show();
+    }
+
+    private boolean isShowing = false;
+
+    private void showMotorDirectionConfirmDialog() {
+        if (isShowing) {
+            return;
+        }
+
+        isShowing = true;
+        startTestModule();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.Prompt);
+        builder.setMessage("请确认马达是在按顺时针方向转动？");
+        builder.setPositiveButton("正确", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                isShowing = false;
+                mFeederTestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                refershBtnView();
+            }
+        });
+        builder.setNegativeButton("错误", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                isShowing = false;
+                mFeederTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
+                refershBtnView();
+            }
+        });
         builder.show();
     }
 
