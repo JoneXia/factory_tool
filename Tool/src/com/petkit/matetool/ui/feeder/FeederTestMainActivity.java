@@ -281,12 +281,34 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
         String apSsid = mWifiAdminSimple.getWifiConnectedSsid();
         if(apSsid == null) {
             mInfoTestTextView.setText("请先连接到特定的WIFI，再进行测试！");
-        } else if (mTestType == FeederUtils.TYPE_TEST_PARTIALLY && !apSsid.toUpperCase().startsWith("PETKIT_AP_A_")){
-            mInfoTestTextView.setText("请先连接到PETKIT_AP_A_开头的WIFI，再进行测试！");
-        } else if (mTestType == FeederUtils.TYPE_TEST && !apSsid.toUpperCase().startsWith("PETKIT_AP_B_")){
-            mInfoTestTextView.setText("请先连接到PETKIT_AP_B_开头的WIFI，再进行测试！");
         } else {
-            connectAp();
+            switch (mTestType) {
+                case FeederUtils.TYPE_TEST_PARTIALLY:
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_AP_A_")) {
+                        mInfoTestTextView.setText("请先连接到PETKIT_AP_A_开头的WIFI，再进行测试！");
+                    } else {
+                        connectAp();
+                    }
+                    break;
+                case FeederUtils.TYPE_TEST:
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_AP_B_")) {
+                        mInfoTestTextView.setText("请先连接到PETKIT_AP_B_开头的WIFI，再进行测试！");
+                        return;
+                    } else {
+                        connectAp();
+                    }
+                    break;
+                case FeederUtils.TYPE_MAINTAIN:
+                case FeederUtils.TYPE_CHECK:
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_AP_")
+                            || (apSsid.toUpperCase().startsWith("PETKIT_AP_A_") || apSsid.toUpperCase().startsWith("PETKIT_AP_B_"))) {
+                        mInfoTestTextView.setText("请先连接到PETKIT_AP_开头的WIFI，再进行测试！");
+                        return;
+                    } else {
+                        connectAp();
+                    }
+                    break;
+            }
         }
 
         mAdapter.notifyDataSetChanged();

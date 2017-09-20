@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.dothantech.lpapi.IAtBitmap;
 import com.dothantech.printer.IDzPrinter;
 import com.google.gson.Gson;
+import com.petkit.android.utils.LogcatStorageHelper;
 import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.ui.base.BaseActivity;
@@ -175,7 +176,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                 mBtn2.setText(R.string.Set_print);
                 mBtn2.setVisibility(View.VISIBLE);
                 mBtn2.setBackgroundResource(R.drawable.selector_gray);
-                if(mFeederTestUnits.get(mCurTestStep).getResult() == 1) {
+                if(mFeederTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
                     mBtn3.setText(R.string.Succeed);
                     mBtn3.setBackgroundResource(R.drawable.selector_blue);
                 } else {
@@ -186,7 +187,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
             case TEST_MODE_SN:
                 mBtn1.setText(R.string.Write);
                 mBtn2.setVisibility(View.INVISIBLE);
-                if(mFeederTestUnits.get(mCurTestStep).getResult() == 1) {
+                if(mFeederTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
                     mBtn3.setText(R.string.Succeed);
                     mBtn3.setBackgroundResource(R.drawable.selector_blue);
                 } else {
@@ -205,7 +206,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                     mBtn3.setText(R.string.Succeed);
                     mBtn3.setBackgroundResource(R.drawable.selector_blue);
                 } else {
-                    if (mFeederTestUnits.get(mCurTestStep).getResult() == 1) {
+                    if (mFeederTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
                         mBtn3.setText(R.string.Succeed);
                         mBtn3.setBackgroundResource(R.drawable.selector_blue);
                     } else {
@@ -248,7 +249,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                             for (FeederTestUnit unit : mFeederTestUnits) {
                                 if(unit.getType() != FeederUtils.FeederTestModes.TEST_MODE_SN &&
                                         unit.getType() != FeederUtils.FeederTestModes.TEST_MODE_PRINT
-                                        && unit.getResult() != 1) {
+                                        && unit.getResult() != TEST_PASS) {
                                     result = false;
                                     break;
                                 }
@@ -349,6 +350,11 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
             params.put("time", DateUtil.formatISO8601DateWithMills(new Date()));
         }
         PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(163, params));
+
+        if(mFeederTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
+            mFeederTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
+            refershBtnView();
+        }
     }
 
     private void gotoNextTestModule() {
@@ -410,6 +416,11 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                 ModuleStateStruct moduleStateStruct = new Gson().fromJson(data, ModuleStateStruct.class);
                 boolean result = false;
                 StringBuilder desc = new StringBuilder();
+
+                if (moduleStateStruct.getModule() != mFeederTestUnits.get(mCurTestStep).getModule()) {
+                    LogcatStorageHelper.addLog("response和request的module不一致！放弃！");
+                    return;
+                }
 
                 switch (moduleStateStruct.getModule()) {
                     case 0:

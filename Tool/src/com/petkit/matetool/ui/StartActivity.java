@@ -34,6 +34,11 @@ import com.petkit.matetool.widget.LoadDialog;
 
 import java.util.ArrayList;
 
+import static com.petkit.matetool.utils.Consts.TOOL_CAT_VERSION;
+import static com.petkit.matetool.utils.Consts.TOOL_FEEDER_VERSION;
+import static com.petkit.matetool.utils.Consts.TOOL_GO_VERSION;
+import static com.petkit.matetool.utils.Consts.TOOL_MATE_VERSION;
+
 /**
  * 测试工具入口，设置测试mate类型和工位
  *
@@ -84,6 +89,8 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
         RadioGroup radioGroup = (RadioGroup) findViewById(R.id.mate_test_style);
         ((RadioButton)radioGroup.findViewById(R.id.mate_style)).setChecked(true);
         testStyle = Globals.MATE_STYLE;
+
+        setDeviceToolVersion();
 
         radioGroup.setOnCheckedChangeListener(this);
     }
@@ -164,6 +171,25 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
             default:
                 break;
         }
+    }
+
+    private void setDeviceToolVersion() {
+        RadioButton tempRadioButton;
+
+        tempRadioButton = (RadioButton) findViewById(R.id.mate_style);
+        tempRadioButton.setText("Mate Style" + " v" + TOOL_MATE_VERSION);
+
+        tempRadioButton = (RadioButton) findViewById(R.id.mate_pro);
+        tempRadioButton.setText("Mate Pro" + " v" + TOOL_MATE_VERSION);
+
+        tempRadioButton = (RadioButton) findViewById(R.id.go);
+        tempRadioButton.setText("Go抽检" + " v" + TOOL_GO_VERSION);
+
+        tempRadioButton = (RadioButton) findViewById(R.id.feeder);
+        tempRadioButton.setText("喂食器" + " v" + TOOL_FEEDER_VERSION);
+
+        tempRadioButton = (RadioButton) findViewById(R.id.cat_litter);
+        tempRadioButton.setText("猫窝" + " v" + TOOL_CAT_VERSION);
     }
 
     private void registerBoradcastReceiver() {
