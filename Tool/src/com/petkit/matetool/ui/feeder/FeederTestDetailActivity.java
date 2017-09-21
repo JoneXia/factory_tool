@@ -351,6 +351,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
         }
         PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(163, params));
 
+        mTempResult = 0;
         if(mFeederTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
             mFeederTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
             refershBtnView();
@@ -498,15 +499,18 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                         switch (moduleStateStruct.getSub0()) {
                             case 0:
                                 desc.append("空桶");
+                                mTempResult = mTempResult | 0x1;
                                 break;
                             case 1:
                                 desc.append("2KG模式");
+                                mTempResult = mTempResult | 0x10;
                                 break;
                             case 2:
                                 desc.append("4KG模式");
+                                mTempResult = mTempResult | 0x100;
                                 break;
                             case 3:
-                                if(mFeederTestUnits.get(mCurTestStep).getState() == 1) {
+                                if(mFeederTestUnits.get(mCurTestStep).getState() == 1 && mTempResult == 0x111) {
                                     desc.append("校准完成");
                                     result = true;
                                 }
@@ -775,7 +779,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
         }
 
         isShowing = true;
-        startTestModule();
+//        startTestModule();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.Prompt);
