@@ -308,6 +308,15 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
                         connectAp();
                     }
                     break;
+                case FeederUtils.TYPE_DUPLICATE_MAC:
+                case FeederUtils.TYPE_DUPLICATE_SN:
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_AP_")) {
+                        mInfoTestTextView.setText("请先连接到PETKIT_AP_开头的WIFI，再进行测试！");
+                        return;
+                    } else {
+                        connectAp();
+                    }
+                    break;
             }
         }
 
