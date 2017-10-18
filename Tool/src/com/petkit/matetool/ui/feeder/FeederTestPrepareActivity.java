@@ -52,6 +52,7 @@ public class FeederTestPrepareActivity extends BaseActivity {
     private Button actionBtn, uploadBtn;
 
     private FeedersError mFeedersError;
+    private boolean isLogining;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -219,7 +220,12 @@ public class FeederTestPrepareActivity extends BaseActivity {
                             CommonUtils.addSysMap(FeederUtils.SHARED_FEEDER_TESTER, new Gson().toJson(mTester));
                             AsyncHttpUtil.addHttpHeader("F-Session", token);
 
-                            getLastSN();
+                            if(FeederUtils.checkHasSnCache()) {
+                                isLogining = true;
+                                startUploadSn();
+                            } else {
+                                getLastSN();
+                            }
                         } else {
                             showShortToast("系统时间不对，请先设置！");
                             loginFailed();
@@ -304,6 +310,8 @@ public class FeederTestPrepareActivity extends BaseActivity {
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 super.onSuccess(statusCode, headers, responseBody);
 
+                isLogining = false;
+
                 JSONObject jsonObject = JSONUtils.getJSONObject(responseResult);
                 JSONObject dataObj = JSONUtils.getJSONObject(jsonObject, "data");
                 try {
@@ -343,6 +351,8 @@ public class FeederTestPrepareActivity extends BaseActivity {
 
         if(files != null && files.length > 0) {
             uploadSn(new File(dir, files[0]));
+        } else if (isLogining) {
+            getLastSN();
         } else {
             LoadDialog.dismissDialog();
             showShortToast("上传完成");
@@ -396,8 +406,12 @@ public class FeederTestPrepareActivity extends BaseActivity {
                                         mFeedersError = gson.fromJson(result.getString("data"), FeedersError.class);
                                         FeederUtils.storeDuplicatedInfo(mFeedersError);
                                         file.delete();
-                                        LoadDialog.dismissDialog();
-                                        updateView();
+                                        if (isLogining) {
+                                            getLastSN();
+                                        } else {
+                                            LoadDialog.dismissDialog();
+                                            updateView();
+                                        }
                                     } else {
                                         file.delete();
                                         startUploadSn();
