@@ -22,7 +22,7 @@ import com.petkit.matetool.R;
 import com.petkit.matetool.service.DatagramConsts;
 import com.petkit.matetool.service.DatagramProcessService;
 import com.petkit.matetool.ui.base.BaseActivity;
-import com.petkit.matetool.ui.catlitter.CatLitterMainActivity;
+import com.petkit.matetool.ui.cozy.CozyTestPrepareActivity;
 import com.petkit.matetool.ui.feeder.FeederTestPrepareActivity;
 import com.petkit.matetool.ui.go.GoTestMainActivity;
 import com.petkit.matetool.ui.mate.SelectActivity;
@@ -34,7 +34,7 @@ import com.petkit.matetool.widget.LoadDialog;
 
 import java.util.ArrayList;
 
-import static com.petkit.matetool.utils.Consts.TOOL_CAT_VERSION;
+import static com.petkit.matetool.utils.Consts.TOOL_COZY;
 import static com.petkit.matetool.utils.Consts.TOOL_FEEDER_VERSION;
 import static com.petkit.matetool.utils.Consts.TOOL_GO_VERSION;
 import static com.petkit.matetool.utils.Consts.TOOL_MATE_VERSION;
@@ -128,7 +128,7 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
                     case Globals.CAT_LITTER:
                         bundle = new Bundle();
                         bundle.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
-                        startActivityWithData(CatLitterMainActivity.class, bundle, false);
+                        startActivityWithData(CozyTestPrepareActivity.class, bundle, false);
                         break;
                     case Globals.GO:
                         if(!Globals.checkPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
@@ -189,7 +189,7 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
         tempRadioButton.setText("喂食器" + " v" + TOOL_FEEDER_VERSION);
 
         tempRadioButton = (RadioButton) findViewById(R.id.cat_litter);
-        tempRadioButton.setText("猫窝" + " v" + TOOL_CAT_VERSION);
+        tempRadioButton.setText("猫窝" + " v" + TOOL_COZY);
     }
 
     private void registerBoradcastReceiver() {

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.petkit.matetool"
-          android:versionCode="802"
-          android:versionName="3.0.10">
+          android:versionCode="900"
+          android:versionName="3.1.0">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
@@ -84,51 +84,38 @@
             android:name=".ui.mate.BroadcastDisplayActivity"
             android:screenOrientation="portrait">
         </activity>
-
-        <activity
-            android:name=".ui.feeder.FeederStartActivity"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity
-            android:name=".ui.feeder.PrintActivity"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity
-            android:name=".ui.feeder.FeederTestMainActivity"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <activity
-            android:name=".ui.feeder.FeederTestDetailActivity"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity
-            android:name=".ui.feeder.FeederTestPrepareActivity"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity
-            android:name=".ui.feeder.FeederErrorListActivity"
-            android:screenOrientation="portrait">
-        </activity>
         <activity
             android:name=".ui.permission.PermissionDialogActivity"
             android:screenOrientation="portrait"
             android:theme="@style/petkit_theme_dialog">
         </activity>
+        <activity android:name=".ui.go.GoTestMainActivity" android:screenOrientation="portrait"/>
+
+        <activity android:name=".ui.feeder.PrintActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.feeder.FeederStartActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.feeder.FeederTestMainActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.feeder.FeederTestDetailActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.feeder.FeederTestPrepareActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.feeder.FeederErrorListActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.feeder.FeederScanActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.feeder.FeederStorageActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.feeder.FeederStorageFileActivity" android:screenOrientation="portrait"/>
+
+        <!-- Cozy -->
+        <activity android:name=".ui.cozy.CozyStartActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.cozy.CozyTestMainActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.cozy.CozyTestDetailActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.cozy.CozyTestPrepareActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.cozy.CozyErrorListActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.cozy.CozyScanActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.cozy.CozyStorageActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.cozy.CozyStorageFileActivity" android:screenOrientation="portrait"/>
+
         <activity
             android:name=".ui.catlitter.CatLitterMainActivity"
             android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".ui.feeder.FeederScanActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name=".ui.go.GoTestMainActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name=".ui.feeder.FeederStorageActivity"
-                  android:screenOrientation="portrait"/>
-        <activity android:name=".ui.feeder.FeederStorageFileActivity"
-                  android:screenOrientation="portrait"/>
+
 
         <meta-data
             android:name="UMENG_APPKEY"
