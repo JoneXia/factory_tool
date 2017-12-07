@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.dothantech.lpapi.IAtBitmap;
 import com.dothantech.printer.IDzPrinter;
 import com.google.gson.Gson;
+import com.petkit.android.utils.LogcatStorageHelper;
 import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.ui.base.BaseActivity;
@@ -151,10 +152,10 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                 mPromptTextView.setText("点击开始，观察灯环颜色依次红绿蓝变化，wifi灯亮起，蜂鸣器响一秒！");
                 break;
             case TEST_MODE_COOL:
-                mPromptTextView.setText("观察温度值是否在下降！\nP电压       N电压      温度");
+                mPromptTextView.setText("观察温度值是否在下降！\nP电压       N电压      工作温度  散热温度");
                 break;
             case TEST_MODE_HOT:
-                mPromptTextView.setText("观察温度值是否在上升！\nP电压       N电压      温度");
+                mPromptTextView.setText("观察温度值是否在上升！\nP电压       N电压      工作温度  散热温度");
                 break;
             case TEST_MODE_VOLTAGE:
                 mPromptTextView.setText("观察电压值，在5v ~ 7v之间为正常！");
@@ -163,7 +164,7 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                 mPromptTextView.setText("观察当前的显示的温度值，是否在合理的范围！");
                 break;
             case TEST_MODE_FAN:
-                mPromptTextView.setText("观察风扇正常运行，3秒会切换一次转速！");
+                mPromptTextView.setText("观察风扇正常运行，点击开始按键会在中速、全速和关闭之间切换！");
                 break;
             default:
                 break;
@@ -459,57 +460,63 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                 boolean result = false;
                 StringBuilder desc = new StringBuilder();
 
-//                if (moduleStateStruct.getModule() != mCozyTestUnits.get(mCurTestStep).getModule()) {
-//                    LogcatStorageHelper.addLog("response和request的module不一致！放弃！");
-//                    return;
-//                }
+                if (mCozyTestUnits.get(mCurTestStep).getModule() != 10
+                        && mCozyTestUnits.get(mCurTestStep).getModule() != 11
+                        && moduleStateStruct.getModule() != mCozyTestUnits.get(mCurTestStep).getModule()) {
+                    LogcatStorageHelper.addLog("response和request的module不一致！放弃！");
+                    return;
+                }
 
                 switch (moduleStateStruct.getModule()) {
                     case 0:
                         if(moduleStateStruct.getSub0() > 0) {
-                            desc.append("\n").append("扩展cpu").append("-").append("通信").append("-").append(moduleStateStruct.getSub0() == 1 ? "正常" : "异常");
+                            desc.append("\n").append("扩展cpu").append("：").append("通信").append("-").append(moduleStateStruct.getSub0() == 1 ? "正常" : "异常");
                         }
                         if(moduleStateStruct.getSub1() > 0) {
                             mTempResult = mTempResult | 0x1;
-                            desc.append("\n").append("扩展cpu").append("-").append("wifi按键").append("-").append(getKeyDescByState(moduleStateStruct.getSub1()));
+                            desc.append("\n").append("扩展cpu").append("：").append("wifi按键").append("-").append(getKeyDescByState(moduleStateStruct.getSub1()));
                         }
                         if(moduleStateStruct.getSub2() > 0) {
                             mTempResult = mTempResult | 0x10;
-                            desc.append("\n").append("扩展cpu").append("-").append("功能键").append("-").append(getKeyDescByState(moduleStateStruct.getSub2()));
+                            desc.append("\n").append("扩展cpu").append("：").append("功能键").append("-").append(getKeyDescByState(moduleStateStruct.getSub2()));
                         }
                         result = mTempResult == 0x11;
                         break;
                     case 6:
                         if(moduleStateStruct.getSub0() > -1) {
-                            desc.append("\n").append("红外信号").append("-").append(moduleStateStruct.getSub0() == 1 ? "遮挡" : "不遮挡");
+                            desc.append("\n").append("红外信号").append("：").append(moduleStateStruct.getSub0() == 1 ? "遮挡" : "不遮挡");
                             mTempResult = mTempResult | (moduleStateStruct.getSub0() == 1 ? 0x1 : 0x10);
                             result = mTempResult == 0x11;
                         }
                         break;
+                    case 7:
+                        desc.append("\n").append("风扇转速").append("：").append(getFanState(moduleStateStruct.getSub0()));
+                        break;
                     case 8:
                         if (mCozyTestUnits.get(mCurTestStep).getType() == CozyUtils.CozyTestModes.TEST_MODE_TEMP) {
-                            desc.append("\n").append("工作面板").append("-温度").append(getTempFormat(moduleStateStruct.getSub0())).append("-电压").append(getVoltageFormat(moduleStateStruct.getSub1()));
+                            desc.append("\n").append("工作面板").append("：温度").append(getTempFormat(moduleStateStruct.getSub0())).append("，电压").append(getVoltageFormat(moduleStateStruct.getSub1()));
                         } else {
                             desc.append("      ").append(getTempFormat(moduleStateStruct.getSub0()));
                         }
 //                        mZLPTempSimple.addTemp(moduleStateStruct.getSub0());
                         break;
                     case 9:
-                        desc.append("\n").append("散热面板").append("-温度").append(getTempFormat(moduleStateStruct.getSub0())).append("-电压").append(getVoltageFormat(moduleStateStruct.getSub1()));
+                        if (mCozyTestUnits.get(mCurTestStep).getType() == CozyUtils.CozyTestModes.TEST_MODE_TEMP) {
+                            desc.append("\n").append("散热面板").append("：温度").append(getTempFormat(moduleStateStruct.getSub0())).append("，电压").append(getVoltageFormat(moduleStateStruct.getSub1()));
+                        } else {
+                            desc.append("      ").append(getTempFormat(moduleStateStruct.getSub0()));
+                        }
                         break;
                     case 10:
-                        desc.append("\n").append("环境").append("-温度").append(getTempFormat(moduleStateStruct.getSub0())).append("-湿度").append(Math.round(moduleStateStruct.getSub1()/10f)).append("%");
+                        desc.append("\n").append("环境").append("：温度").append(getTempFormat(moduleStateStruct.getSub0())).append("，湿度").append(Math.round(moduleStateStruct.getSub1()/10f)).append("%");
                         break;
                     case 11:
-//                        desc.append("\n").append("制冷片").append("-").append(getZLPmode(moduleStateStruct.getSub0()))
-//                                .append("-P电压").append(getVoltageFormat(moduleStateStruct.getSub1()))
-//                                .append("-N电压").append(getVoltageFormat(moduleStateStruct.getSub2()));
                         desc.append("\n").append(getVoltageFormat(moduleStateStruct.getSub1()))
                                 .append("      ").append(getVoltageFormat(moduleStateStruct.getSub2()));
 //                        mZLPTempSimple.addVol(moduleStateStruct.getSub0(), moduleStateStruct.getSub1(), moduleStateStruct.getSub2());
                         break;
                     case 12:
-                        desc.append("\n").append("直流电压").append("-").append(getVoltageFormat(moduleStateStruct.getSub0()));
+                        desc.append("\n").append("直流电压").append("：").append(getVoltageFormat(moduleStateStruct.getSub0()));
                         result = moduleStateStruct.getSub0() >= 5000 && moduleStateStruct.getSub0() <= 7000;
                         break;
                 }
@@ -631,6 +638,23 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                 return "制热";
             default:
                 return "异常";
+        }
+    }
+
+    private String getFanState(int value) {
+        switch (value) {
+            case 5:
+                return "全速";
+            case 4:
+                return "高速";
+            case 3:
+                return "中速";
+            case 2:
+                return "低速";
+            case 1:
+                return "最低";
+            default:
+                return "关闭";
         }
     }
 
