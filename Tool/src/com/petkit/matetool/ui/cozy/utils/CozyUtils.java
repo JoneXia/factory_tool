@@ -49,6 +49,7 @@ public class CozyUtils {
         TEST_MODE_SN,
         TEST_MODE_PRINT,
         TEST_MODE_MAC,
+        TEST_MODE_TEST,
         TEST_MODE_RESET_ID
     }
 
@@ -109,6 +110,7 @@ public class CozyUtils {
             results.add(new CozyTestUnit(CozyTestModes.TEST_MODE_COOL, "制冷测试", 11, 1));
             results.add(new CozyTestUnit(CozyTestModes.TEST_MODE_HOT, "制热测试", 11, 2));
             results.add(new CozyTestUnit(CozyTestModes.TEST_MODE_VOLTAGE, "电流电压", 12, 1));
+//            results.add(new CozyTestUnit(CozyTestModes.TEST_MODE_TEST, "压力测试", 13, 1));
             if (type != TYPE_TEST_PARTIALLY) {
                 if (type == TYPE_TEST) {
                     results.add(new CozyTestUnit(CozyTestModes.TEST_MODE_SN, "写入SN", 98, 2));

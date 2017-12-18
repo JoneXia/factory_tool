@@ -15,25 +15,31 @@ import android.widget.TextView;
 import com.dothantech.lpapi.IAtBitmap;
 import com.dothantech.printer.IDzPrinter;
 import com.google.gson.Gson;
+import com.petkit.android.utils.CommonUtils;
+import com.petkit.android.utils.FileUtils;
 import com.petkit.android.utils.LogcatStorageHelper;
 import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.cozy.mode.Cozy;
 import com.petkit.matetool.ui.cozy.mode.CozyModuleStateStruct;
+import com.petkit.matetool.ui.cozy.mode.CozyState;
 import com.petkit.matetool.ui.cozy.mode.CozyTestUnit;
 import com.petkit.matetool.ui.cozy.mode.CozyTester;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.ui.feeder.PrintActivity;
 import com.petkit.matetool.ui.feeder.utils.PetkitSocketInstance;
+import com.petkit.matetool.utils.DateUtil;
 import com.petkit.matetool.utils.JSONUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
+import static com.petkit.android.utils.LogcatStorageHelper.getDateEN;
 import static com.petkit.matetool.ui.feeder.utils.PrintUtils.isPrinterConnected;
 import static com.petkit.matetool.utils.Globals.TEST_FAILED;
 import static com.petkit.matetool.utils.Globals.TEST_PASS;
@@ -60,8 +66,10 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
     private boolean isAutoTest = false;
 
     private TextView mDescTextView, mPromptTextView;
-    private Button mBtn1, mBtn2, mBtn3;
+    private Button mBtn1, mBtn2, mBtn3, mBtn4;
     private ScrollView mDescScrollView;
+
+    private String mCacheFileName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,12 +123,14 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
         findViewById(R.id.test_btn_1).setOnClickListener(this);
         findViewById(R.id.test_btn_2).setOnClickListener(this);
         findViewById(R.id.test_btn_3).setOnClickListener(this);
+        findViewById(R.id.test_btn_4).setOnClickListener(this);
 
         mDescTextView = (TextView) findViewById(R.id.test_detail);
         mPromptTextView = (TextView) findViewById(R.id.test_prompt);
         mBtn1 = (Button) findViewById(R.id.test_btn_1);
         mBtn2 = (Button) findViewById(R.id.test_btn_2);
         mBtn3 = (Button) findViewById(R.id.test_btn_3);
+        mBtn4 = (Button) findViewById(R.id.test_btn_4);
         mDescScrollView = (ScrollView) findViewById(R.id.test_scrllview);
 
         refreshView();
@@ -166,6 +176,10 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
             case TEST_MODE_FAN:
                 mPromptTextView.setText("观察风扇正常运行，点击开始按键会在中速、全速和关闭之间切换！");
                 break;
+            case TEST_MODE_TEST:
+                mCacheFileName = CommonUtils.getAppDirPath() + DateUtil.formatISO8601Date(new Date()) + ".txt";
+                mPromptTextView.setText("WK温度  TS温度  AIR温度  湿度  转速  状态");
+                break;
             default:
                 break;
         }
@@ -187,19 +201,6 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                 mBtn3.setText(R.string.Succeed);
                 mBtn3.setBackgroundResource(R.drawable.selector_blue);
                 break;
-//            case TEST_MODE_ZLP:
-//                mBtn1.setText("制冷");
-//                mBtn2.setText("制热");
-//                mBtn2.setBackgroundResource(R.drawable.selector_gray);
-//                mBtn2.setVisibility(View.VISIBLE);
-//                if (mCozyTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
-//                    mBtn3.setText(R.string.Succeed);
-//                    mBtn3.setBackgroundResource(R.drawable.selector_blue);
-//                } else {
-//                    mBtn3.setText(R.string.Failure);
-//                    mBtn3.setBackgroundResource(R.drawable.selector_red);
-//                }
-//                break;
             case TEST_MODE_PRINT:
                 mBtn1.setText(R.string.Print);
                 mBtn2.setText(R.string.Set_print);
@@ -223,6 +224,17 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                     mBtn3.setText(R.string.Failure);
                     mBtn3.setBackgroundResource(R.drawable.selector_red);
                 }
+                break;
+            case TEST_MODE_TEST:
+                mBtn1.setText("制冷");
+                mBtn2.setText("制热");
+                mBtn2.setBackgroundResource(R.drawable.selector_gray);
+                mBtn2.setVisibility(View.VISIBLE);
+                mBtn3.setText("风扇");
+                mBtn3.setBackgroundResource(R.drawable.selector_gray);
+                mBtn4.setText("停止");
+                mBtn4.setBackgroundResource(R.drawable.selector_red);
+                mBtn4.setVisibility(View.VISIBLE);
                 break;
             default:
                 mBtn1.setText(R.string.Start);
@@ -350,6 +362,12 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                     case TEST_MODE_PRINT:
                         startActivity(PrintActivity.class);
                         break;
+                    case TEST_MODE_TEST:
+                        params = new HashMap<>();
+                        params.put("module", mCozyTestUnits.get(mCurTestStep).getModule());
+                        params.put("state", 2);
+                        PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(163, params));
+                        break;
                 }
                 break;
             case R.id.test_btn_3:
@@ -358,6 +376,12 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                     case TEST_MODE_MAC:
                     case TEST_MODE_PRINT:
                         gotoNextTestModule();
+                        break;
+                    case TEST_MODE_TEST:
+                        HashMap<String, Object> params2 = new HashMap<>();
+                        params2.put("module", mCozyTestUnits.get(mCurTestStep).getModule());
+                        params2.put("state", 3);
+                        PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(163, params2));
                         break;
                     case TEST_MODE_LIGHT:
                     case TEST_MODE_FAN:
@@ -378,6 +402,13 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                         break;
                 }
                 break;
+            case R.id.test_btn_4:
+                isWriteEndCmd = true;
+                HashMap<String, Object> params = new HashMap<>();
+                params.put("module", mCozyTestUnits.get(mCurTestStep).getModule());
+                params.put("state", 0);
+                PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(163, params));
+                break;
         }
     }
 
@@ -385,12 +416,6 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
         HashMap<String, Object> params = new HashMap<>();
         params.put("module", mCozyTestUnits.get(mCurTestStep).getModule());
         params.put("state", mCozyTestUnits.get(mCurTestStep).getState());
-//        if(mCozyTestUnits.get(mCurTestStep).getModule() == 11) {
-//            if (!mZLPTempSimple.startCoolTest()) {
-//                showShortToast("当前正在测试，请稍后！");
-//                return;
-//            }
-//        }
         PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(163, params));
 
         mTempResult = 0;
@@ -520,17 +545,6 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                         result = moduleStateStruct.getSub0() >= 5000 && moduleStateStruct.getSub0() <= 7000;
                         break;
                 }
-//                if (mCozyTestUnits.get(mCurTestStep).getType() == CozyUtils.CozyTestModes.TEST_MODE_ZLP) {
-//                    if (!mZLPTempSimple.isTesting()) {
-//                        desc.append("\n").append(mZLPTempSimple.isSuccess() ? "当前测试成功" : "当前测试失败");
-//                        result = mZLPTempSimple.isTotalComplete();
-//
-//                        HashMap<String, Object> params = new HashMap<>();
-//                        params.put("module", mCozyTestUnits.get(mCurTestStep).getModule());
-//                        params.put("state", 0);
-//                        PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(163, params));
-//                    }
-//                }
 
                 mDescTextView.append(desc.toString());
                 new Handler().post(new Runnable() {
@@ -595,7 +609,38 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                 mDescTextView.append("\n请重启设备，确认ID是否擦除！");
                 mDescTextView.append("\n擦除ID后需要重新测试！");
                 break;
+            case 222:
+                String DISPLAY_GAP  = "  ";
+                CozyState info = new Gson().fromJson(data, CozyState.class);
+                desc = new StringBuilder();
+                desc.append("\n").append(getTempFormat(info.getWk_temp())).append(DISPLAY_GAP)
+                        .append(getTempFormat(info.getTs_temp())).append(DISPLAY_GAP)
+                        .append(getTempFormat(info.getAir_temp())).append(DISPLAY_GAP)
+                        .append(Math.round(info.getAir_humi()/10f)).append("%").append(DISPLAY_GAP)
+                        .append(info.getFan()).append(DISPLAY_GAP)
+                        .append(getZLPmode(info.getWk_mode()));
+
+                FileUtils.writeStringToFile(mCacheFileName, convertDataToFileContent(data), true);
+                if(mDescTextView.getLineCount() > 100) {
+                    mDescTextView.setText("");
+                }
+                mDescTextView.append(desc.toString());
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mDescScrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                    }
+                });
+                break;
         }
+    }
+
+    private String convertDataToFileContent(String data) {
+        String newData = data.replaceAll(":", ";");
+        newData = newData.replaceAll(",", ";");
+        StringBuilder builder = new StringBuilder(getDateEN());
+        builder.append("  ").append(newData).append("\n");
+        return builder.toString();
     }
 
     private Bundle getPrintParam() {
