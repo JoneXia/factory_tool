@@ -29,8 +29,10 @@ import com.petkit.matetool.ui.cozy.mode.CozyTester;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.ui.feeder.PrintActivity;
 import com.petkit.matetool.ui.feeder.utils.PetkitSocketInstance;
+import com.petkit.matetool.ui.feeder.utils.WifiAdminSimple;
 import com.petkit.matetool.utils.DateUtil;
 import com.petkit.matetool.utils.JSONUtils;
+import com.vilyever.socketclient.util.StringValidation;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,6 +42,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 import static com.petkit.android.utils.LogcatStorageHelper.getDateEN;
+import static com.petkit.matetool.ui.cozy.utils.CozyUtils.CozyTestModes.TEST_MODE_TEST;
 import static com.petkit.matetool.ui.feeder.utils.PrintUtils.isPrinterConnected;
 import static com.petkit.matetool.utils.Globals.TEST_FAILED;
 import static com.petkit.matetool.utils.Globals.TEST_PASS;
@@ -70,6 +73,8 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
     private ScrollView mDescScrollView;
 
     private String mCacheFileName;
+    private String mAgeingResult = null;    //老化测试的结果
+    private boolean mTempSensorResult = true;    //温度测试时，缓存传感器的状态，失败时不能手动设置成功
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,12 +166,12 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
             case TEST_MODE_LIGHT:
                 mPromptTextView.setText("点击开始，观察灯环颜色依次红绿蓝变化，wifi灯亮起，蜂鸣器响一秒！");
                 break;
-            case TEST_MODE_COOL:
-                mPromptTextView.setText("观察温度值是否在下降！\nP电压       N电压      工作温度  散热温度");
-                break;
-            case TEST_MODE_HOT:
-                mPromptTextView.setText("观察温度值是否在上升！\nP电压       N电压      工作温度  散热温度");
-                break;
+//            case TEST_MODE_COOL:
+//                mPromptTextView.setText("观察温度值是否在下降！\nP电压       N电压      工作温度  散热温度");
+//                break;
+//            case TEST_MODE_HOT:
+//                mPromptTextView.setText("观察温度值是否在上升！\nP电压       N电压      工作温度  散热温度");
+//                break;
             case TEST_MODE_VOLTAGE:
                 mPromptTextView.setText("观察电压值，在5v ~ 7v之间为正常！");
                 break;
@@ -192,8 +197,6 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
             case TEST_MODE_LIGHT:
             case TEST_MODE_TEMP:
             case TEST_MODE_FAN:
-            case TEST_MODE_COOL:
-            case TEST_MODE_HOT:
                 mBtn1.setText(R.string.Start);
                 mBtn2.setText(R.string.Failure);
                 mBtn2.setBackgroundResource(R.drawable.selector_red);
@@ -275,45 +278,12 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                         }
                         break;
                     case TEST_MODE_SN:
-                        if(isEmpty(mCozy.getSn()) || (mCozyTestUnits.get(mCurTestStep).getState() == 2
-                                        && mErrorCozy != null && mCozy.getSn().equals(mErrorCozy.getSn()))) {
-                            boolean result = true;
-                            for (CozyTestUnit unit : mCozyTestUnits) {
-                                if(unit.getType() != CozyUtils.CozyTestModes.TEST_MODE_SN &&
-                                        unit.getType() != CozyUtils.CozyTestModes.TEST_MODE_PRINT
-                                        && unit.getResult() != TEST_PASS) {
-                                    result = false;
-                                    break;
-                                }
-                            }
-
-                            if(!result) {
-                                showShortToast("还有未完成的测试项，不能写入SN！");
-                            } else {
-                                String sn = CozyUtils.generateSNForTester(mTester);
-                                if(sn == null) {
-                                    showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
-                                    return;
-                                }
-                                HashMap<String, Object> payload = new HashMap<>();
-                                payload.put("mac", mCozy.getMac());
-                                payload.put("sn", sn);
-                                if(mCozyTestUnits.get(mCurTestStep).getState() == 2) {
-                                    payload.put("force", 100);
-                                }
-                                mCozy.setSn(sn);
-                                mCozy.setCreation(System.currentTimeMillis());
-                                PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(161, payload));
-                            }
-                        } else {
-                            HashMap<String, Object> params = new HashMap<>();
-                            params.put("mac", mCozy.getMac());
-                            params.put("sn", mCozy.getSn());
-                            PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(161, params));
-                        }
+                        HashMap<String, Object> params = new HashMap<>();
+                        params.put("mac", mCozy.getMac());
+                        PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(167, params));
                         break;
                     case TEST_MODE_MAC:
-                        HashMap<String, Object> params = new HashMap<>();
+                        params = new HashMap<>();
                         params.put("mac", mCozy.getMac());
                         PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(165, params));
                         break;
@@ -329,25 +299,6 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                 break;
             case R.id.test_btn_2:
                 switch (mCozyTestUnits.get(mCurTestStep).getType()) {
-//                    case TEST_MODE_ZLP: { //制热
-//                            HashMap<String, Object> params = new HashMap<>();
-//                            params.put("module", mCozyTestUnits.get(mCurTestStep).getModule());
-//                            params.put("state", 2);
-//                            if(mCozyTestUnits.get(mCurTestStep).getModule() == 11) {
-//                                if (!mZLPTempSimple.startHotTest()) {
-//                                    showShortToast("当前正在测试，请稍后！");
-//                                    return;
-//                                }
-//                            }
-//                            PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(163, params));
-//
-//                            mTempResult = 0;
-//                            if(mCozyTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
-//                                mCozyTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
-//                                refershBtnView();
-//                            }
-//                        }
-//                        break;
                     case TEST_MODE_LIGHT:
                     case TEST_MODE_FAN:
                     case TEST_MODE_TEMP:
@@ -383,11 +334,13 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                         params2.put("state", 3);
                         PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(163, params2));
                         break;
+                    case TEST_MODE_TEMP:
+                        if (!mTempSensorResult) {
+                            showShortToast("传感器异常，测试失败");
+                            return;
+                        }
                     case TEST_MODE_LIGHT:
                     case TEST_MODE_FAN:
-                    case TEST_MODE_TEMP:
-                    case TEST_MODE_COOL:
-                    case TEST_MODE_HOT:
                         mCozyTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                     default:
                         isWriteEndCmd = true;
@@ -419,6 +372,7 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
         PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(163, params));
 
         mTempResult = 0;
+        mTempSensorResult = true;
         if(mCozyTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
             mCozyTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
             refershBtnView();
@@ -451,8 +405,18 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
 
     @Override
     public void onDisconnected() {
-        showShortToast("与设备断开连接！");
-        finish();
+        if (mCozyTestUnits.get(mCurTestStep).getType() == TEST_MODE_TEST) {
+            showShortToast("与设备断开连接！");
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startReconnect();
+                }
+            }, 5000);
+        } else {
+            showShortToast("与设备断开连接！");
+            finish();
+        }
     }
 
     @Override
@@ -486,7 +450,6 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                 StringBuilder desc = new StringBuilder();
 
                 if (mCozyTestUnits.get(mCurTestStep).getModule() != 10
-                        && mCozyTestUnits.get(mCurTestStep).getModule() != 11
                         && moduleStateStruct.getModule() != mCozyTestUnits.get(mCurTestStep).getModule()) {
                     LogcatStorageHelper.addLog("response和request的module不一致！放弃！");
                     return;
@@ -497,15 +460,15 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                         if(moduleStateStruct.getSub0() > 0) {
                             desc.append("\n").append("扩展cpu").append("：").append("通信").append("-").append(moduleStateStruct.getSub0() == 1 ? "正常" : "异常");
                         }
-                        if(moduleStateStruct.getSub1() > 0) {
-                            mTempResult = mTempResult | 0x1;
-                            desc.append("\n").append("扩展cpu").append("：").append("wifi按键").append("-").append(getKeyDescByState(moduleStateStruct.getSub1()));
-                        }
+//                        if(moduleStateStruct.getSub1() > 0) {
+//                            mTempResult = mTempResult | 0x1;
+//                            desc.append("\n").append("扩展cpu").append("：").append("wifi按键").append("-").append(getKeyDescByState(moduleStateStruct.getSub1()));
+//                        }
                         if(moduleStateStruct.getSub2() > 0) {
-                            mTempResult = mTempResult | 0x10;
+                            mTempResult = mTempResult | 0x1;
                             desc.append("\n").append("扩展cpu").append("：").append("功能键").append("-").append(getKeyDescByState(moduleStateStruct.getSub2()));
                         }
-                        result = mTempResult == 0x11;
+                        result = mTempResult == 0x1;
                         break;
                     case 6:
                         if(moduleStateStruct.getSub0() > -1) {
@@ -518,27 +481,44 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                         desc.append("\n").append("风扇转速").append("：").append(getFanState(moduleStateStruct.getSub0()));
                         break;
                     case 8:
-                        if (mCozyTestUnits.get(mCurTestStep).getType() == CozyUtils.CozyTestModes.TEST_MODE_TEMP) {
-                            desc.append("\n").append("工作面板").append("：温度").append(getTempFormat(moduleStateStruct.getSub0())).append("，电压").append(getVoltageFormat(moduleStateStruct.getSub1()));
+                        if (moduleStateStruct.getState() == 0) {
+                            desc.append("\n").append("工作面板传感器异常！");
+                            mTempSensorResult = false;
                         } else {
-                            desc.append("      ").append(getTempFormat(moduleStateStruct.getSub0()));
+                            desc.append("\n").append("工作面板").append("：温度").append(getTempFormat(moduleStateStruct.getSub0())).append("，电压").append(getVoltageFormat(moduleStateStruct.getSub1()));
                         }
-//                        mZLPTempSimple.addTemp(moduleStateStruct.getSub0());
                         break;
                     case 9:
-                        if (mCozyTestUnits.get(mCurTestStep).getType() == CozyUtils.CozyTestModes.TEST_MODE_TEMP) {
-                            desc.append("\n").append("散热面板").append("：温度").append(getTempFormat(moduleStateStruct.getSub0())).append("，电压").append(getVoltageFormat(moduleStateStruct.getSub1()));
+                        if (moduleStateStruct.getState() == 0) {
+                            desc.append("\n").append("散热面板传感器异常！");
+                            mTempSensorResult = false;
                         } else {
-                            desc.append("      ").append(getTempFormat(moduleStateStruct.getSub0()));
+                            desc.append("\n").append("散热面板").append("：温度").append(getTempFormat(moduleStateStruct.getSub0())).append("，电压").append(getVoltageFormat(moduleStateStruct.getSub1()));
                         }
                         break;
                     case 10:
-                        desc.append("\n").append("环境").append("：温度").append(getTempFormat(moduleStateStruct.getSub0())).append("，湿度").append(Math.round(moduleStateStruct.getSub1()/10f)).append("%");
+                        if (moduleStateStruct.getState() == 0) {
+                            desc.append("\n").append("环境传感器异常！");
+                            mTempSensorResult = false;
+                        } else {
+                            desc.append("\n").append("环境").append("：温度").append(getTempFormat(moduleStateStruct.getSub0())).append("，湿度").append(Math.round(moduleStateStruct.getSub1() / 10f)).append("%");
+                        }
                         break;
                     case 11:
-                        desc.append("\n").append(getVoltageFormat(moduleStateStruct.getSub1()))
-                                .append("      ").append(getVoltageFormat(moduleStateStruct.getSub2()));
-//                        mZLPTempSimple.addVol(moduleStateStruct.getSub0(), moduleStateStruct.getSub1(), moduleStateStruct.getSub2());
+                        desc.append("\n状态:").append(getZLPmode(moduleStateStruct.getSub0())).append("，P电压：").append(getVoltageFormat(moduleStateStruct.getSub1()))
+                                .append("，N电压：").append(getVoltageFormat(moduleStateStruct.getSub2()))
+                                .append("， 电流：").append(moduleStateStruct.getSub3());
+
+                        if (mCozyTestUnits.get(mCurTestStep).getState() == 1) {
+                            result = moduleStateStruct.getSub0() == 1 && moduleStateStruct.getSub1() > 5000 && moduleStateStruct.getSub2() < 1000
+                                    && (moduleStateStruct.getSub3() >= 150 && moduleStateStruct.getSub3() <= 650);
+                        } else {
+                            result = moduleStateStruct.getSub0() == 2 && moduleStateStruct.getSub1() < 1000 && moduleStateStruct.getSub2() > 5000
+                                    && (moduleStateStruct.getSub3() >= 150 && moduleStateStruct.getSub3() <= 650);
+                        }
+                        if (!result) {
+                            desc.append("\n").append("该项测试失败！");
+                        }
                         break;
                     case 12:
                         desc.append("\n").append("直流电压").append("：").append(getVoltageFormat(moduleStateStruct.getSub0()));
@@ -569,7 +549,7 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                                 break;
                             case 1:
                                 mDescTextView.append("\n写入SN成功");
-                                CozyUtils.storeSucceedCozyInfo(mCozy);
+                                CozyUtils.storeSucceedCozyInfo(mCozy, mAgeingResult);
                                 mCozyTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                                 refershBtnView();
                                 break;
@@ -631,6 +611,10 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                         mDescScrollView.fullScroll(ScrollView.FOCUS_DOWN);
                     }
                 });
+                break;
+            case 167:
+                mAgeingResult = data;
+                startSetSn();
                 break;
         }
     }
@@ -891,4 +875,83 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
         return view;
     }
 
+
+    private void startReconnect() {
+        if (isFinishing()) {
+            return;
+        }
+        WifiAdminSimple simple = new WifiAdminSimple(this);
+        String apSsid = simple.getWifiConnectedSsid();
+        if(apSsid == null) {
+            showShortToast("请先连接到特定的WIFI");
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startReconnect();
+                }
+            }, 5000);
+        } else {
+            if (!apSsid.toUpperCase().startsWith("PETKIT_AP_")) {
+                showShortToast("请先连接到PETKIT_AP_开头的WIFI！");
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        startReconnect();
+                    }
+                }, 5000);
+            } else {
+                if (!StringValidation.validateRegex(simple.getCurrentApHostIp(), StringValidation.RegexIP)) {
+                    showShortToast("WIFI异常！");
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            startReconnect();
+                        }
+                    }, 5000);
+                    return;
+                }
+                PetkitSocketInstance.getInstance().startConnect(simple.getCurrentApHostIp(), 8001);
+            }
+        }
+    }
+
+
+    private void startSetSn() {
+        if(isEmpty(mCozy.getSn()) || (mCozyTestUnits.get(mCurTestStep).getState() == 2
+                && mErrorCozy != null && mCozy.getSn().equals(mErrorCozy.getSn()))) {
+            boolean result = true;
+            for (CozyTestUnit unit : mCozyTestUnits) {
+                if(unit.getType() != CozyUtils.CozyTestModes.TEST_MODE_SN &&
+                        unit.getType() != CozyUtils.CozyTestModes.TEST_MODE_PRINT
+                        && unit.getResult() != TEST_PASS) {
+                    result = false;
+                    break;
+                }
+            }
+
+            if(!result) {
+                showShortToast("还有未完成的测试项，不能写入SN！");
+            } else {
+                String sn = CozyUtils.generateSNForTester(mTester);
+                if(sn == null) {
+                    showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
+                    return;
+                }
+                HashMap<String, Object> payload = new HashMap<>();
+                payload.put("mac", mCozy.getMac());
+                payload.put("sn", sn);
+                if(mCozyTestUnits.get(mCurTestStep).getState() == 2) {
+                    payload.put("force", 100);
+                }
+                mCozy.setSn(sn);
+                mCozy.setCreation(System.currentTimeMillis());
+                PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(161, payload));
+            }
+        } else {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("mac", mCozy.getMac());
+            params.put("sn", mCozy.getSn());
+            PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(161, params));
+        }
+    }
 }

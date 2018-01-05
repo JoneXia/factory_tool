@@ -284,15 +284,15 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
         } else {
             switch (mTestType) {
                 case CozyUtils.TYPE_TEST_PARTIALLY:
-                    if (!apSsid.toUpperCase().startsWith("PETKIT_AP_A_")) {
-                        mInfoTestTextView.setText("请先连接到PETKIT_AP_A_开头的WIFI，再进行测试！");
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_COZY_A_")) {
+                        mInfoTestTextView.setText("请先连接到PETKIT_COZY_A_开头的WIFI，再进行测试！");
                     } else {
                         connectAp();
                     }
                     break;
                 case CozyUtils.TYPE_TEST:
-                    if (!apSsid.toUpperCase().startsWith("PETKIT_AP_B_")) {
-                        mInfoTestTextView.setText("请先连接到PETKIT_AP_B_开头的WIFI，再进行测试！");
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_COZY_B_")) {
+                        mInfoTestTextView.setText("请先连接到PETKIT_COZY_B_开头的WIFI，再进行测试！");
                         return;
                     } else {
                         connectAp();
@@ -300,9 +300,9 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
                     break;
                 case CozyUtils.TYPE_MAINTAIN:
                 case CozyUtils.TYPE_CHECK:
-                    if (!apSsid.toUpperCase().startsWith("PETKIT_AP_")
-                            || (apSsid.toUpperCase().startsWith("PETKIT_AP_A_") || apSsid.toUpperCase().startsWith("PETKIT_AP_B_"))) {
-                        mInfoTestTextView.setText("请先连接到PETKIT_AP_开头的WIFI，再进行测试！");
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_COZY_")
+                            || (apSsid.toUpperCase().startsWith("PETKIT_COZY_A_") || apSsid.toUpperCase().startsWith("PETKIT_COZY_B_"))) {
+                        mInfoTestTextView.setText("请先连接到PETKIT_COZY_开头的WIFI，再进行测试！");
                         return;
                     } else {
                         connectAp();
@@ -310,8 +310,8 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
                     break;
                 case CozyUtils.TYPE_DUPLICATE_MAC:
                 case CozyUtils.TYPE_DUPLICATE_SN:
-                    if (!apSsid.toUpperCase().startsWith("PETKIT_AP_")) {
-                        mInfoTestTextView.setText("请先连接到PETKIT_AP_开头的WIFI，再进行测试！");
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_COZY_")) {
+                        mInfoTestTextView.setText("请先连接到PETKIT_COZY_开头的WIFI，再进行测试！");
                         return;
                     } else {
                         connectAp();
@@ -453,6 +453,13 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
                 break;
             case 160:
                 if(!testComplete) {
+                    HashMap<String, Object> params = new HashMap<>();
+                    params.put("coolTemp", 100);
+                    params.put("heatTemp", 150);
+                    params.put("cTimeOut", 3600);
+                    params.put("HTimeOut", 3600);
+                    params.put("count", 65535);
+                    PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(166, params));
                     return;
                 }
 

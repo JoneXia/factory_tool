@@ -65,8 +65,8 @@ public class Cozy implements Serializable {
         return String.format("{\"sn\":\"%s\",\"mac\":\"%s\",\"inspectStatus\":%d}", sn, mac, inspectStatus);
     }
 
-    public String generateMainJson() {
-        return String.format("{\"sn\":\"%s\",\"mac\":\"%s\",\"creation\":%d}", sn, mac, creation);
+    public String generateMainJson(String ageingResult) {
+        return String.format("{\"sn\":\"%s\",\"mac\":\"%s\",\"creation\":%d,\"ageingResult\":\"%s\"}", sn, mac, creation, ageingResult);
     }
 
     @Override

@@ -144,7 +144,7 @@ public class CozyUtils {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(tester.getCode())
                 .append(day)
-                .append("P")
+                .append("C")
                 .append(tester.getStation())
                 .append(serializableNumber);
 
@@ -210,13 +210,13 @@ public class CozyUtils {
      * 存储测试完成的设备信息
      * @param cozy 猫窝
      */
-    public static void storeSucceedCozyInfo(Cozy cozy) {
+    public static void storeSucceedCozyInfo(Cozy cozy, String ageingResult) {
         if(cozy == null || !cozy.checkValid()) {
             throw  new RuntimeException("store cozy failed, " + (cozy == null ? "cozy is null !" : cozy.toString()));
         }
 
-        PetkitLog.d("store cozy info: " + cozy.generateMainJson());
-        FileUtils.writeStringToFile(getStoreCozyInfoFilePath(), cozy.generateMainJson() + ",", true);
+        PetkitLog.d("store cozy info: " + cozy.generateMainJson(ageingResult));
+        FileUtils.writeStringToFile(getStoreCozyInfoFilePath(), cozy.generateMainJson(ageingResult) + ",", true);
     }
 
     /**

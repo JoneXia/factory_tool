@@ -7,8 +7,9 @@ package com.petkit.matetool.ui.cozy.mode;
 public class CozyModuleStateStruct {
 
     private int module;
-    private int sub0, sub1, sub2;
+    private int sub0, sub1, sub2, sub3;
     private String time;
+    private int state;
 
     public int getModule() {
         return module;
@@ -42,12 +43,28 @@ public class CozyModuleStateStruct {
         this.sub2 = sub2;
     }
 
+    public void setSub3(int sub3) {
+        this.sub3 = sub3;
+    }
+
+    public int getSub3() {
+        return sub3;
+    }
+
     public void setTime(String time) {
         this.time = time;
     }
 
     public String getTime() {
         return time;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
+
+    public int getState() {
+        return state;
     }
 }
 
