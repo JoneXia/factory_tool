@@ -181,6 +181,10 @@ public class CozyTestPrepareActivity extends BaseActivity {
     }
 
     private void startTest() {
+        if (mTester == null || !mTester.checkValid()) {
+            showShortToast("测试账号不合法！");
+            return;
+        }
         Bundle bundle = new Bundle();
         bundle.putSerializable(CozyUtils.EXTRA_COZY_TESTER, mTester);
         startActivityWithData(CozyStartActivity.class, bundle, false);

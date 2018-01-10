@@ -3,9 +3,9 @@ package com.petkit.matetool.ui.cozy.mode;
 import java.io.Serializable;
 
 /**
+ *
  * Created by Jone on 17/5/3.
  */
-
 public class Cozy implements Serializable {
 
     private String mac = "";
@@ -66,7 +66,7 @@ public class Cozy implements Serializable {
     }
 
     public String generateMainJson(String ageingResult) {
-        return String.format("{\"sn\":\"%s\",\"mac\":\"%s\",\"creation\":%d,\"ageingResult\":\"%s\"}", sn, mac, creation, ageingResult);
+        return String.format("{\"sn\":\"%s\",\"mac\":\"%s\",\"creation\":%d,\"ageingResult\":%s}", sn, mac, creation, ageingResult);
     }
 
     @Override

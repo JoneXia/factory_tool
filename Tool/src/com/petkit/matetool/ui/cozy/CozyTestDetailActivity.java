@@ -1,8 +1,10 @@
 package com.petkit.matetool.ui.cozy;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -43,6 +45,9 @@ import java.util.HashMap;
 
 import static com.petkit.android.utils.LogcatStorageHelper.getDateEN;
 import static com.petkit.matetool.ui.cozy.utils.CozyUtils.CozyTestModes.TEST_MODE_TEST;
+import static com.petkit.matetool.ui.feeder.utils.PrintUtils.KeyGapType;
+import static com.petkit.matetool.ui.feeder.utils.PrintUtils.KeyPrintDensity;
+import static com.petkit.matetool.ui.feeder.utils.PrintUtils.KeyPrintSpeed;
 import static com.petkit.matetool.ui.feeder.utils.PrintUtils.isPrinterConnected;
 import static com.petkit.matetool.utils.Globals.TEST_FAILED;
 import static com.petkit.matetool.utils.Globals.TEST_PASS;
@@ -161,7 +166,7 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                 }
                 break;
             case TEST_MODE_KEY:
-                mPromptTextView.setText("需要分别测试电源键和wifi按键！");
+                mPromptTextView.setText("需要测试功能键是否正常！");
                 break;
             case TEST_MODE_LIGHT:
                 mPromptTextView.setText("点击开始，观察灯环颜色依次红绿蓝变化，wifi灯亮起，蜂鸣器响一秒！");
@@ -628,13 +633,14 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
     }
 
     private Bundle getPrintParam() {
+        SharedPreferences sharedPreferences = getSharedPreferences(getResources().getString(R.string.app_name), Context.MODE_PRIVATE);
         Bundle param = new Bundle();
 
         param.putInt(IDzPrinter.PrintParamName.PRINT_DIRECTION, 0);
         param.putInt(IDzPrinter.PrintParamName.PRINT_COPIES, 2);
-        param.putInt(IDzPrinter.PrintParamName.GAP_TYPE, 2);
-        param.putInt(IDzPrinter.PrintParamName.PRINT_DENSITY, 14);
-        param.putInt(IDzPrinter.PrintParamName.PRINT_SPEED, 2);
+        param.putInt(IDzPrinter.PrintParamName.GAP_TYPE, sharedPreferences.getInt(KeyGapType, 2));
+        param.putInt(IDzPrinter.PrintParamName.PRINT_DENSITY, sharedPreferences.getInt(KeyPrintDensity, 14));
+        param.putInt(IDzPrinter.PrintParamName.PRINT_SPEED, sharedPreferences.getInt(KeyPrintSpeed, 2));
         return param;
     }
 
