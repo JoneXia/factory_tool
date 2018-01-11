@@ -144,7 +144,7 @@ public class CozyUtils {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(tester.getCode())
                 .append(day)
-                .append("C")
+                .append("A")
                 .append(tester.getStation())
                 .append(serializableNumber);
 

@@ -456,7 +456,7 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
                     HashMap<String, Object> params = new HashMap<>();
                     params.put("coolTemp", 100);
                     params.put("heatTemp", 150);
-                    params.put("restTime", 600);
+                    params.put("restTime", 900);
                     params.put("cTimeOut", 3600);
                     params.put("HTimeOut", 3600);
                     params.put("count", 65535);
