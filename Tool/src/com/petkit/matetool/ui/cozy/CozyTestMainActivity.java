@@ -457,8 +457,8 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
                     params.put("coolTemp", 100);
                     params.put("heatTemp", 150);
                     params.put("restTime", 900);
-                    params.put("cTimeOut", 3600);
-                    params.put("HTimeOut", 3600);
+                    params.put("cTimeOut", 5400);
+                    params.put("HTimeOut", 5400);
                     params.put("count", 65535);
                     PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(166, params));
                     return;
