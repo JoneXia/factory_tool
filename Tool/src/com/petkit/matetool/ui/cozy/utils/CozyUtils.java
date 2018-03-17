@@ -81,7 +81,7 @@ public class CozyUtils {
      * @param payload content
      * @return json
      */
-    public static String getRequestForKeyAndPayload(int key, HashMap<String, Object> payload) {
+    public static String getRequestForKeyAndPayload(int key, Object payload) {
         HashMap<String, Object> data = new HashMap<>();
         data.put("key", key);
         data.put("payload", payload);

@@ -2,8 +2,6 @@ package com.petkit.matetool.ui.feeder.mode;
 
 import java.io.Serializable;
 
-import static java.security.CryptoPrimitive.MAC;
-
 /**
  * Created by Jone on 17/5/3.
  */
@@ -12,12 +10,14 @@ public class Feeder implements Serializable {
 
     private String mac = "";
     private String sn = "";
+    private String chipid = "";
     private long creation = 0;
     private int inspectStatus = 0;
 
-    public Feeder(String mac, String sn) {
+    public Feeder(String mac, String sn, String chipid) {
         this.mac = mac;
         this.sn = sn;
+        this.chipid = chipid;
     }
 
     public String getMac() {
@@ -51,6 +51,14 @@ public class Feeder implements Serializable {
         return mac != null && sn != null;
     }
 
+    public void setChipid(String chipid) {
+        this.chipid = chipid;
+    }
+
+    public String getChipid() {
+        return chipid;
+    }
+
     public String generateJson() {
         return String.format("{\"sn\":\"%s\",\"mac\":\"%s\"}", sn, mac);
     }
@@ -68,7 +76,7 @@ public class Feeder implements Serializable {
     }
 
     public String generateMainJson() {
-        return String.format("{\"sn\":\"%s\",\"mac\":\"%s\",\"creation\":%d}", sn, mac, creation);
+        return String.format("{\"sn\":\"%s\",\"mac\":\"%s\",\"chipId\":\"%s\",\"creation\":%d}", sn, mac, chipid, creation);
     }
 
     @Override
@@ -76,6 +84,7 @@ public class Feeder implements Serializable {
         return "Feeder{" +
                 "mac='" + mac + '\'' +
                 ", sn='" + sn + '\'' +
+                ", chipid='" + chipid + '\'' +
                 ", creation='" + creation + '\'' +
                 '}';
     }

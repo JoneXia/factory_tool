@@ -399,7 +399,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
                 try {
                     JSONObject jsonObject = JSONUtils.getJSONObject(data);
                     StringBuilder stringBuilder = new StringBuilder();
-                    String mac = null, sn = null;
+                    String mac = null, sn = null, chipid = null;
                     if (!jsonObject.isNull("mac")) {
                         mac = jsonObject.getString("mac");
                         stringBuilder.append("\n").append("mac: ").append(mac).append("\n");
@@ -407,6 +407,10 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
                     if (!jsonObject.isNull("sn")) {
                         sn = jsonObject.getString("sn");
                         stringBuilder.append("sn: ").append(sn).append("\n");
+                    }
+                    if (!jsonObject.isNull("chipid")) {
+                        chipid = jsonObject.getString("chipid");
+                        stringBuilder.append("chipid: ").append(chipid).append("\n");
                     }
                     if (!jsonObject.isNull("hardware")) {
                         stringBuilder.append("hardware: ").append(jsonObject.getInt("hardware")).append("\n");
@@ -438,7 +442,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
                         }
                     }
 
-                    mCurFeeder = new Feeder(mac, sn);
+                    mCurFeeder = new Feeder(mac, sn, chipid);
 
                     mInfoTestTextView.append(stringBuilder.toString());
 

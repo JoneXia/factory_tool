@@ -125,7 +125,7 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
                         bundle.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
                         startActivityWithData(FeederTestPrepareActivity.class, bundle, false);
                         break;
-                    case Globals.CAT_LITTER:
+                    case Globals.COZY:
                         bundle = new Bundle();
                         bundle.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
                         startActivityWithData(CozyTestPrepareActivity.class, bundle, false);
@@ -165,8 +165,8 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
             case R.id.feeder:
                 testStyle = Globals.FEEDER;
                 break;
-            case R.id.cat_litter:
-                testStyle = Globals.CAT_LITTER;
+            case R.id.cozy:
+                testStyle = Globals.COZY;
                 break;
             default:
                 break;
@@ -188,8 +188,8 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
         tempRadioButton = (RadioButton) findViewById(R.id.feeder);
         tempRadioButton.setText("喂食器" + " v" + TOOL_FEEDER_VERSION);
 
-        tempRadioButton = (RadioButton) findViewById(R.id.cat_litter);
-        tempRadioButton.setText("猫窝" + " v" + TOOL_COZY);
+        tempRadioButton = (RadioButton) findViewById(R.id.cozy);
+        tempRadioButton.setText("宠物窝" + " v" + TOOL_COZY);
     }
 
     private void registerBoradcastReceiver() {

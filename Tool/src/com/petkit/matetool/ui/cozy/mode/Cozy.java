@@ -10,12 +10,14 @@ public class Cozy implements Serializable {
 
     private String mac = "";
     private String sn = "";
+    private String chipid = "";
     private long creation = 0;
     private int inspectStatus = 0;
 
-    public Cozy(String mac, String sn) {
+    public Cozy(String mac, String sn, String chipid) {
         this.mac = mac;
         this.sn = sn;
+        this.chipid = chipid;
     }
 
     public String getMac() {
@@ -49,6 +51,14 @@ public class Cozy implements Serializable {
         return mac != null && sn != null;
     }
 
+    public void setChipid(String chipid) {
+        this.chipid = chipid;
+    }
+
+    public String getChipid() {
+        return chipid;
+    }
+
     public String generateJson() {
         return String.format("{\"sn\":\"%s\",\"mac\":\"%s\"}", sn, mac);
     }
@@ -66,7 +76,7 @@ public class Cozy implements Serializable {
     }
 
     public String generateMainJson(String ageingResult) {
-        return String.format("{\"sn\":\"%s\",\"mac\":\"%s\",\"creation\":%d,\"ageingResult\":%s}", sn, mac, creation, ageingResult);
+        return String.format("{\"sn\":\"%s\",\"mac\":\"%s\",\"chipId\":\"%s\",\"creation\":%d,\"ageingResult\":%s}", sn, mac, chipid, creation, ageingResult);
     }
 
     @Override
@@ -74,6 +84,7 @@ public class Cozy implements Serializable {
         return "Feeder{" +
                 "mac='" + mac + '\'' +
                 ", sn='" + sn + '\'' +
+                ", chipid='" + chipid + '\'' +
                 ", creation='" + creation + '\'' +
                 '}';
     }

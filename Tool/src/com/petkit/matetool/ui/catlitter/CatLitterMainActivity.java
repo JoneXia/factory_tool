@@ -71,7 +71,7 @@ public class CatLitterMainActivity extends BaseActivity implements PetkitSocketI
 
     @Override
     protected void setupViews() {
-        setTitle("猫窝测试");
+        setTitle("宠物窝测试");
 
         mWifiAdminSimple = new WifiAdminSimple(this);
 

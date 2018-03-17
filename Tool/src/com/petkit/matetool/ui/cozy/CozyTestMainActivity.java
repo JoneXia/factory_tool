@@ -21,6 +21,7 @@ import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.cozy.mode.Cozy;
+import com.petkit.matetool.ui.cozy.mode.CozyConfig;
 import com.petkit.matetool.ui.cozy.mode.CozyTestUnit;
 import com.petkit.matetool.ui.cozy.mode.CozyTester;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
@@ -34,6 +35,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  *
@@ -87,7 +89,7 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
 
     @Override
     protected void setupViews() {
-        setTitle("猫窝测试");
+        setTitle("宠物窝测试");
 
         mWifiAdminSimple = new WifiAdminSimple(this);
 
@@ -399,7 +401,7 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
                 try {
                     JSONObject jsonObject = JSONUtils.getJSONObject(data);
                     StringBuilder stringBuilder = new StringBuilder();
-                    String mac = null, sn = null;
+                    String mac = null, sn = null, chipid = null;
                     if (!jsonObject.isNull("mac")) {
                         mac = jsonObject.getString("mac");
                         stringBuilder.append("\n").append("mac: ").append(mac).append("\n");
@@ -407,6 +409,10 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
                     if (!jsonObject.isNull("sn")) {
                         sn = jsonObject.getString("sn");
                         stringBuilder.append("sn: ").append(sn).append("\n");
+                    }
+                    if (!jsonObject.isNull("chipid")) {
+                        chipid = jsonObject.getString("chipid");
+                        stringBuilder.append("chipid: ").append(chipid).append("\n");
                     }
                     if (!jsonObject.isNull("hardware")) {
                         stringBuilder.append("hardware: ").append(jsonObject.getInt("hardware")).append("\n");
@@ -438,7 +444,7 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
                         }
                     }
 
-                    mCurCozy = new Cozy(mac, sn);
+                    mCurCozy = new Cozy(mac, sn, chipid);
 
                     mInfoTestTextView.append(stringBuilder.toString());
 
@@ -453,14 +459,17 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
                 break;
             case 160:
                 if(!testComplete) {
-                    HashMap<String, Object> params = new HashMap<>();
-                    params.put("coolTemp", 100);
-                    params.put("heatTemp", 150);
-                    params.put("restTime", 900);
-                    params.put("cTimeOut", 5400);
-                    params.put("HTimeOut", 5400);
-                    params.put("count", 65535);
-                    PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(166, params));
+
+                    CozyConfig config = new CozyConfig(100, 150, 900, 5400, 5400, 65535);
+
+                    List<Integer> list = new ArrayList<Integer>(){};
+                    list.add(50); list.add(160); list.add(160);
+                    list.add(240); list.add(240); list.add(330);
+                    list.add(330); list.add(500); list.add(500);
+                    list.add(750);
+                    config.setFan_speed_current_range(list);
+
+                    PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(166, config));
                     return;
                 }
 
@@ -482,6 +491,18 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
                         e.printStackTrace();
                     }
                 }
+                break;
+            case 166:
+                if (mCurCozy == null) {
+                    return;
+                }
+
+                HashMap<String, Object> params = new HashMap<>();
+                params.put("mac", mCurCozy.getMac());
+                PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(167, params));
+                break;
+            case 167:
+                mInfoTestTextView.append("\n老化结果：" + data);
                 break;
         }
     }

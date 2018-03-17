@@ -40,11 +40,11 @@
             android:text="喂食器"/>
 
         <RadioButton
-            android:id="@+id/cat_litter"
+            android:id="@+id/cozy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dip"
-            android:text="猫窝"/>
+            android:text="宠物窝"/>
     </RadioGroup>
 
     <EditText

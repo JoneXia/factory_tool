@@ -46,7 +46,7 @@ public class CozyTestPrepareActivity extends BaseActivity {
 
     private CozyTester mTester;
     private EditText nameEdit, pwEdit;
-    private TextView promptText;
+    private TextView promptText, testerInfoTextView;
     private Button actionBtn, uploadBtn;
 
     private CozysError mCozysError;
@@ -72,12 +72,16 @@ public class CozyTestPrepareActivity extends BaseActivity {
         uploadBtn.setOnClickListener(this);
         nameEdit = (EditText) findViewById(R.id.input_login_name);
         pwEdit = (EditText) findViewById(R.id.input_login_password);
+        testerInfoTextView = (TextView) findViewById(R.id.tester_info);
 
         findViewById(R.id.logout).setOnClickListener(this);
 
         String tester = CommonUtils.getSysMap(CozyUtils.SHARED_COZY_TESTER);
         if(!isEmpty(tester)) {
             mTester = new Gson().fromJson(tester, CozyTester.class);
+            if (!isEmpty(mTester.getName())) {
+                testerInfoTextView.setText("当前用户名：" + mTester.getName());
+            }
             AsyncHttpUtil.addHttpHeader("F-Session", CommonUtils.getSysMap(Consts.SHARED_SESSION_ID));
         }
 
@@ -191,7 +195,7 @@ public class CozyTestPrepareActivity extends BaseActivity {
     }
 
 
-    private void login(String name, String pw) {
+    private void login(final String name, String pw) {
         LoadDialog.show(this);
 
         HashMap<String, String> params = new HashMap<>();
@@ -217,7 +221,8 @@ public class CozyTestPrepareActivity extends BaseActivity {
                             mTester = new CozyTester();
                             mTester.setCode(factory);
                             mTester.setStation(station);
-                            mTester.setName("");
+                            mTester.setName(name);
+                            testerInfoTextView.setText("当前用户名：" + mTester.getName());
                             CommonUtils.addSysMap(Consts.SHARED_SESSION_ID, token);
                             CommonUtils.addSysMap(CozyUtils.SHARED_COZY_TESTER, new Gson().toJson(mTester));
                             AsyncHttpUtil.addHttpHeader("F-Session", token);

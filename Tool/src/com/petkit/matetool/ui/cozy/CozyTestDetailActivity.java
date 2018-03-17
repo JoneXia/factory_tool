@@ -171,12 +171,10 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
             case TEST_MODE_LIGHT:
                 mPromptTextView.setText("点击开始，观察灯环颜色依次红绿蓝变化，wifi灯亮起，蜂鸣器响一秒！");
                 break;
-//            case TEST_MODE_COOL:
-//                mPromptTextView.setText("观察温度值是否在下降！\nP电压       N电压      工作温度  散热温度");
-//                break;
-//            case TEST_MODE_HOT:
-//                mPromptTextView.setText("观察温度值是否在上升！\nP电压       N电压      工作温度  散热温度");
-//                break;
+            case TEST_MODE_COOL:
+            case TEST_MODE_HOT:
+                mPromptTextView.setText("点击开始后，等待测试结果，可能需要几秒钟，请耐心等待！");
+                break;
             case TEST_MODE_VOLTAGE:
                 mPromptTextView.setText("观察电压值，在5v ~ 7v之间为正常！");
                 break;
@@ -184,7 +182,7 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                 mPromptTextView.setText("观察当前的显示的温度值，是否在合理的范围！");
                 break;
             case TEST_MODE_FAN:
-                mPromptTextView.setText("观察风扇正常运行，点击开始按键会在中速、全速和关闭之间切换！");
+                mPromptTextView.setText("点击开始后，设备会依次判断关闭、半速和全速状态是否正常，可能需要几秒钟，请耐心等待！");
                 break;
             case TEST_MODE_TEST:
                 mCacheFileName = CommonUtils.getAppDirPath() + DateUtil.formatISO8601Date(new Date()) + ".txt";
@@ -201,7 +199,6 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
         switch (mCozyTestUnits.get(mCurTestStep).getType()) {
             case TEST_MODE_LIGHT:
             case TEST_MODE_TEMP:
-            case TEST_MODE_FAN:
                 mBtn1.setText(R.string.Start);
                 mBtn2.setText(R.string.Failure);
                 mBtn2.setBackgroundResource(R.drawable.selector_red);
@@ -305,7 +302,6 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
             case R.id.test_btn_2:
                 switch (mCozyTestUnits.get(mCurTestStep).getType()) {
                     case TEST_MODE_LIGHT:
-                    case TEST_MODE_FAN:
                     case TEST_MODE_TEMP:
                         isWriteEndCmd = true;
                         mCozyTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
@@ -345,7 +341,6 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                             return;
                         }
                     case TEST_MODE_LIGHT:
-                    case TEST_MODE_FAN:
                         mCozyTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                     default:
                         isWriteEndCmd = true;
@@ -484,6 +479,7 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                         break;
                     case 7:
                         desc.append("\n").append("风扇转速").append("：").append(getFanState(moduleStateStruct.getSub0()));
+                        result = moduleStateStruct.getSub1() == 1;
                         break;
                     case 8:
                         if (moduleStateStruct.getState() == 0) {
@@ -515,11 +511,13 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                                 .append("， 电流：").append(moduleStateStruct.getSub3());
 
                         if (mCozyTestUnits.get(mCurTestStep).getState() == 1) {
-                            result = moduleStateStruct.getSub0() == 1 && moduleStateStruct.getSub1() > 5000 && moduleStateStruct.getSub2() < 1000
-                                    && (moduleStateStruct.getSub3() >= 150 && moduleStateStruct.getSub3() <= 650);
+                            result = moduleStateStruct.getSub0() == 1 && moduleStateStruct.getSub1() >= 5000 && moduleStateStruct.getSub1() <= 7000
+                                    && moduleStateStruct.getSub2() < 1000
+                                    && (moduleStateStruct.getSub3() >= 150 && moduleStateStruct.getSub3() <= 800);
                         } else {
-                            result = moduleStateStruct.getSub0() == 2 && moduleStateStruct.getSub1() < 1000 && moduleStateStruct.getSub2() > 5000
-                                    && (moduleStateStruct.getSub3() >= 150 && moduleStateStruct.getSub3() <= 650);
+                            result = moduleStateStruct.getSub0() == 2 && moduleStateStruct.getSub1() < 1000
+                                    && moduleStateStruct.getSub2() >= 5000  && moduleStateStruct.getSub2() <= 7000
+                                    && (moduleStateStruct.getSub3() >= 150 && moduleStateStruct.getSub3() <= 800);
                         }
                         if (!result) {
                             desc.append("\n").append("该项测试失败！");
@@ -897,8 +895,8 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                 }
             }, 5000);
         } else {
-            if (!apSsid.toUpperCase().startsWith("PETKIT_AP_")) {
-                showShortToast("请先连接到PETKIT_AP_开头的WIFI！");
+            if (!apSsid.toUpperCase().startsWith("PETKIT_COZY_")) {
+                showShortToast("请先连接到PETKIT_COZY_开头的WIFI！");
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
