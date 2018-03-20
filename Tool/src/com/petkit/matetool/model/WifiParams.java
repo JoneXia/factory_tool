@@ -70,7 +70,7 @@ public class WifiParams implements Serializable {
     }
 
     public void setMac(String mac) {
-        if(mac.length() > 12) {
+        if(mac != null && mac.length() > 12) {
             this.mac = mac.substring(0, 12);
         } else {
             this.mac = mac;
@@ -82,7 +82,7 @@ public class WifiParams implements Serializable {
     }
 
     public void setSn(String sn) {
-        if(sn.length() > 15) {
+        if(sn != null && sn.length() > 15) {
             this.sn = sn.substring(0, 15);
         } else {
             this.sn = sn;

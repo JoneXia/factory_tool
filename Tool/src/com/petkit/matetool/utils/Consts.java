@@ -5,8 +5,11 @@ public class Consts {
 	/**
 	 MATE版本说明：
 
+	 v1.11说明：
+	 1. 修复空指针问题，MATE发送的wifi列表中mac可能为空
+
 	 */
-	public static final String TOOL_MATE_VERSION	= "1.0";
+	public static final String TOOL_MATE_VERSION	= "1.1";
 
 	/**
 	 GO版本说明：
