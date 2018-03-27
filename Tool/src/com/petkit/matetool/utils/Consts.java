@@ -49,7 +49,10 @@ public class Consts {
 	 v1.3说明：
 	 1. 修改风扇的判断条件，改为自动判定
 	 2. 连接设备后，166指令增加风扇判定的参数设定
+
+	 v1.4说明：
+	 1. 修改制冷、制热的判断条件，电流区间从150~800修改为150~1500
 	 */
-	public static final String TOOL_COZY	= "1.3";
+	public static final String TOOL_COZY	= "1.4";
 	
 }

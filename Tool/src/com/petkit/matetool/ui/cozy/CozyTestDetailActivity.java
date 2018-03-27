@@ -513,11 +513,11 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                         if (mCozyTestUnits.get(mCurTestStep).getState() == 1) {
                             result = moduleStateStruct.getSub0() == 1 && moduleStateStruct.getSub1() >= 5000 && moduleStateStruct.getSub1() <= 7000
                                     && moduleStateStruct.getSub2() < 1000
-                                    && (moduleStateStruct.getSub3() >= 150 && moduleStateStruct.getSub3() <= 800);
+                                    && (moduleStateStruct.getSub3() >= 150 && moduleStateStruct.getSub3() <= 1500);
                         } else {
                             result = moduleStateStruct.getSub0() == 2 && moduleStateStruct.getSub1() < 1000
                                     && moduleStateStruct.getSub2() >= 5000  && moduleStateStruct.getSub2() <= 7000
-                                    && (moduleStateStruct.getSub3() >= 150 && moduleStateStruct.getSub3() <= 800);
+                                    && (moduleStateStruct.getSub3() >= 150 && moduleStateStruct.getSub3() <= 1500);
                         }
                         if (!result) {
                             desc.append("\n").append("该项测试失败！");
