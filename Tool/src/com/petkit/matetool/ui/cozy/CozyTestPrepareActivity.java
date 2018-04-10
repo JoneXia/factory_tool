@@ -311,7 +311,7 @@ public class CozyTestPrepareActivity extends BaseActivity {
     }
 
     private void getLastSN() {
-        AsyncHttpUtil.get("/api/sn/latest", new AsyncHttpRespHandler(this) {
+        AsyncHttpUtil.get("/api/cozy/latest", new AsyncHttpRespHandler(this) {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {

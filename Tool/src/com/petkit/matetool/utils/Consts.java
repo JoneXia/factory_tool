@@ -5,7 +5,7 @@ public class Consts {
 	/**
 	 MATE版本说明：
 
-	 v1.11说明：
+	 v1.1说明：
 	 1. 修复空指针问题，MATE发送的wifi列表中mac可能为空
 
 	 */
@@ -31,7 +31,7 @@ public class Consts {
 	/**
 	 宠物窝版本说明：
 
-	 v1.0说明:
+	 1.0说明:
 	 1. 添加猫窝产测的全流程
 
 	 v1.1说明：
@@ -52,7 +52,11 @@ public class Consts {
 
 	 v1.4说明：
 	 1. 修改制冷、制热的判断条件，电流区间从150~800修改为150~1500
+
+	 v1.5说明：
+	 1. 修改接口调用的bug
+	 2. 可以对半成品、成品进行维修
 	 */
-	public static final String TOOL_COZY	= "1.4";
+	public static final String TOOL_COZY	= "1.5";
 	
 }

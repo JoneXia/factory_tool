@@ -301,6 +301,13 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
                     }
                     break;
                 case CozyUtils.TYPE_MAINTAIN:
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_COZY_")) {
+                        mInfoTestTextView.setText("请先连接到PETKIT_COZY_开头的WIFI，再进行测试！");
+                        return;
+                    } else {
+                        connectAp();
+                    }
+                    break;
                 case CozyUtils.TYPE_CHECK:
                     if (!apSsid.toUpperCase().startsWith("PETKIT_COZY_")
                             || (apSsid.toUpperCase().startsWith("PETKIT_COZY_A_") || apSsid.toUpperCase().startsWith("PETKIT_COZY_B_"))) {

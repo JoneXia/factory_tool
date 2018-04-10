@@ -97,7 +97,7 @@ public class CozyStorageFileActivity extends BaseActivity {
         files.add(filename);
         params2.put("feederFile", files);
 
-        AsyncHttpUtil.post("/api/sn/batch/file", params, params2, new AsyncHttpRespHandler(this, true) {
+        AsyncHttpUtil.post("/api/cozy/batch/file", params, params2, new AsyncHttpRespHandler(this, true) {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
