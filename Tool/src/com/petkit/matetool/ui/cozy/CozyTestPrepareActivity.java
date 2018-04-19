@@ -437,6 +437,7 @@ public class CozyTestPrepareActivity extends BaseActivity {
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                 super.onFailure(statusCode, headers, responseBody, error);
+                showLongToast("服务端错误，代码" + statusCode);
                 uploadSnFailed();
             }
         });

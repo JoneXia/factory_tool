@@ -44,6 +44,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 import static com.petkit.android.utils.LogcatStorageHelper.getDateEN;
+import static com.petkit.matetool.ui.cozy.utils.CozyUtils.CozyTestModes.TEST_MODE_AGEINGRESULT;
 import static com.petkit.matetool.ui.cozy.utils.CozyUtils.CozyTestModes.TEST_MODE_TEST;
 import static com.petkit.matetool.ui.feeder.utils.PrintUtils.KeyGapType;
 import static com.petkit.matetool.ui.feeder.utils.PrintUtils.KeyPrintDensity;
@@ -188,6 +189,9 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                 mCacheFileName = CommonUtils.getAppDirPath() + DateUtil.formatISO8601Date(new Date()) + ".txt";
                 mPromptTextView.setText("WK温度  TS温度  AIR温度  湿度  转速  状态");
                 break;
+            case TEST_MODE_AGEINGRESULT:
+                mPromptTextView.setText("观察老化数据，手动判断结果！");
+                break;
             default:
                 break;
         }
@@ -199,6 +203,7 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
         switch (mCozyTestUnits.get(mCurTestStep).getType()) {
             case TEST_MODE_LIGHT:
             case TEST_MODE_TEMP:
+            case TEST_MODE_AGEINGRESULT:
                 mBtn1.setText(R.string.Start);
                 mBtn2.setText(R.string.Failure);
                 mBtn2.setBackgroundResource(R.drawable.selector_red);
@@ -294,6 +299,11 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                         params.put("mac", mCozy.getMac());
                         PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(162, params));
                         break;
+                    case TEST_MODE_AGEINGRESULT:
+                        params = new HashMap<>();
+                        params.put("mac", mCozy.getMac());
+                        PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(167, params));
+                        break;
                     default:
                         startTestModule();
                         break;
@@ -320,6 +330,10 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                         params.put("state", 2);
                         PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(163, params));
                         break;
+                    case TEST_MODE_AGEINGRESULT:
+                        mCozyTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
+                        gotoNextTestModule();
+                        break;
                 }
                 break;
             case R.id.test_btn_3:
@@ -334,6 +348,10 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                         params2.put("module", mCozyTestUnits.get(mCurTestStep).getModule());
                         params2.put("state", 3);
                         PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(163, params2));
+                        break;
+                    case TEST_MODE_AGEINGRESULT:
+                        mCozyTestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                        gotoNextTestModule();
                         break;
                     case TEST_MODE_TEMP:
                         if (!mTempSensorResult) {
@@ -617,7 +635,11 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                 break;
             case 167:
                 mAgeingResult = data;
-                startSetSn();
+                if (mCozyTestUnits.get(mCurTestStep).getType() == TEST_MODE_AGEINGRESULT) {
+                    mDescTextView.setText(mAgeingResult);
+                } else {
+                    startSetSn();
+                }
                 break;
         }
     }

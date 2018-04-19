@@ -56,7 +56,11 @@ public class Consts {
 	 v1.5说明：
 	 1. 修改接口调用的bug
 	 2. 可以对半成品、成品进行维修
+
+	 v1.6说明：
+	 1. 宠物窝测试的首页去除老化数据展示；
+	 2. 成品测试、维修和抽检增加老化结果的测试项，需要人工判断结果。
 	 */
-	public static final String TOOL_COZY	= "1.5";
+	public static final String TOOL_COZY	= "1.6";
 	
 }

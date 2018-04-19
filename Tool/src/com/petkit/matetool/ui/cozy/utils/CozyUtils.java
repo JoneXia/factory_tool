@@ -50,6 +50,7 @@ public class CozyUtils {
         TEST_MODE_PRINT,
         TEST_MODE_MAC,
         TEST_MODE_TEST,
+        TEST_MODE_AGEINGRESULT,
         TEST_MODE_RESET_ID
     }
 
@@ -102,6 +103,10 @@ public class CozyUtils {
             results.add(new CozyTestUnit(CozyTestModes.TEST_MODE_SN, "写入SN", 98, 2));
             results.add(new CozyTestUnit(CozyTestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
         } else {
+            if (type != TYPE_TEST_PARTIALLY) {
+                results.add(new CozyTestUnit(CozyTestModes.TEST_MODE_AGEINGRESULT, "老化结果", 98, 1));
+            }
+
             results.add(new CozyTestUnit(CozyTestModes.TEST_MODE_KEY, "按键测试", 0, 1));
             results.add(new CozyTestUnit(CozyTestModes.TEST_MODE_LIGHT, "外设测试", 1, 1));
             results.add(new CozyTestUnit(CozyTestModes.TEST_MODE_IR, "红外测试", 6, 1));

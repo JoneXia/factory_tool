@@ -500,17 +500,17 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
                 }
                 break;
             case 166:
-                if (mCurCozy == null) {
-                    return;
-                }
-
-                HashMap<String, Object> params = new HashMap<>();
-                params.put("mac", mCurCozy.getMac());
-                PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(167, params));
+//                if (mCurCozy == null) {
+//                    return;
+//                }
+//
+//                HashMap<String, Object> params = new HashMap<>();
+//                params.put("mac", mCurCozy.getMac());
+//                PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(167, params));
                 break;
-            case 167:
-                mInfoTestTextView.append("\n老化结果：" + data);
-                break;
+//            case 167:
+//                mInfoTestTextView.append("\n老化结果：" + data);
+//                break;
         }
     }
 
