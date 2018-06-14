@@ -24,8 +24,11 @@ public class Consts {
 	 1. 设备信息中新增chipid信息及相关处理
 	 2. 增加测试者账号名显示
 
+	 v1.12说明：
+	 1. 喂食器增加老化数据的处理逻辑
+
 	 */
-	public static final String TOOL_FEEDER_VERSION	= "1.11";
+	public static final String TOOL_FEEDER_VERSION	= "1.12";
 
 
 	/**
@@ -60,7 +63,10 @@ public class Consts {
 	 v1.6说明：
 	 1. 宠物窝测试的首页去除老化数据展示；
 	 2. 成品测试、维修和抽检增加老化结果的测试项，需要人工判断结果。
+
+	 v1.7说明：
+	 1. 调整Socket心跳包发送间隔，改为3秒一次；
 	 */
-	public static final String TOOL_COZY	= "1.6";
+	public static final String TOOL_COZY	= "1.7";
 	
 }

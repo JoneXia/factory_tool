@@ -19,6 +19,7 @@ import com.petkit.android.utils.LogcatStorageHelper;
 import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.ui.feeder.mode.Feeder;
 import com.petkit.matetool.ui.feeder.mode.FeederTestUnit;
 import com.petkit.matetool.ui.feeder.mode.FeederTester;
@@ -35,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import static com.petkit.matetool.ui.feeder.utils.FeederUtils.FeederTestModes.TEST_MODE_AGEINGRESULT;
 import static com.petkit.matetool.ui.feeder.utils.FeederUtils.FeederTestModes.TEST_MODE_BALANCE;
 import static com.petkit.matetool.ui.feeder.utils.FeederUtils.FeederTestModes.TEST_MODE_LIGHT;
 import static com.petkit.matetool.ui.feeder.utils.PrintUtils.isPrinterConnected;
@@ -54,6 +56,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
     private Feeder mFeeder, mErrorFeeder;
     private boolean isWriteEndCmd = false;
     private boolean isAutoTest = false;
+    private String mAgeingResult = null;    //老化测试的结果
 
     private TextView mDescTextView, mPromptTextView;
     private Button mBtn1, mBtn2, mBtn3;
@@ -154,6 +157,9 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
             case TEST_MODE_BALANCE:
                 mPromptTextView.setText("点击开始后，按照提示放指定重量的砝码！");
                 break;
+            case TEST_MODE_AGEINGRESULT:
+                mPromptTextView.setText("观察老化数据，手动判断结果！");
+                break;
             default:
                 break;
         }
@@ -164,6 +170,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
     private void refershBtnView() {
         switch (mFeederTestUnits.get(mCurTestStep).getType()) {
             case TEST_MODE_LIGHT:
+            case TEST_MODE_AGEINGRESULT:
                 mBtn1.setText(R.string.Start);
                 mBtn2.setText(R.string.Failure);
                 mBtn2.setBackgroundResource(R.drawable.selector_red);
@@ -243,45 +250,12 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                         }
                         break;
                     case TEST_MODE_SN:
-                        if(isEmpty(mFeeder.getSn()) || (mFeederTestUnits.get(mCurTestStep).getState() == 2
-                                        && mErrorFeeder != null && mFeeder.getSn().equals(mErrorFeeder.getSn()))) {
-                            boolean result = true;
-                            for (FeederTestUnit unit : mFeederTestUnits) {
-                                if(unit.getType() != FeederUtils.FeederTestModes.TEST_MODE_SN &&
-                                        unit.getType() != FeederUtils.FeederTestModes.TEST_MODE_PRINT
-                                        && unit.getResult() != TEST_PASS) {
-                                    result = false;
-                                    break;
-                                }
-                            }
-
-                            if(!result) {
-                                showShortToast("还有未完成的测试项，不能写入SN！");
-                            } else {
-                                String sn = FeederUtils.generateSNForTester(mTester);
-                                if(sn == null) {
-                                    showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
-                                    return;
-                                }
-                                HashMap<String, Object> payload = new HashMap<>();
-                                payload.put("mac", mFeeder.getMac());
-                                payload.put("sn", sn);
-                                if(mFeederTestUnits.get(mCurTestStep).getState() == 2) {
-                                    payload.put("force", 100);
-                                }
-                                mFeeder.setSn(sn);
-                                mFeeder.setCreation(System.currentTimeMillis());
-                                PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(161, payload));
-                            }
-                        } else {
-                            HashMap<String, Object> params = new HashMap<>();
-                            params.put("mac", mFeeder.getMac());
-                            params.put("sn", mFeeder.getSn());
-                            PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(161, params));
-                        }
+                        HashMap<String, Object> params = new HashMap<>();
+                        params.put("mac", mFeeder.getMac());
+                        PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(167, params));
                         break;
                     case TEST_MODE_MAC:
-                        HashMap<String, Object> params = new HashMap<>();
+                        params = new HashMap<>();
                         params.put("mac", mFeeder.getMac());
                         PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(165, params));
                         break;
@@ -289,6 +263,11 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                         params = new HashMap<>();
                         params.put("mac", mFeeder.getMac());
                         PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(162, params));
+                        break;
+                    case TEST_MODE_AGEINGRESULT:
+                        params = new HashMap<>();
+                        params.put("mac", mFeeder.getMac());
+                        PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(167, params));
                         break;
                     default:
                         startTestModule();
@@ -310,6 +289,10 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                     case TEST_MODE_PRINT:
                         startActivity(PrintActivity.class);
                         break;
+                    case TEST_MODE_AGEINGRESULT:
+                        mFeederTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
+                        gotoNextTestModule();
+                        break;
                 }
                 break;
             case R.id.test_btn_3:
@@ -317,6 +300,10 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                     case TEST_MODE_SN:
                     case TEST_MODE_MAC:
                     case TEST_MODE_PRINT:
+                        gotoNextTestModule();
+                        break;
+                    case TEST_MODE_AGEINGRESULT:
+                        mFeederTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         gotoNextTestModule();
                         break;
                     case TEST_MODE_LIGHT:
@@ -565,7 +552,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                                 break;
                             case 1:
                                 mDescTextView.append("\n写入SN成功");
-                                FeederUtils.storeSucceedFeederInfo(mFeeder);
+                                FeederUtils.storeSucceedFeederInfo(mFeeder, mAgeingResult);
                                 mFeederTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                                 refershBtnView();
                                 break;
@@ -605,6 +592,53 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                 mDescTextView.append("\n请重启设备，确认ID是否擦除！");
                 mDescTextView.append("\n擦除ID后需要重新测试！");
                 break;
+            case 167:
+                mAgeingResult = data;
+                if (mFeederTestUnits.get(mCurTestStep).getType() == TEST_MODE_AGEINGRESULT) {
+                    mDescTextView.setText(mAgeingResult);
+                } else {
+                    startSetSn();
+                }
+                break;
+        }
+    }
+
+    private void startSetSn() {
+        if(isEmpty(mFeeder.getSn()) || (mFeederTestUnits.get(mCurTestStep).getState() == 2
+                && mErrorFeeder != null && mFeeder.getSn().equals(mErrorFeeder.getSn()))) {
+            boolean result = true;
+            for (FeederTestUnit unit : mFeederTestUnits) {
+                if(unit.getType() != FeederUtils.FeederTestModes.TEST_MODE_SN &&
+                        unit.getType() != FeederUtils.FeederTestModes.TEST_MODE_PRINT
+                        && unit.getResult() != TEST_PASS) {
+                    result = false;
+                    break;
+                }
+            }
+
+            if(!result) {
+                showShortToast("还有未完成的测试项，不能写入SN！");
+            } else {
+                String sn = FeederUtils.generateSNForTester(mTester);
+                if(sn == null) {
+                    showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
+                    return;
+                }
+                HashMap<String, Object> payload = new HashMap<>();
+                payload.put("mac", mFeeder.getMac());
+                payload.put("sn", sn);
+                if(mFeederTestUnits.get(mCurTestStep).getState() == 2) {
+                    payload.put("force", 100);
+                }
+                mFeeder.setSn(sn);
+                mFeeder.setCreation(System.currentTimeMillis());
+                PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(161, payload));
+            }
+        } else {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("mac", mFeeder.getMac());
+            params.put("sn", mFeeder.getSn());
+            PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(161, params));
         }
     }
 

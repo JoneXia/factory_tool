@@ -79,6 +79,10 @@ public class Feeder implements Serializable {
         return String.format("{\"sn\":\"%s\",\"mac\":\"%s\",\"chipId\":\"%s\",\"creation\":%d}", sn, mac, chipid, creation);
     }
 
+    public String generateMainJson(String ageingResult) {
+        return String.format("{\"sn\":\"%s\",\"mac\":\"%s\",\"chipId\":\"%s\",\"creation\":%d,\"ageingResult\":%s}", sn, mac, chipid, creation, ageingResult);
+    }
+
     @Override
     public String toString() {
         return "Feeder{" +
