@@ -68,5 +68,15 @@ public class Consts {
 	 1. 调整Socket心跳包发送间隔，改为3秒一次；
 	 */
 	public static final String TOOL_COZY	= "1.7";
+
+
+	/**
+	 喂食器MINI版本说明：
+
+	 v1.0说明：
+	 1. 新增喂食器MINI的全case测试。
+
+	 */
+	public static final String TOOL_FEEDER_MINI_VERSION	= "1.0";
 	
 }

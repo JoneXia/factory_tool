@@ -45,6 +45,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dip"
             android:text="宠物窝"/>
+
+        <RadioButton
+            android:id="@+id/feeder_mini"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dip"
+            android:text="宠物窝MINI"/>
     </RadioGroup>
 
     <EditText

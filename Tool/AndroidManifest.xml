@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.petkit.matetool"
-          android:versionCode="1400"
-          android:versionName="3.1.12">
+          android:versionCode="1600"
+          android:versionName="3.2.1">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
@@ -110,6 +110,17 @@
         <activity android:name=".ui.cozy.CozyScanActivity" android:screenOrientation="portrait"/>
         <activity android:name=".ui.cozy.CozyStorageActivity" android:screenOrientation="portrait"/>
         <activity android:name=".ui.cozy.CozyStorageFileActivity" android:screenOrientation="portrait"/>
+
+        <!-- Feeder Mini -->
+        <activity android:name=".ui.feederMini.FeederMiniStartActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.feederMini.FeederMiniTestMainActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.feederMini.FeederMiniTestDetailActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.feederMini.FeederMiniTestPrepareActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.feederMini.FeederMiniErrorListActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.feederMini.FeederMiniScanActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.feederMini.FeederMiniStorageActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.feederMini.FeederMiniStorageFileActivity" android:screenOrientation="portrait"/>
+
 
         <activity
             android:name=".ui.catlitter.CatLitterMainActivity"

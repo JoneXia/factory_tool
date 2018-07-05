@@ -1,4 +1,4 @@
-package com.petkit.matetool.ui.feeder;
+package com.petkit.matetool.ui.feederMini;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -21,11 +21,11 @@ import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.feeder.mode.Feeder;
-import com.petkit.matetool.ui.feeder.mode.FeederTestUnit;
 import com.petkit.matetool.ui.feeder.mode.FeederTester;
-import com.petkit.matetool.ui.feeder.utils.FeederUtils;
 import com.petkit.matetool.ui.feeder.utils.PetkitSocketInstance;
 import com.petkit.matetool.ui.feeder.utils.WifiAdminSimple;
+import com.petkit.matetool.ui.feederMini.mode.FeederMiniTestUnit;
+import com.petkit.matetool.ui.feederMini.utils.FeederMiniUtils;
 import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.JSONUtils;
 
@@ -39,7 +39,7 @@ import java.util.HashMap;
  *
  * Created by Jone on 17/4/24.
  */
-public class FeederTestMainActivity extends BaseActivity implements PetkitSocketInstance.IPetkitSocketListener {
+public class FeederMiniTestMainActivity extends BaseActivity implements PetkitSocketInstance.IPetkitSocketListener {
 
     private static final int TEST_STATE_INVALID      = 0;
     private static final int TEST_STATE_CONNECTING      = 1;
@@ -52,7 +52,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
     private int mTestState;
     private Feeder mCurFeeder, mErrorFeeder;
 
-    private ArrayList<FeederTestUnit> mFeederTestUnits;
+    private ArrayList<FeederMiniTestUnit> mFeederMiniTestUnits;
     private TestItemAdapter mAdapter;
 
     private TextView mInfoTestTextView;
@@ -62,13 +62,13 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
-            mTester = (FeederTester) savedInstanceState.getSerializable(FeederUtils.EXTRA_FEEDER_TESTER);
+            mTester = (FeederTester) savedInstanceState.getSerializable(FeederMiniUtils.EXTRA_FEEDER_MINI_TESTER);
             mTestType = savedInstanceState.getInt("TestType");
-            mErrorFeeder = (Feeder) savedInstanceState.getSerializable(FeederUtils.EXTRA_FEEDER);
+            mErrorFeeder = (Feeder) savedInstanceState.getSerializable(FeederMiniUtils.EXTRA_FEEDER);
         } else {
-            mTester = (FeederTester) getIntent().getSerializableExtra(FeederUtils.EXTRA_FEEDER_TESTER);
-            mTestType = getIntent().getIntExtra("TestType", FeederUtils.TYPE_TEST);
-            mErrorFeeder = (Feeder) getIntent().getSerializableExtra(FeederUtils.EXTRA_FEEDER);
+            mTester = (FeederTester) getIntent().getSerializableExtra(FeederMiniUtils.EXTRA_FEEDER_MINI_TESTER);
+            mTestType = getIntent().getIntExtra("TestType", FeederMiniUtils.TYPE_TEST);
+            mErrorFeeder = (Feeder) getIntent().getSerializableExtra(FeederMiniUtils.EXTRA_FEEDER);
         }
 
         setContentView(R.layout.activity_feeder_main_test);
@@ -80,9 +80,9 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putSerializable(FeederUtils.EXTRA_FEEDER_TESTER, mTester);
+        outState.putSerializable(FeederMiniUtils.EXTRA_FEEDER_MINI_TESTER, mTester);
         outState.putInt("TestType", mTestType);
-        outState.putSerializable(FeederUtils.EXTRA_FEEDER, mErrorFeeder);
+        outState.putSerializable(FeederMiniUtils.EXTRA_FEEDER, mErrorFeeder);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
         findViewById(R.id.connect_dev).setOnClickListener(this);
         findViewById(R.id.test_auto).setOnClickListener(this);
 
-        mFeederTestUnits = FeederUtils.generateFeederTestUnitsForType(mTestType);
+        mFeederMiniTestUnits = FeederMiniUtils.generateFeederMiniTestUnitsForType(mTestType);
 
         GridView gridView =(GridView) findViewById(R.id.gridView);
         mAdapter = new TestItemAdapter(this);
@@ -120,14 +120,14 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
     public void finish() {
 
         int position = 0;
-        for (FeederTestUnit unit : mFeederTestUnits) {
+        for (FeederMiniTestUnit unit : mFeederMiniTestUnits) {
             if(unit.getResult() == 1) {
                 position++;
             } else {
                 break;
             }
         }
-        if(position == mFeederTestUnits.size()) {
+        if(position == mFeederMiniTestUnits.size()) {
             setResult(RESULT_OK);
         }
         super.finish();
@@ -161,7 +161,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
                     params.put("state", getTestTypeCode());
                     params.put("opt", 1);
 
-                    PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(160, params));
+                    PetkitSocketInstance.getInstance().sendString(FeederMiniUtils.getRequestForKeyAndPayload(160, params));
                 } else {
                     startTestDetail(true, 0);
                 }
@@ -178,19 +178,19 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
                     .setNegativeButton(R.string.OK, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            LoadDialog.show(FeederTestMainActivity.this);
+                            LoadDialog.show(FeederMiniTestMainActivity.this);
                             HashMap<String, Object> params = new HashMap<>();
                             params.put("mac", mCurFeeder.getMac());
                             params.put("state", getTestTypeCode());
                             params.put("opt", 1);
 
-                            PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(160, params));
+                            PetkitSocketInstance.getInstance().sendString(FeederMiniUtils.getRequestForKeyAndPayload(160, params));
                         }
                     })
                     .show();
-        } else if (mCurFeeder != null && mTestType == FeederUtils.TYPE_CHECK) {
+        } else if (mCurFeeder != null && mTestType == FeederMiniUtils.TYPE_CHECK) {
             boolean hasError = false;
-            for (FeederTestUnit unit : mFeederTestUnits) {
+            for (FeederMiniTestUnit unit : mFeederMiniTestUnits) {
                 if(unit.getResult() == Globals.TEST_FAILED) {
                     hasError = true;
                     break;
@@ -205,7 +205,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 mCurFeeder.setInspectStatus(0);
-                                FeederUtils.storeCheckInfo(mCurFeeder);
+                                FeederMiniUtils.storeCheckInfo(mCurFeeder);
                                 mCurFeeder = null;
                                 finish();
                             }
@@ -231,7 +231,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
         if(resultCode == RESULT_OK) {
             switch (requestCode) {
                 case 0x12:
-                    mFeederTestUnits = (ArrayList<FeederTestUnit>) data.getSerializableExtra("TestUnits");
+                    mFeederMiniTestUnits = (ArrayList<FeederMiniTestUnit>) data.getSerializableExtra("TestUnits");
                     mCurFeeder = (Feeder) data.getSerializableExtra("Feeder");
                     mAdapter.notifyDataSetChanged();
                     checkTestComplete();
@@ -250,27 +250,27 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
             if(isAuto) {
                 int position = 0;
 
-                for (FeederTestUnit unit : mFeederTestUnits) {
+                for (FeederMiniTestUnit unit : mFeederMiniTestUnits) {
                     if (unit.getResult() == 1) {
                         position++;
                     } else {
                         break;
                     }
                 }
-                if (position == mFeederTestUnits.size()) {
+                if (position == mFeederMiniTestUnits.size()) {
                     showShortToast("测试已完成");
                     return;
                 }
                 pos = position;
             }
 
-            Intent intent = new Intent(FeederTestMainActivity.this, FeederTestDetailActivity.class);
-            intent.putExtra("TestUnits", mFeederTestUnits);
+            Intent intent = new Intent(FeederMiniTestMainActivity.this, FeederMiniTestDetailActivity.class);
+            intent.putExtra("TestUnits", mFeederMiniTestUnits);
             intent.putExtra("CurrentTestStep", pos);
             intent.putExtra("Feeder", mCurFeeder);
             intent.putExtra("AutoTest", isAuto);
-            intent.putExtra(FeederUtils.EXTRA_FEEDER_TESTER, mTester);
-            intent.putExtra(FeederUtils.EXTRA_FEEDER, mErrorFeeder);
+            intent.putExtra(FeederMiniUtils.EXTRA_FEEDER_MINI_TESTER, mTester);
+            intent.putExtra(FeederMiniUtils.EXTRA_FEEDER, mErrorFeeder);
             startActivityForResult(intent, 0x12);
         } else {
             showShortToast(mInfoTestTextView.getText().toString());
@@ -283,42 +283,42 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
             mInfoTestTextView.setText("请先连接到特定的WIFI，再进行测试！");
         } else {
             switch (mTestType) {
-                case FeederUtils.TYPE_TEST_PARTIALLY:
-                    if (!apSsid.toUpperCase().startsWith("PETKIT_AP_A_")) {
-                        mInfoTestTextView.setText("请先连接到PETKIT_AP_A_开头的WIFI，再进行测试！");
+                case FeederMiniUtils.TYPE_TEST_PARTIALLY:
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_FEEDER_A_")) {
+                        mInfoTestTextView.setText("请先连接到PETKIT_FEEDER_A_开头的WIFI，再进行测试！");
                     } else {
                         connectAp();
                     }
                     break;
-                case FeederUtils.TYPE_TEST:
-                    if (!apSsid.toUpperCase().startsWith("PETKIT_AP_B_")) {
-                        mInfoTestTextView.setText("请先连接到PETKIT_AP_B_开头的WIFI，再进行测试！");
+                case FeederMiniUtils.TYPE_TEST:
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_FEEDER_B_")) {
+                        mInfoTestTextView.setText("请先连接到PETKIT_FEEDER_B_开头的WIFI，再进行测试！");
                         return;
                     } else {
                         connectAp();
                     }
                     break;
-                case FeederUtils.TYPE_MAINTAIN:
-                    if (!apSsid.toUpperCase().startsWith("PETKIT_AP_")) {
-                        mInfoTestTextView.setText("请先连接到PETKIT_AP_开头的WIFI，再进行测试！");
+                case FeederMiniUtils.TYPE_MAINTAIN:
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_FEEDER_HW2_")) {
+                        mInfoTestTextView.setText("请先连接到PETKIT_FEEDER_开头的WIFI，再进行测试！");
                         return;
                     } else {
                         connectAp();
                     }
                     break;
-                case FeederUtils.TYPE_CHECK:
-                    if (!apSsid.toUpperCase().startsWith("PETKIT_AP_")
-                            || (apSsid.toUpperCase().startsWith("PETKIT_AP_A_") || apSsid.toUpperCase().startsWith("PETKIT_AP_B_"))) {
-                        mInfoTestTextView.setText("请先连接到PETKIT_AP_开头的WIFI，再进行测试！");
+                case FeederMiniUtils.TYPE_CHECK:
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_FEEDER_HW2_")
+                            || (apSsid.toUpperCase().startsWith("PETKIT_FEEDER_A_") || apSsid.toUpperCase().startsWith("PETKIT_FEEDER_B_"))) {
+                        mInfoTestTextView.setText("请先连接到PETKIT_FEEDER_开头的WIFI，再进行测试！");
                         return;
                     } else {
                         connectAp();
                     }
                     break;
-                case FeederUtils.TYPE_DUPLICATE_MAC:
-                case FeederUtils.TYPE_DUPLICATE_SN:
-                    if (!apSsid.toUpperCase().startsWith("PETKIT_AP_")) {
-                        mInfoTestTextView.setText("请先连接到PETKIT_AP_开头的WIFI，再进行测试！");
+                case FeederMiniUtils.TYPE_DUPLICATE_MAC:
+                case FeederMiniUtils.TYPE_DUPLICATE_SN:
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_FEEDER_HW2_")) {
+                        mInfoTestTextView.setText("请先连接到PETKIT_FEEDER_HW2_开头的WIFI，再进行测试！");
                         return;
                     } else {
                         connectAp();
@@ -387,10 +387,10 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
     public void onConnected() {
         mInfoTestTextView.setText("设备已连接");
         mTestState = TEST_STATE_CONNECTED;
-        mFeederTestUnits = FeederUtils.generateFeederTestUnitsForType(mTestType);
+        mFeederMiniTestUnits = FeederMiniUtils.generateFeederMiniTestUnitsForType(mTestType);
         mAdapter.notifyDataSetChanged();
 
-        PetkitSocketInstance.getInstance().sendString(FeederUtils.getDefaultRequestForKey(110));
+        PetkitSocketInstance.getInstance().sendString(FeederMiniUtils.getDefaultRequestForKey(110));
     }
 
     @Override
@@ -435,7 +435,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
                         return;
                     }
 
-                    if(sn == null && FeederUtils.checkMacIsDuplicate(mac)) {
+                    if(sn == null && FeederMiniUtils.checkMacIsDuplicate(mac)) {
                         mInfoTestTextView.setText("设备MAC出现重复，该设备属于故障设备，不能正常测试！");
                         PetkitSocketInstance.getInstance().disconnect();
                         return;
@@ -457,7 +457,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
                     params.put("mac", mCurFeeder.getMac());
                     params.put("state", getTestTypeCode());
                     params.put("opt", 0);
-                    PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(160, params));
+                    PetkitSocketInstance.getInstance().sendString(FeederMiniUtils.getRequestForKeyAndPayload(160, params));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -491,12 +491,12 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
 
     private int getTestTypeCode() {
         switch (mTestType) {
-            case FeederUtils.TYPE_TEST:
-            case FeederUtils.TYPE_TEST_PARTIALLY:
+            case FeederMiniUtils.TYPE_TEST:
+            case FeederMiniUtils.TYPE_TEST_PARTIALLY:
                 return 1;
-            case FeederUtils.TYPE_MAINTAIN:
+            case FeederMiniUtils.TYPE_MAINTAIN:
                 return 2;
-            case FeederUtils.TYPE_CHECK:
+            case FeederMiniUtils.TYPE_CHECK:
                 return 3;
             default:
                 return 4;
@@ -512,12 +512,12 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
 
         @Override
         public int getCount() {
-            return mFeederTestUnits.size();
+            return mFeederMiniTestUnits.size();
         }
 
         @Override
-        public FeederTestUnit getItem(int position) {
-            return mFeederTestUnits.get(position);
+        public FeederMiniTestUnit getItem(int position) {
+            return mFeederMiniTestUnits.get(position);
         }
 
         @Override
@@ -537,7 +537,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            FeederTestUnit item = getItem(position);
+            FeederMiniTestUnit item = getItem(position);
 
             holder.name.setText(item.getName());
 
@@ -564,7 +564,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
 
     private void checkTestComplete() {
         int position = 0;
-        for (FeederTestUnit unit : mFeederTestUnits) {
+        for (FeederMiniTestUnit unit : mFeederMiniTestUnits) {
             if(unit.getResult() == 1) {
                 position++;
             } else {
@@ -572,16 +572,16 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
             }
         }
 
-        if(position >= mFeederTestUnits.size() - 1) {       //维修和抽检，最后一项打印标签可以不执行，其他项都完成了就算成功
-            if (mTestType == FeederUtils.TYPE_MAINTAIN) {
-                FeederUtils.storeMainTainInfo(mCurFeeder);
-            } else if (mTestType == FeederUtils.TYPE_CHECK) {
+        if(position >= mFeederMiniTestUnits.size() - 1) {       //维修和抽检，最后一项打印标签可以不执行，其他项都完成了就算成功
+            if (mTestType == FeederMiniUtils.TYPE_MAINTAIN) {
+                FeederMiniUtils.storeMainTainInfo(mCurFeeder);
+            } else if (mTestType == FeederMiniUtils.TYPE_CHECK) {
                 mCurFeeder.setInspectStatus(1);
-                FeederUtils.storeCheckInfo(mCurFeeder);
-            } else if (mTestType == FeederUtils.TYPE_TEST_PARTIALLY) {
-                testComplete = position >= mFeederTestUnits.size();
-            } else if (mTestType == FeederUtils.TYPE_TEST) {
-                testComplete = position >= mFeederTestUnits.size();
+                FeederMiniUtils.storeCheckInfo(mCurFeeder);
+            } else if (mTestType == FeederMiniUtils.TYPE_TEST_PARTIALLY) {
+                testComplete = position >= mFeederMiniTestUnits.size();
+            } else if (mTestType == FeederMiniUtils.TYPE_TEST) {
+                testComplete = position >= mFeederMiniTestUnits.size();
             }
         }
     }

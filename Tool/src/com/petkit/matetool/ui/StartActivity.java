@@ -24,6 +24,7 @@ import com.petkit.matetool.service.DatagramProcessService;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.cozy.CozyTestPrepareActivity;
 import com.petkit.matetool.ui.feeder.FeederTestPrepareActivity;
+import com.petkit.matetool.ui.feederMini.FeederMiniTestPrepareActivity;
 import com.petkit.matetool.ui.go.GoTestMainActivity;
 import com.petkit.matetool.ui.mate.SelectActivity;
 import com.petkit.matetool.ui.permission.PermissionDialogActivity;
@@ -35,6 +36,7 @@ import com.petkit.matetool.widget.LoadDialog;
 import java.util.ArrayList;
 
 import static com.petkit.matetool.utils.Consts.TOOL_COZY;
+import static com.petkit.matetool.utils.Consts.TOOL_FEEDER_MINI_VERSION;
 import static com.petkit.matetool.utils.Consts.TOOL_FEEDER_VERSION;
 import static com.petkit.matetool.utils.Consts.TOOL_GO_VERSION;
 import static com.petkit.matetool.utils.Consts.TOOL_MATE_VERSION;
@@ -130,6 +132,11 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
                         bundle.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
                         startActivityWithData(CozyTestPrepareActivity.class, bundle, false);
                         break;
+                    case Globals.FEEDER_MINI:
+                        bundle = new Bundle();
+                        bundle.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
+                        startActivityWithData(FeederMiniTestPrepareActivity.class, bundle, false);
+                        break;
                     case Globals.GO:
                         if(!Globals.checkPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
                             bundle = new Bundle();
@@ -168,6 +175,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
             case R.id.cozy:
                 testStyle = Globals.COZY;
                 break;
+            case R.id.feeder_mini:
+                testStyle = Globals.FEEDER_MINI;
+                break;
             default:
                 break;
         }
@@ -190,6 +200,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
 
         tempRadioButton = (RadioButton) findViewById(R.id.cozy);
         tempRadioButton.setText("宠物窝" + " v" + TOOL_COZY);
+
+        tempRadioButton = (RadioButton) findViewById(R.id.feeder_mini);
+        tempRadioButton.setText("喂食器MINI" + " v" + TOOL_FEEDER_MINI_VERSION);
     }
 
     private void registerBoradcastReceiver() {
