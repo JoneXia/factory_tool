@@ -44,6 +44,7 @@ public class FeederMiniUtils {
 
     public static final String FILE_MAINTAIN_INFO_NAME     = "feeder_mini_maintain_info.txt";
     public static final String FILE_CHECK_INFO_NAME     = "feeder_mini_check_info.txt";
+    public static final String FEEDERMINI_STORE_DIR     = ".feederMini/";
 
     public enum FeederMiniTestModes {
         TEST_MODE_KEY,
@@ -125,7 +126,7 @@ public class FeederMiniUtils {
 
             if (type != TYPE_TEST_PARTIALLY) {
                 if (type == TYPE_TEST) {
-                    results.add(new FeederMiniTestUnit(FeederMiniTestModes.TEST_MODE_RESET_SN, "写入SN", 12, 2));
+                    results.add(new FeederMiniTestUnit(FeederMiniTestModes.TEST_MODE_SN, "写入SN", 12, 2));
 //                    results.add(new FeederMiniTestUnit(FeederMiniTestModes.TEST_MODE_RESET_SN, "重写SN", 97, 1));
                 }
                 results.add(new FeederMiniTestUnit(FeederMiniTestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
@@ -240,7 +241,7 @@ public class FeederMiniUtils {
         String fileName = CommonUtils.getSysMap(SHARED_SN_FILE_NAME);
         int fileSnNumber = CommonUtils.getSysIntMap(CommonUtils.getAppContext(), SHARED_SN_FILE_NUMBER, 0);
         if(fileSnNumber >= MAX_SN_NUMBER_SESSION || CommonUtils.isEmpty(fileName)) {
-            String dir = CommonUtils.getAppCacheDirPath() + ".feederMini/";
+            String dir = getFeederMiniStoryDir();
             if(!new File(dir).exists()) {
                 new File(dir).mkdirs();
             }
@@ -263,7 +264,7 @@ public class FeederMiniUtils {
             fileSnNumber++;
             PetkitLog.d("file name: " + fileName + ", sn number: " + fileSnNumber);
             CommonUtils.addSysIntMap(CommonUtils.getAppContext(), SHARED_SN_FILE_NUMBER, fileSnNumber);
-            return CommonUtils.getAppCacheDirPath() + ".feederMini/" + fileName;
+            return getFeederMiniStoryDir() + fileName;
         }
     }
 
@@ -275,7 +276,7 @@ public class FeederMiniUtils {
     public static boolean checkMacIsDuplicate(String mac) {
         String fileName = CommonUtils.getSysMap(SHARED_SN_FILE_NAME);
         if(!CommonUtils.isEmpty(fileName)) {
-            String content = FileUtils.readFileToString(new File(CommonUtils.getAppCacheDirPath() + ".feederMini/" + fileName));
+            String content = FileUtils.readFileToString(new File(getFeederMiniStoryDir() + fileName));
             return content != null && content.contains(mac);
         }
 
@@ -287,7 +288,7 @@ public class FeederMiniUtils {
      * @return bool
      */
     public static boolean checkHasSnCache() {
-        String dir = CommonUtils.getAppCacheDirPath() + ".feederMini/";
+        String dir = getFeederMiniStoryDir();
         if(new File(dir).exists()) {
             String filename = getFileName();
             String[] files = new File(dir).list();
@@ -336,12 +337,12 @@ public class FeederMiniUtils {
         if(feeder == null || !feeder.checkValid()) {
             return;
         }
-        String dir = CommonUtils.getAppCacheDirPath() + ".feederMini/";
+        String dir = getFeederMiniStoryDir();
         if(!new File(dir).exists()) {
             new File(dir).mkdirs();
         }
 
-        String fileName = CommonUtils.getAppCacheDirPath() + ".feederMini/" + FILE_MAINTAIN_INFO_NAME;
+        String fileName = getFeederMiniStoryDir() + FILE_MAINTAIN_INFO_NAME;
         String content = FileUtils.readFileToString(new File(fileName));
         if(content != null && content.contains(feeder.getMac())) {
             return;
@@ -357,11 +358,11 @@ public class FeederMiniUtils {
             return;
         }
 
-        String dir = CommonUtils.getAppCacheDirPath() + ".feederMini/";
+        String dir = getFeederMiniStoryDir();
         if(!new File(dir).exists()) {
             new File(dir).mkdirs();
         }
-        String fileName = CommonUtils.getAppCacheDirPath() + ".feederMini/" + FILE_CHECK_INFO_NAME;
+        String fileName = getFeederMiniStoryDir() + FILE_CHECK_INFO_NAME;
         String content = FileUtils.readFileToString(new File(fileName));
         if(content != null && content.contains(feeder.getMac())) {
             return;
@@ -369,6 +370,10 @@ public class FeederMiniUtils {
         String info = feeder.generateCheckJson();
         PetkitLog.d("store feederMini info: " + info);
         FileUtils.writeStringToFile(fileName, info + ",", true);
+    }
+
+    public static String getFeederMiniStoryDir() {
+        return CommonUtils.getAppCacheDirPath() + FEEDERMINI_STORE_DIR;
     }
 
 }

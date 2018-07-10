@@ -210,7 +210,7 @@ public class FeederMiniScanActivity extends BaseActivity implements ScanListener
         HashMap<String, String> params = new HashMap<>();
         params.put("snList", String.format("{\"snList\":[{\"sn\":\"%s\",\"mac\":\"%s\"}]}", sn, mac));
 
-        AsyncHttpUtil.post("/api/sn/storage/stock", params, new AsyncHttpRespHandler(this, true) {
+        AsyncHttpUtil.post("/api/feedermini/storage/stock", params, new AsyncHttpRespHandler(this, true) {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {

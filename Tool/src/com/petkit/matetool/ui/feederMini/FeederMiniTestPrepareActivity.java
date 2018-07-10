@@ -163,7 +163,7 @@ public class FeederMiniTestPrepareActivity extends BaseActivity {
                 actionBtn.setText("进入测试");
                 actionBtn.setVisibility(View.VISIBLE);
 
-                File dir = new File(CommonUtils.getAppCacheDirPath() + ".sn/");
+                File dir = new File(FeederMiniUtils.getFeederMiniStoryDir());
                 String[] files = dir.list();
                 if(files != null && files.length > 0) {
                     uploadBtn.setVisibility(View.VISIBLE);
@@ -310,7 +310,7 @@ public class FeederMiniTestPrepareActivity extends BaseActivity {
     }
 
     private void getLastSN() {
-        AsyncHttpUtil.get("/api/sn/latest", new AsyncHttpRespHandler(this) {
+        AsyncHttpUtil.get("/api/feedermini/latest", new AsyncHttpRespHandler(this) {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -352,7 +352,7 @@ public class FeederMiniTestPrepareActivity extends BaseActivity {
     }
 
     private void startUploadSn() {
-        File dir = new File(CommonUtils.getAppCacheDirPath() + ".sn/");
+        File dir = new File(FeederMiniUtils.getFeederMiniStoryDir());
         String[] files = dir.list();
 
         if(files != null && files.length > 0) {
@@ -381,11 +381,11 @@ public class FeederMiniTestPrepareActivity extends BaseActivity {
 
         String api;
         if(FILE_MAINTAIN_INFO_NAME.equals(file.getName())) {
-            api = "/api/sn/maintain/repair";
+            api = "/api/feedermini/maintain/repair";
         } else if(FILE_CHECK_INFO_NAME.equals(file.getName())) {
-            api = "/api/sn/maintain/inspect";
+            api = "/api/feedermini/maintain/inspect";
         } else {
-            api = "/api/sn/batch";
+            api = "/api/feedermini/batch";
         }
 
         HashMap<String, String> params = new HashMap<>();

@@ -157,6 +157,10 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
             case TEST_MODE_IR:
                 mPromptTextView.setText("需要分别测试红外信号遮挡和不遮挡！");
                 break;
+            case TEST_MODE_DC:
+            case TEST_MODE_BAT:
+                mPromptTextView.setText("正常电压范围（单位mV）：[5000, 7000]");
+                break;
             default:
                 break;
         }
@@ -192,6 +196,17 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
                 mBtn1.setText(R.string.Write);
                 mBtn2.setVisibility(View.INVISIBLE);
                 if(mFeederMiniTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
+                    mBtn3.setText(R.string.Succeed);
+                    mBtn3.setBackgroundResource(R.drawable.selector_blue);
+                } else {
+                    mBtn3.setText(R.string.Failure);
+                    mBtn3.setBackgroundResource(R.drawable.selector_red);
+                }
+                break;
+            default:
+                mBtn1.setText(R.string.Start);
+                mBtn2.setVisibility(View.INVISIBLE);
+                if (mFeederMiniTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
                     mBtn3.setText(R.string.Succeed);
                     mBtn3.setBackgroundResource(R.drawable.selector_blue);
                 } else {
@@ -423,14 +438,15 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
                         break;
                     case 6:
                         if(moduleStateStruct.getSub0() > -1) {
-                            desc.append("\n").append("叶轮马达").append("-").append("马达方向").append("-").append(moduleStateStruct.getSub0() == 1 ? "旋转" : "停止");
+                            desc.append("\n").append("叶轮马达").append("-").append("马达方向").append("-").append(moduleStateStruct.getSub0() == 1 ? "顺时针" : "逆时针");
                         }
                         if(moduleStateStruct.getSub1() > 0) {
                             desc.append("\n").append("叶轮马达").append("-").append("马达方向").append("-");
                             switch (moduleStateStruct.getSub1()) {
                                 case 1:
                                     desc.append("成功");
-                                    showMotorDirectionConfirmDialog();
+                                    result = true;
+//                                    showMotorDirectionConfirmDialog();
                                     break;
                                 default:
                                     desc.append("异常");
@@ -464,12 +480,12 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
                         desc.append("\n").append("秤").append("-").append("实际克数").append("-").append(moduleStateStruct.getSub2()).append("克");
                         break;
                     case 9:
-                        desc.append("\n").append("直流电压").append("-").append(moduleStateStruct.getSub0()).append("mv");
-                        result = moduleStateStruct.getSub0() > 5000;
+                        desc.append("\n").append("直流电压").append(":").append(moduleStateStruct.getSub0()).append("mv");
+                        result = moduleStateStruct.getSub0() >= 5000 && moduleStateStruct.getSub0() <= 7000;
                         break;
                     case 10:
-                        desc.append("\n").append("电池电压").append("-").append(moduleStateStruct.getSub0()).append("mv");
-                        result = moduleStateStruct.getSub0() > 5000;
+                        desc.append("\n").append("电池电压").append(":").append(moduleStateStruct.getSub0()).append("mv");
+                        result = moduleStateStruct.getSub0() >= 5000 && moduleStateStruct.getSub0() <= 7000;
                         break;
                     case 14:
                         if(moduleStateStruct.getSub0() > -1) {

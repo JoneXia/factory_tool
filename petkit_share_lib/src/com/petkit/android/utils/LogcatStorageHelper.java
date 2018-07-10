@@ -133,7 +133,7 @@ public class LogcatStorageHelper {
         File dir = new File(PATH_LOGCAT);
         String[] files = dir.list();
         if (files != null && files.length > 0) {
-            uploadDebugFile(files);
+//            uploadDebugFile(files); //TODO: 产测工具不上传日志
         }
     }
 
