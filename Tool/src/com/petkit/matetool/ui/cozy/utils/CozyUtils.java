@@ -231,8 +231,14 @@ public class CozyUtils {
     private static String getStoreCozyInfoFilePath() {
         String fileName = CommonUtils.getSysMap("Cozy_SnFileName");
         int fileSnNumber = CommonUtils.getSysIntMap(CommonUtils.getAppContext(), "Cozy_SnFileNumber", 0);
+        String dir = CommonUtils.getAppCacheDirPath() + ".cozy/";
+
+        if (fileName != null &&             //文件不存在，或者文件不是今天产生的，都需要重新生成文件
+                (!fileName.startsWith(getFileName()) || !new File(dir + fileName).exists())) {
+            fileName = null;
+        }
+
         if(fileSnNumber >= MAX_SN_NUMBER_SESSION || CommonUtils.isEmpty(fileName)) {
-            String dir = CommonUtils.getAppCacheDirPath() + ".cozy/";
             if(!new File(dir).exists()) {
                 new File(dir).mkdirs();
             }

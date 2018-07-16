@@ -235,8 +235,14 @@ public class FeederUtils {
     private static String getStoreFeederInfoFilePath() {
         String fileName = CommonUtils.getSysMap("SnFileName");
         int fileSnNumber = CommonUtils.getSysIntMap(CommonUtils.getAppContext(), "SnFileNumber", 0);
+
+        String dir = CommonUtils.getAppCacheDirPath() + ".sn/";
+        if (fileName != null &&             //文件不存在，或者文件不是今天产生的，都需要重新生成文件
+                (!fileName.startsWith(getFileName()) || !new File(dir + fileName).exists())) {
+            fileName = null;
+        }
+
         if(fileSnNumber >= MAX_SN_NUMBER_SESSION || CommonUtils.isEmpty(fileName)) {
-            String dir = CommonUtils.getAppCacheDirPath() + ".sn/";
             if(!new File(dir).exists()) {
                 new File(dir).mkdirs();
             }

@@ -3,6 +3,7 @@ package com.petkit.matetool.ui.feederMini.utils;
 import com.google.gson.Gson;
 import com.petkit.android.utils.CommonUtils;
 import com.petkit.android.utils.FileUtils;
+import com.petkit.android.utils.LogcatStorageHelper;
 import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.ui.feeder.mode.Feeder;
 import com.petkit.matetool.ui.feeder.mode.FeederTester;
@@ -240,6 +241,12 @@ public class FeederMiniUtils {
     private static String getStoreFeederInfoFilePath() {
         String fileName = CommonUtils.getSysMap(SHARED_SN_FILE_NAME);
         int fileSnNumber = CommonUtils.getSysIntMap(CommonUtils.getAppContext(), SHARED_SN_FILE_NUMBER, 0);
+
+        if (fileName != null &&             //文件不存在，或者文件不是今天产生的，都需要重新生成文件
+                (!fileName.startsWith(getFileName()) || !(new File(getFeederMiniStoryDir() + fileName).exists()))) {
+            fileName = null;
+        }
+
         if(fileSnNumber >= MAX_SN_NUMBER_SESSION || CommonUtils.isEmpty(fileName)) {
             String dir = getFeederMiniStoryDir();
             if(!new File(dir).exists()) {
@@ -254,15 +261,18 @@ public class FeederMiniUtils {
                 outFile.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
-                throw  new RuntimeException("file create failed !");
+                LogcatStorageHelper.addLog("file create failed !");
+                LogcatStorageHelper.addLog(e.toString());
+                return "";
+//                throw  new RuntimeException("file create failed !");
             }
-            PetkitLog.d("file name: " + outFile.getName() + ", sn number: " + 1);
+            LogcatStorageHelper.addLog("file name: " + outFile.getName() + ", sn number: " + 1);
             CommonUtils.addSysMap(SHARED_SN_FILE_NAME, outFile.getName());
             CommonUtils.addSysIntMap(CommonUtils.getAppContext(), SHARED_SN_FILE_NUMBER, 1);
             return outFile.getAbsolutePath();
         } else {
             fileSnNumber++;
-            PetkitLog.d("file name: " + fileName + ", sn number: " + fileSnNumber);
+            LogcatStorageHelper.addLog("file name: " + fileName + ", sn number: " + fileSnNumber);
             CommonUtils.addSysIntMap(CommonUtils.getAppContext(), SHARED_SN_FILE_NUMBER, fileSnNumber);
             return getFeederMiniStoryDir() + fileName;
         }
