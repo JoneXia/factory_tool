@@ -27,8 +27,11 @@ public class Consts {
 	 v1.12说明：
 	 1. 喂食器增加老化数据的处理逻辑
 
+	 v1.13说明：
+	 1. 优化成品测试中的信息存储逻辑
+
 	 */
-	public static final String TOOL_FEEDER_VERSION	= "1.12";
+	public static final String TOOL_FEEDER_VERSION	= "1.13";
 
 
 	/**
@@ -66,15 +69,19 @@ public class Consts {
 
 	 v1.7说明：
 	 1. 调整Socket心跳包发送间隔，改为3秒一次；
+
+	 v1.8说明：
+	 1. 优化成品测试中的信息存储逻辑
+
 	 */
-	public static final String TOOL_COZY	= "1.7";
+	public static final String TOOL_COZY	= "1.8";
 
 
 	/**
 	 喂食器MINI版本说明：
 
 	 v1.0说明：
-	 1. 新增喂食器MINI的全case测试。
+	 1. 新增喂食器MINI的全功能测试。
 
 	 */
 	public static final String TOOL_FEEDER_MINI_VERSION	= "1.0";
