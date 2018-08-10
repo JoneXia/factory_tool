@@ -23,7 +23,7 @@ import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.cozy.mode.Cozy;
 import com.petkit.matetool.ui.cozy.mode.CozyConfig;
 import com.petkit.matetool.ui.cozy.mode.CozyTestUnit;
-import com.petkit.matetool.ui.cozy.mode.CozyTester;
+import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.ui.feeder.utils.PetkitSocketInstance;
 import com.petkit.matetool.ui.feeder.utils.WifiAdminSimple;
@@ -47,7 +47,7 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
     private static final int TEST_STATE_CONNECTING      = 1;
     private static final int TEST_STATE_CONNECTED      = 2;
 
-    private CozyTester mTester;
+    private Tester mTester;
     private int mTestType;
 
     private WifiAdminSimple mWifiAdminSimple;
@@ -64,11 +64,11 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
-            mTester = (CozyTester) savedInstanceState.getSerializable(CozyUtils.EXTRA_COZY_TESTER);
+            mTester = (Tester) savedInstanceState.getSerializable(CozyUtils.EXTRA_COZY_TESTER);
             mTestType = savedInstanceState.getInt("TestType");
             mErrorCozy = (Cozy) savedInstanceState.getSerializable(CozyUtils.EXTRA_COZY);
         } else {
-            mTester = (CozyTester) getIntent().getSerializableExtra(CozyUtils.EXTRA_COZY_TESTER);
+            mTester = (Tester) getIntent().getSerializableExtra(CozyUtils.EXTRA_COZY_TESTER);
             mTestType = getIntent().getIntExtra("TestType", CozyUtils.TYPE_TEST);
             mErrorCozy = (Cozy) getIntent().getSerializableExtra(CozyUtils.EXTRA_COZY);
         }

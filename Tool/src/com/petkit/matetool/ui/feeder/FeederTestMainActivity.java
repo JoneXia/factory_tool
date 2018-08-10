@@ -22,7 +22,7 @@ import com.petkit.matetool.R;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.feeder.mode.Feeder;
 import com.petkit.matetool.ui.feeder.mode.FeederTestUnit;
-import com.petkit.matetool.ui.feeder.mode.FeederTester;
+import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.feeder.utils.FeederUtils;
 import com.petkit.matetool.ui.feeder.utils.PetkitSocketInstance;
 import com.petkit.matetool.ui.feeder.utils.WifiAdminSimple;
@@ -45,7 +45,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
     private static final int TEST_STATE_CONNECTING      = 1;
     private static final int TEST_STATE_CONNECTED      = 2;
 
-    private FeederTester mTester;
+    private Tester mTester;
     private int mTestType;
 
     private WifiAdminSimple mWifiAdminSimple;
@@ -62,11 +62,11 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
-            mTester = (FeederTester) savedInstanceState.getSerializable(FeederUtils.EXTRA_FEEDER_TESTER);
+            mTester = (Tester) savedInstanceState.getSerializable(FeederUtils.EXTRA_FEEDER_TESTER);
             mTestType = savedInstanceState.getInt("TestType");
             mErrorFeeder = (Feeder) savedInstanceState.getSerializable(FeederUtils.EXTRA_FEEDER);
         } else {
-            mTester = (FeederTester) getIntent().getSerializableExtra(FeederUtils.EXTRA_FEEDER_TESTER);
+            mTester = (Tester) getIntent().getSerializableExtra(FeederUtils.EXTRA_FEEDER_TESTER);
             mTestType = getIntent().getIntExtra("TestType", FeederUtils.TYPE_TEST);
             mErrorFeeder = (Feeder) getIntent().getSerializableExtra(FeederUtils.EXTRA_FEEDER);
         }
@@ -175,6 +175,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
             new AlertDialog.Builder(this)
                     .setTitle(R.string.Prompt)
                     .setMessage("测试已完成，请先点击确认来完成测试项目！")
+                    .setCancelable(false)
                     .setNegativeButton(R.string.OK, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -201,6 +202,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
                 new AlertDialog.Builder(this)
                         .setTitle(R.string.Prompt)
                         .setMessage("当前抽检结果异常，退出将记录异常数据，确认吗？")
+                        .setCancelable(false)
                         .setNegativeButton(R.string.OK, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

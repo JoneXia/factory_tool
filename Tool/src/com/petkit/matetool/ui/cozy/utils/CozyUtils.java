@@ -6,7 +6,7 @@ import com.petkit.android.utils.FileUtils;
 import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.ui.cozy.mode.Cozy;
 import com.petkit.matetool.ui.cozy.mode.CozyTestUnit;
-import com.petkit.matetool.ui.cozy.mode.CozyTester;
+import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.cozy.mode.CozysError;
 
 import java.io.File;
@@ -21,7 +21,6 @@ import static com.petkit.android.utils.LogcatStorageHelper.getFileName;
  */
 
 public class CozyUtils {
-
 
     public static final int TYPE_TEST_PARTIALLY         = 1;
     public static final int TYPE_TEST                   = 2;
@@ -135,7 +134,7 @@ public class CozyUtils {
      * @param tester 测试者信息
      * @return sn
      */
-    public static String generateSNForTester(CozyTester tester) {
+    public static String generateSNForTester(Tester tester) {
         if(tester == null || !tester.checkValid()) {
             throw  new RuntimeException("Cozy Tester is invalid!");
         }

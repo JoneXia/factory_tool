@@ -7,7 +7,7 @@ import android.widget.TextView;
 import com.dothantech.printer.IDzPrinter;
 import com.petkit.matetool.R;
 import com.petkit.matetool.ui.base.BaseActivity;
-import com.petkit.matetool.ui.cozy.mode.CozyTester;
+import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 
 /**
@@ -17,16 +17,16 @@ import com.petkit.matetool.ui.cozy.utils.CozyUtils;
  */
 public class CozyStartActivity extends BaseActivity {
 
-    private CozyTester mTester;
+    private Tester mTester;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
-            mTester = (CozyTester) savedInstanceState.getSerializable(CozyUtils.EXTRA_COZY_TESTER);
+            mTester = (Tester) savedInstanceState.getSerializable(CozyUtils.EXTRA_COZY_TESTER);
         } else {
-            mTester = (CozyTester) getIntent().getSerializableExtra(CozyUtils.EXTRA_COZY_TESTER);
+            mTester = (Tester) getIntent().getSerializableExtra(CozyUtils.EXTRA_COZY_TESTER);
         }
 
         setContentView(R.layout.activity_feeder_start);

@@ -22,7 +22,7 @@ import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.ui.feeder.mode.Feeder;
 import com.petkit.matetool.ui.feeder.mode.FeederTestUnit;
-import com.petkit.matetool.ui.feeder.mode.FeederTester;
+import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.feeder.mode.ModuleStateStruct;
 import com.petkit.matetool.ui.feeder.utils.FeederUtils;
 import com.petkit.matetool.ui.feeder.utils.PetkitSocketInstance;
@@ -49,7 +49,7 @@ import static com.petkit.matetool.utils.Globals.TEST_PASS;
  */
 public class FeederTestDetailActivity extends BaseActivity implements PetkitSocketInstance.IPetkitSocketListener {
 
-    private FeederTester mTester;
+    private Tester mTester;
     private int mCurTestStep;
     private ArrayList<FeederTestUnit> mFeederTestUnits;
     private int mTempResult;
@@ -71,14 +71,14 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
             mCurTestStep = savedInstanceState.getInt("CurrentTestStep");
             mFeeder = (Feeder) savedInstanceState.getSerializable("Feeder");
             isAutoTest = savedInstanceState.getBoolean("AutoTest");
-            mTester = (FeederTester) savedInstanceState.getSerializable(FeederUtils.EXTRA_FEEDER_TESTER);
+            mTester = (Tester) savedInstanceState.getSerializable(FeederUtils.EXTRA_FEEDER_TESTER);
             mErrorFeeder = (Feeder) savedInstanceState.getSerializable(FeederUtils.EXTRA_FEEDER);
         } else {
             mFeederTestUnits = (ArrayList<FeederTestUnit>) getIntent().getSerializableExtra("TestUnits");
             mCurTestStep = getIntent().getIntExtra("CurrentTestStep", 0);
             mFeeder = (Feeder) getIntent().getSerializableExtra("Feeder");
             isAutoTest = getIntent().getBooleanExtra("AutoTest", true);
-            mTester = (FeederTester) getIntent().getSerializableExtra(FeederUtils.EXTRA_FEEDER_TESTER);
+            mTester = (Tester) getIntent().getSerializableExtra(FeederUtils.EXTRA_FEEDER_TESTER);
             mErrorFeeder = (Feeder) getIntent().getSerializableExtra(FeederUtils.EXTRA_FEEDER);
         }
 
@@ -795,6 +795,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("设置SN");
+        builder.setCancelable(false);
         builder.setView(initView(mFeeder.getMac(), mFeeder.getSn()));
         builder.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
             @Override
@@ -831,6 +832,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.Prompt);
+        builder.setCancelable(false);
         builder.setMessage("请确认马达是在按顺时针方向转动？");
         builder.setPositiveButton("正确", new DialogInterface.OnClickListener() {
             @Override

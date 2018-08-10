@@ -15,7 +15,7 @@ import com.petkit.android.utils.DateUtil;
 import com.petkit.matetool.R;
 import com.petkit.matetool.ui.base.BaseListActivity;
 import com.petkit.matetool.ui.cozy.mode.Cozy;
-import com.petkit.matetool.ui.cozy.mode.CozyTester;
+import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.cozy.mode.CozysError;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.widget.pulltorefresh.PullToRefreshBase;
@@ -27,7 +27,7 @@ import java.util.Date;
  */
 public class CozyErrorListActivity extends BaseListActivity {
 
-    private CozyTester mTester;
+    private Tester mTester;
 
     private CozysError mCozysError;
     private CozysListAdapter mAdapter;
@@ -39,9 +39,9 @@ public class CozyErrorListActivity extends BaseListActivity {
         super.onCreate(savedInstanceState);
 
         if(savedInstanceState != null) {
-            mTester = (CozyTester) savedInstanceState.getSerializable(CozyUtils.EXTRA_COZY_TESTER);
+            mTester = (Tester) savedInstanceState.getSerializable(CozyUtils.EXTRA_COZY_TESTER);
         } else {
-            mTester = (CozyTester) getIntent().getSerializableExtra(CozyUtils.EXTRA_COZY_TESTER);
+            mTester = (Tester) getIntent().getSerializableExtra(CozyUtils.EXTRA_COZY_TESTER);
         }
     }
 

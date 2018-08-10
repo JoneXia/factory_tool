@@ -9,7 +9,7 @@ import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.http.AsyncHttpRespHandler;
 import com.petkit.matetool.ui.base.BaseActivity;
-import com.petkit.matetool.ui.cozy.mode.CozyTester;
+import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.utils.JSONUtils;
 
@@ -30,7 +30,7 @@ import cz.msebera.android.httpclient.Header;
  */
 public class CozyStorageFileActivity extends BaseActivity {
 
-    private CozyTester mTester;
+    private Tester mTester;
     private String fileName;
 
     private TextView mFileNameTextView, mUploadTextView;
@@ -39,9 +39,9 @@ public class CozyStorageFileActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
-            mTester = (CozyTester) savedInstanceState.getSerializable(CozyUtils.EXTRA_COZY_TESTER);
+            mTester = (Tester) savedInstanceState.getSerializable(CozyUtils.EXTRA_COZY_TESTER);
         } else {
-            mTester = (CozyTester) getIntent().getSerializableExtra(CozyUtils.EXTRA_COZY_TESTER);
+            mTester = (Tester) getIntent().getSerializableExtra(CozyUtils.EXTRA_COZY_TESTER);
         }
 
         setContentView(R.layout.activity_feeder_storage_file);

@@ -22,7 +22,7 @@ import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.ui.feeder.PrintActivity;
 import com.petkit.matetool.ui.feeder.mode.Feeder;
-import com.petkit.matetool.ui.feeder.mode.FeederTester;
+import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.feeder.mode.ModuleStateStruct;
 import com.petkit.matetool.ui.feeder.utils.PetkitSocketInstance;
 import com.petkit.matetool.ui.feederMini.mode.FeederMiniTestUnit;
@@ -49,7 +49,7 @@ import static com.petkit.matetool.utils.Globals.TEST_PASS;
  */
 public class FeederMiniTestDetailActivity extends BaseActivity implements PetkitSocketInstance.IPetkitSocketListener {
 
-    private FeederTester mTester;
+    private Tester mTester;
     private int mCurTestStep;
     private ArrayList<FeederMiniTestUnit> mFeederMiniTestUnits;
     private int mTempResult;
@@ -57,6 +57,7 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
     private boolean isWriteEndCmd = false;
     private boolean isAutoTest = false;
     private String mAgeingResult = null;    //老化测试的结果
+    private int mTempStep; //有些测试项中会细分成几步
 
     private TextView mDescTextView, mPromptTextView;
     private Button mBtn1, mBtn2, mBtn3;
@@ -71,14 +72,14 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
             mCurTestStep = savedInstanceState.getInt("CurrentTestStep");
             mFeeder = (Feeder) savedInstanceState.getSerializable("Feeder");
             isAutoTest = savedInstanceState.getBoolean("AutoTest");
-            mTester = (FeederTester) savedInstanceState.getSerializable(FeederMiniUtils.EXTRA_FEEDER_MINI_TESTER);
+            mTester = (Tester) savedInstanceState.getSerializable(FeederMiniUtils.EXTRA_FEEDER_MINI_TESTER);
             mErrorFeeder = (Feeder) savedInstanceState.getSerializable(FeederMiniUtils.EXTRA_FEEDER);
         } else {
             mFeederMiniTestUnits = (ArrayList<FeederMiniTestUnit>) getIntent().getSerializableExtra("TestUnits");
             mCurTestStep = getIntent().getIntExtra("CurrentTestStep", 0);
             mFeeder = (Feeder) getIntent().getSerializableExtra("Feeder");
             isAutoTest = getIntent().getBooleanExtra("AutoTest", true);
-            mTester = (FeederTester) getIntent().getSerializableExtra(FeederMiniUtils.EXTRA_FEEDER_MINI_TESTER);
+            mTester = (Tester) getIntent().getSerializableExtra(FeederMiniUtils.EXTRA_FEEDER_MINI_TESTER);
             mErrorFeeder = (Feeder) getIntent().getSerializableExtra(FeederMiniUtils.EXTRA_FEEDER);
         }
 
@@ -149,7 +150,7 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
                 mPromptTextView.setText("点击开始，观察喂食器两个灯依次亮灭，蜂鸣器响一秒！");
                 break;
             case TEST_MODE_DOOR:
-                mPromptTextView.setText("需要测试开门和关门！");
+                mPromptTextView.setText("需要分别测试开门和关门！");
                 break;
             case TEST_MODE_AGEINGRESULT:
                 mPromptTextView.setText("观察老化数据，手动判断结果！");
@@ -160,6 +161,9 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
             case TEST_MODE_DC:
             case TEST_MODE_BAT:
                 mPromptTextView.setText("正常电压范围（单位mV）：[5000, 7000]");
+                break;
+            case TEST_MODE_MOTOR:
+                mPromptTextView.setText("需要分别测试顺时针旋转和逆时针旋转！");
                 break;
             default:
                 break;
@@ -325,13 +329,41 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
     private void startTestModule() {
         HashMap<String, Object> params = new HashMap<>();
         params.put("module", mFeederMiniTestUnits.get(mCurTestStep).getModule());
-        params.put("state", mFeederMiniTestUnits.get(mCurTestStep).getState());
-        if(mFeederMiniTestUnits.get(mCurTestStep).getModule() == 15) {
-            params.put("time", DateUtil.formatISO8601DateWithMills(new Date()));
+        switch (mFeederMiniTestUnits.get(mCurTestStep).getType()) {
+            case TEST_MODE_TIME:
+                params.put("state", mFeederMiniTestUnits.get(mCurTestStep).getState());
+                params.put("time", DateUtil.formatISO8601DateWithMills(new Date()));
+                break;
+            case TEST_MODE_MOTOR:
+                if (mTempStep == 0) {
+                    params.put("state", 1);
+                } else if (mTempStep == 1) {
+                    params.put("state", 2);
+                } else {
+                    mTempStep = 0;
+                    mTempResult = 0;
+                    params.put("state", 1);
+                }
+                break;
+            case TEST_MODE_DOOR:
+                if (mTempStep == 0) {
+                    params.put("state", 1);
+                } else if (mTempStep == 1) {
+                    params.put("state", 2);
+                } else {
+                    mTempStep = 0;
+                    mTempResult = 0;
+                    params.put("state", 1);
+                }
+                break;
+
+            default:
+                params.put("state", mFeederMiniTestUnits.get(mCurTestStep).getState());
+                break;
         }
+
         PetkitSocketInstance.getInstance().sendString(FeederMiniUtils.getRequestForKeyAndPayload(163, params));
 
-        mTempResult = 0;
         if(mFeederMiniTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
             mFeederMiniTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
             refershBtnView();
@@ -343,6 +375,7 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
             finish();
         } else {
             mTempResult = 0;
+            mTempStep = 0;
             mCurTestStep++;
             refreshView();
         }
@@ -382,6 +415,17 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
                                     gotoNextTestModule();
                                 } else {
                                     mDescTextView.append("\n指令发送成功！");
+
+                                    switch (mFeederMiniTestUnits.get(mCurTestStep).getType()) {
+                                        case TEST_MODE_DOOR:
+                                            showShortToast("请注意当前开、关门的状态");
+//                                            showDoorDirectionConfirmDialog();
+                                            break;
+                                        case TEST_MODE_MOTOR:
+                                            showShortToast("请注意当前叶轮转动方向");
+//                                            showMotorDirectionConfirmDialog();
+                                            break;
+                                    }
                                 }
                                 break;
                             default:
@@ -427,8 +471,7 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
                             switch (moduleStateStruct.getSub1()) {
                                 case 1:
                                     desc.append("成功");
-                                    mTempResult = mTempResult | (moduleStateStruct.getSub0() == 1 ? 0x1 : 0x10);
-                                    result = mTempResult == 0x11;
+                                    showDoorDirectionConfirmDialog();
                                     break;
                                 default:
                                     desc.append("异常");
@@ -445,8 +488,7 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
                             switch (moduleStateStruct.getSub1()) {
                                 case 1:
                                     desc.append("成功");
-                                    result = true;
-//                                    showMotorDirectionConfirmDialog();
+                                    showMotorDirectionConfirmDialog();
                                     break;
                                 default:
                                     desc.append("异常");
@@ -769,6 +811,7 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("设置SN");
+        builder.setCancelable(false);
         builder.setView(initView(mFeeder.getMac(), mFeeder.getSn()));
         builder.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
             @Override
@@ -801,16 +844,73 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
         }
 
         isShowing = true;
-//        startTestModule();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.Prompt);
-        builder.setMessage("请确认马达是在按顺时针方向转动？");
+        builder.setCancelable(false);
+        builder.setMessage(mTempStep == 0 ? "请确认马达是在按顺时针方向转动？" : "请确认马达是在按逆时针方向转动？");
         builder.setPositiveButton("正确", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 isShowing = false;
-                mFeederMiniTestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                if (mTempStep == 0) {
+                    mTempResult = mTempResult | 0x1;
+                } else {
+                    mTempResult = mTempResult | 0x10;
+                }
+                mTempStep++;
+
+                if (mTempResult == 0x11) {
+                    mFeederMiniTestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                } else {
+                    startTestModule();
+                }
+
+                refershBtnView();
+
+            }
+        });
+        builder.setNegativeButton("错误", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                isShowing = false;
+                mTempStep = 0;
+                mTempResult = 0;
+                mFeederMiniTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
+                refershBtnView();
+            }
+        });
+        builder.show();
+    }
+
+    private void showDoorDirectionConfirmDialog() {
+        if (isShowing) {
+            return;
+        }
+
+        isShowing = true;
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.Prompt);
+        builder.setCancelable(false);
+        builder.setMessage(mTempStep == 0 ? "请确认当前正在开门？" : "请确认当前正在关门？");
+        builder.setPositiveButton("正确", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                isShowing = false;
+                if (mTempStep == 0) {
+                    mTempResult = mTempResult | 0x1;
+                } else {
+                    mTempResult = mTempResult | 0x10;
+                }
+                mTempStep++;
+
+                if (mTempResult == 0x11) {
+                    mFeederMiniTestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                } else {
+                    startTestModule();
+                }
+
                 refershBtnView();
             }
         });
@@ -818,6 +918,8 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 isShowing = false;
+                mTempStep = 0;
+                mTempResult = 0;
                 mFeederMiniTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
                 refershBtnView();
             }

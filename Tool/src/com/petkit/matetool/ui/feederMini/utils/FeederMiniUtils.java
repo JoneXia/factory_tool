@@ -6,7 +6,7 @@ import com.petkit.android.utils.FileUtils;
 import com.petkit.android.utils.LogcatStorageHelper;
 import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.ui.feeder.mode.Feeder;
-import com.petkit.matetool.ui.feeder.mode.FeederTester;
+import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.feeder.mode.FeedersError;
 import com.petkit.matetool.ui.feederMini.mode.FeederMiniTestUnit;
 
@@ -22,6 +22,8 @@ import static com.petkit.android.utils.LogcatStorageHelper.getFileName;
  * Created by Jone on 17/3/21.
  */
 public class FeederMiniUtils {
+
+    public static final String FEEDER_MINI_SESSION = "FEEDER_MINI_SESSION";
 
     public static final int TYPE_TEST_PARTIALLY         = 1;
     public static final int TYPE_TEST                   = 2;
@@ -145,7 +147,7 @@ public class FeederMiniUtils {
      * @param tester 测试者信息
      * @return sn
      */
-    public static String generateSNForTester(FeederTester tester) {
+    public static String generateSNForTester(Tester tester) {
         if(tester == null || !tester.checkValid()) {
             throw  new RuntimeException("FeederMini Tester is invalid!");
         }

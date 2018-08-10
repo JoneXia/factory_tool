@@ -6,7 +6,7 @@ import com.petkit.android.utils.FileUtils;
 import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.ui.feeder.mode.Feeder;
 import com.petkit.matetool.ui.feeder.mode.FeederTestUnit;
-import com.petkit.matetool.ui.feeder.mode.FeederTester;
+import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.feeder.mode.FeedersError;
 
 import java.io.File;
@@ -103,7 +103,7 @@ public class FeederUtils {
             results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
         } else {
             if (type != TYPE_TEST_PARTIALLY) {
-//                results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_AGEINGRESULT, "老化结果", 97, 1));
+                results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_AGEINGRESULT, "老化结果", 97, 1));
             }
             results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_KEY, "按键测试", 0, 1));
             results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_LIGHT, "外设测试", 1, 1));
@@ -120,8 +120,8 @@ public class FeederUtils {
             }
             if (type != TYPE_TEST_PARTIALLY) {
                 if (type == TYPE_TEST) {
-//                    results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_RESET_SN, "写入SN", 12, 2));
-                    results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_RESET_SN, "重写SN", 97, 1));
+                    results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_RESET_SN, "写入SN", 12, 2));
+//                    results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_RESET_SN, "重写SN", 97, 1));
                 }
                 results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
             }
@@ -138,7 +138,7 @@ public class FeederUtils {
      * @param tester 测试者信息
      * @return sn
      */
-    public static String generateSNForTester(FeederTester tester) {
+    public static String generateSNForTester(Tester tester) {
         if(tester == null || !tester.checkValid()) {
             throw  new RuntimeException("Feeder Tester is invalid!");
         }

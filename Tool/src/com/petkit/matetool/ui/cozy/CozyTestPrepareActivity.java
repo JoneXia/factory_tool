@@ -11,20 +11,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.petkit.android.http.AsyncHttpUtil;
 import com.petkit.android.utils.CommonUtils;
-import com.petkit.android.utils.Consts;
 import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.http.ApiTools;
 import com.petkit.matetool.http.AsyncHttpRespHandler;
+import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.base.BaseActivity;
-import com.petkit.matetool.ui.cozy.mode.CozyTester;
 import com.petkit.matetool.ui.cozy.mode.CozysError;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.utils.FileUtils;
+import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.JSONUtils;
+import com.petkit.matetool.utils.TesterManagerUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,7 +44,7 @@ import cz.msebera.android.httpclient.Header;
  */
 public class CozyTestPrepareActivity extends BaseActivity {
 
-    private CozyTester mTester;
+    private Tester mTester;
     private EditText nameEdit, pwEdit;
     private TextView promptText, testerInfoTextView;
     private Button actionBtn, uploadBtn;
@@ -76,13 +76,12 @@ public class CozyTestPrepareActivity extends BaseActivity {
 
         findViewById(R.id.logout).setOnClickListener(this);
 
-        String tester = CommonUtils.getSysMap(CozyUtils.SHARED_COZY_TESTER);
-        if(!isEmpty(tester)) {
-            mTester = new Gson().fromJson(tester, CozyTester.class);
+        mTester = TesterManagerUtils.getCurrentTesterForType(Globals.COZY);
+        if (mTester != null) {
             if (!isEmpty(mTester.getName())) {
                 testerInfoTextView.setText("当前用户名：" + mTester.getName());
             }
-            AsyncHttpUtil.addHttpHeader("F-Session", CommonUtils.getSysMap(Consts.SHARED_SESSION_ID));
+            AsyncHttpUtil.addHttpHeader("F-Session", mTester.getSession());
         }
 
         mCozysError = CozyUtils.getCozysErrorMsg();
@@ -218,13 +217,14 @@ public class CozyTestPrepareActivity extends BaseActivity {
                         String factory = dataObj.getString("factory");
                         String station = dataObj.getString("station");
                         if(Math.abs(System.currentTimeMillis() - timestamp) < 60 * 60 * 1000) {
-                            mTester = new CozyTester();
+                            mTester = new Tester();
                             mTester.setCode(factory);
                             mTester.setStation(station);
                             mTester.setName(name);
+                            mTester.setSession(token);
+                            TesterManagerUtils.addTesterForType(Globals.COZY, mTester);
+
                             testerInfoTextView.setText("当前用户名：" + mTester.getName());
-                            CommonUtils.addSysMap(Consts.SHARED_SESSION_ID, token);
-                            CommonUtils.addSysMap(CozyUtils.SHARED_COZY_TESTER, new Gson().toJson(mTester));
                             AsyncHttpUtil.addHttpHeader("F-Session", token);
 
                             if(CozyUtils.checkHasSnCache()) {
@@ -345,9 +345,9 @@ public class CozyTestPrepareActivity extends BaseActivity {
 
     private void loginFailed() {
         LoadDialog.dismissDialog();
-        CommonUtils.addSysMap(Consts.SHARED_SESSION_ID, "");
+        TesterManagerUtils.removeTesterForType(Globals.COZY);
+
         AsyncHttpUtil.addHttpHeader("F-Session", "");
-        CommonUtils.addSysMap(CozyUtils.SHARED_COZY_TESTER, "");
         mTester = null;
         updateView();
     }

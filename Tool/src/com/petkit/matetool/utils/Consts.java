@@ -30,8 +30,11 @@ public class Consts {
 	 v1.13说明：
 	 1. 优化成品测试中的信息存储逻辑
 
+	 v1.14说明：
+	 1. 优化账号管理机制；
+
 	 */
-	public static final String TOOL_FEEDER_VERSION	= "1.13";
+	public static final String TOOL_FEEDER_VERSION	= "1.14";
 
 
 	/**
@@ -73,17 +76,22 @@ public class Consts {
 	 v1.8说明：
 	 1. 优化成品测试中的信息存储逻辑
 
+	 v1.9说明：
+	 1. 优化账号管理机制；
+
 	 */
-	public static final String TOOL_COZY	= "1.8";
+	public static final String TOOL_COZY	= "1.9";
 
 
 	/**
-	 喂食器MINI版本说明：
+	 喂食器Mini版本说明：
 
-	 v1.0说明：
-	 1. 新增喂食器MINI的全功能测试。
+	 v1.1说明：
+	 1. 修改门测试、叶轮马达测试的过程，增加手动判断；
+	 2. 维修支持半成品状态、成品状态和出货状态的设备；
+	 3. 优化账号管理机制；
 
 	 */
-	public static final String TOOL_FEEDER_MINI_VERSION	= "1.0";
+	public static final String TOOL_FEEDER_MINI_VERSION	= "1.1";
 	
 }

@@ -202,7 +202,7 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
         tempRadioButton.setText("宠物窝" + " v" + TOOL_COZY);
 
         tempRadioButton = (RadioButton) findViewById(R.id.feeder_mini);
-        tempRadioButton.setText("喂食器MINI" + " v" + TOOL_FEEDER_MINI_VERSION);
+        tempRadioButton.setText("喂食器Mini" + " v" + TOOL_FEEDER_MINI_VERSION);
     }
 
     private void registerBoradcastReceiver() {

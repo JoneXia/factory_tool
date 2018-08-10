@@ -21,7 +21,7 @@ import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.feeder.mode.Feeder;
-import com.petkit.matetool.ui.feeder.mode.FeederTester;
+import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.feeder.utils.PetkitSocketInstance;
 import com.petkit.matetool.ui.feeder.utils.WifiAdminSimple;
 import com.petkit.matetool.ui.feederMini.mode.FeederMiniTestUnit;
@@ -45,7 +45,7 @@ public class FeederMiniTestMainActivity extends BaseActivity implements PetkitSo
     private static final int TEST_STATE_CONNECTING      = 1;
     private static final int TEST_STATE_CONNECTED      = 2;
 
-    private FeederTester mTester;
+    private Tester mTester;
     private int mTestType;
 
     private WifiAdminSimple mWifiAdminSimple;
@@ -62,11 +62,11 @@ public class FeederMiniTestMainActivity extends BaseActivity implements PetkitSo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
-            mTester = (FeederTester) savedInstanceState.getSerializable(FeederMiniUtils.EXTRA_FEEDER_MINI_TESTER);
+            mTester = (Tester) savedInstanceState.getSerializable(FeederMiniUtils.EXTRA_FEEDER_MINI_TESTER);
             mTestType = savedInstanceState.getInt("TestType");
             mErrorFeeder = (Feeder) savedInstanceState.getSerializable(FeederMiniUtils.EXTRA_FEEDER);
         } else {
-            mTester = (FeederTester) getIntent().getSerializableExtra(FeederMiniUtils.EXTRA_FEEDER_MINI_TESTER);
+            mTester = (Tester) getIntent().getSerializableExtra(FeederMiniUtils.EXTRA_FEEDER_MINI_TESTER);
             mTestType = getIntent().getIntExtra("TestType", FeederMiniUtils.TYPE_TEST);
             mErrorFeeder = (Feeder) getIntent().getSerializableExtra(FeederMiniUtils.EXTRA_FEEDER);
         }
@@ -284,14 +284,14 @@ public class FeederMiniTestMainActivity extends BaseActivity implements PetkitSo
         } else {
             switch (mTestType) {
                 case FeederMiniUtils.TYPE_TEST_PARTIALLY:
-                    if (!apSsid.toUpperCase().startsWith("PETKIT_FEEDER_A_")) {
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_FEEDER_A_HW2_")) {
                         mInfoTestTextView.setText("请先连接到PETKIT_FEEDER_A_开头的WIFI，再进行测试！");
                     } else {
                         connectAp();
                     }
                     break;
                 case FeederMiniUtils.TYPE_TEST:
-                    if (!apSsid.toUpperCase().startsWith("PETKIT_FEEDER_B_")) {
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_FEEDER_B_HW2_")) {
                         mInfoTestTextView.setText("请先连接到PETKIT_FEEDER_B_开头的WIFI，再进行测试！");
                         return;
                     } else {
@@ -299,7 +299,7 @@ public class FeederMiniTestMainActivity extends BaseActivity implements PetkitSo
                     }
                     break;
                 case FeederMiniUtils.TYPE_MAINTAIN:
-                    if (!apSsid.toUpperCase().startsWith("PETKIT_FEEDER_HW2_")) {
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_FEEDER_")) {
                         mInfoTestTextView.setText("请先连接到PETKIT_FEEDER_开头的WIFI，再进行测试！");
                         return;
                     } else {

@@ -20,7 +20,7 @@ import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.http.AsyncHttpRespHandler;
 import com.petkit.matetool.ui.base.BaseActivity;
-import com.petkit.matetool.ui.cozy.mode.CozyTester;
+import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.ui.feeder.zxing.ScanListener;
 import com.petkit.matetool.ui.feeder.zxing.ScanManager;
@@ -41,7 +41,7 @@ import cz.msebera.android.httpclient.Header;
  */
 public class CozyScanActivity extends BaseActivity implements ScanListener {
 
-    private CozyTester mTester;
+    private Tester mTester;
 
     SurfaceView scanPreview = null;
     View scanContainer;
@@ -60,9 +60,9 @@ public class CozyScanActivity extends BaseActivity implements ScanListener {
         super.onCreate(savedInstanceState);
 
         if(savedInstanceState != null) {
-            mTester = (CozyTester) savedInstanceState.getSerializable(CozyUtils.EXTRA_COZY_TESTER);
+            mTester = (Tester) savedInstanceState.getSerializable(CozyUtils.EXTRA_COZY_TESTER);
         } else {
-            mTester = (CozyTester) getIntent().getSerializableExtra(CozyUtils.EXTRA_COZY_TESTER);
+            mTester = (Tester) getIntent().getSerializableExtra(CozyUtils.EXTRA_COZY_TESTER);
         }
 
         Window window = getWindow();

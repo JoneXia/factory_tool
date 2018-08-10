@@ -20,7 +20,7 @@ import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.http.AsyncHttpRespHandler;
 import com.petkit.matetool.ui.base.BaseActivity;
-import com.petkit.matetool.ui.feeder.mode.FeederTester;
+import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.feeder.zxing.ScanListener;
 import com.petkit.matetool.ui.feeder.zxing.ScanManager;
 import com.petkit.matetool.ui.feeder.zxing.decode.DecodeThread;
@@ -41,7 +41,7 @@ import cz.msebera.android.httpclient.Header;
  */
 public class FeederMiniScanActivity extends BaseActivity implements ScanListener {
 
-    private FeederTester mTester;
+    private Tester mTester;
 
     SurfaceView scanPreview = null;
     View scanContainer;
@@ -60,9 +60,9 @@ public class FeederMiniScanActivity extends BaseActivity implements ScanListener
         super.onCreate(savedInstanceState);
 
         if(savedInstanceState != null) {
-            mTester = (FeederTester) savedInstanceState.getSerializable(FeederMiniUtils.EXTRA_FEEDER_MINI_TESTER);
+            mTester = (Tester) savedInstanceState.getSerializable(FeederMiniUtils.EXTRA_FEEDER_MINI_TESTER);
         } else {
-            mTester = (FeederTester) getIntent().getSerializableExtra(FeederMiniUtils.EXTRA_FEEDER_MINI_TESTER);
+            mTester = (Tester) getIntent().getSerializableExtra(FeederMiniUtils.EXTRA_FEEDER_MINI_TESTER);
         }
 
         Window window = getWindow();

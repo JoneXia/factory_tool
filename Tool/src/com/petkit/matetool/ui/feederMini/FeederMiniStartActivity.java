@@ -7,7 +7,7 @@ import android.widget.TextView;
 import com.dothantech.printer.IDzPrinter;
 import com.petkit.matetool.R;
 import com.petkit.matetool.ui.base.BaseActivity;
-import com.petkit.matetool.ui.feeder.mode.FeederTester;
+import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.feederMini.utils.FeederMiniUtils;
 
 /**
@@ -17,16 +17,16 @@ import com.petkit.matetool.ui.feederMini.utils.FeederMiniUtils;
  */
 public class FeederMiniStartActivity extends BaseActivity {
 
-    private FeederTester mTester;
+    private Tester mTester;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
-            mTester = (FeederTester) savedInstanceState.getSerializable(FeederMiniUtils.EXTRA_FEEDER_MINI_TESTER);
+            mTester = (Tester) savedInstanceState.getSerializable(FeederMiniUtils.EXTRA_FEEDER_MINI_TESTER);
         } else {
-            mTester = (FeederTester) getIntent().getSerializableExtra(FeederMiniUtils.EXTRA_FEEDER_MINI_TESTER);
+            mTester = (Tester) getIntent().getSerializableExtra(FeederMiniUtils.EXTRA_FEEDER_MINI_TESTER);
         }
 
         setContentView(R.layout.activity_feeder_start);

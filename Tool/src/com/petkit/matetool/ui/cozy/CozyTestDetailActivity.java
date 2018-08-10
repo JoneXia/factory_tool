@@ -27,7 +27,7 @@ import com.petkit.matetool.ui.cozy.mode.Cozy;
 import com.petkit.matetool.ui.cozy.mode.CozyModuleStateStruct;
 import com.petkit.matetool.ui.cozy.mode.CozyState;
 import com.petkit.matetool.ui.cozy.mode.CozyTestUnit;
-import com.petkit.matetool.ui.cozy.mode.CozyTester;
+import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.ui.feeder.PrintActivity;
 import com.petkit.matetool.ui.feeder.utils.PetkitSocketInstance;
@@ -61,7 +61,7 @@ import static com.petkit.matetool.utils.Globals.TEST_PASS;
  */
 public class CozyTestDetailActivity extends BaseActivity implements PetkitSocketInstance.IPetkitSocketListener {
 
-    private CozyTester mTester;
+    private Tester mTester;
     private int mCurTestStep;
 
     //制冷片测试，需要连续4个数据来自动判断测试结果
@@ -91,14 +91,14 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
             mCurTestStep = savedInstanceState.getInt("CurrentTestStep");
             mCozy = (Cozy) savedInstanceState.getSerializable("Cozy");
             isAutoTest = savedInstanceState.getBoolean("AutoTest");
-            mTester = (CozyTester) savedInstanceState.getSerializable(CozyUtils.EXTRA_COZY_TESTER);
+            mTester = (Tester) savedInstanceState.getSerializable(CozyUtils.EXTRA_COZY_TESTER);
             mErrorCozy = (Cozy) savedInstanceState.getSerializable(CozyUtils.EXTRA_COZY);
         } else {
             mCozyTestUnits = (ArrayList<CozyTestUnit>) getIntent().getSerializableExtra("TestUnits");
             mCurTestStep = getIntent().getIntExtra("CurrentTestStep", 0);
             mCozy = (Cozy) getIntent().getSerializableExtra("Cozy");
             isAutoTest = getIntent().getBooleanExtra("AutoTest", true);
-            mTester = (CozyTester) getIntent().getSerializableExtra(CozyUtils.EXTRA_COZY_TESTER);
+            mTester = (Tester) getIntent().getSerializableExtra(CozyUtils.EXTRA_COZY_TESTER);
             mErrorCozy = (Cozy) getIntent().getSerializableExtra(CozyUtils.EXTRA_COZY);
         }
 

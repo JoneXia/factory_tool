@@ -11,20 +11,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.petkit.android.http.AsyncHttpUtil;
-import com.petkit.android.utils.CommonUtils;
-import com.petkit.android.utils.Consts;
 import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.http.ApiTools;
 import com.petkit.matetool.http.AsyncHttpRespHandler;
+import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.base.BaseActivity;
-import com.petkit.matetool.ui.feeder.mode.FeederTester;
 import com.petkit.matetool.ui.feeder.mode.FeedersError;
 import com.petkit.matetool.ui.feederMini.utils.FeederMiniUtils;
 import com.petkit.matetool.utils.FileUtils;
+import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.JSONUtils;
+import com.petkit.matetool.utils.TesterManagerUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,7 +46,7 @@ import static com.petkit.matetool.ui.feederMini.utils.FeederMiniUtils.FILE_MAINT
  */
 public class FeederMiniTestPrepareActivity extends BaseActivity {
 
-    private FeederTester mTester;
+    private Tester mTester;
     private EditText nameEdit, pwEdit;
     private TextView promptText, testerInfoTextView;
     private Button actionBtn, uploadBtn;
@@ -79,13 +78,12 @@ public class FeederMiniTestPrepareActivity extends BaseActivity {
 
         findViewById(R.id.logout).setOnClickListener(this);
 
-        String tester = CommonUtils.getSysMap(FeederMiniUtils.SHARED_FEEDER_MINI_TESTER);
-        if(!isEmpty(tester)) {
-            mTester = new Gson().fromJson(tester, FeederTester.class);
+        mTester = TesterManagerUtils.getCurrentTesterForType(Globals.FEEDER_MINI);
+        if (mTester != null) {
             if (!isEmpty(mTester.getName())) {
                 testerInfoTextView.setText("当前用户名：" + mTester.getName());
             }
-            AsyncHttpUtil.addHttpHeader("F-Session", CommonUtils.getSysMap(Consts.SHARED_SESSION_ID));
+            AsyncHttpUtil.addHttpHeader("F-Session", mTester.getSession());
         }
 
         mFeedersError = FeederMiniUtils.getFeedersErrorMsg();
@@ -217,12 +215,13 @@ public class FeederMiniTestPrepareActivity extends BaseActivity {
                         String factory = dataObj.getString("factory");
                         String station = dataObj.getString("station");
                         if(Math.abs(System.currentTimeMillis() - timestamp) < 60 * 60 * 1000) {
-                            mTester = new FeederTester();
+                            mTester = new Tester();
                             mTester.setCode(factory);
                             mTester.setStation(station);
                             mTester.setName(name);
-                            CommonUtils.addSysMap(Consts.SHARED_SESSION_ID, token);
-                            CommonUtils.addSysMap(FeederMiniUtils.SHARED_FEEDER_MINI_TESTER, new Gson().toJson(mTester));
+                            mTester.setSession(token);
+                            TesterManagerUtils.addTesterForType(Globals.FEEDER_MINI, mTester);
+
                             AsyncHttpUtil.addHttpHeader("F-Session", token);
                             testerInfoTextView.setText("当前用户名：" + mTester.getName());
 
@@ -344,9 +343,9 @@ public class FeederMiniTestPrepareActivity extends BaseActivity {
 
     private void loginFailed() {
         LoadDialog.dismissDialog();
-        CommonUtils.addSysMap(Consts.SHARED_SESSION_ID, "");
         AsyncHttpUtil.addHttpHeader("F-Session", "");
-        CommonUtils.addSysMap(FeederMiniUtils.SHARED_FEEDER_MINI_TESTER, "");
+
+        TesterManagerUtils.removeTesterForType(Globals.FEEDER_MINI);
         mTester = null;
         updateView();
     }

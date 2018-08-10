@@ -9,7 +9,7 @@ import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.http.AsyncHttpRespHandler;
 import com.petkit.matetool.ui.base.BaseActivity;
-import com.petkit.matetool.ui.feeder.mode.FeederTester;
+import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.feeder.utils.FeederUtils;
 import com.petkit.matetool.utils.JSONUtils;
 
@@ -30,7 +30,7 @@ import cz.msebera.android.httpclient.Header;
  */
 public class FeederStorageFileActivity extends BaseActivity {
 
-    private FeederTester mTester;
+    private Tester mTester;
     private String fileName;
 
     private TextView mFileNameTextView, mUploadTextView;
@@ -39,9 +39,9 @@ public class FeederStorageFileActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
-            mTester = (FeederTester) savedInstanceState.getSerializable(FeederUtils.EXTRA_FEEDER_TESTER);
+            mTester = (Tester) savedInstanceState.getSerializable(FeederUtils.EXTRA_FEEDER_TESTER);
         } else {
-            mTester = (FeederTester) getIntent().getSerializableExtra(FeederUtils.EXTRA_FEEDER_TESTER);
+            mTester = (Tester) getIntent().getSerializableExtra(FeederUtils.EXTRA_FEEDER_TESTER);
         }
 
         setContentView(R.layout.activity_feeder_storage_file);

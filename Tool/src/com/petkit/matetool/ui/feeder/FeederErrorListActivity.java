@@ -15,7 +15,7 @@ import com.petkit.android.utils.DateUtil;
 import com.petkit.matetool.R;
 import com.petkit.matetool.ui.base.BaseListActivity;
 import com.petkit.matetool.ui.feeder.mode.Feeder;
-import com.petkit.matetool.ui.feeder.mode.FeederTester;
+import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.feeder.mode.FeedersError;
 import com.petkit.matetool.ui.feeder.utils.FeederUtils;
 import com.petkit.matetool.widget.pulltorefresh.PullToRefreshBase;
@@ -27,7 +27,7 @@ import java.util.Date;
  */
 public class FeederErrorListActivity extends BaseListActivity {
 
-    private FeederTester mTester;
+    private Tester mTester;
 
     private FeedersError mFeedersError;
     private FeedersListAdapter mAdapter;
@@ -39,9 +39,9 @@ public class FeederErrorListActivity extends BaseListActivity {
         super.onCreate(savedInstanceState);
 
         if(savedInstanceState != null) {
-            mTester = (FeederTester) savedInstanceState.getSerializable(FeederUtils.EXTRA_FEEDER_TESTER);
+            mTester = (Tester) savedInstanceState.getSerializable(FeederUtils.EXTRA_FEEDER_TESTER);
         } else {
-            mTester = (FeederTester) getIntent().getSerializableExtra(FeederUtils.EXTRA_FEEDER_TESTER);
+            mTester = (Tester) getIntent().getSerializableExtra(FeederUtils.EXTRA_FEEDER_TESTER);
         }
     }
 
