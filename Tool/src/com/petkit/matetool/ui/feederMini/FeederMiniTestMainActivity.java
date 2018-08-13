@@ -575,9 +575,11 @@ public class FeederMiniTestMainActivity extends BaseActivity implements PetkitSo
         if(position >= mFeederMiniTestUnits.size() - 1) {       //维修和抽检，最后一项打印标签可以不执行，其他项都完成了就算成功
             if (mTestType == FeederMiniUtils.TYPE_MAINTAIN) {
                 FeederMiniUtils.storeMainTainInfo(mCurFeeder);
+                testComplete = position >= mFeederMiniTestUnits.size();
             } else if (mTestType == FeederMiniUtils.TYPE_CHECK) {
                 mCurFeeder.setInspectStatus(1);
                 FeederMiniUtils.storeCheckInfo(mCurFeeder);
+                testComplete = position >= mFeederMiniTestUnits.size();
             } else if (mTestType == FeederMiniUtils.TYPE_TEST_PARTIALLY) {
                 testComplete = position >= mFeederMiniTestUnits.size();
             } else if (mTestType == FeederMiniUtils.TYPE_TEST) {
