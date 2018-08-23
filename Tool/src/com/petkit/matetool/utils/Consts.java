@@ -33,8 +33,12 @@ public class Consts {
 	 v1.14说明：
 	 1. 优化账号管理机制；
 
+
+	 v1.15说明：
+	 1. 解决写入SN的问题
+
 	 */
-	public static final String TOOL_FEEDER_VERSION	= "1.14";
+	public static final String TOOL_FEEDER_VERSION	= "1.15";
 
 
 	/**

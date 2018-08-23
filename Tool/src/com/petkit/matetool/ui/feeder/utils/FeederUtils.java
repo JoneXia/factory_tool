@@ -120,7 +120,7 @@ public class FeederUtils {
             }
             if (type != TYPE_TEST_PARTIALLY) {
                 if (type == TYPE_TEST) {
-                    results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_RESET_SN, "写入SN", 12, 2));
+                    results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_SN, "写入SN", 12, 2));
 //                    results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_RESET_SN, "重写SN", 97, 1));
                 }
                 results.add(new FeederTestUnit(FeederTestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
