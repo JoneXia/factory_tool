@@ -4,9 +4,9 @@ import com.google.gson.Gson;
 import com.petkit.android.utils.CommonUtils;
 import com.petkit.android.utils.FileUtils;
 import com.petkit.android.utils.PetkitLog;
+import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.cozy.mode.Cozy;
 import com.petkit.matetool.ui.cozy.mode.CozyTestUnit;
-import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.cozy.mode.CozysError;
 
 import java.io.File;
@@ -50,7 +50,8 @@ public class CozyUtils {
         TEST_MODE_MAC,
         TEST_MODE_TEST,
         TEST_MODE_AGEINGRESULT,
-        TEST_MODE_RESET_ID
+        TEST_MODE_RESET_ID,
+        TEST_MODE_RESET_SN
     }
 
     public static String getDefaultResponseForKey(int key) {
@@ -118,6 +119,7 @@ public class CozyUtils {
             if (type != TYPE_TEST_PARTIALLY) {
                 if (type == TYPE_TEST) {
                     results.add(new CozyTestUnit(CozyTestModes.TEST_MODE_SN, "写入SN", 98, 2));
+//                    results.add(new CozyTestUnit(CozyTestModes.TEST_MODE_RESET_SN, "重写SN", 97, 1));
                 }
                 results.add(new CozyTestUnit(CozyTestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
             }
@@ -148,7 +150,7 @@ public class CozyUtils {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(tester.getCode())
                 .append(day)
-                .append("A")
+                .append("C")
                 .append(tester.getStation())
                 .append(serializableNumber);
 

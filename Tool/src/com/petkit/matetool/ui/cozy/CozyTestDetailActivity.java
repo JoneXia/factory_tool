@@ -22,12 +22,12 @@ import com.petkit.android.utils.FileUtils;
 import com.petkit.android.utils.LogcatStorageHelper;
 import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
+import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.cozy.mode.Cozy;
 import com.petkit.matetool.ui.cozy.mode.CozyModuleStateStruct;
 import com.petkit.matetool.ui.cozy.mode.CozyState;
 import com.petkit.matetool.ui.cozy.mode.CozyTestUnit;
-import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.ui.feeder.PrintActivity;
 import com.petkit.matetool.ui.feeder.utils.PetkitSocketInstance;
@@ -245,6 +245,9 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                 mBtn4.setText("停止");
                 mBtn4.setBackgroundResource(R.drawable.selector_red);
                 mBtn4.setVisibility(View.VISIBLE);
+                break;
+            case TEST_MODE_RESET_SN:
+                showSNSetDialog();
                 break;
             default:
                 mBtn1.setText(R.string.Start);
@@ -980,4 +983,6 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
             PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(161, params));
         }
     }
+
+
 }

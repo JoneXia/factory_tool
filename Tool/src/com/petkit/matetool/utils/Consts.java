@@ -83,8 +83,10 @@ public class Consts {
 	 v1.9说明：
 	 1. 优化账号管理机制；
 
+	 v1.10说明：
+	 1. 升级为宠物窝new，SN规则的产品位标识从"B改为C"
 	 */
-	public static final String TOOL_COZY	= "1.9";
+	public static final String TOOL_COZY	= "1.10";
 
 
 	/**
