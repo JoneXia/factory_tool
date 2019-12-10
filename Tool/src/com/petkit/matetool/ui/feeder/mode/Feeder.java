@@ -84,6 +84,13 @@ public class Feeder implements Serializable {
     }
 
     @Override
+    public boolean equals(Object feeder) {
+        return feeder != null && feeder instanceof Feeder
+                && sn != null && sn.equals(((Feeder) feeder).getSn())
+                && mac != null && mac.equals(((Feeder) feeder).getMac());
+    }
+
+    @Override
     public String toString() {
         return "Feeder{" +
                 "mac='" + mac + '\'' +

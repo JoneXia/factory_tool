@@ -571,7 +571,10 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
                                 break;
                             case 1:
                                 mDescTextView.append("\n写入SN成功");
+
+                                FeederMiniUtils.removeTempFeederInfo(mFeeder);
                                 FeederMiniUtils.storeSucceedFeederInfo(mFeeder, mAgeingResult);
+
                                 mFeederMiniTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                                 refershBtnView();
                                 break;
@@ -643,14 +646,18 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
                     showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
                     return;
                 }
+                mFeeder.setSn(sn);
+                mFeeder.setCreation(System.currentTimeMillis());
+
+                //写入设备前先存储到临时数据区，写入成功后需删除
+                FeederMiniUtils.storeTempFeederInfo(mFeeder);
+
                 HashMap<String, Object> payload = new HashMap<>();
                 payload.put("mac", mFeeder.getMac());
                 payload.put("sn", sn);
                 if(mFeederMiniTestUnits.get(mCurTestStep).getState() == 2) {
                     payload.put("force", 100);
                 }
-                mFeeder.setSn(sn);
-                mFeeder.setCreation(System.currentTimeMillis());
                 PetkitSocketInstance.getInstance().sendString(FeederMiniUtils.getRequestForKeyAndPayload(161, payload));
             }
         } else {
@@ -823,12 +830,14 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
                     showShortToast("无效的SN");
                     return;
                 }
+                mFeeder.setSn(sn);
+
+                FeederMiniUtils.storeTempFeederInfo(mFeeder);
 
                 HashMap<String, Object> payload = new HashMap<>();
                 payload.put("mac", mac);
                 payload.put("sn", sn);
                 payload.put("force", 100);
-                mFeeder.setSn(sn);
                 PetkitSocketInstance.getInstance().sendString(FeederMiniUtils.getRequestForKeyAndPayload(161, payload));
             }
         });

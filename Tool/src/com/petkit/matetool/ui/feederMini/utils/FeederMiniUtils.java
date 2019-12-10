@@ -49,6 +49,8 @@ public class FeederMiniUtils {
     public static final String FILE_CHECK_INFO_NAME     = "feeder_mini_check_info.txt";
     public static final String FEEDERMINI_STORE_DIR     = ".feederMini/";
 
+    public static ArrayList<Feeder> mTempFeeders = new ArrayList<>();
+
     public enum FeederMiniTestModes {
         TEST_MODE_KEY,
         TEST_MODE_DOOR,
@@ -221,6 +223,49 @@ public class FeederMiniUtils {
         CommonUtils.addSysMap(SHARED_SERIALIZABLE_DAY, "");
         CommonUtils.addSysIntMap(CommonUtils.getAppContext(), SHARED_SERIALIZABLE_NUMBER, 0);
 
+    }
+
+    /**
+     * 生成的SN时，先存储临时数据，SN成功写入设备后从临时数据中删除
+     *
+     * @param feeder 喂食器
+     */
+    public static void storeTempFeederInfo(Feeder feeder) {
+        for (Feeder temp : mTempFeeders) {
+            if (temp.equals(feeder)) {
+                return;
+            }
+        }
+
+        mTempFeeders.add(feeder);
+    }
+
+    /**
+     * 移除临时数据中的feeder
+     * @param feeder feeder
+     */
+    public static void removeTempFeederInfo(Feeder feeder) {
+        for (Feeder temp : mTempFeeders) {
+            if (temp.equals(feeder)) {
+                mTempFeeders.remove(temp);
+                return;
+            }
+        }
+    }
+
+    /**
+     * 检查临时数据中是否存在Feeder
+     * @param feeder
+     * @return
+     */
+    public static boolean isFeederInTemp(Feeder feeder) {
+        for (Feeder temp : mTempFeeders) {
+            if (temp.equals(feeder)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

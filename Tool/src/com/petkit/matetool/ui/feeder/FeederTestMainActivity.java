@@ -17,15 +17,17 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import com.petkit.android.utils.LogcatStorageHelper;
 import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
+import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.feeder.mode.Feeder;
 import com.petkit.matetool.ui.feeder.mode.FeederTestUnit;
-import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.feeder.utils.FeederUtils;
 import com.petkit.matetool.ui.feeder.utils.PetkitSocketInstance;
 import com.petkit.matetool.ui.feeder.utils.WifiAdminSimple;
+import com.petkit.matetool.ui.feederMini.utils.FeederMiniUtils;
 import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.JSONUtils;
 
@@ -466,6 +468,13 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
                 break;
             case 160:
                 if(!testComplete) {
+                    //最近写入SN后，没有及时收到写入成功的通知，需补打印条码
+                    if(FeederMiniUtils.isFeederInTemp(mCurFeeder)) {
+                        LogcatStorageHelper.addLog("检测到该设备写入SN时异常: " + mCurFeeder.toString());
+                        FeederMiniUtils.removeTempFeederInfo(mCurFeeder);
+                        FeederMiniUtils.storeSucceedFeederInfo(mCurFeeder, "");
+                        showFeederInTempDialog();
+                    }
                     return;
                 }
 
@@ -504,6 +513,22 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
                 return 4;
         }
     }
+
+
+    private void showFeederInTempDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.Prompt)
+                .setMessage("检测到该设备写入SN时异常，已自动保存设备信息，请记得打印标签。")
+                .setCancelable(false)
+                .setNegativeButton(R.string.OK, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .show();
+    }
+
 
     private class TestItemAdapter extends BaseAdapter {
         private Context mContext;

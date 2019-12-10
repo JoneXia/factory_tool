@@ -97,7 +97,12 @@ public class Consts {
 	 2. 维修支持半成品状态、成品状态和出货状态的设备；
 	 3. 优化账号管理机制；
 
+	 v1.2说明：
+	 1. 新增临时数据，防止写入SN时设备写入成功，但是没通知App的情况；
+	 * 当该情况发生时，需按照如下步骤进行补救：1. 重启设备；2. 进入抽检，连接设备AP；3. 连接AP后，工具自动识别出异常设备，并保存设备数据；4. 打印标签。
+	 * 注意这个过程中不能杀掉产测App，否则临时数据将丢失，以后无法再自动保存设备数据了。
+
 	 */
-	public static final String TOOL_FEEDER_MINI_VERSION	= "1.1";
+	public static final String TOOL_FEEDER_MINI_VERSION	= "1.2";
 	
 }
