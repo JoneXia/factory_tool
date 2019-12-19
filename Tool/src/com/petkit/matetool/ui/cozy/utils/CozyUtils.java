@@ -4,10 +4,10 @@ import com.google.gson.Gson;
 import com.petkit.android.utils.CommonUtils;
 import com.petkit.android.utils.FileUtils;
 import com.petkit.android.utils.PetkitLog;
+import com.petkit.matetool.model.Device;
+import com.petkit.matetool.model.DevicesError;
 import com.petkit.matetool.model.Tester;
-import com.petkit.matetool.ui.cozy.mode.Cozy;
 import com.petkit.matetool.ui.cozy.mode.CozyTestUnit;
-import com.petkit.matetool.ui.cozy.mode.CozysError;
 
 import java.io.File;
 import java.io.IOException;
@@ -115,17 +115,17 @@ public class CozyUtils {
             results.add(new CozyTestUnit(CozyTestModes.TEST_MODE_COOL, "制冷测试", 11, 1));
             results.add(new CozyTestUnit(CozyTestModes.TEST_MODE_HOT, "制热测试", 11, 2));
             results.add(new CozyTestUnit(CozyTestModes.TEST_MODE_VOLTAGE, "电流电压", 12, 1));
-//            results.add(new CozyTestUnit(CozyTestModes.TEST_MODE_TEST, "压力测试", 13, 1));
+//            results.add(new DeviceTestUnit(CozyTestModes.TEST_MODE_TEST, "压力测试", 13, 1));
             if (type != TYPE_TEST_PARTIALLY) {
                 if (type == TYPE_TEST) {
                     results.add(new CozyTestUnit(CozyTestModes.TEST_MODE_SN, "写入SN", 98, 2));
-//                    results.add(new CozyTestUnit(CozyTestModes.TEST_MODE_RESET_SN, "重写SN", 97, 1));
+//                    results.add(new DeviceTestUnit(CozyTestModes.TEST_MODE_RESET_SN, "重写SN", 97, 1));
                 }
                 results.add(new CozyTestUnit(CozyTestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
             }
 
             if (type == TYPE_MAINTAIN) {        //擦除ID选项先关闭，暂不开放
-//                results.add(new CozyTestUnit(CozyTestModes.TEST_MODE_RESET_ID, "擦除ID", 98, 1));
+//                results.add(new DeviceTestUnit(CozyTestModes.TEST_MODE_RESET_ID, "擦除ID", 98, 1));
             }
         }
         return results;
@@ -138,7 +138,7 @@ public class CozyUtils {
      */
     public static String generateSNForTester(Tester tester) {
         if(tester == null || !tester.checkValid()) {
-            throw  new RuntimeException("Cozy Tester is invalid!");
+            throw  new RuntimeException("Device Tester is invalid!");
         }
 
         String day = CommonUtils.getDateStringByOffset(0).substring(2);
@@ -214,15 +214,15 @@ public class CozyUtils {
 
     /**
      * 存储测试完成的设备信息
-     * @param cozy 猫窝
+     * @param device 猫窝
      */
-    public static void storeSucceedCozyInfo(Cozy cozy, String ageingResult) {
-        if(cozy == null || !cozy.checkValid()) {
-            throw  new RuntimeException("store cozy failed, " + (cozy == null ? "cozy is null !" : cozy.toString()));
+    public static void storeSucceedCozyInfo(Device device, String ageingResult) {
+        if(device == null || !device.checkValid()) {
+            throw  new RuntimeException("store device failed, " + (device == null ? "device is null !" : device.toString()));
         }
 
-        PetkitLog.d("store cozy info: " + cozy.generateMainJson(ageingResult));
-        FileUtils.writeStringToFile(getStoreCozyInfoFilePath(), cozy.generateMainJson(ageingResult) + ",", true);
+        PetkitLog.d("store device info: " + device.generateMainJson(ageingResult));
+        FileUtils.writeStringToFile(getStoreCozyInfoFilePath(), device.generateMainJson(ageingResult) + ",", true);
     }
 
     /**
@@ -306,28 +306,28 @@ public class CozyUtils {
 
     /**
      * 存储重复的信息
-     * @param CozysError error
+     * @param DevicesError error
      */
-    public static void storeDuplicatedInfo(CozysError CozysError) {
-        if(CozysError == null || ((CozysError.getMac() == null || CozysError.getMac().size() == 0)
-                && (CozysError.getSn() == null || CozysError.getSn().size() == 0))) {
+    public static void storeDuplicatedInfo(DevicesError DevicesError) {
+        if(DevicesError == null || ((DevicesError.getMac() == null || DevicesError.getMac().size() == 0)
+                && (DevicesError.getSn() == null || DevicesError.getSn().size() == 0))) {
             CommonUtils.addSysMap("Cozy_Error", "");
         } else {
-            CommonUtils.addSysMap("Cozy_Error", new Gson().toJson(CozysError));
+            CommonUtils.addSysMap("Cozy_Error", new Gson().toJson(DevicesError));
         }
     }
 
     /**
      * 获取重复的错误信息
-     * @return CozysError
+     * @return DevicesError
      */
-    public static CozysError getCozysErrorMsg() {
+    public static DevicesError getCozysErrorMsg() {
         String msg = CommonUtils.getSysMap("Cozy_Error");
         if(CommonUtils.isEmpty(msg)) {
             return null;
         }
 
-        return new Gson().fromJson(msg, CozysError.class);
+        return new Gson().fromJson(msg, DevicesError.class);
     }
 
 
@@ -335,42 +335,42 @@ public class CozyUtils {
     public static final String FILE_CHECK_INFO_NAME     = "cozy_check_info.txt";
 
 
-    public static void storeMainTainInfo(Cozy cozy) {
-        if(cozy == null || !cozy.checkValid()) {
+    public static void storeMainTainInfo(Device device) {
+        if(device == null || !device.checkValid()) {
             return;
         }
-        String dir = CommonUtils.getAppCacheDirPath() + ".cozy/";
+        String dir = CommonUtils.getAppCacheDirPath() + ".device/";
         if(!new File(dir).exists()) {
             new File(dir).mkdirs();
         }
 
-        String fileName = CommonUtils.getAppCacheDirPath() + ".cozy/" + FILE_MAINTAIN_INFO_NAME;
+        String fileName = CommonUtils.getAppCacheDirPath() + ".device/" + FILE_MAINTAIN_INFO_NAME;
         String content = FileUtils.readFileToString(new File(fileName));
-        if(content != null && content.contains(cozy.getMac())) {
+        if(content != null && content.contains(device.getMac())) {
             return;
         }
-        String info = cozy.generateJson();
-        PetkitLog.d("store cozy info: " + info);
+        String info = device.generateJson();
+        PetkitLog.d("store device info: " + info);
         FileUtils.writeStringToFile(fileName, info + ",", true);
 
     }
 
-    public static void storeCheckInfo(Cozy cozy) {
-        if(cozy == null || !cozy.checkValid()) {
+    public static void storeCheckInfo(Device device) {
+        if(device == null || !device.checkValid()) {
             return;
         }
 
-        String dir = CommonUtils.getAppCacheDirPath() + ".cozy/";
+        String dir = CommonUtils.getAppCacheDirPath() + ".device/";
         if(!new File(dir).exists()) {
             new File(dir).mkdirs();
         }
-        String fileName = CommonUtils.getAppCacheDirPath() + ".cozy/" + FILE_CHECK_INFO_NAME;
+        String fileName = CommonUtils.getAppCacheDirPath() + ".device/" + FILE_CHECK_INFO_NAME;
         String content = FileUtils.readFileToString(new File(fileName));
-        if(content != null && content.contains(cozy.getMac())) {
+        if(content != null && content.contains(device.getMac())) {
             return;
         }
-        String info = cozy.generateCheckJson();
-        PetkitLog.d("store cozy info: " + info);
+        String info = device.generateCheckJson();
+        PetkitLog.d("store device info: " + info);
         FileUtils.writeStringToFile(fileName, info + ",", true);
     }
 

@@ -104,5 +104,13 @@ public class Consts {
 
 	 */
 	public static final String TOOL_FEEDER_MINI_VERSION	= "1.2";
+
+
+	/**
+	 *
+     *
+	 *
+	 */
+	public static final String TOOL_T3_VERSION	= "0.1";
 	
 }

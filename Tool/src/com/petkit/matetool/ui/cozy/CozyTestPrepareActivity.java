@@ -17,9 +17,9 @@ import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.http.ApiTools;
 import com.petkit.matetool.http.AsyncHttpRespHandler;
+import com.petkit.matetool.model.DevicesError;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.base.BaseActivity;
-import com.petkit.matetool.ui.cozy.mode.CozysError;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.utils.FileUtils;
 import com.petkit.matetool.utils.Globals;
@@ -49,7 +49,7 @@ public class CozyTestPrepareActivity extends BaseActivity {
     private TextView promptText, testerInfoTextView;
     private Button actionBtn, uploadBtn;
 
-    private CozysError mCozysError;
+    private DevicesError mDevicesError;
     private boolean isLogining;
 
     @Override
@@ -84,7 +84,7 @@ public class CozyTestPrepareActivity extends BaseActivity {
             AsyncHttpUtil.addHttpHeader("F-Session", mTester.getSession());
         }
 
-        mCozysError = CozyUtils.getCozysErrorMsg();
+        mDevicesError = CozyUtils.getCozysErrorMsg();
     }
 
     @Override
@@ -120,7 +120,7 @@ public class CozyTestPrepareActivity extends BaseActivity {
                 }
                 break;
             case R.id.logout:
-                if(mCozysError != null) {
+                if(mDevicesError != null) {
                     showShortToast("还有异常数据需要处理，完成后才能登出！");
                 } else if(CozyUtils.checkHasSnCache()) {
                     showShortToast("还有未上传的测试数据，需要先上传完成才能登出！");
@@ -129,7 +129,7 @@ public class CozyTestPrepareActivity extends BaseActivity {
                 }
                 break;
             case R.id.upload:
-                if(mCozysError != null) {
+                if(mDevicesError != null) {
                     Bundle bundle = new Bundle();
                     bundle.putSerializable(CozyUtils.EXTRA_COZY_TESTER, mTester);
                     startActivityWithData(CozyErrorListActivity.class, bundle, false);
@@ -143,8 +143,8 @@ public class CozyTestPrepareActivity extends BaseActivity {
 
     private void updateView () {
         if(mTester != null) {
-            mCozysError = CozyUtils.getCozysErrorMsg();
-            if(mCozysError != null) {
+            mDevicesError = CozyUtils.getCozysErrorMsg();
+            if(mDevicesError != null) {
                 promptText.setText("检测到异常数据，需要先处理，才能开始测试！");
                 actionBtn.setVisibility(View.GONE);
                 uploadBtn.setVisibility(View.VISIBLE);
@@ -410,8 +410,8 @@ public class CozyTestPrepareActivity extends BaseActivity {
                                     break;
                                 default:
                                     if(!result.isNull("data")) {
-                                        mCozysError = gson.fromJson(result.getString("data"), CozysError.class);
-                                        CozyUtils.storeDuplicatedInfo(mCozysError);
+                                        mDevicesError = gson.fromJson(result.getString("data"), DevicesError.class);
+                                        CozyUtils.storeDuplicatedInfo(mDevicesError);
                                         file.delete();
                                         if (isLogining) {
                                             getLastSN();

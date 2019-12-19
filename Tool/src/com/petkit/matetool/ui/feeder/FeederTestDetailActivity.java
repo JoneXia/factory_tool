@@ -19,13 +19,14 @@ import com.petkit.android.utils.LogcatStorageHelper;
 import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.base.PrintActivity;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.ui.feeder.mode.Feeder;
 import com.petkit.matetool.ui.feeder.mode.FeederTestUnit;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.feeder.mode.ModuleStateStruct;
 import com.petkit.matetool.ui.feeder.utils.FeederUtils;
-import com.petkit.matetool.ui.feeder.utils.PetkitSocketInstance;
+import com.petkit.matetool.ui.utils.PetkitSocketInstance;
 import com.petkit.matetool.utils.DateUtil;
 import com.petkit.matetool.utils.JSONUtils;
 
@@ -39,7 +40,7 @@ import java.util.HashMap;
 import static com.petkit.matetool.ui.feeder.utils.FeederUtils.FeederTestModes.TEST_MODE_AGEINGRESULT;
 import static com.petkit.matetool.ui.feeder.utils.FeederUtils.FeederTestModes.TEST_MODE_BALANCE;
 import static com.petkit.matetool.ui.feeder.utils.FeederUtils.FeederTestModes.TEST_MODE_LIGHT;
-import static com.petkit.matetool.ui.feeder.utils.PrintUtils.isPrinterConnected;
+import static com.petkit.matetool.ui.utils.PrintUtils.isPrinterConnected;
 import static com.petkit.matetool.utils.Globals.TEST_FAILED;
 import static com.petkit.matetool.utils.Globals.TEST_PASS;
 

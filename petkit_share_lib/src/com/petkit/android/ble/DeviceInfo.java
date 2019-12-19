@@ -259,6 +259,7 @@ public class DeviceInfo implements Serializable {
 				+ " rssi: " + mRssi
 				+ " deviceId: " + deviceId
 				+ " device Address: " + address
+				+ " device type: " + deviceType
 				+ " device Name: " + name;
 	}
 

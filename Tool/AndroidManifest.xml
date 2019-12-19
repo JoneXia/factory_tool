@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.petkit.matetool"
-          android:versionCode="1600"
-          android:versionName="3.2.7">
+          android:versionCode="1700"
+          android:versionName="3.3.0">
 
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
     <uses-permission android:name="android.permission.CAMERA"/>
@@ -27,8 +25,8 @@
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
     <uses-sdk
-        android:minSdkVersion="16"
-        android:targetSdkVersion="23"/>
+        android:minSdkVersion="25"
+        android:targetSdkVersion="25"/>
 
     <application
         android:name=".ui.base.BaseApplication"
@@ -91,7 +89,7 @@
         </activity>
         <activity android:name=".ui.go.GoTestMainActivity" android:screenOrientation="portrait"/>
 
-        <activity android:name=".ui.feeder.PrintActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.base.PrintActivity" android:screenOrientation="portrait" />
         <activity android:name=".ui.feeder.FeederStartActivity" android:screenOrientation="portrait" />
         <activity android:name=".ui.feeder.FeederTestMainActivity" android:screenOrientation="portrait" />
         <activity android:name=".ui.feeder.FeederTestDetailActivity" android:screenOrientation="portrait" />
@@ -101,7 +99,7 @@
         <activity android:name=".ui.feeder.FeederStorageActivity" android:screenOrientation="portrait"/>
         <activity android:name=".ui.feeder.FeederStorageFileActivity" android:screenOrientation="portrait"/>
 
-        <!-- Cozy -->
+        <!-- Device -->
         <activity android:name=".ui.cozy.CozyStartActivity" android:screenOrientation="portrait" />
         <activity android:name=".ui.cozy.CozyTestMainActivity" android:screenOrientation="portrait" />
         <activity android:name=".ui.cozy.CozyTestDetailActivity" android:screenOrientation="portrait" />
@@ -121,11 +119,15 @@
         <activity android:name=".ui.feederMini.FeederMiniStorageActivity" android:screenOrientation="portrait"/>
         <activity android:name=".ui.feederMini.FeederMiniStorageFileActivity" android:screenOrientation="portrait"/>
 
-
-        <activity
-            android:name=".ui.catlitter.CatLitterMainActivity"
-            android:screenOrientation="portrait">
-        </activity>
+        <!-- T3 -->
+        <activity android:name=".ui.t3.T3StartActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.t3.T3TestMainActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.t3.T3TestDetailActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.t3.T3TestPrepareActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.t3.T3ErrorListActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.t3.T3ScanActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.t3.T3StorageActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.t3.T3StorageFileActivity" android:screenOrientation="portrait"/>
 
 
         <meta-data

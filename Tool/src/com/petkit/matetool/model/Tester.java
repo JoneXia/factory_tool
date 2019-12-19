@@ -3,7 +3,7 @@ package com.petkit.matetool.model;
 import java.io.Serializable;
 
 /**
- * 测试者信息，喂食器测试需要，用于生成SN
+ * 测试者信息，设备测试需要，用于生成SN
  *
  * Created by Jone on 17/5/9.
  */

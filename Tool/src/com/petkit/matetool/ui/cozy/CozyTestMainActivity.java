@@ -19,14 +19,14 @@ import android.widget.TextView;
 
 import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
+import com.petkit.matetool.model.Device;
+import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.base.BaseActivity;
-import com.petkit.matetool.ui.cozy.mode.Cozy;
 import com.petkit.matetool.ui.cozy.mode.CozyConfig;
 import com.petkit.matetool.ui.cozy.mode.CozyTestUnit;
-import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
-import com.petkit.matetool.ui.feeder.utils.PetkitSocketInstance;
-import com.petkit.matetool.ui.feeder.utils.WifiAdminSimple;
+import com.petkit.matetool.ui.utils.PetkitSocketInstance;
+import com.petkit.matetool.ui.utils.WifiAdminSimple;
 import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.JSONUtils;
 
@@ -52,7 +52,7 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
 
     private WifiAdminSimple mWifiAdminSimple;
     private int mTestState;
-    private Cozy mCurCozy, mErrorCozy;
+    private Device mCurDevice, mErrorDevice;
 
     private ArrayList<CozyTestUnit> mCozyTestUnits;
     private TestItemAdapter mAdapter;
@@ -66,11 +66,11 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
         if(savedInstanceState != null) {
             mTester = (Tester) savedInstanceState.getSerializable(CozyUtils.EXTRA_COZY_TESTER);
             mTestType = savedInstanceState.getInt("TestType");
-            mErrorCozy = (Cozy) savedInstanceState.getSerializable(CozyUtils.EXTRA_COZY);
+            mErrorDevice = (Device) savedInstanceState.getSerializable(CozyUtils.EXTRA_COZY);
         } else {
             mTester = (Tester) getIntent().getSerializableExtra(CozyUtils.EXTRA_COZY_TESTER);
             mTestType = getIntent().getIntExtra("TestType", CozyUtils.TYPE_TEST);
-            mErrorCozy = (Cozy) getIntent().getSerializableExtra(CozyUtils.EXTRA_COZY);
+            mErrorDevice = (Device) getIntent().getSerializableExtra(CozyUtils.EXTRA_COZY);
         }
 
         setContentView(R.layout.activity_feeder_main_test);
@@ -84,7 +84,7 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
 
         outState.putSerializable(CozyUtils.EXTRA_COZY_TESTER, mTester);
         outState.putInt("TestType", mTestType);
-        outState.putSerializable(CozyUtils.EXTRA_COZY, mErrorCozy);
+        outState.putSerializable(CozyUtils.EXTRA_COZY, mErrorDevice);
     }
 
     @Override
@@ -159,7 +159,7 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
                 if (testComplete) {
                     LoadDialog.show(this);
                     HashMap<String, Object> params = new HashMap<>();
-                    params.put("mac", mCurCozy.getMac());
+                    params.put("mac", mCurDevice.getMac());
                     params.put("state", getTestTypeCode());
                     params.put("opt", 1);
 
@@ -173,7 +173,7 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
 
     @Override
     public void onBackPressed() {
-        if (mCurCozy != null && testComplete) {
+        if (mCurDevice != null && testComplete) {
             new AlertDialog.Builder(this)
                     .setTitle(R.string.Prompt)
                     .setMessage("测试已完成，请先点击确认来完成测试项目！")
@@ -182,7 +182,7 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
                         public void onClick(DialogInterface dialog, int which) {
                             LoadDialog.show(CozyTestMainActivity.this);
                             HashMap<String, Object> params = new HashMap<>();
-                            params.put("mac", mCurCozy.getMac());
+                            params.put("mac", mCurDevice.getMac());
                             params.put("state", getTestTypeCode());
                             params.put("opt", 1);
 
@@ -190,7 +190,7 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
                         }
                     })
                     .show();
-        } else if (mCurCozy != null && mTestType == CozyUtils.TYPE_CHECK) {
+        } else if (mCurDevice != null && mTestType == CozyUtils.TYPE_CHECK) {
             boolean hasError = false;
             for (CozyTestUnit unit : mCozyTestUnits) {
                 if(unit.getResult() == Globals.TEST_FAILED) {
@@ -206,9 +206,9 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
                         .setNegativeButton(R.string.OK, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                mCurCozy.setInspectStatus(0);
-                                CozyUtils.storeCheckInfo(mCurCozy);
-                                mCurCozy = null;
+                                mCurDevice.setInspectStatus(0);
+                                CozyUtils.storeCheckInfo(mCurDevice);
+                                mCurDevice = null;
                                 finish();
                             }
                         })
@@ -234,7 +234,7 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
             switch (requestCode) {
                 case 0x12:
                     mCozyTestUnits = (ArrayList<CozyTestUnit>) data.getSerializableExtra("TestUnits");
-                    mCurCozy = (Cozy) data.getSerializableExtra("Cozy");
+                    mCurDevice = (Device) data.getSerializableExtra("Device");
                     mAdapter.notifyDataSetChanged();
                     checkTestComplete();
                     refreshBottomButton();
@@ -245,7 +245,7 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
 
     private void startTestDetail(boolean isAuto, int pos) {
         if(mTestState == TEST_STATE_CONNECTED) {
-            if(mCurCozy == null) {
+            if(mCurDevice == null) {
                 return;
             }
 
@@ -269,10 +269,10 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
             Intent intent = new Intent(CozyTestMainActivity.this, CozyTestDetailActivity.class);
             intent.putExtra("TestUnits", mCozyTestUnits);
             intent.putExtra("CurrentTestStep", pos);
-            intent.putExtra("Cozy", mCurCozy);
+            intent.putExtra("Device", mCurDevice);
             intent.putExtra("AutoTest", isAuto);
             intent.putExtra(CozyUtils.EXTRA_COZY_TESTER, mTester);
-            intent.putExtra(CozyUtils.EXTRA_COZY, mErrorCozy);
+            intent.putExtra(CozyUtils.EXTRA_COZY, mErrorDevice);
             startActivityForResult(intent, 0x12);
         } else {
             showShortToast(mInfoTestTextView.getText().toString());
@@ -443,20 +443,20 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
                         return;
                     }
 
-                    if(mErrorCozy != null) {
-                        if(!mErrorCozy.getMac().equals(mac)) {
-                            mInfoTestTextView.setText("设备信息不匹配，需要链接的设备MAC为：" + mErrorCozy.getMac());
+                    if(mErrorDevice != null) {
+                        if(!mErrorDevice.getMac().equals(mac)) {
+                            mInfoTestTextView.setText("设备信息不匹配，需要链接的设备MAC为：" + mErrorDevice.getMac());
                             PetkitSocketInstance.getInstance().disconnect();
                             return;
                         }
                     }
 
-                    mCurCozy = new Cozy(mac, sn, chipid);
+                    mCurDevice = new Device(mac, sn, chipid);
 
                     mInfoTestTextView.append(stringBuilder.toString());
 
                     HashMap<String, Object> params = new HashMap<>();
-                    params.put("mac", mCurCozy.getMac());
+                    params.put("mac", mCurDevice.getMac());
                     params.put("state", getTestTypeCode());
                     params.put("opt", 0);
                     PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(160, params));
@@ -500,12 +500,12 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
                 }
                 break;
             case 166:
-//                if (mCurCozy == null) {
+//                if (mCurDevice == null) {
 //                    return;
 //                }
 //
 //                HashMap<String, Object> params = new HashMap<>();
-//                params.put("mac", mCurCozy.getMac());
+//                params.put("mac", mCurDevice.getMac());
 //                PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(167, params));
                 break;
 //            case 167:
@@ -599,10 +599,10 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
 
         if(position >= mCozyTestUnits.size() - 1) {       //维修和抽检，最后一项打印标签可以不执行，其他项都完成了就算成功
             if (mTestType == CozyUtils.TYPE_MAINTAIN) {
-                CozyUtils.storeMainTainInfo(mCurCozy);
+                CozyUtils.storeMainTainInfo(mCurDevice);
             } else if (mTestType == CozyUtils.TYPE_CHECK) {
-                mCurCozy.setInspectStatus(1);
-                CozyUtils.storeCheckInfo(mCurCozy);
+                mCurDevice.setInspectStatus(1);
+                CozyUtils.storeCheckInfo(mCurDevice);
             } else if (mTestType == CozyUtils.TYPE_TEST_PARTIALLY) {
                 testComplete = position >= mCozyTestUnits.size();
             } else if (mTestType == CozyUtils.TYPE_TEST) {

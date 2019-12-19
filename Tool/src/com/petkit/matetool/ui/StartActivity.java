@@ -29,6 +29,7 @@ import com.petkit.matetool.ui.go.GoTestMainActivity;
 import com.petkit.matetool.ui.mate.SelectActivity;
 import com.petkit.matetool.ui.permission.PermissionDialogActivity;
 import com.petkit.matetool.ui.permission.mode.PermissionBean;
+import com.petkit.matetool.ui.t3.T3TestPrepareActivity;
 import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.Utils;
 import com.petkit.matetool.widget.LoadDialog;
@@ -40,9 +41,10 @@ import static com.petkit.matetool.utils.Consts.TOOL_FEEDER_MINI_VERSION;
 import static com.petkit.matetool.utils.Consts.TOOL_FEEDER_VERSION;
 import static com.petkit.matetool.utils.Consts.TOOL_GO_VERSION;
 import static com.petkit.matetool.utils.Consts.TOOL_MATE_VERSION;
+import static com.petkit.matetool.utils.Consts.TOOL_T3_VERSION;
 
 /**
- * 测试工具入口，设置测试mate类型和工位
+ * 测试工具入口，设置测试设备类型和工位
  *
  * Created by Jone on 2015/10/23.
  */
@@ -151,6 +153,11 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
                         bundle.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
                         startActivityWithData(GoTestMainActivity.class, bundle, false);
                         break;
+                    case Globals.T3:
+                        bundle = new Bundle();
+                        bundle.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
+                        startActivityWithData(T3TestPrepareActivity.class, bundle, false);
+                        break;
                 }
                 collapseSoftInputMethod(fixtureNumberEditText);
                 break;
@@ -178,6 +185,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
             case R.id.feeder_mini:
                 testStyle = Globals.FEEDER_MINI;
                 break;
+            case R.id.toilet:
+                testStyle = Globals.T3;
+                break;
             default:
                 break;
         }
@@ -203,6 +213,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
 
         tempRadioButton = (RadioButton) findViewById(R.id.feeder_mini);
         tempRadioButton.setText("喂食器Mini" + " v" + TOOL_FEEDER_MINI_VERSION);
+
+        tempRadioButton = (RadioButton) findViewById(R.id.toilet);
+        tempRadioButton.setText("自动猫厕所" + " v" + TOOL_T3_VERSION);
     }
 
     private void registerBoradcastReceiver() {

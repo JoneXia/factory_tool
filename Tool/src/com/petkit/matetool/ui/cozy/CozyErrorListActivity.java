@@ -14,9 +14,9 @@ import com.petkit.android.utils.ConvertDipPx;
 import com.petkit.android.utils.DateUtil;
 import com.petkit.matetool.R;
 import com.petkit.matetool.ui.base.BaseListActivity;
-import com.petkit.matetool.ui.cozy.mode.Cozy;
+import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.Tester;
-import com.petkit.matetool.ui.cozy.mode.CozysError;
+import com.petkit.matetool.model.DevicesError;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.widget.pulltorefresh.PullToRefreshBase;
 
@@ -29,7 +29,7 @@ public class CozyErrorListActivity extends BaseListActivity {
 
     private Tester mTester;
 
-    private CozysError mCozysError;
+    private DevicesError mDevicesError;
     private CozysListAdapter mAdapter;
 
     private int mSelectPosition;
@@ -59,7 +59,7 @@ public class CozyErrorListActivity extends BaseListActivity {
 
         mListView.setMode(PullToRefreshBase.Mode.DISABLED);
 
-        mCozysError = CozyUtils.getCozysErrorMsg();
+        mDevicesError = CozyUtils.getCozysErrorMsg();
 
         mAdapter = new CozysListAdapter();
         mListView.setAdapter(mAdapter);
@@ -84,7 +84,7 @@ public class CozyErrorListActivity extends BaseListActivity {
 
         Intent intent = new Intent(this, CozyTestMainActivity.class);
         intent.putExtra(CozyUtils.EXTRA_COZY_TESTER, mTester);
-        intent.putExtra("TestType", position < mCozysError.getMac().size() ? CozyUtils.TYPE_DUPLICATE_MAC : CozyUtils.TYPE_DUPLICATE_SN);
+        intent.putExtra("TestType", position < mDevicesError.getMac().size() ? CozyUtils.TYPE_DUPLICATE_MAC : CozyUtils.TYPE_DUPLICATE_SN);
         intent.putExtra(CozyUtils.EXTRA_COZY, mAdapter.getItem(position));
         startActivityForResult(intent, 0x11);
     }
@@ -95,12 +95,12 @@ public class CozyErrorListActivity extends BaseListActivity {
 
         if(resultCode == RESULT_OK) {
             if(requestCode == 0x11) {
-                if(mSelectPosition < mCozysError.getMac().size()) {
-                    mCozysError.getMac().remove(mSelectPosition);
+                if(mSelectPosition < mDevicesError.getMac().size()) {
+                    mDevicesError.getMac().remove(mSelectPosition);
                 } else {
-                    mCozysError.getSn().remove(mSelectPosition - mCozysError.getMac().size());
+                    mDevicesError.getSn().remove(mSelectPosition - mDevicesError.getMac().size());
                 }
-                CozyUtils.storeDuplicatedInfo(mCozysError);
+                CozyUtils.storeDuplicatedInfo(mDevicesError);
 
                 if(mAdapter.getCount() == 0) {
                     showShortToast("异常已经处理完成！");
@@ -126,15 +126,15 @@ public class CozyErrorListActivity extends BaseListActivity {
 
         @Override
         public int getCount() {
-            return mCozysError.getMac().size() + mCozysError.getSn().size();
+            return mDevicesError.getMac().size() + mDevicesError.getSn().size();
         }
 
         @Override
-        public Cozy getItem(int position) {
-            if(position < mCozysError.getMac().size()) {
-                return mCozysError.getMac().get(position);
+        public Device getItem(int position) {
+            if(position < mDevicesError.getMac().size()) {
+                return mDevicesError.getMac().get(position);
             } else {
-                return mCozysError.getSn().get(position - mCozysError.getMac().size());
+                return mDevicesError.getSn().get(position - mDevicesError.getMac().size());
             }
         }
 
@@ -147,7 +147,7 @@ public class CozyErrorListActivity extends BaseListActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
 
             ViewHolder viewHolder;
-            Cozy item = getItem(position);
+            Device item = getItem(position);
 
             if(convertView == null) {
                 convertView = LayoutInflater.from(CozyErrorListActivity.this).inflate(R.layout.adapter_feeder_list, parent, false);
@@ -165,7 +165,7 @@ public class CozyErrorListActivity extends BaseListActivity {
             Date date = new Date();
             date.setTime(item.getCreation());
             viewHolder.date.setText(DateUtil.formatDate(date));
-            viewHolder.state.setText(position < mCozysError.getMac().size() ? "MAC地址重复" : "SN重复");
+            viewHolder.state.setText(position < mDevicesError.getMac().size() ? "MAC地址重复" : "SN重复");
 
             return convertView;
         }

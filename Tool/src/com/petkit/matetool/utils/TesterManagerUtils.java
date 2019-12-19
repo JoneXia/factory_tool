@@ -8,6 +8,7 @@ import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.ui.feeder.utils.FeederUtils;
 import com.petkit.matetool.ui.feederMini.utils.FeederMiniUtils;
+import com.petkit.matetool.ui.t3.utils.T3Utils;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,6 +27,7 @@ public class TesterManagerUtils {
         getCurrentTesterForType(Globals.FEEDER);
         getCurrentTesterForType(Globals.COZY);
         getCurrentTesterForType(Globals.FEEDER_MINI);
+        getCurrentTesterForType(Globals.T3);
     }
 
 
@@ -44,6 +46,9 @@ public class TesterManagerUtils {
                     break;
                 case Globals.FEEDER_MINI:
                     testerString = CommonUtils.getSysMap(FeederMiniUtils.SHARED_FEEDER_MINI_TESTER);
+                    break;
+                case Globals.T3:
+                    testerString = CommonUtils.getSysMap(T3Utils.SHARED_T3_TESTER);
                     break;
             }
             if(!TextUtils.isEmpty(testerString)) {
@@ -68,6 +73,9 @@ public class TesterManagerUtils {
                 break;
             case Globals.FEEDER_MINI:
                 CommonUtils.addSysMap(FeederMiniUtils.SHARED_FEEDER_MINI_TESTER, testerString);
+                break;
+            case Globals.T3:
+                CommonUtils.addSysMap(T3Utils.SHARED_T3_TESTER, testerString);
                 break;
         }
 
@@ -99,6 +107,9 @@ public class TesterManagerUtils {
                         break;
                     case Globals.FEEDER_MINI:
                         CommonUtils.addSysMap(FeederMiniUtils.SHARED_FEEDER_MINI_TESTER, "");
+                        break;
+                    case Globals.T3:
+                        CommonUtils.addSysMap(T3Utils.SHARED_T3_TESTER, "");
                         break;
                 }
                 iterator.remove();

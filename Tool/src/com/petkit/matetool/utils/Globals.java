@@ -41,6 +41,7 @@ public class Globals {
 	public static final int COZY =4;
 	public static final int GO =5;
 	public static final int FEEDER_MINI =6;
+	public static final int T3 = 7;
 //	public static int g_testStyle = 0;
 
 	public static ArrayList<String> mTestItem = new ArrayList<String>();

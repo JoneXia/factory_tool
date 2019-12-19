@@ -22,9 +22,9 @@ import com.petkit.matetool.http.AsyncHttpRespHandler;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
-import com.petkit.matetool.ui.feeder.zxing.ScanListener;
-import com.petkit.matetool.ui.feeder.zxing.ScanManager;
-import com.petkit.matetool.ui.feeder.zxing.decode.DecodeThread;
+import com.petkit.matetool.ui.utils.zxing.ScanListener;
+import com.petkit.matetool.ui.utils.zxing.ScanManager;
+import com.petkit.matetool.ui.utils.zxing.decode.DecodeThread;
 import com.petkit.matetool.utils.JSONUtils;
 
 import org.json.JSONException;

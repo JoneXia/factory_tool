@@ -115,7 +115,7 @@
                 android:layout_margin="5dp"
                 android:background="@drawable/scanning_line" />
 
-            <com.petkit.matetool.ui.feeder.zxing.MyImageView
+            <com.petkit.matetool.ui.utils.zxing.MyImageView
                 android:id="@+id/scan_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
