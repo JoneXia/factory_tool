@@ -22,15 +22,25 @@ public class WifiAdminSimple {
 	}
 
 	public String getWifiConnectedSsid() {
-		WifiInfo mWifiInfo = getConnectionInfo();
 		String ssid = null;
-		if (mWifiInfo != null && isWifiConnected()) {
-			int len = mWifiInfo.getSSID().length();
-			if (mWifiInfo.getSSID().startsWith("\"")
-					&& mWifiInfo.getSSID().endsWith("\"")) {
-				ssid = mWifiInfo.getSSID().substring(1, len - 1);
-			} else {
+		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.LOLLIPOP) {
+			ConnectivityManager ctm = (ConnectivityManager) mContext.
+					getSystemService(Context.CONNECTIVITY_SERVICE);
+			NetworkInfo networkInfo = ctm.getActiveNetworkInfo();
+			if (networkInfo != null && networkInfo.isConnected()) {
+				ssid = networkInfo.getExtraInfo();
+			}
+		} else {
+			WifiInfo mWifiInfo = getConnectionInfo();
+			if (mWifiInfo != null && isWifiConnected()) {
 				ssid = mWifiInfo.getSSID();
+			}
+		}
+		if (ssid != null) {
+			int len = ssid.length();
+			if (ssid.startsWith("\"")
+					&& ssid.endsWith("\"")) {
+				ssid = ssid.substring(1, len - 1);
 			}
 
 		}

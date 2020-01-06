@@ -4,11 +4,11 @@ import com.petkit.android.http.AsyncHttpUtil;
 
 public class ApiTools {
 
-//	public static final String MODEL = "TEST";
-	public static final String MODEL = "PRD";
+	public static final String MODEL = "TEST";
+//	public static final String MODEL = "PRD";
 
 	public static String SAMPLE_API_URI =
-			MODEL.equals("TEST") ? "sandbox.factory.petkit.com" : "factory.petkit.com";
+			MODEL.equals("TEST") ? "sandbox-factory.petkit.com" : "factory.petkit.com";
 
 	public static String getSampleApiUri() {
 		return getApiHTTPUri();

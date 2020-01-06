@@ -1,6 +1,7 @@
 package com.petkit.matetool.ui.t3;
 
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.ScanFilter;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,10 +17,12 @@ import android.widget.TextView;
 import com.dothantech.lpapi.IAtBitmap;
 import com.dothantech.printer.IDzPrinter;
 import com.google.gson.Gson;
+import com.petkit.android.ble.DeviceInfo;
 import com.petkit.android.utils.LogcatStorageHelper;
 import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
-import com.petkit.matetool.ble.BlufiBLEManager;
+import com.petkit.matetool.ble.PetkitBLEConsts;
+import com.petkit.matetool.ble.PetkitBLEManager;
 import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.DeviceModuleStateStruct;
 import com.petkit.matetool.model.Tester;
@@ -148,7 +151,7 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 mPromptTextView.setText("需要分别测试菜单按键和OK按键！");
                 break;
             case TEST_MODE_DC:
-                mPromptTextView.setText("正常电压范围（单位mV）：[5000, 7000]");
+                mPromptTextView.setText("正常电压范围（单位mV）：[11000, 13000]");
                 break;
             case TEST_MODE_LED:
                 mPromptTextView.setText("测试显示屏和蜂鸣器，观察是否正常！");
@@ -439,7 +442,7 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 switch (moduleStateStruct.getModule()) {
                     case 0:
                         desc.append("\n").append("直流电压").append(":").append(moduleStateStruct.getSub0()).append("mv");
-                        result = moduleStateStruct.getSub0() >= 5000 && moduleStateStruct.getSub0() <= 7000;
+                        result = moduleStateStruct.getSub0() >= 11000 && moduleStateStruct.getSub0() <= 13000;
                         break;
                     case 1:
                         if(moduleStateStruct.getState() == 0) {
@@ -467,23 +470,53 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         result = mTempResult == 0x111;
                         break;
                     case 3:
-                        desc.append("\n").append("红外").append("-").append("门").append("：").append((moduleStateStruct.getSub0() & 0x1) == 1 ? "正常" : "异常")
-                                .append("-").append("排废盒").append("：").append((moduleStateStruct.getSub0() & 0x1000) == 1 ? "正常" : "异常")
-                                .append("-").append("防夹左").append("：").append((moduleStateStruct.getSub0() & 0x10) == 1 ? "正常" : "异常")
-                                .append("-").append("防夹右").append("：").append((moduleStateStruct.getSub0() & 0x100) == 1 ? "正常" : "异常");
+                        desc.append("\n").append("红外").append("-");
 
-                        mTempResult = (mTempResult | moduleStateStruct.getState());
-                        result = mTempResult == 0x1111;
+                        if ((moduleStateStruct.getState() & 0x1) == 1) {
+                            mTempResult = (mTempResult | 0x10);
+                            desc.append("门：遮挡；");
+                        } else {
+                            mTempResult = (mTempResult | 0x1);
+                            desc.append("门：不遮挡；");
+                        }
+                        if ((moduleStateStruct.getState()>>1 & 0x1) == 1) {
+                            mTempResult = (mTempResult | 0x1000);
+                            desc.append("防夹左：遮挡； \n");
+                        } else {
+                            mTempResult = (mTempResult | 0x100);
+                            desc.append("防夹左：不遮挡； \n");
+                        }
+                        if ((moduleStateStruct.getState()>>2 & 0x1) == 1) {
+                            mTempResult = (mTempResult | 0x100000);
+                            desc.append("防夹右：遮挡；");
+                        } else {
+                            mTempResult = (mTempResult | 0x10000);
+                            desc.append("防夹右：不遮挡；");
+                        }
+                        if ((moduleStateStruct.getState()>>3 & 0x1) == 1) {
+                            mTempResult = (mTempResult | 0x10000000);
+                            desc.append("排废盒：遮挡；\n----");
+                        } else {
+                            mTempResult = (mTempResult | 0x1000000);
+                            desc.append("排废盒：不遮挡；\n----");
+                        }
+                        result = mTempResult == 0x11111111;
                         break;
                     case 4:
-                        desc.append("\n").append("电机").append("-").append(moduleStateStruct.getState() == 1 ? "正常" : "异常")
-                                .append("-").append("霍尔").append("：").append((moduleStateStruct.getSub0() & 0x1) == 1 ? "初始位置到位" :
-                                ((moduleStateStruct.getSub0() & 0x10) == 1 ? "排废位置到位" : "不到位"))
-                                .append("-").append("码盘记步数").append("：").append(moduleStateStruct.getSub1())
-                                .append("-").append("电流").append("：").append((moduleStateStruct.getSub2()) == 1 ? "正常" : "异常");
+                        desc.append("\n").append("电机").append("-").append(moduleStateStruct.getState() == 1 ? "正常" : "异常").append("\n")
+                                .append("霍尔").append("：").append((moduleStateStruct.getSub0() & 0x1) == 1 ? "初始位置到位" :
+                                ((moduleStateStruct.getSub0()>>1 & 0x1) == 1 ? "排废位置到位" : "不到位"))
+                                .append("\n").append("码盘记步数").append("：").append(moduleStateStruct.getSub1())
+                                .append("\n").append("电流").append("：").append((moduleStateStruct.getSub2()) == 1 ? "正常" : "异常").append("\n-----");
+
 
                         if (moduleStateStruct.getState() > 0) {
-                            mTempResult = (mTempResult | moduleStateStruct.getSub0());
+                            if ((moduleStateStruct.getSub0() & 0x1) == 1) {
+                                mTempResult = (mTempResult | 0x1);
+                            }
+                            if ((moduleStateStruct.getSub0()>>1 & 0x1) == 1) {
+                                mTempResult = (mTempResult | 0x10);
+                            }
                         }
                         result = mTempResult == 0x11;
                         break;
@@ -557,6 +590,7 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                     case 10:
                         desc.append("\n").append("蓝牙").append(":").append("已打开");
                         //TODO: 连接蓝牙
+                        startBleTest(moduleStateStruct.getBtMac());
                         break;
                     case 11:
                         if(!isEmpty(moduleStateStruct.getTime())) {
@@ -881,8 +915,88 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
 
 
     private void startBleTest(String mac) {
+
+        if (mac == null) {
+            mDescTextView.append("\n蓝牙MAC异常，测试失败");
+        } else if (mac.length() == 12) {
+            StringBuffer stringBuffer = new StringBuffer(mac);
+//            stringBuffer.append(mac, 0, 2).append(":").append(mac, 2, 2).append(":")
+//                    .append(mac, 4, 2).append(":").append(mac, 6, 2).append(":")
+//                    .append(mac, 8, 2).append(":").append(mac, 10, 2);
+            stringBuffer.insert(10,':');
+            stringBuffer.insert(8,':');
+            stringBuffer.insert(6,':');
+            stringBuffer.insert(4,':');
+            stringBuffer.insert(2,':');
+            mac = stringBuffer.toString();
+        }
+
+
+        PetkitBLEManager.getInstance().setBleListener(new PetkitBLEManager.onPetkitBleListener() {
+
+            @Override
+            public void onLeScan(BluetoothDevice device, DeviceInfo deviceInfo) {
+                mDescTextView.append("\n搜索到设备");
+                PetkitBLEManager.getInstance().connect(T3TestDetailActivity.this, device);
+            }
+
+            @Override
+            public void onStateChanged(PetkitBLEConsts.ConnectState state) {
+                switch (state) {
+                    case BLE_STATE_CONNECTED:
+                        mDescTextView.append("\n蓝牙连接成功，开始连接GATT");
+                        break;
+                    case BLE_STATE_CONNECTING:
+                        mDescTextView.append("\n开始连接设备");
+                        break;
+                    case BLE_STATE_GATT_FAILED:
+                        mDescTextView.append("\nGATT连接失败，测试失败");
+                        break;
+                    case BLE_STATE_DISCONNECTED:
+                        mDescTextView.append("\n设备已断开连接");
+                        break;
+                    case BLE_STATE_GATT_SUCCESS:
+                        mDescTextView.append("\nGATT连接成功，开始查找服务");
+                        break;
+                    case BLE_STATE_CONNECT_FAILED:
+                        mDescTextView.append("\n设备连接失败，测试失败");
+                        break;
+                    case BLE_STATE_SERVICE_DISCOVERED_FAILED:
+                        mDescTextView.append("\n设备服务异常，测试失败");
+                        break;
+                    case BLE_STATE_SERVICE_DISCOVERED_SUCCESS:
+                        mDescTextView.append("\n查找服务成功，连接完成");
+
+                        HashMap<String, Object> data = new HashMap<>();
+                        data.put("key", 110);
+                        PetkitBLEManager.getInstance().postCustomData(new Gson().toJson(data));
+
+                        mDescTextView.append("\n开始发送数据");
+                        break;
+                }
+            }
+
+            @Override
+            public void onReceiveCustomData(int key, String data) {
+                switch (key) {
+                    case 110:
+                        mDescTextView.append("\n数据已接收，测试完成");
+
+                        mT3TestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                        refershBtnView();
+                        break;
+                }
+            }
+
+            @Override
+            public void onError(int errCode) {
+                mDescTextView.append("\n蓝牙出错，测试失败，errorCode： " + errCode);
+                LogcatStorageHelper.addLog("PetkitBleListener onError: " + errCode);
+            }
+        });
+
         ScanFilter scanFilter = new ScanFilter.Builder().setDeviceAddress(mac).build();
-        BlufiBLEManager.getInstance().startScan(scanFilter);
+        PetkitBLEManager.getInstance().startScan(scanFilter);
     }
 
 }

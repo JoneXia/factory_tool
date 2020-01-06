@@ -309,8 +309,7 @@ public class T3TestPrepareActivity extends BaseActivity {
     }
 
     private void getLastSN() {
-        //TODO: chagne to T3 api
-        AsyncHttpUtil.get("/api/feedermini/latest", new AsyncHttpRespHandler(this) {
+        AsyncHttpUtil.get("/api/t3/latest", new AsyncHttpRespHandler(this) {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -381,11 +380,11 @@ public class T3TestPrepareActivity extends BaseActivity {
 
         String api;
         if(FILE_MAINTAIN_INFO_NAME.equals(file.getName())) {
-            api = "/api/T3/maintain/repair";
+            api = "/api/t3/maintain/repair";
         } else if(FILE_CHECK_INFO_NAME.equals(file.getName())) {
-            api = "/api/T3/maintain/inspect";
+            api = "/api/t3/maintain/inspect";
         } else {
-            api = "/api/T3/batch";
+            api = "/api/t3/batch";
         }
 
         HashMap<String, String> params = new HashMap<>();

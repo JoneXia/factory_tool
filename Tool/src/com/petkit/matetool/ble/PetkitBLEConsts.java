@@ -1,17 +1,28 @@
 package com.petkit.matetool.ble;
 
-public class BlufiBLEConsts {
+import java.util.UUID;
 
+import blufi.espressif.params.BlufiParameter;
+
+public class PetkitBLEConsts {
+
+
+    public enum ConnectState{
+        BLE_STATE_CONNECTING,
+        BLE_STATE_CONNECTED,
+        BLE_STATE_CONNECT_FAILED,
+        BLE_STATE_GATT_SUCCESS,
+        BLE_STATE_GATT_FAILED,
+        BLE_STATE_DISCONNECTED,
+        BLE_STATE_SERVICE_DISCOVERED_SUCCESS,
+        BLE_STATE_SERVICE_DISCOVERED_FAILED
+    };
 
     public static final String BLUFI_BLE_EXTRA_ACTION = "BLUFI_BLE_EXTRA_ACTION";
     public static final String BLUFI_BLE_EXTRA_DEVICE = "BLUFI_BLE_EXTRA_DEVICE";
     public static final String BLUFI_BLE_EXTRA_DATA = "BLUFI_BLE_EXTRA_DATA";
     public static final String BLUFI_BLE_EXTRA_ERROR_CODE = "BLUFI_BLE_EXTRA_ERROR_CODE";
 
-    public static final int BLUFI_BLE_ACTION_DEFAULT = 0x00;
-
-    public static final int BLUFI_BLE_ACTION_CONNECT = 0x01;
-    public static final int BLUFI_BLE_ACTION_POST = 0x02;
 
 
     public static final String BROADCAST_BLUFI_BLE_GATT_SUCCESS  = "com.petkit.android.broadcast.BROADCAST_BLUFI_BLE_GATT_SUCCESS";
@@ -23,19 +34,20 @@ public class BlufiBLEConsts {
     public static final String BROADCAST_BLUFI_BLE_RECEIVE_MESSAGE  = "com.petkit.android.broadcast.BROADCAST_BLUFI_BLE_RECEIVE_MESSAGE";
     public static final String BROADCAST_BLUFI_BLE_ERROR  = "com.petkit.android.broadcast.BROADCAST_BLUFI_BLE_ERROR";
 
-    public static final String BROADCAST_STOP_SCAN = "com.petkit.android.dfu.broadcast.BROADCAST_STOP_SCAN";
 
 
-    public static final String TYPE_POLLING_WIFI_STATUS_FROM_BLE = "TYPE_POLLING_WIFI_STATUS_FROM_BLE";
-    public static final String TYPE_POLLING_WIFI_STATUS_FROM_SERVER = "TYPE_POLLING_WIFI_STATUS_FROM_SERVER";
-
-    public static final String TYPE_POLLING_DEVICE_ONLINE_STATUS = "TYPE_POLLING_DEVICE_ONLINE_STATUS";
-
-
-
+    //获取设备信息
     public static final int MSG_BLUFI_BLE_GET_DEVICE_INFO = 110;
+    //设置Wi-Fi和server参数
     public static final int MSG_BLUFI_BLE_SEND_WIFI_INFO = 151;
+    //获取设备联网状态
     public static final int MSG_BLUFI_BLE_GET_DEVICE_NET_STATUS = 112;
+    //获取设备网络信息
+    public static final int MSG_BLUFI_BLE_GET_DEVICE_NET_INFO = 111;
+    //设备log发送
+    public static final int MSG_BLUFI_BLE_RECEIVE_DEVICE_LOG = 200;
+    //断开连接
+    public static final int MSG_BLUFI_BLE_DISCONNECT = 101;
 
     /**
      * 获取设备联网状态
@@ -61,5 +73,36 @@ public class BlufiBLEConsts {
     public static final int DEVICE_NET_STATUS_IOT_HTTP_CONNECTING = 9;
     public static final int DEVICE_NET_STATUS_IOT_HTTP_ONLINE = 10;
 
+
+    public static final int TYPE_BLE_SCAN = 1;//蓝牙扫描
+    public static final int TYPE_BLE_CONNECT = 2;//蓝牙连接
+    public static final int TYPE_BLE_SEND_MESSAGE = 3;//消息交互
+    public static final int TYPE_BLE_GET_WIFI_INFO = 4;//获取Wi-Fi状态
+    public static final int TYPE_BLE_BIND = 5;//绑定
+    public static final int TYPE_BLE_GET_DEVICE_STATUS = 6;//获取设备状态
+    public static final int TYPE_BLE_COMPLETE = 7;//完成
+
+
+    public static final int TYPE_BLE_CONNECT_ROUTER_FAIL = 8;//连接路由失败
+    public static final int TYPE_BLE_CONNECT_SERVER_FAIL = 9;//连接服务器失败
+
+
+    public static final String PREF_SETTINGS_NAME = "esp_settings";
+    public static final String PREF_SETTINGS_KEY_MTU_LENGTH = "esp_settings_mtu_length";
+    public static final String PREF_SETTINGS_KEY_BLE_PREFIX = "esp_settings_ble_prefix";
+
+    public static final String BLUFI_PREFIX = "BLUFI";
+
+    public static final UUID UUID_SERVICE = BlufiParameter.UUID_SERVICE;
+    public static final UUID UUID_WRITE_CHARACTERISTIC = BlufiParameter.UUID_WRITE_CHARACTERISTIC;
+    public static final UUID UUID_NOTIFICATION_CHARACTERISTIC = BlufiParameter.UUID_NOTIFICATION_CHARACTERISTIC;
+
+    public static final String KEY_BLE_DEVICE = "key_ble_device";
+
+    public static final String KEY_CONFIGURE_PARAM = "configure_param";
+
+    public static final int DEFAULT_MTU_LENGTH = 128;
+    public static final int MIN_MTU_LENGTH = 15;
+    public static final int MAX_MTU_LENGTH = 512;
 
 }

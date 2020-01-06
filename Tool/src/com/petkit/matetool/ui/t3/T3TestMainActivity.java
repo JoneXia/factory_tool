@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.LayoutInflater;
@@ -108,6 +110,8 @@ public class T3TestMainActivity extends BaseActivity implements PetkitSocketInst
                 startTestDetail(false, position);
             }
         });
+
+        checkPermission();
     }
 
     @Override
@@ -286,14 +290,14 @@ public class T3TestMainActivity extends BaseActivity implements PetkitSocketInst
             switch (mTestType) {
                 case T3Utils.TYPE_TEST_PARTIALLY:
                     if (!apSsid.toUpperCase().startsWith("PETKIT_TOILET_A_HW1_")) {
-                        mInfoTestTextView.setText("请先连接到PETKIT_TOILET_A_开头的WIFI，再进行测试！");
+                        mInfoTestTextView.setText("请先连接到PETKIT_TOILET_A_HW1_开头的WIFI，再进行测试！");
                     } else {
                         connectAp();
                     }
                     break;
                 case T3Utils.TYPE_TEST:
                     if (!apSsid.toUpperCase().startsWith("PETKIT_TOILET_B_HW1_")) {
-                        mInfoTestTextView.setText("请先连接到PETKIT_TOILET_B_开头的WIFI，再进行测试！");
+                        mInfoTestTextView.setText("请先连接到PETKIT_TOILET_B_HW1_开头的WIFI，再进行测试！");
                         return;
                     } else {
                         connectAp();
@@ -423,9 +427,9 @@ public class T3TestMainActivity extends BaseActivity implements PetkitSocketInst
                     if (!jsonObject.isNull("version")) {
                         stringBuilder.append("version: ").append(jsonObject.getString("version")).append("\n");
                     }
-                    if (!jsonObject.isNull("id")) {
-                        stringBuilder.append("id: ").append(jsonObject.getInt("id")).append("\n");
-                    }
+//                    if (!jsonObject.isNull("id")) {
+//                        stringBuilder.append("id: ").append(jsonObject.getInt("id")).append("\n");
+//                    }
 
                     if(isEmpty(mac)) {
                         mInfoTestTextView.setText("设备信息不正确，没有MAC地址！");
@@ -613,5 +617,42 @@ public class T3TestMainActivity extends BaseActivity implements PetkitSocketInst
     public void cancel(View view) {
         onBackPressed();
     }
+
+    private void checkPermission() {
+        WifiManager mWifiManager = (WifiManager) getApplication().getApplicationContext().getSystemService(WIFI_SERVICE);
+
+        LocationManager locationManager = (LocationManager)
+                getSystemService(Context.LOCATION_SERVICE);
+        if (!mWifiManager.isWifiEnabled()) {
+            showLongToast("请先打开手机Wi-Fi");
+            return;
+        }
+        // 判断GPS模块是否开启，如果没有则跳转至设置开启界面，设置完毕后返回到首页
+        if (!locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)) {
+            showWifiPermissionDialog();
+        }
+    }
+
+    private void showWifiPermissionDialog() {
+
+        new AlertDialog.Builder(this)
+                .setCancelable(false)
+                .setTitle(R.string.Prompt)
+                .setMessage("无法获取WiFi信息，Android系统要求打开GPS定位服务才能获取到WiFi信息，请开启。")
+                .setPositiveButton(R.string.OK,
+                        (dialog, which) -> {
+                            // 转到手机设置界面，用户设置GPS
+                            Intent intent = new Intent(
+                                    Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivityForResult(intent, 0); // 设置完成后返回到原来的界面
+                        })
+                .setNegativeButton(R.string.Cancel,
+                        (dialog, which) -> {
+                            dialog.dismiss();
+                        }).show();
+
+    }
+
+
 
 }

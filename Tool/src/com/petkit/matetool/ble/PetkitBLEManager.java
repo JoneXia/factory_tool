@@ -14,20 +14,23 @@ import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Context;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
-import android.support.v4.content.LocalBroadcastManager;
 
-import com.petkit.android.ble.BLEConsts;
 import com.petkit.android.ble.DeviceInfo;
-import com.petkit.android.utils.CommonUtils;
+import com.petkit.android.utils.LogcatStorageHelper;
 import com.petkit.android.utils.PetkitLog;
 import com.petkit.android.utils.PetkitToast;
+import com.petkit.matetool.utils.JSONUtils;
 
-import java.text.SimpleDateFormat;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -38,31 +41,50 @@ import blufi.espressif.response.BlufiStatusResponse;
 import blufi.espressif.response.BlufiVersionResponse;
 
 
-public class BlufiBLEManager {
+public class PetkitBLEManager {
 
     private BlufiClient mBlufiClient;
-    protected BluetoothAdapter mBluetoothAdapter;
     private BluetoothAdapter adapter;
     private Timer timer;
-    private SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private GattCallback gattCallback;
+    private BlufiCallbackMain blufiCallbackMain;
+    private SharedPreferences mSettingsShared;
+    private Context context;
+    private BluetoothDevice bluetoothDevice;
+    public static final int BLE_SCAN_TIME = 15000;
 
-    private BlufiBLEManager() {
+    private onPetkitBleListener mBleListener;
+
+    private PetkitBLEManager() {
+
     }
 
-    public static BlufiBLEManager getInstance() {
+    public static PetkitBLEManager getInstance() {
         return BlufiBLEManagerHolder.INSTANCE;
     }
 
+    public void setBleListener(onPetkitBleListener bleListener) {
+        mBleListener = bleListener;
+    }
+
     public void getBlufiClient(Context context, BluetoothDevice device) {
+        this.context = context;
         close();
+        mSettingsShared = context.getSharedPreferences(PetkitBLEConsts.PREF_SETTINGS_NAME, Context.MODE_PRIVATE);
         mBlufiClient = new BlufiClient(context, device);
+
+//        mBlufiClient.negotiateSecurity();//加密
+//        mBlufiClient.setPostPackageLengthLimit(128);// 发送数据每包数据最大长度
     }
 
 
     public void close() {
+
         if (mBlufiClient != null) {
+            mBlufiClient.requestCloseConnection();
             mBlufiClient.close();
             mBlufiClient = null;
+
         }
     }
 
@@ -87,7 +109,7 @@ public class BlufiBLEManager {
         }
     }
 
-    public void startScan(ScanFilter... scanFilter) {
+    public void startScan(ScanFilter... filters) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             adapter = BluetoothAdapter.getDefaultAdapter();
             BluetoothLeScanner scanner = null;
@@ -96,9 +118,7 @@ public class BlufiBLEManager {
                 PetkitToast.showToast("蓝牙未开启");
                 return;
             }
-
-
-            scanner.startScan(Arrays.asList(scanFilter), new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build(), scanCallback);
+            scanner.startScan(filters.length > 0 && filters[0] != null ? Arrays.asList(filters) : null, new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build(), scanCallback);
 
             timer = new Timer();
             timer.schedule(new TimerTask() {
@@ -111,7 +131,7 @@ public class BlufiBLEManager {
                         }
                     }
                 }
-            }, 15);
+            }, BLE_SCAN_TIME);
 
         } else {
             if (!adapter.isEnabled()) {
@@ -128,7 +148,7 @@ public class BlufiBLEManager {
                         adapter.stopLeScan(leScanCallback);
                     }
                 }
-            }, 15);
+            }, BLE_SCAN_TIME);
         }
 
     }
@@ -137,9 +157,10 @@ public class BlufiBLEManager {
         @Override
         public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
             DeviceInfo deviceInfo = createDeviceInfo(device, rssi, scanRecord);
-            final Intent broadcast = new Intent(BLEConsts.BROADCAST_SCANED_DEVICE);
-            broadcast.putExtra(BLEConsts.EXTRA_DEVICE_INFO, deviceInfo);
-            LocalBroadcastManager.getInstance(CommonUtils.getAppContext()).sendBroadcast(broadcast);
+
+            if (mBleListener != null) {
+                mBleListener.onLeScan(device, deviceInfo);
+            }
         }
     };
 
@@ -148,13 +169,13 @@ public class BlufiBLEManager {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
-            PetkitLog.d("ScanResult: " + result.toString());
             BluetoothDevice device = result.getDevice();
             DeviceInfo deviceInfo = createDeviceInfo(device, result.getRssi(), result.getScanRecord().getBytes());
-            PetkitLog.d("deviceInfo: " + deviceInfo.toString());
-            final Intent broadcast = new Intent(BLEConsts.BROADCAST_SCANED_DEVICE);
-            broadcast.putExtra(BLEConsts.EXTRA_DEVICE_INFO, deviceInfo);
-            LocalBroadcastManager.getInstance(CommonUtils.getAppContext()).sendBroadcast(broadcast);
+
+            if (mBleListener != null) {
+                mBleListener.onLeScan(device, deviceInfo);
+            }
+
         }
 
         @Override
@@ -179,12 +200,15 @@ public class BlufiBLEManager {
     @SuppressLint("NewApi")
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     public void connect(Context context, BluetoothDevice device) {
+        bluetoothDevice = device;
         getBlufiClient(context, device);
-//        mBlufiClient.negotiateSecurity();
-        mBlufiClient.setGattCallback(new GattCallback());
-        mBlufiClient.setBlufiCallback(new BlufiCallbackMain());
+        gattCallback = new GattCallback();
+        blufiCallbackMain = new BlufiCallbackMain();
+        mBlufiClient.setGattCallback(gattCallback);
+        mBlufiClient.setBlufiCallback(blufiCallbackMain);
         mBlufiClient.connect();
-        PetkitLog.d(getClass().getSimpleName(), "connect begin:" + format.format(System.currentTimeMillis()));
+
+        changeConnectState(PetkitBLEConsts.ConnectState.BLE_STATE_CONNECTING);
     }
 
     /**
@@ -192,16 +216,17 @@ public class BlufiBLEManager {
      *
      * @param data
      */
-    public void postCustomData(byte[] data) {
+    public void postCustomData(String data) {
         if (mBlufiClient == null) {
-            PetkitLog.e(getClass().getSimpleName(), "BlufiClient is null");
+            PetkitLog.d(getClass().getSimpleName(), "BlufiClient is null");
             return;
         }
-        PetkitLog.d(getClass().getSimpleName(), "post message:" + new String(data));
+        PetkitLog.d(getClass().getSimpleName(), "postCustomData:" + data);
         try {
-            mBlufiClient.postCustomData(data);
+            mBlufiClient.postCustomData(data.getBytes());
         } catch (Exception e) {
-            PetkitLog.e(getClass().getSimpleName(), e.getMessage());
+            PetkitLog.d(getClass().getSimpleName(), e.getMessage());
+            //TODO: RETRY?
         }
     }
 
@@ -212,79 +237,72 @@ public class BlufiBLEManager {
     private class GattCallback extends BluetoothGattCallback {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-            PetkitLog.d(getClass().getSimpleName(), "onConnectionStateChange time:" + format.format(System.currentTimeMillis()));
-
             String devAddr = gatt.getDevice().getAddress();
             PetkitLog.d(String.format("onConnectionStateChange addr=%s, status=%d, newState=%d",
                     devAddr, status, newState));
             if (status == BluetoothGatt.GATT_SUCCESS) {// 成功执行连接
-                Intent broadcast = new Intent(BlufiBLEConsts.BROADCAST_BLUFI_BLE_GATT_SUCCESS);
-                LocalBroadcastManager.getInstance(CommonUtils.getAppContext()).sendBroadcast(broadcast);
+                changeConnectState(PetkitBLEConsts.ConnectState.BLE_STATE_GATT_SUCCESS);
                 switch (newState) {
                     case BluetoothProfile.STATE_CONNECTED: {
                         // 连接状态：已连接
-                        Intent intent = new Intent(BlufiBLEConsts.BROADCAST_BLUFI_BLE_STATE_CONNECTED);
-                        LocalBroadcastManager.getInstance(CommonUtils.getAppContext()).sendBroadcast(intent);
+                        changeConnectState(PetkitBLEConsts.ConnectState.BLE_STATE_CONNECTED);
                     }
                     break;
                     case BluetoothProfile.STATE_DISCONNECTED: {
                         // 连接状态：已断开
-                        Intent intent = new Intent(BlufiBLEConsts.BROADCAST_BLUFI_BLE_STATE_DISCONNECTED);
-                        LocalBroadcastManager.getInstance(CommonUtils.getAppContext()).sendBroadcast(intent);
+                        changeConnectState(PetkitBLEConsts.ConnectState.BLE_STATE_DISCONNECTED);
                         gatt.close();
                     }
                     break;
                 }
             } else {
-                Intent broadcast = new Intent(BlufiBLEConsts.BROADCAST_BLUFI_BLE_GATT_FAIL);
-                LocalBroadcastManager.getInstance(CommonUtils.getAppContext()).sendBroadcast(broadcast);
+
+                gatt.disconnect();
                 gatt.close();
+
+                changeConnectState(PetkitBLEConsts.ConnectState.BLE_STATE_GATT_FAILED);
             }
         }
 
         @Override
         public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
-//            PetkitLog.d(String.format(Locale.ENGLISH, "onMtuChanged status=%d, mtu=%d", status, mtu));
-//            if (status == BluetoothGatt.GATT_SUCCESS) {
-//                updateMessage(String.format(Locale.ENGLISH, "Set mtu complete, mtu=%d ", mtu), false);
-//
-//                if (mtu > 0 && mBlufiClient != null) {
-//                    int blufiPkgLenLimit = mtu - 3;
-//                    PetkitLog.d("BluFiClient setPostPackageLengthLimit " + blufiPkgLenLimit);
-//                    mBlufiClient.setPostPackageLengthLimit(blufiPkgLenLimit);
-//                }
-//            } else {
-//                updateMessage(String.format(Locale.ENGLISH, "Set mtu failed, mtu=%d, status=%d", mtu, status), false);
-//            }
-//
-//            onGattServiceCharacteristicDiscovered();
+            PetkitLog.d(String.format(Locale.ENGLISH, "onMtuChanged status=%d, mtu=%d", status, mtu));
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                PetkitLog.d(String.format(Locale.ENGLISH, "Set mtu complete, mtu=%d ", mtu));
+
+                if (mtu > 0 && mBlufiClient != null) {
+                    int blufiPkgLenLimit = mtu - 3;
+                    PetkitLog.d("BluFiClient setPostPackageLengthLimit " + blufiPkgLenLimit);
+                    mBlufiClient.setPostPackageLengthLimit(blufiPkgLenLimit);
+                }
+            } else {
+                PetkitLog.d(String.format(Locale.ENGLISH, "Set mtu failed, mtu=%d, status=%d", mtu, status));
+            }
+
 
         }
 
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             PetkitLog.d(String.format("onServicesDiscovered status=%d", status));
-            PetkitLog.d(getClass().getSimpleName(), "onServicesDiscovered time:" + format.format(System.currentTimeMillis()));
 
             //onConnectionStateChange成功调用 gatt.discoverService 方法。
             //当这一个方法被调用之后，系统会异步执行发现服务的过程，直到onServicesDiscovered 被系统回调之后，手机设备和蓝牙设备才算是真正建立了可通信的连接。
             if (status != BluetoothGatt.GATT_SUCCESS) {
-                Intent intent = new Intent(BlufiBLEConsts.BROADCAST_BLUFI_BLE_SERVICE_DISCOVERED_FAIL);
-                LocalBroadcastManager.getInstance(CommonUtils.getAppContext()).sendBroadcast(intent);
+                changeConnectState(PetkitBLEConsts.ConnectState.BLE_STATE_SERVICE_DISCOVERED_FAILED);
                 gatt.disconnect();
             } else {
-                Intent intent = new Intent(BlufiBLEConsts.BROADCAST_BLUFI_BLE_SERVICE_DISCOVERED_SUCCESS);
-                LocalBroadcastManager.getInstance(CommonUtils.getAppContext()).sendBroadcast(intent);
+                changeConnectState(PetkitBLEConsts.ConnectState.BLE_STATE_SERVICE_DISCOVERED_SUCCESS);
 
             }
         }
 
         @Override
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-            PetkitLog.d(characteristic.getValue() + " status:" + (status == BluetoothGatt.GATT_SUCCESS));
+            PetkitLog.d(" onCharacteristicWrite status:" + (status == BluetoothGatt.GATT_SUCCESS));
             if (status != BluetoothGatt.GATT_SUCCESS) {
                 gatt.disconnect();
-//                updateMessage(String.format(Locale.ENGLISH, "WriteChar error status %d", status), false);
+                PetkitLog.d(String.format(Locale.ENGLISH, "WriteChar error status %d", status));
             }
         }
     }
@@ -305,35 +323,30 @@ public class BlufiBLEManager {
         public void onGattPrepared(BlufiClient client, BluetoothGatt gatt, BluetoothGattService service,
                                    BluetoothGattCharacteristic writeChar, BluetoothGattCharacteristic notifyChar) {
             if (service == null) {
-                Intent intent = new Intent(BlufiBLEConsts.BROADCAST_BLUFI_BLE_SERVICE_DISCOVERED_FAIL);
-                LocalBroadcastManager.getInstance(CommonUtils.getAppContext()).sendBroadcast(intent);
+                changeConnectState(PetkitBLEConsts.ConnectState.BLE_STATE_SERVICE_DISCOVERED_FAILED);
                 PetkitLog.warn("Discover service failed");
                 gatt.disconnect();
                 return;
             }
             if (writeChar == null) {
-                Intent intent = new Intent(BlufiBLEConsts.BROADCAST_BLUFI_BLE_SERVICE_DISCOVERED_FAIL);
-                LocalBroadcastManager.getInstance(CommonUtils.getAppContext()).sendBroadcast(intent);
+                changeConnectState(PetkitBLEConsts.ConnectState.BLE_STATE_SERVICE_DISCOVERED_FAILED);
                 PetkitLog.warn("Get write characteristic failed");
                 gatt.disconnect();
                 return;
             }
             if (notifyChar == null) {
-                Intent intent = new Intent(BlufiBLEConsts.BROADCAST_BLUFI_BLE_SERVICE_DISCOVERED_FAIL);
-                LocalBroadcastManager.getInstance(CommonUtils.getAppContext()).sendBroadcast(intent);
+                changeConnectState(PetkitBLEConsts.ConnectState.BLE_STATE_SERVICE_DISCOVERED_FAILED);
                 PetkitLog.warn("Get notification characteristic failed");
                 gatt.disconnect();
                 return;
             }
 
-//            int mtu = (int) BlufiApp.getInstance().settingsGet(
-//                    SettingsConstants.PREF_SETTINGS_KEY_MTU_LENGTH, BlufiConstants.DEFAULT_MTU_LENGTH);
-//            boolean requestMtu = gatt.requestMtu(mtu);
-//            if (!requestMtu) {
-//                PetkitLog.warn("Request mtu failed");
-//                updateMessage(String.format(Locale.ENGLISH, "Request mtu %d failed", mtu), false);
-//                onGattServiceCharacteristicDiscovered();
-//            }
+            int mtu = (int) settingsGet(PetkitBLEConsts.PREF_SETTINGS_KEY_MTU_LENGTH, PetkitBLEConsts.DEFAULT_MTU_LENGTH);
+            boolean requestMtu = gatt.requestMtu(mtu);
+            if (!requestMtu) {
+                PetkitLog.warn("Request mtu failed");
+                PetkitLog.d(String.format(Locale.ENGLISH, "Request mtu %d failed", mtu));
+            }
         }
 
         /**
@@ -361,16 +374,15 @@ public class BlufiBLEManager {
         @Override
         public void onNegotiateSecurityResult(BlufiClient client, int status) {
             PetkitLog.d("onNegotiateSecurityResult:status:" + status);
-//            switch (status) {
-//                case STATUS_SUCCESS:
-//                    updateMessage("Negotiate security complete", false);
-//                    break;
-//                default:
-//                    updateMessage("Negotiate security failed， code=" + status, false);
-//                    break;
-//            }
+            switch (status) {
+                case STATUS_SUCCESS:
+                    PetkitLog.d("Negotiate security complete");
+                    break;
+                default:
+                    PetkitLog.d("Negotiate security failed， code=" + status);
+                    break;
+            }
 //
-//            mBlufiSecurityBtn.setEnabled(mConnected);
         }
 
         /**
@@ -381,16 +393,14 @@ public class BlufiBLEManager {
          */
         @Override
         public void onConfigureResult(BlufiClient client, int status) {
-//            switch (status) {
-//                case STATUS_SUCCESS:
-//                    updateMessage("Post configure params complete", false);
-//                    break;
-//                default:
-//                    updateMessage("Post configure params failed, code=" + status, false);
-//                    break;
-//            }
-//
-//            mBlufiConfigureBtn.setEnabled(mConnected);
+            switch (status) {
+                case STATUS_SUCCESS:
+                    PetkitLog.d("Post configure params complete");
+                    break;
+                default:
+                    PetkitLog.d("Post configure params failed, code=" + status);
+                    break;
+            }
         }
 
         /**
@@ -411,7 +421,6 @@ public class BlufiBLEManager {
                     break;
             }
 
-//            mBlufiDeviceStatusBtn.setEnabled(mConnected);
         }
 
         /**
@@ -423,21 +432,20 @@ public class BlufiBLEManager {
          */
         @Override
         public void onDeviceScanResult(BlufiClient client, int status, List<BlufiScanResult> results) {
-//            switch (status) {
-//                case STATUS_SUCCESS:
-//                    StringBuilder msg = new StringBuilder();
-//                    msg.append("Receive device scan result:\n");
-//                    for (BlufiScanResult scanResult : results) {
-//                        msg.append(scanResult.toString()).append("\n");
-//                    }
-//                    updateMessage(msg.toString(), true);
-//                    break;
-//                default:
-//                    updateMessage("Device scan result error, code=" + status, false);
-//                    break;
-//            }
+            switch (status) {
+                case STATUS_SUCCESS:
+                    StringBuilder msg = new StringBuilder();
+                    msg.append("Receive device scan result:\n");
+                    for (BlufiScanResult scanResult : results) {
+                        msg.append(scanResult.toString()).append("\n");
+                    }
+                    PetkitLog.d(msg.toString());
+                    break;
+                default:
+                    PetkitLog.d("Device scan result error, code=" + status);
+                    break;
+            }
 //
-//            mBlufiDeviceScanBtn.setEnabled(mConnected);
         }
 
         /**
@@ -449,17 +457,14 @@ public class BlufiBLEManager {
          */
         @Override
         public void onDeviceVersionResponse(BlufiClient client, int status, BlufiVersionResponse response) {
-//            switch (status) {
-//                case STATUS_SUCCESS:
-//                    updateMessage(String.format("Receive device version: %s", response.getVersionString()),
-//                            true);
-//                    break;
-//                default:
-//                    updateMessage("Device version error, code=" + status, false);
-//                    break;
-//            }
-//
-//            mBlufiVersionBtn.setEnabled(mConnected);
+            switch (status) {
+                case STATUS_SUCCESS:
+                    PetkitLog.d(String.format("Receive device version: %s", response.getVersionString()));
+                    break;
+                default:
+                    PetkitLog.d("Device version error, code=" + status);
+                    break;
+            }
         }
 
         /**
@@ -474,16 +479,17 @@ public class BlufiBLEManager {
 
             PetkitLog.d("onPostCustomDataResult:status:" + status + " data:" + new String(data));
 
-//            String dataStr = new String(data);
-//            String format = "Post data %s %s";
-//            switch (status) {
-//                case STATUS_SUCCESS:
-//                    updateMessage(String.format(format, dataStr, "complete"), false);
-//                    break;
-//                default:
-//                    updateMessage(String.format(format, dataStr, "failed"), false);
-//                    break;
-//            }
+            String dataStr = new String(data);
+            switch (status) {
+                case STATUS_SUCCESS:
+                    PetkitLog.d("onPostCustomDataResult:complete status:" + status + " data:" + dataStr);
+
+                    break;
+                default:
+                    PetkitLog.d("onPostCustomDataResult:failed status:" + status + " data:" + dataStr);
+
+                    break;
+            }
         }
 
         /**
@@ -495,14 +501,23 @@ public class BlufiBLEManager {
          */
         @Override
         public void onReceiveCustomData(BlufiClient client, int status, byte[] data) {
+            LogcatStorageHelper.addLog(" Receive custom data, status:" + status + ", data: " + new String(data));
             switch (status) {
                 case STATUS_SUCCESS:
-                    Intent intent = new Intent(BlufiBLEConsts.BROADCAST_BLUFI_BLE_RECEIVE_MESSAGE);
-                    intent.putExtra(BlufiBLEConsts.BLUFI_BLE_EXTRA_DATA, data);
-                    LocalBroadcastManager.getInstance(CommonUtils.getAppContext()).sendBroadcast(intent);
-                    break;
-                default:
-                    PetkitLog.e(getClass().getSimpleName(), "Receive custom data error, code=" + status);
+                    JSONObject jsonObject = JSONUtils.getJSONObject(new String(data));
+                    if(jsonObject != null && !jsonObject.isNull("key")) {
+                        try {
+                            int key = jsonObject.getInt("key");
+
+                            if(mBleListener != null) {
+                                mBleListener.onReceiveCustomData(key, jsonObject.isNull("payload") ? "" :
+                                    jsonObject.getJSONObject("payload").toString());
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            LogcatStorageHelper.addLog(" data format error " );
+                        }
+                    }
                     break;
             }
 
@@ -517,9 +532,9 @@ public class BlufiBLEManager {
          */
         @Override
         public void onError(BlufiClient client, int errCode) {
-            Intent intent = new Intent(BlufiBLEConsts.BROADCAST_BLUFI_BLE_ERROR);
-            intent.putExtra(BlufiBLEConsts.BLUFI_BLE_EXTRA_ERROR_CODE, errCode);
-            LocalBroadcastManager.getInstance(CommonUtils.getAppContext()).sendBroadcast(intent);
+            if (mBleListener != null) {
+                mBleListener.onError(errCode);
+            }
         }
     }
 
@@ -530,7 +545,41 @@ public class BlufiBLEManager {
     }
 
     private static class BlufiBLEManagerHolder {
-        private static BlufiBLEManager INSTANCE = new BlufiBLEManager();
+        private static PetkitBLEManager INSTANCE = new PetkitBLEManager();
     }
+
+    public Object settingsGet(String key, Object defaultValue) {
+        if (defaultValue instanceof String) {
+            return mSettingsShared.getString(key, (String) defaultValue);
+        } else if (defaultValue instanceof Boolean) {
+            return mSettingsShared.getBoolean(key, (Boolean) defaultValue);
+        } else if (defaultValue instanceof Float) {
+            return mSettingsShared.getFloat(key, (Float) defaultValue);
+        } else if (defaultValue instanceof Integer) {
+            return mSettingsShared.getInt(key, (Integer) defaultValue);
+        } else if (defaultValue instanceof Long) {
+            return mSettingsShared.getLong(key, (Long) defaultValue);
+        } else if (defaultValue instanceof Set) {
+            //noinspection unchecked
+            return mSettingsShared.getStringSet(key, (Set<String>) defaultValue);
+        } else {
+            return null;
+        }
+    }
+
+    private void changeConnectState(PetkitBLEConsts.ConnectState state) {
+        if (mBleListener != null) {
+            mBleListener.onStateChanged(state);
+        }
+    }
+
+
+    public interface onPetkitBleListener {
+        void onLeScan(BluetoothDevice device, DeviceInfo deviceInfo);
+        void onStateChanged(PetkitBLEConsts.ConnectState state);
+        void onReceiveCustomData(int key, String data);
+        void onError(int errCode);
+    }
+
 
 }
