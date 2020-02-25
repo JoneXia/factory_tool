@@ -30,35 +30,42 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dip"
-            android:text="Go抽检"/>
+            android:text="Go抽检-G1"/>
 
         <RadioButton
             android:id="@+id/feeder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dip"
-            android:text="喂食器"/>
+            android:text="喂食器-D1"/>
 
         <RadioButton
             android:id="@+id/cozy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dip"
-            android:text="宠物窝new"/>
+            android:text="宠物窝new-Z1s"/>
 
         <RadioButton
             android:id="@+id/feeder_mini"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dip"
-            android:text="喂食器MINI"/>
+            android:text="喂食器MINI-D2"/>
 
         <RadioButton
             android:id="@+id/toilet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dip"
-            android:text="自动猫厕所"/>
+            android:text="自动猫厕所-T3"/>
+
+        <RadioButton
+            android:id="@+id/k2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dip"
+            android:text="净味器-K2"/>
 
     </RadioGroup>
 

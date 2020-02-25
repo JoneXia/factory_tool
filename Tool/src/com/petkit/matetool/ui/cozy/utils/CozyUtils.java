@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.petkit.android.utils.LogcatStorageHelper.getFileName;
+import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_Z1S;
 
 /**
  * Created by Jone on 17/12/1.
@@ -150,7 +151,7 @@ public class CozyUtils {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(tester.getCode())
                 .append(day)
-                .append("C")
+                .append(DEVICE_TYPE_CODE_Z1S)
                 .append(tester.getStation())
                 .append(serializableNumber);
 

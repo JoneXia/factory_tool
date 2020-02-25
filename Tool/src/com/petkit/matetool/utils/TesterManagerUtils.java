@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.petkit.android.utils.CommonUtils;
 import com.petkit.matetool.model.Tester;
+import com.petkit.matetool.ui.K2.utils.K2Utils;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.ui.feeder.utils.FeederUtils;
 import com.petkit.matetool.ui.feederMini.utils.FeederMiniUtils;
@@ -49,6 +50,9 @@ public class TesterManagerUtils {
                     break;
                 case Globals.T3:
                     testerString = CommonUtils.getSysMap(T3Utils.SHARED_T3_TESTER);
+                    break;
+                case Globals.K2:
+                    testerString = CommonUtils.getSysMap(K2Utils.SHARED_K2_TESTER);
                     break;
             }
             if(!TextUtils.isEmpty(testerString)) {

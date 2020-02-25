@@ -42,7 +42,18 @@ public class Globals {
 	public static final int GO =5;
 	public static final int FEEDER_MINI =6;
 	public static final int T3 = 7;
+    public static final int K2 = 8;
 //	public static int g_testStyle = 0;
+
+	/**
+	 * SN中的设备类型标记位定义
+	 */
+	public static final String DEVICE_TYPE_CODE_D1 = "P";
+	public static final String DEVICE_TYPE_CODE_Z1 = "A";
+	public static final String DEVICE_TYPE_CODE_D2 = "B";
+	public static final String DEVICE_TYPE_CODE_Z1S = "C";
+	public static final String DEVICE_TYPE_CODE_T3 = "D";
+	public static final String DEVICE_TYPE_CODE_K2 = "E";
 
 	public static ArrayList<String> mTestItem = new ArrayList<String>();
 	public static int[] mTestResult = null;

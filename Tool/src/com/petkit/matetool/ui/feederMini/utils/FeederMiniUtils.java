@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.petkit.android.utils.LogcatStorageHelper.getFileName;
+import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_D2;
 
 /**
  *
@@ -163,7 +164,7 @@ public class FeederMiniUtils {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(tester.getCode())
                 .append(day)
-                .append("B")
+                .append(DEVICE_TYPE_CODE_D2)
                 .append(tester.getStation())
                 .append(serializableNumber);
 

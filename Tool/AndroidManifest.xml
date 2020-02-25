@@ -129,6 +129,16 @@
         <activity android:name=".ui.t3.T3StorageActivity" android:screenOrientation="portrait"/>
         <activity android:name=".ui.t3.T3StorageFileActivity" android:screenOrientation="portrait"/>
 
+        <!-- K2 -->
+        <activity android:name=".ui.K2.K2StartActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.K2.K2TestMainActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.K2.K2TestDetailActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.K2.K2TestPrepareActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.K2.K2ErrorListActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.K2.K2ScanActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.K2.K2StorageActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.K2.K2StorageFileActivity" android:screenOrientation="portrait"/>
+
 
         <meta-data
             android:name="UMENG_APPKEY"

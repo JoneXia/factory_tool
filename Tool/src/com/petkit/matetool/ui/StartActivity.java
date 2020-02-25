@@ -21,6 +21,7 @@ import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.service.DatagramConsts;
 import com.petkit.matetool.service.DatagramProcessService;
+import com.petkit.matetool.ui.K2.K2TestPrepareActivity;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.cozy.CozyTestPrepareActivity;
 import com.petkit.matetool.ui.feeder.FeederTestPrepareActivity;
@@ -40,6 +41,7 @@ import static com.petkit.matetool.utils.Consts.TOOL_COZY;
 import static com.petkit.matetool.utils.Consts.TOOL_FEEDER_MINI_VERSION;
 import static com.petkit.matetool.utils.Consts.TOOL_FEEDER_VERSION;
 import static com.petkit.matetool.utils.Consts.TOOL_GO_VERSION;
+import static com.petkit.matetool.utils.Consts.TOOL_K2_VERSION;
 import static com.petkit.matetool.utils.Consts.TOOL_MATE_VERSION;
 import static com.petkit.matetool.utils.Consts.TOOL_T3_VERSION;
 
@@ -210,6 +212,24 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
                         bundle.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
                         startActivityWithData(T3TestPrepareActivity.class, bundle, false);
                         break;
+                    case Globals.K2:
+                        if(!Globals.checkPermission(this, Manifest.permission.ACCESS_WIFI_STATE) ||
+                                !Globals.checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) ||
+                                !Globals.checkPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                            bundle = new Bundle();
+                            ArrayList<PermissionBean> permissionBeens = new ArrayList<>();
+                            permissionBeens.add(new PermissionBean(Manifest.permission.ACCESS_WIFI_STATE, R.string.Permission_phone_state, R.drawable.permission_read_phone));
+                            permissionBeens.add(new PermissionBean(Manifest.permission.ACCESS_COARSE_LOCATION, R.string.Permission_location, R.drawable.permission_location));
+                            permissionBeens.add(new PermissionBean(Manifest.permission.ACCESS_FINE_LOCATION, R.string.Permission_location, R.drawable.permission_location));
+
+                            bundle.putSerializable(Globals.EXTRA_PERMISSION_CONTENT, permissionBeens);
+                            startActivityWithData(PermissionDialogActivity.class, bundle, false);
+                            return;
+                        }
+                        bundle = new Bundle();
+                        bundle.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
+                        startActivityWithData(K2TestPrepareActivity.class, bundle, false);
+                        break;
                 }
                 collapseSoftInputMethod(fixtureNumberEditText);
                 break;
@@ -240,6 +260,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
             case R.id.toilet:
                 testStyle = Globals.T3;
                 break;
+            case R.id.k2:
+                testStyle = Globals.K2;
+                break;
             default:
                 break;
         }
@@ -258,16 +281,19 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
         tempRadioButton.setText("Go抽检" + " v" + TOOL_GO_VERSION);
 
         tempRadioButton = (RadioButton) findViewById(R.id.feeder);
-        tempRadioButton.setText("喂食器" + " v" + TOOL_FEEDER_VERSION);
+        tempRadioButton.setText("喂食器（D1）" + " v" + TOOL_FEEDER_VERSION);
 
         tempRadioButton = (RadioButton) findViewById(R.id.cozy);
-        tempRadioButton.setText("宠物窝new" + " v" + TOOL_COZY);
+        tempRadioButton.setText("宠物窝new（Z1s）" + " v" + TOOL_COZY);
 
         tempRadioButton = (RadioButton) findViewById(R.id.feeder_mini);
-        tempRadioButton.setText("喂食器Mini" + " v" + TOOL_FEEDER_MINI_VERSION);
+        tempRadioButton.setText("喂食器Mini（D2）" + " v" + TOOL_FEEDER_MINI_VERSION);
 
         tempRadioButton = (RadioButton) findViewById(R.id.toilet);
-        tempRadioButton.setText("自动猫厕所" + " v" + TOOL_T3_VERSION);
+        tempRadioButton.setText("自动猫厕所（T3）" + " v" + TOOL_T3_VERSION);
+
+        tempRadioButton = (RadioButton) findViewById(R.id.k2);
+        tempRadioButton.setText("净味器（K2）" + " v" + TOOL_K2_VERSION);
     }
 
     private void registerBoradcastReceiver() {

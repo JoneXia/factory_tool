@@ -14,6 +14,7 @@ public class Tester implements Serializable {
     private String station;
     private String session;
 
+
     public String getName() {
         return name;
     }

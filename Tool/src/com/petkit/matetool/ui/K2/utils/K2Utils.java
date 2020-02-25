@@ -1,4 +1,4 @@
-package com.petkit.matetool.ui.t3.utils;
+package com.petkit.matetool.ui.K2.utils;
 
 import com.google.gson.Gson;
 import com.petkit.android.utils.CommonUtils;
@@ -8,7 +8,7 @@ import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.DevicesError;
 import com.petkit.matetool.model.Tester;
-import com.petkit.matetool.ui.t3.mode.T3TestUnit;
+import com.petkit.matetool.ui.K2.mode.K2TestUnit;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,15 +16,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.petkit.android.utils.LogcatStorageHelper.getFileName;
-import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_T3;
+import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_K2;
 
 /**
  *
  * Created by Jone on 17/3/21.
  */
-public class T3Utils {
+public class K2Utils {
 
-    public static final String T3_SESSION = "T3_SESSION";
+    public static final String K2_SESSION = "K2_SESSION";
 
     public static final int TYPE_TEST_PARTIALLY         = 1;
     public static final int TYPE_TEST                   = 2;
@@ -33,38 +33,33 @@ public class T3Utils {
     public static final int TYPE_DUPLICATE_MAC          = 5;
     public static final int TYPE_DUPLICATE_SN           = 6;
 
-    public static final String EXTRA_T3_TESTER   = "EXTRA_T3_TESTER";
-    public static final String EXTRA_T3   = "EXTRA_T3";
-    public static final String EXTRA_ERROR_T3   = "EXTRA_ERROR_T3";
+    public static final String EXTRA_K2_TESTER   = "EXTRA_K2_TESTER";
+    public static final String EXTRA_K2   = "EXTRA_K2";
+    public static final String EXTRA_ERROR_K2   = "EXTRA_ERROR_K2";
 
     private static final int MAX_SN_NUMBER_SESSION = 200;
 
-    public static final String SHARED_T3_TESTER = "SHARED_T3_TESTER";
+    public static final String SHARED_K2_TESTER = "SHARED_K2_TESTER";
 
-    private static final String SHARED_SERIALIZABLE_DAY     = "T3_SerializableDay";
-    private static final String SHARED_SERIALIZABLE_NUMBER     = "T3_SerializableNumber";
-    private static final String SHARED_SN_FILE_NAME     = "T3_SnFileName";
-    private static final String SHARED_SN_FILE_NUMBER     = "T3_SnFileNumber";
-    private static final String SHARED_T3_ERROR_INFO     = "T3_ERRORS";
+    private static final String SHARED_SERIALIZABLE_DAY     = "K2_SerializableDay";
+    private static final String SHARED_SERIALIZABLE_NUMBER     = "K2_SerializableNumber";
+    private static final String SHARED_SN_FILE_NAME     = "K2_SnFileName";
+    private static final String SHARED_SN_FILE_NUMBER     = "K2_SnFileNumber";
+    private static final String SHARED_K2_ERROR_INFO     = "K2_ERRORS";
 
-    public static final String FILE_MAINTAIN_INFO_NAME     = "T3_maintain_info.txt";
-    public static final String FILE_CHECK_INFO_NAME     = "T3_check_info.txt";
-    public static final String T3_STORE_DIR     = ".T3/";
+    public static final String FILE_MAINTAIN_INFO_NAME     = "K2_maintain_info.txt";
+    public static final String FILE_CHECK_INFO_NAME     = "K2_check_info.txt";
+    public static final String K2_STORE_DIR     = ".K2/";
 
     public static ArrayList<Device> mTempDevices = new ArrayList<>();
 
-    public enum T3TestModes {
+    public enum K2TestModes {
         TEST_MODE_DC,   //电压
-        TEST_MODE_LED,  //显示屏和蜂鸣器
+        TEST_MODE_LED,  //LED和蜂鸣器
         TEST_MODE_KEY,  //按键
-        TEST_MODE_IR,   //红外
-        TEST_MODE_MOTOR,    //电机
-        TEST_MODE_BALANCE_SET,  //秤校准
-        TEST_MODE_BALANCE,  //秤读取
-        TEST_MODE_DEODORANT, //雾化器
-        TEST_MODE_PYROELECTRIC, //红外热释
-        TEST_MODE_MICRO_SWITCH, //微动开关
-        TEST_MODE_HOLZER, //沙桶霍尔
+        TEST_MODE_HOLZER, //液位霍尔
+        TEST_MODE_FAN, //风扇
+        TEST_MODE_TEMP, //温湿度
         TEST_MODE_BT,   //蓝牙
         TEST_MODE_TIME, //时钟
         TEST_MODE_MAC,
@@ -115,62 +110,54 @@ public class T3Utils {
      * @param type 测试类型
      * @return 测试项
      */
-    public static ArrayList<T3TestUnit> generateT3TestUnitsForType(int type) {
-        ArrayList<T3TestUnit> results = new ArrayList<>();
+    public static ArrayList<K2TestUnit> generateK2TestUnitsForType(int type) {
+        ArrayList<K2TestUnit> results = new ArrayList<>();
 
         if(type == TYPE_DUPLICATE_MAC) {
-            results.add(new T3TestUnit(T3TestModes.TEST_MODE_MAC, "设置重复", 99, 1));
+            results.add(new K2TestUnit(K2TestModes.TEST_MODE_MAC, "设置重复", 99, 1));
         } else if(type == TYPE_DUPLICATE_SN){
-            results.add(new T3TestUnit(T3TestModes.TEST_MODE_SN, "写入SN", 12, 2));
-            results.add(new T3TestUnit(T3TestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
+            results.add(new K2TestUnit(K2TestModes.TEST_MODE_SN, "写入SN", 12, 2));
+            results.add(new K2TestUnit(K2TestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
         } else {
             if (type != TYPE_TEST_PARTIALLY) {
-                results.add(new T3TestUnit(T3TestModes.TEST_MODE_AGEINGRESULT, "老化结果", 97, 1));
+                results.add(new K2TestUnit(K2TestModes.TEST_MODE_AGEINGRESULT, "老化结果", 97, 1));
             }
 
             /**
-             * TEST_MODE_DC,   //电压
-             *         TEST_MODE_LED,  //显示屏和蜂鸣器
+             * TTEST_MODE_DC,   //电压
+             *         TEST_MODE_LED,  //LED和蜂鸣器
              *         TEST_MODE_KEY,  //按键
-             *         TEST_MODE_IR,   //红外
-             *         TEST_MODE_MOTOR,    //电机
-             *         TEST_MODE_BALANCE,  //秤
-             *         TEST_MODE_DEODORANT, //雾化器
-             *         TEST_MODE_PYROELECTRIC, //红外热释
-             *         TEST_MODE_MICRO_SWITCH, //微动开关
-             *         TEST_MODE_HOLZER, //沙桶霍尔
+             *         TEST_MODE_HOLZER, //液位霍尔
+             *         TEST_MODE_FAN, //风扇
+             *         TEST_MODE_TEMP, //温湿度
              *         TEST_MODE_BT,   //蓝牙
              *         TEST_MODE_TIME, //时钟
+             *         TEST_MODE_MAC,
+             *         TEST_MODE_SN,   //写SN
+             *         TEST_MODE_RESET_SN, //重置SN
+             *         TEST_MODE_RESET_ID, //清除ID
+             *         TEST_MODE_AGEINGRESULT, //老化数据
+             *         TEST_MODE_PRINT     //打印标签
              */
-            results.add(new T3TestUnit(T3TestModes.TEST_MODE_DC, "电压测试", 0, 1));
-            results.add(new T3TestUnit(T3TestModes.TEST_MODE_LED, "显示屏和蜂鸣器测试", 1, 1));
-            results.add(new T3TestUnit(T3TestModes.TEST_MODE_KEY, "按键测试", 2, 1));
-            results.add(new T3TestUnit(T3TestModes.TEST_MODE_IR, "红外测试", 3, 1));
-            results.add(new T3TestUnit(T3TestModes.TEST_MODE_MOTOR, "马达测试", 4, 1));
-
-            if (type != TYPE_CHECK) {
-                results.add(new T3TestUnit(T3TestModes.TEST_MODE_BALANCE_SET, "秤校准", 5, 1));
-            } else {
-                results.add(new T3TestUnit(T3TestModes.TEST_MODE_BALANCE, "秤读取", 5, 3));
-            }
-
-            results.add(new T3TestUnit(T3TestModes.TEST_MODE_DEODORANT, "雾化器", 6, 1));
-            results.add(new T3TestUnit(T3TestModes.TEST_MODE_PYROELECTRIC, "红外热释", 7, 1));
-            results.add(new T3TestUnit(T3TestModes.TEST_MODE_MICRO_SWITCH, "微动开关", 8, 1));
-            results.add(new T3TestUnit(T3TestModes.TEST_MODE_HOLZER, "沙桶霍尔", 9, 1));
-            results.add(new T3TestUnit(T3TestModes.TEST_MODE_BT, "蓝牙测试", 10, 1));
-            results.add(new T3TestUnit(T3TestModes.TEST_MODE_TIME, "时钟测试", 11, 1));
+            results.add(new K2TestUnit(K2TestModes.TEST_MODE_DC, "电压测试", 0, 1));
+            results.add(new K2TestUnit(K2TestModes.TEST_MODE_LED, "LED和蜂鸣器测试", 1, 1));
+            results.add(new K2TestUnit(K2TestModes.TEST_MODE_KEY, "按键测试", 2, 1));
+            results.add(new K2TestUnit(K2TestModes.TEST_MODE_HOLZER, "液位霍尔测试", 3, 1));
+            results.add(new K2TestUnit(K2TestModes.TEST_MODE_FAN, "风扇测试", 4, 1));
+            results.add(new K2TestUnit(K2TestModes.TEST_MODE_TEMP, "温湿度测试", 6, 1));
+            results.add(new K2TestUnit(K2TestModes.TEST_MODE_BT, "蓝牙测试", 10, 1));
+            results.add(new K2TestUnit(K2TestModes.TEST_MODE_TIME, "时钟测试", 11, 1));
 
             if (type != TYPE_TEST_PARTIALLY) {
                 if (type == TYPE_TEST) {
-                    results.add(new T3TestUnit(T3TestModes.TEST_MODE_SN, "写入SN", 12, 2));
-//                    results.add(new CozyTestUnit(T3TestModes.TEST_MODE_RESET_SN, "重写SN", 97, 1));
+                    results.add(new K2TestUnit(K2TestModes.TEST_MODE_SN, "写入SN", 12, 2));
+//                    results.add(new CozyTestUnit(K2TestModes.TEST_MODE_RESET_SN, "重写SN", 97, 1));
                 }
-                results.add(new T3TestUnit(T3TestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
+                results.add(new K2TestUnit(K2TestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
             }
 
             if (type == TYPE_MAINTAIN) {        //擦除ID选项先关闭，暂不开放
-//                results.add(new CozyTestUnit(T3TestModes.TEST_MODE_RESET_ID, "擦除ID", 98, 1));
+//                results.add(new CozyTestUnit(K2TestModes.TEST_MODE_RESET_ID, "擦除ID", 98, 1));
             }
         }
         return results;
@@ -183,7 +170,7 @@ public class T3Utils {
      */
     public static String generateSNForTester(Tester tester) {
         if(tester == null || !tester.checkValid()) {
-            throw  new RuntimeException("T3 Tester is invalid!");
+            throw  new RuntimeException("K2 Tester is invalid!");
         }
 
         String day = CommonUtils.getDateStringByOffset(0).substring(2);
@@ -195,7 +182,7 @@ public class T3Utils {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(tester.getCode())
                 .append(day)
-                .append(DEVICE_TYPE_CODE_T3)
+                .append(DEVICE_TYPE_CODE_K2)
                 .append(tester.getStation())
                 .append(serializableNumber);
 
@@ -260,7 +247,7 @@ public class T3Utils {
     /**
      * 生成的SN时，先存储临时数据，SN成功写入设备后从临时数据中删除
      *
-     * @param device 猫厕所
+     * @param device K2
      */
     public static void storeTempDeviceInfo(Device device) {
         for (Device temp : mTempDevices) {
@@ -302,14 +289,14 @@ public class T3Utils {
 
     /**
      * 存储测试完成的设备信息
-     * @param device 猫厕所
+     * @param device K2
      */
     public static void storeSucceedDeviceInfo(Device device, String ageingResult) {
         if(device == null || !device.checkValid()) {
-            throw  new RuntimeException("store T3 failed, " + (device == null ? "T3 is null !" : device.toString()));
+            throw  new RuntimeException("store K2 failed, " + (device == null ? "K2 is null !" : device.toString()));
         }
 
-        PetkitLog.d("store T3 info: " + device.generateMainJson(ageingResult));
+        PetkitLog.d("store K2 info: " + device.generateMainJson(ageingResult));
         FileUtils.writeStringToFile(getStoreDeviceInfoFilePath(), device.generateMainJson(ageingResult) + ",", true);
     }
 
@@ -322,12 +309,12 @@ public class T3Utils {
         int fileSnNumber = CommonUtils.getSysIntMap(CommonUtils.getAppContext(), SHARED_SN_FILE_NUMBER, 0);
 
         if (fileName != null &&             //文件不存在，或者文件不是今天产生的，都需要重新生成文件
-                (!fileName.startsWith(getFileName()) || !(new File(getT3StoryDir() + fileName).exists()))) {
+                (!fileName.startsWith(getFileName()) || !(new File(getK2StoryDir() + fileName).exists()))) {
             fileName = null;
         }
 
         if(fileSnNumber >= MAX_SN_NUMBER_SESSION || CommonUtils.isEmpty(fileName)) {
-            String dir = getT3StoryDir();
+            String dir = getK2StoryDir();
             if(!new File(dir).exists()) {
                 new File(dir).mkdirs();
             }
@@ -353,7 +340,7 @@ public class T3Utils {
             fileSnNumber++;
             LogcatStorageHelper.addLog("file name: " + fileName + ", sn number: " + fileSnNumber);
             CommonUtils.addSysIntMap(CommonUtils.getAppContext(), SHARED_SN_FILE_NUMBER, fileSnNumber);
-            return getT3StoryDir() + fileName;
+            return getK2StoryDir() + fileName;
         }
     }
 
@@ -365,7 +352,7 @@ public class T3Utils {
     public static boolean checkMacIsDuplicate(String mac) {
         String fileName = CommonUtils.getSysMap(SHARED_SN_FILE_NAME);
         if(!CommonUtils.isEmpty(fileName)) {
-            String content = FileUtils.readFileToString(new File(getT3StoryDir() + fileName));
+            String content = FileUtils.readFileToString(new File(getK2StoryDir() + fileName));
             return content != null && content.contains(mac);
         }
 
@@ -377,7 +364,7 @@ public class T3Utils {
      * @return bool
      */
     public static boolean checkHasSnCache() {
-        String dir = getT3StoryDir();
+        String dir = getK2StoryDir();
         if(new File(dir).exists()) {
             String filename = getFileName();
             String[] files = new File(dir).list();
@@ -402,9 +389,9 @@ public class T3Utils {
     public static void storeDuplicatedInfo(DevicesError devicesError) {
         if(devicesError == null || ((devicesError.getMac() == null || devicesError.getMac().size() == 0)
                         && (devicesError.getSn() == null || devicesError.getSn().size() == 0))) {
-            CommonUtils.addSysMap(SHARED_T3_ERROR_INFO, "");
+            CommonUtils.addSysMap(SHARED_K2_ERROR_INFO, "");
         } else {
-            CommonUtils.addSysMap(SHARED_T3_ERROR_INFO, new Gson().toJson(devicesError));
+            CommonUtils.addSysMap(SHARED_K2_ERROR_INFO, new Gson().toJson(devicesError));
         }
     }
 
@@ -413,7 +400,7 @@ public class T3Utils {
      * @return DevicesError
      */
     public static DevicesError getDevicesErrorMsg() {
-        String msg = CommonUtils.getSysMap(SHARED_T3_ERROR_INFO);
+        String msg = CommonUtils.getSysMap(SHARED_K2_ERROR_INFO);
         if(CommonUtils.isEmpty(msg)) {
             return null;
         }
@@ -426,18 +413,18 @@ public class T3Utils {
         if(device == null || !device.checkValid()) {
             return;
         }
-        String dir = getT3StoryDir();
+        String dir = getK2StoryDir();
         if(!new File(dir).exists()) {
             new File(dir).mkdirs();
         }
 
-        String fileName = getT3StoryDir() + FILE_MAINTAIN_INFO_NAME;
+        String fileName = getK2StoryDir() + FILE_MAINTAIN_INFO_NAME;
         String content = FileUtils.readFileToString(new File(fileName));
         if(content != null && content.contains(device.getMac())) {
             return;
         }
         String info = device.generateJson();
-        PetkitLog.d("store T3 info: " + info);
+        PetkitLog.d("store K2 info: " + info);
         FileUtils.writeStringToFile(fileName, info + ",", true);
 
     }
@@ -447,22 +434,22 @@ public class T3Utils {
             return;
         }
 
-        String dir = getT3StoryDir();
+        String dir = getK2StoryDir();
         if(!new File(dir).exists()) {
             new File(dir).mkdirs();
         }
-        String fileName = getT3StoryDir() + FILE_CHECK_INFO_NAME;
+        String fileName = getK2StoryDir() + FILE_CHECK_INFO_NAME;
         String content = FileUtils.readFileToString(new File(fileName));
         if(content != null && content.contains(device.getMac())) {
             return;
         }
         String info = device.generateCheckJson();
-        PetkitLog.d("store T3 info: " + info);
+        PetkitLog.d("store K2 info: " + info);
         FileUtils.writeStringToFile(fileName, info + ",", true);
     }
 
-    public static String getT3StoryDir() {
-        return CommonUtils.getAppCacheDirPath() + T3_STORE_DIR;
+    public static String getK2StoryDir() {
+        return CommonUtils.getAppCacheDirPath() + K2_STORE_DIR;
     }
 
 }
