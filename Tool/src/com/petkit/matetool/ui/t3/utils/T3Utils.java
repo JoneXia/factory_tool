@@ -194,7 +194,7 @@ public class T3Utils {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(tester.getCode())
                 .append(day)
-                .append("C")
+                .append("D")
                 .append(tester.getStation())
                 .append(serializableNumber);
 
