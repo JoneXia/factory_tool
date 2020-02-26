@@ -24,8 +24,6 @@ import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_K2;
  */
 public class K2Utils {
 
-    public static final String K2_SESSION = "K2_SESSION";
-
     public static final int TYPE_TEST_PARTIALLY         = 1;
     public static final int TYPE_TEST                   = 2;
     public static final int TYPE_MAINTAIN               = 3;
@@ -51,11 +49,14 @@ public class K2Utils {
     public static final String FILE_CHECK_INFO_NAME     = "K2_check_info.txt";
     public static final String K2_STORE_DIR     = ".K2/";
 
+    public static final Integer[] DC_RANGE = new Integer[]{5850, 6150};
+
     public static ArrayList<Device> mTempDevices = new ArrayList<>();
 
     public enum K2TestModes {
         TEST_MODE_DC,   //电压
-        TEST_MODE_LED,  //LED和蜂鸣器
+        TEST_MODE_LED,  //数码管和蜂鸣器
+        TEST_MODE_LED_2,  //LED
         TEST_MODE_KEY,  //按键
         TEST_MODE_HOLZER, //液位霍尔
         TEST_MODE_FAN, //风扇
@@ -120,31 +121,16 @@ public class K2Utils {
             results.add(new K2TestUnit(K2TestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
         } else {
             if (type != TYPE_TEST_PARTIALLY) {
-                results.add(new K2TestUnit(K2TestModes.TEST_MODE_AGEINGRESULT, "老化结果", 97, 1));
+//                results.add(new K2TestUnit(K2TestModes.TEST_MODE_AGEINGRESULT, "老化结果", 97, 1));
             }
 
-            /**
-             * TTEST_MODE_DC,   //电压
-             *         TEST_MODE_LED,  //LED和蜂鸣器
-             *         TEST_MODE_KEY,  //按键
-             *         TEST_MODE_HOLZER, //液位霍尔
-             *         TEST_MODE_FAN, //风扇
-             *         TEST_MODE_TEMP, //温湿度
-             *         TEST_MODE_BT,   //蓝牙
-             *         TEST_MODE_TIME, //时钟
-             *         TEST_MODE_MAC,
-             *         TEST_MODE_SN,   //写SN
-             *         TEST_MODE_RESET_SN, //重置SN
-             *         TEST_MODE_RESET_ID, //清除ID
-             *         TEST_MODE_AGEINGRESULT, //老化数据
-             *         TEST_MODE_PRINT     //打印标签
-             */
             results.add(new K2TestUnit(K2TestModes.TEST_MODE_DC, "电压测试", 0, 1));
-            results.add(new K2TestUnit(K2TestModes.TEST_MODE_LED, "LED和蜂鸣器测试", 1, 1));
-            results.add(new K2TestUnit(K2TestModes.TEST_MODE_KEY, "按键测试", 2, 1));
-            results.add(new K2TestUnit(K2TestModes.TEST_MODE_HOLZER, "液位霍尔测试", 3, 1));
-            results.add(new K2TestUnit(K2TestModes.TEST_MODE_FAN, "风扇测试", 4, 1));
-            results.add(new K2TestUnit(K2TestModes.TEST_MODE_TEMP, "温湿度测试", 6, 1));
+            results.add(new K2TestUnit(K2TestModes.TEST_MODE_LED, "数码管和蜂鸣器", 1, 1));
+            results.add(new K2TestUnit(K2TestModes.TEST_MODE_LED_2, "LED灯测试", 3, 1));
+            results.add(new K2TestUnit(K2TestModes.TEST_MODE_KEY, "按键测试", 2, 2));
+            results.add(new K2TestUnit(K2TestModes.TEST_MODE_HOLZER, "液位霍尔测试", 9, 1));
+            results.add(new K2TestUnit(K2TestModes.TEST_MODE_FAN, "风扇测试", 7, 1));
+            results.add(new K2TestUnit(K2TestModes.TEST_MODE_TEMP, "温湿度测试", 8, 1));
             results.add(new K2TestUnit(K2TestModes.TEST_MODE_BT, "蓝牙测试", 10, 1));
             results.add(new K2TestUnit(K2TestModes.TEST_MODE_TIME, "时钟测试", 11, 1));
 

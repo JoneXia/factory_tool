@@ -289,32 +289,32 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
         } else {
             switch (mTestType) {
                 case K2Utils.TYPE_TEST_PARTIALLY:
-                    if (!apSsid.toUpperCase().startsWith("PETKIT_TOILET_A_HW1_")) {
-                        mInfoTestTextView.setText("请先连接到PETKIT_TOILET_A_HW1_开头的WIFI，再进行测试！");
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_K2_A_HW1_")) {
+                        mInfoTestTextView.setText("请先连接到PETKIT_K2_A_HW1_开头的WIFI，再进行测试！");
                     } else {
                         connectAp();
                     }
                     break;
                 case K2Utils.TYPE_TEST:
-                    if (!apSsid.toUpperCase().startsWith("PETKIT_TOILET_B_HW1_")) {
-                        mInfoTestTextView.setText("请先连接到PETKIT_TOILET_B_HW1_开头的WIFI，再进行测试！");
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_K2_B_HW1_")) {
+                        mInfoTestTextView.setText("请先连接到PETKIT_K2_B_HW1_开头的WIFI，再进行测试！");
                         return;
                     } else {
                         connectAp();
                     }
                     break;
                 case K2Utils.TYPE_MAINTAIN:
-                    if (!apSsid.toUpperCase().startsWith("PETKIT_TOILET_")) {
-                        mInfoTestTextView.setText("请先连接到PETKIT_TOILET_开头的WIFI，再进行测试！");
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_K2_")) {
+                        mInfoTestTextView.setText("请先连接到PETKIT_K2_开头的WIFI，再进行测试！");
                         return;
                     } else {
                         connectAp();
                     }
                     break;
                 case K2Utils.TYPE_CHECK:
-                    if (!apSsid.toUpperCase().startsWith("PETKIT_TOILET_HW1_")
-                            || (apSsid.toUpperCase().startsWith("PETKIT_TOILET_A_") || apSsid.toUpperCase().startsWith("PETKIT_TOILET_B_"))) {
-                        mInfoTestTextView.setText("请先连接到PETKIT_TOILET_开头的WIFI，再进行测试！");
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_K2_HW1_")
+                            || (apSsid.toUpperCase().startsWith("PETKIT_K2_A_") || apSsid.toUpperCase().startsWith("PETKIT_K2_B_"))) {
+                        mInfoTestTextView.setText("请先连接到PETKIT_K2_开头的WIFI，再进行测试！");
                         return;
                     } else {
                         connectAp();
@@ -322,8 +322,8 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
                     break;
                 case K2Utils.TYPE_DUPLICATE_MAC:
                 case K2Utils.TYPE_DUPLICATE_SN:
-                    if (!apSsid.toUpperCase().startsWith("PETKIT_TOILET_HW1_")) {
-                        mInfoTestTextView.setText("请先连接到PETKIT_TOILET_HW1_开头的WIFI，再进行测试！");
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_K2_HW1_")) {
+                        mInfoTestTextView.setText("请先连接到PETKIT_K2_HW1_开头的WIFI，再进行测试！");
                         return;
                     } else {
                         connectAp();

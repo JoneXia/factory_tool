@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import static com.petkit.matetool.ui.K2.utils.K2Utils.DC_RANGE;
 import static com.petkit.matetool.ui.K2.utils.K2Utils.K2TestModes.TEST_MODE_AGEINGRESULT;
 import static com.petkit.matetool.ui.utils.PrintUtils.isPrinterConnected;
 import static com.petkit.matetool.utils.Globals.TEST_FAILED;
@@ -148,40 +149,19 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 }
                 break;
             case TEST_MODE_KEY:
-                mPromptTextView.setText("需要分别测试菜单按键和OK按键！");
+                mPromptTextView.setText("请先校准，再分别测试功能键和童锁键！");
                 break;
             case TEST_MODE_DC:
-                mPromptTextView.setText("正常电压范围（单位mV）：[11000, 13000]");
+                mPromptTextView.setText("正常电压范围（单位mV）：[" + DC_RANGE[0] + ", " + DC_RANGE[1] + "]");
                 break;
             case TEST_MODE_LED:
-                mPromptTextView.setText("测试显示屏和蜂鸣器，观察是否正常！");
+                mPromptTextView.setText("测试LED和蜂鸣器，观察是否正常！");
                 break;
             case TEST_MODE_AGEINGRESULT:
                 mPromptTextView.setText("观察老化数据，手动判断结果！");
                 break;
-            case TEST_MODE_IR:
-                mPromptTextView.setText("需要分别测试红外信号遮挡和不遮挡，包括4组红外！");
-                break;
-            case TEST_MODE_BALANCE:
-                mPromptTextView.setText("观察秤数据，手动判断是否正常！");
-                break;
-            case TEST_MODE_BALANCE_SET:
-                mPromptTextView.setText("秤校准，请按照提示操作！");
-                break;
-            case TEST_MODE_MOTOR:
-                mPromptTextView.setText("需分别测试初始位置霍尔和排废位置霍尔！");
-                break;
-            case TEST_MODE_DEODORANT:
-                mPromptTextView.setText("需分别测试雾化器打开和关闭！");
-                break;
-            case TEST_MODE_PYROELECTRIC:
-                mPromptTextView.setText("需分别测试红外热释有信号和没信号！");
-                break;
-            case TEST_MODE_MICRO_SWITCH:
-                mPromptTextView.setText("需分别测试微动开关打开和关闭！");
-                break;
             case TEST_MODE_HOLZER:
-                mPromptTextView.setText("需分别测试锁止和不锁止！");
+                mPromptTextView.setText("需分别测试正常和缺液状态！");
                 break;
             case TEST_MODE_BT:
                 mPromptTextView.setText("需测试蓝牙正常工作！");
@@ -199,8 +179,9 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
     private void refershBtnView() {
         switch (mK2TestUnits.get(mCurTestStep).getType()) {
             case TEST_MODE_AGEINGRESULT:  // 人工判定结果
-            case TEST_MODE_BALANCE:
+            case TEST_MODE_TEMP:
             case TEST_MODE_LED:
+            case TEST_MODE_LED_2:
                 mBtn1.setText(R.string.Start);
                 mBtn2.setText(R.string.Failure);
                 mBtn2.setBackgroundResource(R.drawable.selector_red);
@@ -224,6 +205,19 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
             case TEST_MODE_SN:
                 mBtn1.setText(R.string.Write);
                 mBtn2.setVisibility(View.INVISIBLE);
+                if(mK2TestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
+                    mBtn3.setText(R.string.Succeed);
+                    mBtn3.setBackgroundResource(R.drawable.selector_blue);
+                } else {
+                    mBtn3.setText(R.string.Failure);
+                    mBtn3.setBackgroundResource(R.drawable.selector_red);
+                }
+                break;
+            case TEST_MODE_KEY:
+                mBtn1.setText("校准");
+                mBtn2.setText("按键");
+                mBtn2.setVisibility(View.VISIBLE);
+                mBtn2.setBackgroundResource(R.drawable.selector_gray);
                 if(mK2TestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
                     mBtn3.setText(R.string.Succeed);
                     mBtn3.setBackgroundResource(R.drawable.selector_blue);
@@ -300,8 +294,8 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
             case R.id.test_btn_2:
                 switch (mK2TestUnits.get(mCurTestStep).getType()) {
                     case TEST_MODE_LED:
-                    case TEST_MODE_DEODORANT:
-                    case TEST_MODE_MICRO_SWITCH:
+                    case TEST_MODE_LED_2:
+                    case TEST_MODE_TEMP:
                         isWriteEndCmd = true;
                         mK2TestUnits.get(mCurTestStep).setResult(TEST_FAILED);
 
@@ -313,8 +307,13 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                     case TEST_MODE_PRINT:
                         startActivity(PrintActivity.class);
                         break;
+                    case TEST_MODE_KEY:
+                        params = new HashMap<>();
+                        params.put("module", mK2TestUnits.get(mCurTestStep).getModule());
+                        params.put("state", 1);
+                        PetkitSocketInstance.getInstance().sendString(K2Utils.getRequestForKeyAndPayload(163, params));
+                        break;
                     case TEST_MODE_AGEINGRESULT:
-                    case TEST_MODE_BALANCE:
                         mK2TestUnits.get(mCurTestStep).setResult(TEST_FAILED);
                         gotoNextTestModule();
                         break;
@@ -442,150 +441,47 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 switch (moduleStateStruct.getModule()) {
                     case 0:
                         desc.append("\n").append("直流电压").append(":").append(moduleStateStruct.getSub0()).append("mv");
-                        result = moduleStateStruct.getSub0() >= 11000 && moduleStateStruct.getSub0() <= 13000;
+                        result = moduleStateStruct.getSub0() >= DC_RANGE[0] && moduleStateStruct.getSub0() <= DC_RANGE[1];
                         break;
                     case 1:
-                        if(moduleStateStruct.getState() == 0) {
-                            mTempResult = mTempResult | 0x1;
-                            desc.append("\n").append("屏幕和蜂鸣器已关闭");
-                        } else if(moduleStateStruct.getState() == 1) {
-                            mTempResult = mTempResult | 0x10;
-                            desc.append("\n").append("屏幕和蜂鸣器已打开");
+                        if(moduleStateStruct.getState() == 1) {
+                            desc.append("\n").append("数码管和蜂鸣器已打开，请观察是否正常。");
                         }
-                        result = mTempResult == 0x11;
-                        break;
-                    case 2:
-                        desc.append("\n").append("mcu").append("-").append("通信").append("-").append(moduleStateStruct.getSub0() == 1 ? "正常" : "异常");
-                        if(moduleStateStruct.getSub0() > 0) {
-                            mTempResult = mTempResult | 0x1;
-                        }
-                        if(moduleStateStruct.getSub1() > 0) {
-                            mTempResult = mTempResult | 0x10;
-                            desc.append("\n").append("按键").append("-").append("菜单").append("-").append(getKeyDescByState(moduleStateStruct.getSub1()));
-                        }
-                        if(moduleStateStruct.getSub2() > 0) {
-                            mTempResult = mTempResult | 0x100;
-                            desc.append("\n").append("按键").append("-").append("OK键").append("-").append(getKeyDescByState(moduleStateStruct.getSub2()));
-                        }
-                        result = mTempResult == 0x111;
                         break;
                     case 3:
-                        desc.append("\n").append("红外").append("-");
-
-                        if ((moduleStateStruct.getState() & 0x1) == 1) {
-                            mTempResult = (mTempResult | 0x10);
-                            desc.append("门：遮挡；");
-                        } else {
-                            mTempResult = (mTempResult | 0x1);
-                            desc.append("门：不遮挡；");
+                        if(moduleStateStruct.getState() == 1) {
+                            desc.append("\n").append("LED已打开，请观察是否正常。");
                         }
-                        if ((moduleStateStruct.getState()>>1 & 0x1) == 1) {
-                            mTempResult = (mTempResult | 0x1000);
-                            desc.append("防夹左：遮挡； \n");
-                        } else {
-                            mTempResult = (mTempResult | 0x100);
-                            desc.append("防夹左：不遮挡； \n");
-                        }
-                        if ((moduleStateStruct.getState()>>2 & 0x1) == 1) {
-                            mTempResult = (mTempResult | 0x100000);
-                            desc.append("防夹右：遮挡；");
-                        } else {
-                            mTempResult = (mTempResult | 0x10000);
-                            desc.append("防夹右：不遮挡；");
-                        }
-                        if ((moduleStateStruct.getState()>>3 & 0x1) == 1) {
-                            mTempResult = (mTempResult | 0x10000000);
-                            desc.append("排废盒：遮挡；\n----");
-                        } else {
-                            mTempResult = (mTempResult | 0x1000000);
-                            desc.append("排废盒：不遮挡；\n----");
-                        }
-                        result = mTempResult == 0x11111111;
                         break;
-                    case 4:
-                        desc.append("\n").append("电机").append("-").append(moduleStateStruct.getState() == 1 ? "正常" : "异常").append("\n")
-                                .append("霍尔").append("：").append((moduleStateStruct.getSub0() & 0x1) == 1 ? "初始位置到位" :
-                                ((moduleStateStruct.getSub0()>>1 & 0x1) == 1 ? "排废位置到位" : "不到位"))
-                                .append("\n").append("码盘记步数").append("：").append(moduleStateStruct.getSub1())
-                                .append("\n").append("电流").append("：").append((moduleStateStruct.getSub2()) == 1 ? "正常" : "异常").append("\n-----");
-
-
-                        if (moduleStateStruct.getState() > 0) {
-                            if ((moduleStateStruct.getSub0() & 0x1) == 1) {
-                                mTempResult = (mTempResult | 0x1);
+                    case 2:
+                        if(moduleStateStruct.getState() == -1) {
+                            desc.append("\n").append("按键还未校准，请先进行校准！");
+                        } else {
+                            desc.append("\n").append("按键状态").append("-").append(moduleStateStruct.getState() == 1 ? "正常" : "异常");
+                            if(moduleStateStruct.getSub1() > 0) {
+                                mTempResult = mTempResult | 0x1;
+                                desc.append("\n").append("按键").append("-").append("功能键").append("-").append(getKeyDescByState(moduleStateStruct.getSub1()));
                             }
-                            if ((moduleStateStruct.getSub0()>>1 & 0x1) == 1) {
-                                mTempResult = (mTempResult | 0x10);
+                            if(moduleStateStruct.getSub2() > 0) {
+                                mTempResult = mTempResult | 0x10;
+                                desc.append("\n").append("按键").append("-").append("童锁键").append("-").append(getKeyDescByState(moduleStateStruct.getSub2()));
                             }
+                            result = mTempResult == 0x11;
                         }
-                        result = mTempResult == 0x11;
-                        break;
-                    case 5:
-                        if (mK2TestUnits.get(mCurTestStep).getState() == 1 ) {
-                            desc.append("\n").append("秤").append("-").append("校准模式").append("-");
-                            switch (moduleStateStruct.getSub2()) {
-                                case 0:
-                                    desc.append("空桶");
-                                    mTempResult = mTempResult | 0x1;
-                                    break;
-                                case 1:
-                                    desc.append("2KG模式");
-                                    mTempResult = mTempResult | 0x10;
-                                    break;
-                                case 2:
-                                    desc.append("4KG模式");
-                                    mTempResult = mTempResult | 0x100;
-                                    break;
-                                case 3:
-                                    if (mTempResult == 0x111) {
-                                        desc.append("校准完成");
-                                        result = true;
-                                    }
-                                    break;
-                            }
-                        }
-                        desc.append("\n").append("秤").append("-").append("读取数值").append("-").append(moduleStateStruct.getSub1());
-                        desc.append("\n").append("秤").append("-").append("实际克数").append("-").append(moduleStateStruct.getSub0()).append("克");
-                        break;
-                    case 6:
-                        if (moduleStateStruct.getState() > 0) {
-                            mTempResult = mTempResult | 0x1;
-                            desc.append("\n").append("雾化器：").append("有水");
-                        } else {
-                            mTempResult = mTempResult | 0x10;
-                            desc.append("\n").append("雾化器：").append("缺水");
-                        }
-                        result = mTempResult == 0x11;
-                        break;
-                    case 7:
-                        if (moduleStateStruct.getState() > 0) {
-                            mTempResult = mTempResult | 0x1;
-                            desc.append("\n").append("红外热释：").append("有信号");
-                        } else {
-                            mTempResult = mTempResult | 0x10;
-                            desc.append("\n").append("红外热释：").append("没信号");
-                        }
-                        result = mTempResult == 0x11;
-                        break;
-                    case 8:
-                        if (moduleStateStruct.getState() > 0) {
-                            mTempResult = mTempResult | 0x1;
-                            desc.append("\n").append("微动开关：").append("关闭");
-                        } else {
-                            mTempResult = mTempResult | 0x10;
-                            desc.append("\n").append("微动开关：").append("打开");
-                        }
-                        result = mTempResult == 0x11;
                         break;
                     case 9:
-                        if (moduleStateStruct.getState() > 0) {
-                            mTempResult = mTempResult | 0x1;
-                            desc.append("\n").append("沙筒霍尔：").append("锁止");
+                        if(moduleStateStruct.getState() != 1) {
+                            desc.append("\n").append("液位霍尔异常！");
                         } else {
-                            mTempResult = mTempResult | 0x10;
-                            desc.append("\n").append("沙筒霍尔：").append("未锁止");
+                            if (moduleStateStruct.getSub0() > 0) {
+                                mTempResult = mTempResult | 0x1;
+                                desc.append("\n").append("液位霍尔：").append("正常");
+                            } else {
+                                mTempResult = mTempResult | 0x10;
+                                desc.append("\n").append("液位霍尔：").append("缺液");
+                            }
+                            result = mTempResult == 0x11;
                         }
-                        result = mTempResult == 0x11;
                         break;
                     case 10:
                         desc.append("\n").append("蓝牙").append(":").append("已打开");
@@ -756,25 +652,25 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 desc = "按下";
                 break;
             case 2:
-                desc = "短按";
+                desc = "松开";
                 break;
             case 3:
-                desc = "短按释放";
+                desc = "单击";
                 break;
             case 4:
-                desc = "长按";
+                desc = "空";
                 break;
             case 5:
-                desc = "长按释放";
+                desc = "长按";
                 break;
             case 6:
                 desc = "双击";
                 break;
             case 7:
-                desc = "短长按";
+                desc = "半长按";
                 break;
-            case 8:
-                desc = "双击释放";
+            case 0:
+                desc = "按键异常";
                 break;
         }
 
