@@ -67,7 +67,6 @@ public class K2Utils {
         TEST_MODE_SN,   //写SN
         TEST_MODE_RESET_SN, //重置SN
         TEST_MODE_RESET_ID, //清除ID
-        TEST_MODE_AGEINGRESULT, //老化数据
         TEST_MODE_PRINT     //打印标签
     }
 

@@ -43,7 +43,6 @@ import java.util.Date;
 import java.util.HashMap;
 
 import static com.petkit.matetool.ui.K2.utils.K2Utils.DC_RANGE;
-import static com.petkit.matetool.ui.K2.utils.K2Utils.K2TestModes.TEST_MODE_AGEINGRESULT;
 import static com.petkit.matetool.ui.utils.PrintUtils.isPrinterConnected;
 import static com.petkit.matetool.utils.Globals.TEST_FAILED;
 import static com.petkit.matetool.utils.Globals.TEST_PASS;
@@ -149,16 +148,16 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 }
                 break;
             case TEST_MODE_KEY:
-                mPromptTextView.setText("请先校准，再分别测试功能键和童锁键！");
+                mPromptTextView.setText("请先校准，注意保持按键表面清洁，无干扰，再分别测试功能键和童锁键！");
                 break;
             case TEST_MODE_DC:
                 mPromptTextView.setText("正常电压范围（单位mV）：[" + DC_RANGE[0] + ", " + DC_RANGE[1] + "]");
                 break;
             case TEST_MODE_LED:
-                mPromptTextView.setText("测试LED和蜂鸣器，观察是否正常！");
+                mPromptTextView.setText("测试数码管和蜂鸣器，观察是否正常！");
                 break;
-            case TEST_MODE_AGEINGRESULT:
-                mPromptTextView.setText("观察老化数据，手动判断结果！");
+            case TEST_MODE_LED_2:
+                mPromptTextView.setText("测试LED灯，观察是否正常！");
                 break;
             case TEST_MODE_HOLZER:
                 mPromptTextView.setText("需分别测试正常和缺液状态！");
@@ -169,6 +168,12 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
             case TEST_MODE_TIME:
                 mPromptTextView.setText("测试设备时钟正常！");
                 break;
+            case TEST_MODE_FAN:
+                mPromptTextView.setText("测试风扇，会自动切换转速！");
+                break;
+            case TEST_MODE_TEMP:
+                mPromptTextView.setText("测试温湿度传感器，观察是否正常！");
+                break;
             default:
                 break;
         }
@@ -178,7 +183,6 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
 
     private void refershBtnView() {
         switch (mK2TestUnits.get(mCurTestStep).getType()) {
-            case TEST_MODE_AGEINGRESULT:  // 人工判定结果
             case TEST_MODE_TEMP:
             case TEST_MODE_LED:
             case TEST_MODE_LED_2:
@@ -281,11 +285,6 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         params.put("mac", mDevice.getMac());
                         PetkitSocketInstance.getInstance().sendString(K2Utils.getRequestForKeyAndPayload(162, params));
                         break;
-                    case TEST_MODE_AGEINGRESULT:
-                        params = new HashMap<>();
-                        params.put("mac", mDevice.getMac());
-                        PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(167, params));
-                        break;
                     default:
                         startTestModule();
                         break;
@@ -313,10 +312,6 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         params.put("state", 1);
                         PetkitSocketInstance.getInstance().sendString(K2Utils.getRequestForKeyAndPayload(163, params));
                         break;
-                    case TEST_MODE_AGEINGRESULT:
-                        mK2TestUnits.get(mCurTestStep).setResult(TEST_FAILED);
-                        gotoNextTestModule();
-                        break;
                 }
                 break;
             case R.id.test_btn_3:
@@ -326,7 +321,9 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                     case TEST_MODE_PRINT:
                         gotoNextTestModule();
                         break;
-                    case TEST_MODE_AGEINGRESULT:
+                    case TEST_MODE_TEMP:
+                    case TEST_MODE_LED:
+                    case TEST_MODE_LED_2:
                         mK2TestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         gotoNextTestModule();
                         break;
@@ -458,15 +455,37 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                             desc.append("\n").append("按键还未校准，请先进行校准！");
                         } else {
                             desc.append("\n").append("按键状态").append("-").append(moduleStateStruct.getState() == 1 ? "正常" : "异常");
-                            if(moduleStateStruct.getSub1() > 0) {
+                            if(moduleStateStruct.getSub1() > 0 && moduleStateStruct.getSub1() != 4) {
                                 mTempResult = mTempResult | 0x1;
                                 desc.append("\n").append("按键").append("-").append("功能键").append("-").append(getKeyDescByState(moduleStateStruct.getSub1()));
                             }
-                            if(moduleStateStruct.getSub2() > 0) {
+                            if(moduleStateStruct.getSub2() > 0 && moduleStateStruct.getSub2() != 4) {
                                 mTempResult = mTempResult | 0x10;
                                 desc.append("\n").append("按键").append("-").append("童锁键").append("-").append(getKeyDescByState(moduleStateStruct.getSub2()));
                             }
                             result = mTempResult == 0x11;
+                        }
+                        break;
+                    case 7:
+                        if(moduleStateStruct.getState() == -1) {
+                            desc.append("\n").append("风扇异常！");
+                        } else {
+                            desc.append("\n").append("风扇正常，档位：").append(moduleStateStruct.getSub0()).append("，转速：").append(moduleStateStruct.getSub1());
+                            if (moduleStateStruct.getSub0() == 0) {
+                                mTempResult = mTempResult | 0x1;
+                            } else if (moduleStateStruct.getSub0() == 1) {
+                                mTempResult = mTempResult | 0x10;
+                            } else if (moduleStateStruct.getSub0() == 2) {
+                                mTempResult = mTempResult | 0x100;
+                            }
+                            result = mTempResult == 0x111;
+                        }
+                        break;
+                    case 8:
+                        if (moduleStateStruct.getState() == 0) {
+                            desc.append("\n").append("环境传感器异常！");
+                        } else {
+                            desc.append("\n").append("环境").append("：温度").append(getTempFormat(moduleStateStruct.getSub0())).append("，湿度").append(Math.round(moduleStateStruct.getSub1() / 10f)).append("%");
                         }
                         break;
                     case 9:
@@ -563,11 +582,7 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 break;
             case 167:
                 mAgeingResult = data;
-                if (mK2TestUnits.get(mCurTestStep).getType() == TEST_MODE_AGEINGRESULT) {
-                    mDescTextView.setText(mAgeingResult);
-                } else {
-                    startSetSn();
-                }
+                startSetSn();
                 break;
         }
     }
@@ -643,6 +658,11 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
         api.endJob();
 
         return IDzPrinter.Factory.getInstance().print(api, getPrintParam());
+    }
+
+
+    private String getTempFormat(int temp) {
+        return String.format("%.1f℃", temp/10f);
     }
 
     private String getKeyDescByState(int state) {
