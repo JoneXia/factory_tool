@@ -55,6 +55,7 @@ public class K2Utils {
 
     public enum K2TestModes {
         TEST_MODE_DC,   //电压
+        TEST_MODE_AUTO,   //自动测试项
         TEST_MODE_LED,  //数码管和蜂鸣器
         TEST_MODE_LED_2,  //LED
         TEST_MODE_KEY,  //按键
@@ -106,6 +107,22 @@ public class K2Utils {
     }
 
     /**
+     *
+     * @return ArrayList
+     */
+    public static ArrayList<K2TestUnit> generateK2AutoTestUnits() {
+        ArrayList<K2TestUnit> results = new ArrayList<>();
+
+        results.add(new K2TestUnit(K2TestModes.TEST_MODE_DC, "电压测试", 0, 1));
+        results.add(new K2TestUnit(K2TestModes.TEST_MODE_TIME, "时钟测试", 11, 1));
+        results.add(new K2TestUnit(K2TestModes.TEST_MODE_FAN, "风扇测试", 7, 1));
+        results.add(new K2TestUnit(K2TestModes.TEST_MODE_BT, "蓝牙测试", 10, 1));
+
+        return results;
+    }
+
+
+    /**
      * 获取不同的测试模式对应的测试项
      * @param type 测试类型
      * @return 测试项
@@ -119,23 +136,24 @@ public class K2Utils {
             results.add(new K2TestUnit(K2TestModes.TEST_MODE_SN, "写入SN", 12, 2));
             results.add(new K2TestUnit(K2TestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
         } else {
-            if (type != TYPE_TEST_PARTIALLY) {
-//                results.add(new K2TestUnit(K2TestModes.TEST_MODE_AGEINGRESULT, "老化结果", 97, 1));
+            if (type == TYPE_MAINTAIN) {        //擦除ID选项先关闭，暂不开放
+                results.add(new K2TestUnit(K2TestModes.TEST_MODE_DC, "电压测试", 0, 1));
+                results.add(new K2TestUnit(K2TestModes.TEST_MODE_TIME, "时钟测试", 11, 1));
+                results.add(new K2TestUnit(K2TestModes.TEST_MODE_FAN, "风扇测试", 7, 1));
+                results.add(new K2TestUnit(K2TestModes.TEST_MODE_BT, "蓝牙测试", 10, 1));
+            } else {
+                results.add(new K2TestUnit(K2TestModes.TEST_MODE_AUTO, "自动项测试", 10, 1));
             }
 
-            results.add(new K2TestUnit(K2TestModes.TEST_MODE_DC, "电压测试", 0, 1));
             results.add(new K2TestUnit(K2TestModes.TEST_MODE_LED, "数码管和蜂鸣器", 1, 1));
             results.add(new K2TestUnit(K2TestModes.TEST_MODE_LED_2, "LED灯测试", 3, 1));
             results.add(new K2TestUnit(K2TestModes.TEST_MODE_KEY, "按键测试", 2, 2));
             results.add(new K2TestUnit(K2TestModes.TEST_MODE_HOLZER, "液位霍尔测试", 9, 1));
-            results.add(new K2TestUnit(K2TestModes.TEST_MODE_FAN, "风扇测试", 7, 1));
             results.add(new K2TestUnit(K2TestModes.TEST_MODE_TEMP, "温湿度测试", 8, 1));
-            results.add(new K2TestUnit(K2TestModes.TEST_MODE_BT, "蓝牙测试", 10, 1));
-            results.add(new K2TestUnit(K2TestModes.TEST_MODE_TIME, "时钟测试", 11, 1));
 
             if (type != TYPE_TEST_PARTIALLY) {
                 if (type == TYPE_TEST) {
-                    results.add(new K2TestUnit(K2TestModes.TEST_MODE_SN, "写入SN", 12, 2));
+                    results.add(new K2TestUnit(K2TestModes.TEST_MODE_SN, "写入SN", 12, 1));
 //                    results.add(new CozyTestUnit(K2TestModes.TEST_MODE_RESET_SN, "重写SN", 97, 1));
                 }
                 results.add(new K2TestUnit(K2TestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
