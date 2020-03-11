@@ -81,6 +81,9 @@ public class TesterManagerUtils {
             case Globals.T3:
                 CommonUtils.addSysMap(T3Utils.SHARED_T3_TESTER, testerString);
                 break;
+            case Globals.K2:
+                CommonUtils.addSysMap(K2Utils.SHARED_K2_TESTER, testerString);
+                break;
         }
 
         for(Integer key : mTesterTempList.keySet()) {
@@ -114,6 +117,9 @@ public class TesterManagerUtils {
                         break;
                     case Globals.T3:
                         CommonUtils.addSysMap(T3Utils.SHARED_T3_TESTER, "");
+                        break;
+                    case Globals.K2:
+                        CommonUtils.addSysMap(K2Utils.SHARED_K2_TESTER, "");
                         break;
                 }
                 iterator.remove();

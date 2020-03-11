@@ -27,6 +27,7 @@ import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.K2.mode.K2TestUnit;
 import com.petkit.matetool.ui.K2.utils.K2Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.base.PrintActivity;
 import com.petkit.matetool.ui.utils.PetkitSocketInstance;
 import com.petkit.matetool.ui.utils.WifiAdminSimple;
 import com.petkit.matetool.utils.Globals;
@@ -155,6 +156,7 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
                 break;
             case R.id.connect_dev:
                 refreshView();
+                startActivity(PrintActivity.class);
 //                testSN();
 //                startActivity(PrintActivity.class);
                 break;
@@ -470,7 +472,7 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
                     if(K2Utils.isDeviceInTemp(mCurDevice)) {
                         LogcatStorageHelper.addLog("检测到该设备写入SN时异常: " + mCurDevice.toString());
                         K2Utils.removeTempDeviceInfo(mCurDevice);
-                        K2Utils.storeSucceedDeviceInfo(mCurDevice, "");
+                        K2Utils.storeSucceedDeviceInfo(mCurDevice, "null");
                         showDeviceInTempDialog();
                     }
                     return;

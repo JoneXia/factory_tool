@@ -97,7 +97,7 @@ public class K2StorageFileActivity extends BaseActivity {
         files.add(filename);
         params2.put("feederFile", files);
 
-        AsyncHttpUtil.post("/api/K2/batch/file", params, params2, new AsyncHttpRespHandler(this, true) {
+        AsyncHttpUtil.post("/api/k2/batch/file", params, params2, new AsyncHttpRespHandler(this, true) {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {

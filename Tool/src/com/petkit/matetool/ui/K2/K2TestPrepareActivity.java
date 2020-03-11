@@ -80,10 +80,10 @@ public class K2TestPrepareActivity extends BaseActivity {
 
         mTester = TesterManagerUtils.getCurrentTesterForType(Globals.K2);
 
-        mTester = new Tester();
-        mTester.setName("jone");
-        mTester.setCode("00");
-        mTester.setStation("6");
+//        mTester = new Tester();
+//        mTester.setName("jone");
+//        mTester.setCode("00");
+//        mTester.setStation("6");
 
         if (mTester != null) {
             if (!isEmpty(mTester.getName())) {
@@ -315,7 +315,7 @@ public class K2TestPrepareActivity extends BaseActivity {
     }
 
     private void getLastSN() {
-        AsyncHttpUtil.get("/api/K2/latest", new AsyncHttpRespHandler(this) {
+        AsyncHttpUtil.get("/api/k2/latest", new AsyncHttpRespHandler(this) {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -386,11 +386,11 @@ public class K2TestPrepareActivity extends BaseActivity {
 
         String api;
         if(FILE_MAINTAIN_INFO_NAME.equals(file.getName())) {
-            api = "/api/K2/maintain/repair";
+            api = "/api/k2/maintain/repair";
         } else if(FILE_CHECK_INFO_NAME.equals(file.getName())) {
-            api = "/api/K2/maintain/inspect";
+            api = "/api/k2/maintain/inspect";
         } else {
-            api = "/api/K2/batch";
+            api = "/api/k2/batch";
         }
 
         HashMap<String, String> params = new HashMap<>();

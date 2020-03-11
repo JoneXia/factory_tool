@@ -101,7 +101,7 @@
         android:background="@color/border_color_on_light"
         android:gravity="center"
         android:onClick="printTextOnClick"
-        android:visibility="invisible"
+        android:visibility="visible"
         android:text="@string/printtext" />
 
     <Button
