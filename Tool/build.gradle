@@ -11,7 +11,8 @@ dependencies {
     compile('com.github.gzu-liyujiang.AndroidPicker:FilePicker:1.5.5') {
         exclude group: 'com.android.support'
     }
-    compile(name:'blufi-2.3.0', ext:'aar')
+    compile(name: 'blufi-2.3.0', ext: 'aar')
+    compile files('libs/LPAPI-2020-02-28-R.jar')
 }
 repositories {
     flatDir {

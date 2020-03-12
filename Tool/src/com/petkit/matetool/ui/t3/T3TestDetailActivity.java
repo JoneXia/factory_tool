@@ -15,6 +15,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.dothantech.lpapi.IAtBitmap;
+import com.dothantech.lpapi.LPAPI;
 import com.dothantech.printer.IDzPrinter;
 import com.google.gson.Gson;
 import com.petkit.android.ble.DeviceInfo;
@@ -27,11 +28,12 @@ import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.DeviceModuleStateStruct;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.base.BaseActivity;
-import com.petkit.matetool.ui.base.PrintActivity;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
+import com.petkit.matetool.ui.print.PrintActivity;
 import com.petkit.matetool.ui.t3.mode.T3TestUnit;
 import com.petkit.matetool.ui.t3.utils.T3Utils;
 import com.petkit.matetool.ui.utils.PetkitSocketInstance;
+import com.petkit.matetool.ui.utils.PrintUtils;
 import com.petkit.matetool.utils.DateUtil;
 import com.petkit.matetool.utils.JSONUtils;
 
@@ -48,7 +50,6 @@ import static com.petkit.matetool.utils.Globals.TEST_FAILED;
 import static com.petkit.matetool.utils.Globals.TEST_PASS;
 
 /**
- *
  * Created by Jone on 17/4/24.
  */
 public class T3TestDetailActivity extends BaseActivity implements PetkitSocketInstance.IPetkitSocketListener {
@@ -71,7 +72,7 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(savedInstanceState != null) {
+        if (savedInstanceState != null) {
             mT3TestUnits = (ArrayList<T3TestUnit>) savedInstanceState.getSerializable("TestUnits");
             mCurTestStep = savedInstanceState.getInt("CurrentTestStep");
             mDevice = (Device) savedInstanceState.getSerializable(T3Utils.EXTRA_T3);
@@ -138,8 +139,8 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 mDescTextView.setText("mac:" + mDevice.getMac() + "\n" + "sn:" + mDevice.getSn());
                 break;
             case TEST_MODE_SN:
-                if(!isEmpty(mDevice.getSn())) {
-                    if(mT3TestUnits.get(mCurTestStep).getState() != 2 || (mErrorDevice != null && !mDevice.getSn().equals(mErrorDevice.getSn()))) {
+                if (!isEmpty(mDevice.getSn())) {
+                    if (mT3TestUnits.get(mCurTestStep).getState() != 2 || (mErrorDevice != null && !mDevice.getSn().equals(mErrorDevice.getSn()))) {
                         mT3TestUnits.get(mCurTestStep).setResult(TEST_PASS);
                     }
                     mDescTextView.setText("mac:" + mDevice.getMac() + "\n" + "sn:" + mDevice.getSn());
@@ -213,7 +214,7 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 mBtn2.setText(R.string.Set_print);
                 mBtn2.setVisibility(View.VISIBLE);
                 mBtn2.setBackgroundResource(R.drawable.selector_gray);
-                if(mT3TestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
+                if (mT3TestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
                     mBtn3.setText(R.string.Succeed);
                     mBtn3.setBackgroundResource(R.drawable.selector_blue);
                 } else {
@@ -224,7 +225,7 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
             case TEST_MODE_SN:
                 mBtn1.setText(R.string.Write);
                 mBtn2.setVisibility(View.INVISIBLE);
-                if(mT3TestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
+                if (mT3TestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
                     mBtn3.setText(R.string.Succeed);
                     mBtn3.setBackgroundResource(R.drawable.selector_blue);
                 } else {
@@ -253,10 +254,10 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
             case R.id.test_btn_1:
                 switch (mT3TestUnits.get(mCurTestStep).getType()) {
                     case TEST_MODE_PRINT:
-                        if(isPrinterConnected()) {
-                            if(isEmpty(mDevice.getSn())) {
+                        if (isPrinterConnected()) {
+                            if (isEmpty(mDevice.getSn())) {
                                 showShortToast("SN还未写入，不能打印！");
-                            } else if(isEmpty(mDevice.getMac())) {
+                            } else if (isEmpty(mDevice.getMac())) {
                                 showShortToast("MAC为空，不能打印！");
                             } else {
                                 HashMap<String, String> params = new HashMap<>();
@@ -333,7 +334,7 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         break;
                     default:
                         isWriteEndCmd = true;
-                        if(mT3TestUnits.get(mCurTestStep).getResult() != TEST_PASS) {
+                        if (mT3TestUnits.get(mCurTestStep).getResult() != TEST_PASS) {
                             mT3TestUnits.get(mCurTestStep).setResult(TEST_FAILED);
                         }
 
@@ -363,14 +364,14 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
 
         PetkitSocketInstance.getInstance().sendString(T3Utils.getRequestForKeyAndPayload(163, params));
 
-        if(mT3TestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
+        if (mT3TestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
             mT3TestUnits.get(mCurTestStep).setResult(TEST_FAILED);
             refershBtnView();
         }
     }
 
     private void gotoNextTestModule() {
-        if(mCurTestStep == mT3TestUnits.size() - 1 || !isAutoTest) {
+        if (mCurTestStep == mT3TestUnits.size() - 1 || !isAutoTest) {
             finish();
         } else {
             mTempResult = 0;
@@ -405,11 +406,11 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
         switch (key) {
             case 163:
                 JSONObject jsonObject = JSONUtils.getJSONObject(data);
-                if(!jsonObject.isNull("state")) {
+                if (!jsonObject.isNull("state")) {
                     try {
                         switch (jsonObject.getInt("state")) {
                             case 1:
-                                if(isWriteEndCmd) {
+                                if (isWriteEndCmd) {
                                     isWriteEndCmd = false;
                                     gotoNextTestModule();
                                 } else {
@@ -445,10 +446,10 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         result = moduleStateStruct.getSub0() >= 11000 && moduleStateStruct.getSub0() <= 13000;
                         break;
                     case 1:
-                        if(moduleStateStruct.getState() == 0) {
+                        if (moduleStateStruct.getState() == 0) {
                             mTempResult = mTempResult | 0x1;
                             desc.append("\n").append("屏幕和蜂鸣器已关闭");
-                        } else if(moduleStateStruct.getState() == 1) {
+                        } else if (moduleStateStruct.getState() == 1) {
                             mTempResult = mTempResult | 0x10;
                             desc.append("\n").append("屏幕和蜂鸣器已打开");
                         }
@@ -456,14 +457,14 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         break;
                     case 2:
                         desc.append("\n").append("mcu").append("-").append("通信").append("-").append(moduleStateStruct.getSub0() == 1 ? "正常" : "异常");
-                        if(moduleStateStruct.getSub0() > 0) {
+                        if (moduleStateStruct.getSub0() > 0) {
                             mTempResult = mTempResult | 0x1;
                         }
-                        if(moduleStateStruct.getSub1() > 0) {
+                        if (moduleStateStruct.getSub1() > 0) {
                             mTempResult = mTempResult | 0x10;
                             desc.append("\n").append("按键").append("-").append("菜单").append("-").append(getKeyDescByState(moduleStateStruct.getSub1()));
                         }
-                        if(moduleStateStruct.getSub2() > 0) {
+                        if (moduleStateStruct.getSub2() > 0) {
                             mTempResult = mTempResult | 0x100;
                             desc.append("\n").append("按键").append("-").append("OK键").append("-").append(getKeyDescByState(moduleStateStruct.getSub2()));
                         }
@@ -479,21 +480,21 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                             mTempResult = (mTempResult | 0x1);
                             desc.append("门：不遮挡；");
                         }
-                        if ((moduleStateStruct.getState()>>1 & 0x1) == 1) {
+                        if ((moduleStateStruct.getState() >> 1 & 0x1) == 1) {
                             mTempResult = (mTempResult | 0x1000);
                             desc.append("防夹左：遮挡； \n");
                         } else {
                             mTempResult = (mTempResult | 0x100);
                             desc.append("防夹左：不遮挡； \n");
                         }
-                        if ((moduleStateStruct.getState()>>2 & 0x1) == 1) {
+                        if ((moduleStateStruct.getState() >> 2 & 0x1) == 1) {
                             mTempResult = (mTempResult | 0x100000);
                             desc.append("防夹右：遮挡；");
                         } else {
                             mTempResult = (mTempResult | 0x10000);
                             desc.append("防夹右：不遮挡；");
                         }
-                        if ((moduleStateStruct.getState()>>3 & 0x1) == 1) {
+                        if ((moduleStateStruct.getState() >> 3 & 0x1) == 1) {
                             mTempResult = (mTempResult | 0x10000000);
                             desc.append("排废盒：遮挡；\n----");
                         } else {
@@ -505,7 +506,7 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                     case 4:
                         desc.append("\n").append("电机").append("-").append(moduleStateStruct.getState() == 1 ? "正常" : "异常").append("\n")
                                 .append("霍尔").append("：").append((moduleStateStruct.getSub0() & 0x1) == 1 ? "初始位置到位" :
-                                ((moduleStateStruct.getSub0()>>1 & 0x1) == 1 ? "排废位置到位" : "不到位"))
+                                ((moduleStateStruct.getSub0() >> 1 & 0x1) == 1 ? "排废位置到位" : "不到位"))
                                 .append("\n").append("码盘记步数").append("：").append(moduleStateStruct.getSub1())
                                 .append("\n").append("电流").append("：").append((moduleStateStruct.getSub2()) == 1 ? "正常" : "异常").append("\n-----");
 
@@ -514,14 +515,14 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                             if ((moduleStateStruct.getSub0() & 0x1) == 1) {
                                 mTempResult = (mTempResult | 0x1);
                             }
-                            if ((moduleStateStruct.getSub0()>>1 & 0x1) == 1) {
+                            if ((moduleStateStruct.getSub0() >> 1 & 0x1) == 1) {
                                 mTempResult = (mTempResult | 0x10);
                             }
                         }
                         result = mTempResult == 0x11;
                         break;
                     case 5:
-                        if (mT3TestUnits.get(mCurTestStep).getState() == 1 ) {
+                        if (mT3TestUnits.get(mCurTestStep).getState() == 1) {
                             desc.append("\n").append("秤").append("-").append("校准模式").append("-");
                             switch (moduleStateStruct.getSub2()) {
                                 case 0:
@@ -593,7 +594,7 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         startBleTest(moduleStateStruct.getBtMac());
                         break;
                     case 11:
-                        if(!isEmpty(moduleStateStruct.getTime())) {
+                        if (!isEmpty(moduleStateStruct.getTime())) {
                             desc.append("\n").append(DateUtil.getFormatDateFromString(moduleStateStruct.getTime()));
                             result = true;
                         }
@@ -607,14 +608,14 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                     }
                 });
 
-                if(result) {
+                if (result) {
                     mT3TestUnits.get(mCurTestStep).setResult(TEST_PASS);
                     refershBtnView();
                 }
                 break;
             case 161:
                 jsonObject = JSONUtils.getJSONObject(data);
-                if(!jsonObject.isNull("state")) {
+                if (!jsonObject.isNull("state")) {
                     try {
                         switch (jsonObject.getInt("state")) {
                             case 0:
@@ -643,7 +644,7 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 break;
             case 165:
                 jsonObject = JSONUtils.getJSONObject(data);
-                if(!jsonObject.isNull("state")) {
+                if (!jsonObject.isNull("state")) {
                     try {
                         switch (jsonObject.getInt("state")) {
                             case 1:
@@ -677,11 +678,11 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
     }
 
     private void startSetSn() {
-        if(isEmpty(mDevice.getSn()) || (mT3TestUnits.get(mCurTestStep).getState() == 2
+        if (isEmpty(mDevice.getSn()) || (mT3TestUnits.get(mCurTestStep).getState() == 2
                 && mErrorDevice != null && mDevice.getSn().equals(mErrorDevice.getSn()))) {
             boolean result = true;
             for (T3TestUnit unit : mT3TestUnits) {
-                if(unit.getType() != T3Utils.T3TestModes.TEST_MODE_SN &&
+                if (unit.getType() != T3Utils.T3TestModes.TEST_MODE_SN &&
                         unit.getType() != T3Utils.T3TestModes.TEST_MODE_PRINT
                         && unit.getResult() != TEST_PASS) {
                     result = false;
@@ -689,11 +690,11 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 }
             }
 
-            if(!result) {
+            if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
                 String sn = T3Utils.generateSNForTester(mTester);
-                if(sn == null) {
+                if (sn == null) {
                     showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
                     return;
                 }
@@ -706,7 +707,7 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 HashMap<String, Object> payload = new HashMap<>();
                 payload.put("mac", mDevice.getMac());
                 payload.put("sn", sn);
-                if(mT3TestUnits.get(mCurTestStep).getState() == 2) {
+                if (mT3TestUnits.get(mCurTestStep).getState() == 2) {
                     payload.put("force", 100);
                 }
                 PetkitSocketInstance.getInstance().sendString(T3Utils.getRequestForKeyAndPayload(161, payload));
@@ -731,22 +732,7 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
     }
 
     private boolean printBarcode(String onedBarcde, String twodBarcde) {
-        LoadDialog.show(this, "正在打印标签，请稍后……");
-
-        IAtBitmap api = IAtBitmap.Factory.createInstance();
-
-//        api.startJob(48 * 100, 30 * 100);
-//        api.draw2DQRCode(twodBarcde, 18 * 100, 2 * 100, 14 * 100);
-//        api.draw1DBarcode(onedBarcde, IAtBitmap.BarcodeType1D.AUTO, 6 * 100, 18 * 100, 38 * 100, 10 * 100, 180);
-//        api.endJob();
-        api.startJob(48 * 100, 30 * 100);
-        api.setItemHorizontalAlignment(IAtBitmap.ItemAlignment.MIDDLE);
-        api.draw2DQRCode(twodBarcde, 16 * 100, 2 * 100, 15 * 100);
-        api.draw1DBarcode(onedBarcde, IAtBitmap.BarcodeType1D.CODE128, 0 * 100, 18 * 100, 48 * 100, 7 * 100, 0);
-        api.drawText(onedBarcde, 0 * 100, 25 * 100, 48 * 100, 3 *100, 280, IAtBitmap.FontStyle.REGULAR);
-        api.endJob();
-
-        return IDzPrinter.Factory.getInstance().print(api, getPrintParam());
+        return PrintUtils.printText(onedBarcde, twodBarcde, callback);
     }
 
     private String getKeyDescByState(int state) {
@@ -790,6 +776,7 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
 
         /****************************************************************************************************************************************/
         // 所有回调函数都是在打印线程中被调用，因此如果需要刷新界面，需要发送消息给界面主线程，以避免互斥等繁琐操作。
+
         /****************************************************************************************************************************************/
 
         // 打印机连接状态发生变化时被调用
@@ -856,7 +843,6 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
     };
 
 
-
     private EditText et1 = null;
     private EditText et2 = null;
 
@@ -877,7 +863,7 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 String mac = et1.getText().toString();
                 String sn = et2.getText().toString();
 
-                if(sn == null || sn.length() != 14) {
+                if (sn == null || sn.length() != 14) {
                     showShortToast("无效的SN");
                     return;
                 }
@@ -923,11 +909,11 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
 //            stringBuffer.append(mac, 0, 2).append(":").append(mac, 2, 2).append(":")
 //                    .append(mac, 4, 2).append(":").append(mac, 6, 2).append(":")
 //                    .append(mac, 8, 2).append(":").append(mac, 10, 2);
-            stringBuffer.insert(10,':');
-            stringBuffer.insert(8,':');
-            stringBuffer.insert(6,':');
-            stringBuffer.insert(4,':');
-            stringBuffer.insert(2,':');
+            stringBuffer.insert(10, ':');
+            stringBuffer.insert(8, ':');
+            stringBuffer.insert(6, ':');
+            stringBuffer.insert(4, ':');
+            stringBuffer.insert(2, ':');
             mac = stringBuffer.toString();
         }
 
@@ -998,5 +984,73 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
         ScanFilter scanFilter = new ScanFilter.Builder().setDeviceAddress(mac).build();
         PetkitBLEManager.getInstance().startScan(scanFilter);
     }
+
+    private final LPAPI.Callback callback = new LPAPI.Callback() {
+
+        /****************************************************************************************************************************************/
+        // 所有回调函数都是在打印线程中被调用，因此如果需要刷新界面，需要发送消息给界面主线程，以避免互斥等繁琐操作。
+
+        /****************************************************************************************************************************************/
+
+        // 打印机连接状态发生变化时被调用
+        @Override
+        public void onStateChange(IDzPrinter.PrinterAddress arg0, IDzPrinter.PrinterState arg1) {
+            final IDzPrinter.PrinterAddress printer = arg0;
+            switch (arg1) {
+                case Connected:
+                case Connected2:
+                    break;
+
+                case Disconnected:
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        // 蓝牙适配器状态发生变化时被调用
+        @Override
+        public void onProgressInfo(IDzPrinter.ProgressInfo arg0, Object arg1) {
+        }
+
+        @Override
+        public void onPrinterDiscovery(IDzPrinter.PrinterAddress arg0, IDzPrinter.PrinterInfo arg1) {
+        }
+
+        // 打印标签的进度发生变化是被调用
+        @Override
+        public void onPrintProgress(IDzPrinter.PrinterAddress address, Object bitmapData, IDzPrinter.PrintProgress progress, Object addiInfo) {
+            switch (progress) {
+                case Success:
+                    // 打印标签成功，发送通知，刷新界面提示
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            LoadDialog.dismissDialog();
+
+                            mDescTextView.append("\n" + getString(R.string.printsuccess));
+                            mT3TestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                            refershBtnView();
+                        }
+                    });
+                    break;
+
+                case Failed:
+                    // 打印标签失败，发送通知，刷新界面提示
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mDescTextView.append(getString(R.string.printfailed));
+                        }
+                    });
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    };
 
 }

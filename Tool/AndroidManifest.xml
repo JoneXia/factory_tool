@@ -89,7 +89,7 @@
         </activity>
         <activity android:name=".ui.go.GoTestMainActivity" android:screenOrientation="portrait"/>
 
-        <activity android:name=".ui.base.PrintActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ui.print.PrintActivity" android:screenOrientation="portrait" />
         <activity android:name=".ui.feeder.FeederStartActivity" android:screenOrientation="portrait" />
         <activity android:name=".ui.feeder.FeederTestMainActivity" android:screenOrientation="portrait" />
         <activity android:name=".ui.feeder.FeederTestDetailActivity" android:screenOrientation="portrait" />

@@ -27,7 +27,7 @@ import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.K2.mode.K2TestUnit;
 import com.petkit.matetool.ui.K2.utils.K2Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
-import com.petkit.matetool.ui.base.PrintActivity;
+import com.petkit.matetool.ui.print.PrintActivity;
 import com.petkit.matetool.ui.utils.PetkitSocketInstance;
 import com.petkit.matetool.ui.utils.WifiAdminSimple;
 import com.petkit.matetool.utils.Globals;

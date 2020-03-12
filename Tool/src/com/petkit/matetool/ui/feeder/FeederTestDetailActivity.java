@@ -13,13 +13,14 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.dothantech.lpapi.IAtBitmap;
+import com.dothantech.lpapi.LPAPI;
 import com.dothantech.printer.IDzPrinter;
 import com.google.gson.Gson;
 import com.petkit.android.utils.LogcatStorageHelper;
 import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.ui.base.BaseActivity;
-import com.petkit.matetool.ui.base.PrintActivity;
+import com.petkit.matetool.ui.print.PrintActivity;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.ui.feeder.mode.Feeder;
 import com.petkit.matetool.ui.feeder.mode.FeederTestUnit;
@@ -27,6 +28,7 @@ import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.feeder.mode.ModuleStateStruct;
 import com.petkit.matetool.ui.feeder.utils.FeederUtils;
 import com.petkit.matetool.ui.utils.PetkitSocketInstance;
+import com.petkit.matetool.ui.utils.PrintUtils;
 import com.petkit.matetool.utils.DateUtil;
 import com.petkit.matetool.utils.JSONUtils;
 
@@ -45,7 +47,6 @@ import static com.petkit.matetool.utils.Globals.TEST_FAILED;
 import static com.petkit.matetool.utils.Globals.TEST_PASS;
 
 /**
- *
  * Created by Jone on 17/4/24.
  */
 public class FeederTestDetailActivity extends BaseActivity implements PetkitSocketInstance.IPetkitSocketListener {
@@ -67,7 +68,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(savedInstanceState != null) {
+        if (savedInstanceState != null) {
             mFeederTestUnits = (ArrayList<FeederTestUnit>) savedInstanceState.getSerializable("TestUnits");
             mCurTestStep = savedInstanceState.getInt("CurrentTestStep");
             mFeeder = (Feeder) savedInstanceState.getSerializable("Feeder");
@@ -92,7 +93,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
 
         PetkitSocketInstance.getInstance().setPetkitSocketListener(this);
 
-        IDzPrinter.Factory.getInstance().init(this, mCallback);
+//        IDzPrinter.Factory.getInstance().init(this, mCallback);
     }
 
 
@@ -134,8 +135,8 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                 mDescTextView.setText("mac:" + mFeeder.getMac() + "\n" + "sn:" + mFeeder.getSn());
                 break;
             case TEST_MODE_SN:
-                if(!isEmpty(mFeeder.getSn())) {
-                    if(mFeederTestUnits.get(mCurTestStep).getState() != 2 || (mErrorFeeder != null && !mFeeder.getSn().equals(mErrorFeeder.getSn()))) {
+                if (!isEmpty(mFeeder.getSn())) {
+                    if (mFeederTestUnits.get(mCurTestStep).getState() != 2 || (mErrorFeeder != null && !mFeeder.getSn().equals(mErrorFeeder.getSn()))) {
                         mFeederTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                     }
                     mDescTextView.setText("mac:" + mFeeder.getMac() + "\n" + "sn:" + mFeeder.getSn());
@@ -184,7 +185,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                 mBtn2.setText(R.string.Set_print);
                 mBtn2.setVisibility(View.VISIBLE);
                 mBtn2.setBackgroundResource(R.drawable.selector_gray);
-                if(mFeederTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
+                if (mFeederTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
                     mBtn3.setText(R.string.Succeed);
                     mBtn3.setBackgroundResource(R.drawable.selector_blue);
                 } else {
@@ -195,7 +196,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
             case TEST_MODE_SN:
                 mBtn1.setText(R.string.Write);
                 mBtn2.setVisibility(View.INVISIBLE);
-                if(mFeederTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
+                if (mFeederTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
                     mBtn3.setText(R.string.Succeed);
                     mBtn3.setBackgroundResource(R.drawable.selector_blue);
                 } else {
@@ -206,7 +207,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
             default:
                 mBtn1.setText(R.string.Start);
                 mBtn2.setVisibility(View.INVISIBLE);
-                if(TEST_MODE_BALANCE == mFeederTestUnits.get(mCurTestStep).getType()
+                if (TEST_MODE_BALANCE == mFeederTestUnits.get(mCurTestStep).getType()
                         && mFeederTestUnits.get(mCurTestStep).getState() == 3) {
                     mBtn2.setText(R.string.Failure);
                     mBtn2.setBackgroundResource(R.drawable.selector_red);
@@ -233,10 +234,10 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
             case R.id.test_btn_1:
                 switch (mFeederTestUnits.get(mCurTestStep).getType()) {
                     case TEST_MODE_PRINT:
-                        if(isPrinterConnected()) {
-                            if(isEmpty(mFeeder.getSn())) {
+                        if (isPrinterConnected()) {
+                            if (isEmpty(mFeeder.getSn())) {
                                 showShortToast("SN还未写入，不能打印！");
-                            } else if(isEmpty(mFeeder.getMac())) {
+                            } else if (isEmpty(mFeeder.getMac())) {
                                 showShortToast("MAC为空，不能打印！");
                             } else {
                                 HashMap<String, String> params = new HashMap<>();
@@ -244,7 +245,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                                 params.put("MAC", mFeeder.getMac());
                                 String oneBarCode = "SN:" + mFeeder.getSn();
 //                                String twoBarCode = "SN:" + mFeeder.getSn() + ";MAC:" + mFeeder.getMac();
-                                printBarcode(oneBarCode, new Gson().toJson(params));
+                                PrintUtils.printText(oneBarCode, new Gson().toJson(params), callback);
                             }
                         } else {
                             showShortToast("请先连接打印机！");
@@ -312,14 +313,14 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                         break;
                     case TEST_MODE_LIGHT:
                     case TEST_MODE_BALANCE:
-                        if(TEST_MODE_LIGHT == mFeederTestUnits.get(mCurTestStep).getType()) {
+                        if (TEST_MODE_LIGHT == mFeederTestUnits.get(mCurTestStep).getType()) {
                             mFeederTestUnits.get(mCurTestStep).setResult(TEST_PASS);
-                        } else if(mFeederTestUnits.get(mCurTestStep).getState() == 3) {
+                        } else if (mFeederTestUnits.get(mCurTestStep).getState() == 3) {
                             mFeederTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         }
                     default:
                         isWriteEndCmd = true;
-                        if(mFeederTestUnits.get(mCurTestStep).getResult() != TEST_PASS) {
+                        if (mFeederTestUnits.get(mCurTestStep).getResult() != TEST_PASS) {
                             mFeederTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
                         }
 
@@ -337,20 +338,20 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
         HashMap<String, Object> params = new HashMap<>();
         params.put("module", mFeederTestUnits.get(mCurTestStep).getModule());
         params.put("state", mFeederTestUnits.get(mCurTestStep).getState());
-        if(mFeederTestUnits.get(mCurTestStep).getModule() == 15) {
+        if (mFeederTestUnits.get(mCurTestStep).getModule() == 15) {
             params.put("time", DateUtil.formatISO8601DateWithMills(new Date()));
         }
         PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(163, params));
 
         mTempResult = 0;
-        if(mFeederTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
+        if (mFeederTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
             mFeederTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
             refershBtnView();
         }
     }
 
     private void gotoNextTestModule() {
-        if(mCurTestStep == mFeederTestUnits.size() - 1 || !isAutoTest) {
+        if (mCurTestStep == mFeederTestUnits.size() - 1 || !isAutoTest) {
             finish();
         } else {
             mTempResult = 0;
@@ -384,11 +385,11 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
         switch (key) {
             case 163:
                 JSONObject jsonObject = JSONUtils.getJSONObject(data);
-                if(!jsonObject.isNull("state")) {
+                if (!jsonObject.isNull("state")) {
                     try {
                         switch (jsonObject.getInt("state")) {
                             case 1:
-                                if(isWriteEndCmd) {
+                                if (isWriteEndCmd) {
                                     isWriteEndCmd = false;
                                     gotoNextTestModule();
                                 } else {
@@ -416,24 +417,24 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
 
                 switch (moduleStateStruct.getModule()) {
                     case 0:
-                        if(moduleStateStruct.getSub0() > -1) {
+                        if (moduleStateStruct.getSub0() > -1) {
                             desc.append("\n").append("扩展cpu").append("-").append("通信").append("-").append(moduleStateStruct.getSub0() == 1 ? "正常" : "异常");
                         }
-                        if(moduleStateStruct.getSub1() > 0) {
+                        if (moduleStateStruct.getSub1() > 0) {
                             mTempResult = mTempResult | 0x1;
                             desc.append("\n").append("扩展cpu").append("-").append("wifi按键").append("-").append(getKeyDescByState(moduleStateStruct.getSub1()));
                         }
-                        if(moduleStateStruct.getSub2() > 0) {
+                        if (moduleStateStruct.getSub2() > 0) {
                             mTempResult = mTempResult | 0x10;
                             desc.append("\n").append("扩展cpu").append("-").append("food按键").append("-").append(getKeyDescByState(moduleStateStruct.getSub2()));
                         }
                         result = mTempResult == 0x11;
                         break;
                     case 5:
-                        if(moduleStateStruct.getSub0() > -1) {
+                        if (moduleStateStruct.getSub0() > -1) {
                             desc.append("\n").append("门马达").append("-").append("门方向").append("-").append(moduleStateStruct.getSub0() == 1 ? "开门" : "关门");
                         }
-                        if(moduleStateStruct.getSub1() > 0) {
+                        if (moduleStateStruct.getSub1() > 0) {
                             desc.append("\n").append("门马达").append("-").append("门结果").append("-");
                             switch (moduleStateStruct.getSub1()) {
                                 case 1:
@@ -455,15 +456,15 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                                     break;
                             }
                         }
-                        if(moduleStateStruct.getSub2() > -1) {
+                        if (moduleStateStruct.getSub2() > -1) {
                             desc.append("\n").append("门马达").append("-").append("门信号").append("-").append(moduleStateStruct.getSub2() != 1 ? "遮挡" : "不遮挡");
                         }
                         break;
                     case 6:
-                        if(moduleStateStruct.getSub0() > -1) {
+                        if (moduleStateStruct.getSub0() > -1) {
                             desc.append("\n").append("叶轮马达").append("-").append("马达方向").append("-").append(moduleStateStruct.getSub0() == 1 ? "旋转" : "停止");
                         }
-                        if(moduleStateStruct.getSub1() > 0) {
+                        if (moduleStateStruct.getSub1() > 0) {
                             desc.append("\n").append("叶轮马达").append("-").append("马达方向").append("-");
                             switch (moduleStateStruct.getSub1()) {
                                 case 1:
@@ -481,7 +482,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                                     break;
                             }
                         }
-                        if(moduleStateStruct.getSub2() > -1) {
+                        if (moduleStateStruct.getSub2() > -1) {
                             desc.append("\n").append("叶轮马达").append("-").append("叶轮信号").append("-").append(moduleStateStruct.getSub2() != 1 ? "遮挡" : "不遮挡");
                         }
                         break;
@@ -501,7 +502,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                                 mTempResult = mTempResult | 0x100;
                                 break;
                             case 3:
-                                if(mFeederTestUnits.get(mCurTestStep).getState() == 1 && mTempResult == 0x111) {
+                                if (mFeederTestUnits.get(mCurTestStep).getState() == 1 && mTempResult == 0x111) {
                                     desc.append("校准完成");
                                     result = true;
                                 }
@@ -519,14 +520,14 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                         result = moduleStateStruct.getSub0() > 5000;
                         break;
                     case 14:
-                        if(moduleStateStruct.getSub0() > -1) {
+                        if (moduleStateStruct.getSub0() > -1) {
                             desc.append("\n").append("粮盖信号").append("-").append(moduleStateStruct.getSub0() == 1 ? "打开" : "合上");
                             mTempResult = mTempResult | (moduleStateStruct.getSub0() == 1 ? 0x1 : 0x10);
                             result = mTempResult == 0x11;
                         }
                         break;
                     case 15:
-                        if(!isEmpty(moduleStateStruct.getTime())) {
+                        if (!isEmpty(moduleStateStruct.getTime())) {
                             desc.append("\n").append(DateUtil.getFormatDateFromString(moduleStateStruct.getTime()));
                             result = true;
                         }
@@ -541,14 +542,14 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                 });
 
 
-                if(result) {
+                if (result) {
                     mFeederTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                     refershBtnView();
                 }
                 break;
             case 161:
                 jsonObject = JSONUtils.getJSONObject(data);
-                if(!jsonObject.isNull("state")) {
+                if (!jsonObject.isNull("state")) {
                     try {
                         switch (jsonObject.getInt("state")) {
                             case 0:
@@ -574,7 +575,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                 break;
             case 165:
                 jsonObject = JSONUtils.getJSONObject(data);
-                if(!jsonObject.isNull("state")) {
+                if (!jsonObject.isNull("state")) {
                     try {
                         switch (jsonObject.getInt("state")) {
                             case 1:
@@ -608,11 +609,11 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
     }
 
     private void startSetSn() {
-        if(isEmpty(mFeeder.getSn()) || (mFeederTestUnits.get(mCurTestStep).getState() == 2
+        if (isEmpty(mFeeder.getSn()) || (mFeederTestUnits.get(mCurTestStep).getState() == 2
                 && mErrorFeeder != null && mFeeder.getSn().equals(mErrorFeeder.getSn()))) {
             boolean result = true;
             for (FeederTestUnit unit : mFeederTestUnits) {
-                if(unit.getType() != FeederUtils.FeederTestModes.TEST_MODE_SN &&
+                if (unit.getType() != FeederUtils.FeederTestModes.TEST_MODE_SN &&
                         unit.getType() != FeederUtils.FeederTestModes.TEST_MODE_PRINT
                         && unit.getResult() != TEST_PASS) {
                     result = false;
@@ -620,18 +621,18 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                 }
             }
 
-            if(!result) {
+            if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
                 String sn = FeederUtils.generateSNForTester(mTester);
-                if(sn == null) {
+                if (sn == null) {
                     showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
                     return;
                 }
                 HashMap<String, Object> payload = new HashMap<>();
                 payload.put("mac", mFeeder.getMac());
                 payload.put("sn", sn);
-                if(mFeederTestUnits.get(mCurTestStep).getState() == 2) {
+                if (mFeederTestUnits.get(mCurTestStep).getState() == 2) {
                     payload.put("force", 100);
                 }
                 mFeeder.setSn(sn);
@@ -646,35 +647,6 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
         }
     }
 
-    private Bundle getPrintParam() {
-        Bundle param = new Bundle();
-
-        param.putInt(IDzPrinter.PrintParamName.PRINT_DIRECTION, 0);
-        param.putInt(IDzPrinter.PrintParamName.PRINT_COPIES, 2);
-        param.putInt(IDzPrinter.PrintParamName.GAP_TYPE, 2);
-        param.putInt(IDzPrinter.PrintParamName.PRINT_DENSITY, 14);
-        param.putInt(IDzPrinter.PrintParamName.PRINT_SPEED, 2);
-        return param;
-    }
-
-    private boolean printBarcode(String onedBarcde, String twodBarcde) {
-        LoadDialog.show(this, "正在打印标签，请稍后……");
-
-        IAtBitmap api = IAtBitmap.Factory.createInstance();
-
-//        api.startJob(48 * 100, 30 * 100);
-//        api.draw2DQRCode(twodBarcde, 18 * 100, 2 * 100, 14 * 100);
-//        api.draw1DBarcode(onedBarcde, IAtBitmap.BarcodeType1D.AUTO, 6 * 100, 18 * 100, 38 * 100, 10 * 100, 180);
-//        api.endJob();
-        api.startJob(48 * 100, 30 * 100);
-        api.setItemHorizontalAlignment(IAtBitmap.ItemAlignment.MIDDLE);
-        api.draw2DQRCode(twodBarcde, 16 * 100, 2 * 100, 15 * 100);
-        api.draw1DBarcode(onedBarcde, IAtBitmap.BarcodeType1D.CODE128, 0 * 100, 18 * 100, 48 * 100, 7 * 100, 0);
-        api.drawText(onedBarcde, 0 * 100, 25 * 100, 48 * 100, 3 *100, 280, IAtBitmap.FontStyle.REGULAR);
-        api.endJob();
-
-        return IDzPrinter.Factory.getInstance().print(api, getPrintParam());
-    }
 
     private String getKeyDescByState(int state) {
         String desc = null;
@@ -708,81 +680,6 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
         return desc;
     }
 
-    /********************************************************************************************************************************************/
-    // DzPrinter连接打印功能相关
-    /********************************************************************************************************************************************/
-
-    // 调用IDzPrinter对象的init方法时用到的IDzPrinterCallback对象
-    private final IDzPrinter.IDzPrinterCallback mCallback = new IDzPrinter.IDzPrinterCallback() {
-
-        /****************************************************************************************************************************************/
-        // 所有回调函数都是在打印线程中被调用，因此如果需要刷新界面，需要发送消息给界面主线程，以避免互斥等繁琐操作。
-        /****************************************************************************************************************************************/
-
-        // 打印机连接状态发生变化时被调用
-        @Override
-        public void onStateChange(IDzPrinter.PrinterAddress arg0, IDzPrinter.PrinterState arg1) {
-            final IDzPrinter.PrinterAddress printer = arg0;
-            switch (arg1) {
-                case Connected:
-                case Connected2:
-                    break;
-
-                case Disconnected:
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
-        // 蓝牙适配器状态发生变化时被调用
-        @Override
-        public void onProgressInfo(IDzPrinter.ProgressInfo arg0, Object arg1) {
-        }
-
-
-        // 打印标签的进度发生变化是被调用
-        @Override
-        public void onPrintProgress(IDzPrinter.PrinterAddress address, Object bitmapData, IDzPrinter.PrintProgress progress, Object addiInfo) {
-            switch (progress) {
-                case Success:
-                    // 打印标签成功，发送通知，刷新界面提示
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            LoadDialog.dismissDialog();
-
-                            mDescTextView.append("\n" + getString(R.string.printsuccess));
-                            mFeederTestUnits.get(mCurTestStep).setResult(TEST_PASS);
-                            refershBtnView();
-                        }
-                    });
-                    break;
-
-                case Failed:
-                    // 打印标签失败，发送通知，刷新界面提示
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mDescTextView.append(getString(R.string.printfailed));
-                        }
-                    });
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
-        @Override
-        public void onPrinterDiscovery(IDzPrinter.PrinterAddress address, IDzPrinter.PrinterInfo info) {
-
-        }
-    };
-
-
 
     private EditText et1 = null;
     private EditText et2 = null;
@@ -804,7 +701,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                 String mac = et1.getText().toString();
                 String sn = et2.getText().toString();
 
-                if(sn == null || sn.length() != 14) {
+                if (sn == null || sn.length() != 14) {
                     showShortToast("无效的SN");
                     return;
                 }
@@ -868,5 +765,71 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
         et2.setSelection(et2.getText().toString().length());
         return view;
     }
+
+    private final LPAPI.Callback callback = new LPAPI.Callback() {
+
+        /****************************************************************************************************************************************/
+        // 所有回调函数都是在打印线程中被调用，因此如果需要刷新界面，需要发送消息给界面主线程，以避免互斥等繁琐操作。
+
+        /****************************************************************************************************************************************/
+
+        // 打印机连接状态发生变化时被调用
+        @Override
+        public void onStateChange(IDzPrinter.PrinterAddress arg0, IDzPrinter.PrinterState arg1) {
+            final IDzPrinter.PrinterAddress printer = arg0;
+            switch (arg1) {
+                case Connected:
+                case Connected2:
+                    break;
+
+                case Disconnected:
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        // 蓝牙适配器状态发生变化时被调用
+        @Override
+        public void onProgressInfo(IDzPrinter.ProgressInfo arg0, Object arg1) {
+        }
+
+        @Override
+        public void onPrinterDiscovery(IDzPrinter.PrinterAddress arg0, IDzPrinter.PrinterInfo arg1) {
+        }
+
+        // 打印标签的进度发生变化是被调用
+        @Override
+        public void onPrintProgress(IDzPrinter.PrinterAddress address, Object bitmapData, IDzPrinter.PrintProgress progress, Object addiInfo) {
+            switch (progress) {
+                case Success:
+                    // 打印标签成功，发送通知，刷新界面提示
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            mDescTextView.append("\n" + getString(R.string.printsuccess));
+                            mFeederTestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                            refershBtnView();
+                        }
+                    });
+                    break;
+
+                case Failed:
+                    // 打印标签失败，发送通知，刷新界面提示
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mDescTextView.append(getString(R.string.printfailed));
+                        }
+                    });
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    };
 
 }

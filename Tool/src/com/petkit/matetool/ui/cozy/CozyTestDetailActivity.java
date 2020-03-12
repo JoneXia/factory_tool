@@ -15,6 +15,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.dothantech.lpapi.IAtBitmap;
+import com.dothantech.lpapi.LPAPI;
 import com.dothantech.printer.IDzPrinter;
 import com.google.gson.Gson;
 import com.petkit.android.utils.CommonUtils;
@@ -26,11 +27,12 @@ import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.DeviceModuleStateStruct;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.print.PrintActivity;
 import com.petkit.matetool.ui.cozy.mode.CozyState;
 import com.petkit.matetool.ui.cozy.mode.CozyTestUnit;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
-import com.petkit.matetool.ui.base.PrintActivity;
 import com.petkit.matetool.ui.utils.PetkitSocketInstance;
+import com.petkit.matetool.ui.utils.PrintUtils;
 import com.petkit.matetool.ui.utils.WifiAdminSimple;
 import com.petkit.matetool.utils.DateUtil;
 import com.petkit.matetool.utils.JSONUtils;
@@ -670,20 +672,7 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
     private boolean printBarcode(String onedBarcde, String twodBarcde) {
         LoadDialog.show(this, "正在打印标签，请稍后……");
 
-        IAtBitmap api = IAtBitmap.Factory.createInstance();
-
-//        api.startJob(48 * 100, 30 * 100);
-//        api.draw2DQRCode(twodBarcde, 18 * 100, 2 * 100, 14 * 100);
-//        api.draw1DBarcode(onedBarcde, IAtBitmap.BarcodeType1D.AUTO, 6 * 100, 18 * 100, 38 * 100, 10 * 100, 180);
-//        api.endJob();
-        api.startJob(48 * 100, 30 * 100);
-        api.setItemHorizontalAlignment(IAtBitmap.ItemAlignment.MIDDLE);
-        api.draw2DQRCode(twodBarcde, 16 * 100, 2 * 100, 15 * 100);
-        api.draw1DBarcode(onedBarcde, IAtBitmap.BarcodeType1D.CODE128, 0 * 100, 18 * 100, 48 * 100, 7 * 100, 0);
-        api.drawText(onedBarcde, 0 * 100, 25 * 100, 48 * 100, 3 *100, 280, IAtBitmap.FontStyle.REGULAR);
-        api.endJob();
-
-        return IDzPrinter.Factory.getInstance().print(api, getPrintParam());
+        return PrintUtils.printText(onedBarcde,twodBarcde,callback);
     }
 
     private String getZLPmode(int mode) {
@@ -983,6 +972,73 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
             PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(161, params));
         }
     }
+
+
+    private final LPAPI.Callback callback = new LPAPI.Callback() {
+
+        /****************************************************************************************************************************************/
+        // 所有回调函数都是在打印线程中被调用，因此如果需要刷新界面，需要发送消息给界面主线程，以避免互斥等繁琐操作。
+
+        /****************************************************************************************************************************************/
+
+        // 打印机连接状态发生变化时被调用
+        @Override
+        public void onStateChange(IDzPrinter.PrinterAddress arg0, IDzPrinter.PrinterState arg1) {
+            final IDzPrinter.PrinterAddress printer = arg0;
+            switch (arg1) {
+                case Connected:
+                case Connected2:
+                    break;
+
+                case Disconnected:
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        // 蓝牙适配器状态发生变化时被调用
+        @Override
+        public void onProgressInfo(IDzPrinter.ProgressInfo arg0, Object arg1) {
+        }
+
+        @Override
+        public void onPrinterDiscovery(IDzPrinter.PrinterAddress arg0, IDzPrinter.PrinterInfo arg1) {
+        }
+
+        // 打印标签的进度发生变化是被调用
+        @Override
+        public void onPrintProgress(IDzPrinter.PrinterAddress address, Object bitmapData, IDzPrinter.PrintProgress progress, Object addiInfo) {
+            switch (progress) {
+                case Success:
+                    // 打印标签成功，发送通知，刷新界面提示
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            mDescTextView.append("\n" + getString(R.string.printsuccess));
+                            mDeviceTestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                            refershBtnView();
+                        }
+                    });
+                    break;
+
+                case Failed:
+                    // 打印标签失败，发送通知，刷新界面提示
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mDescTextView.append(getString(R.string.printfailed));
+                        }
+                    });
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    };
 
 
 }
