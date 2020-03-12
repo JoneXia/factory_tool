@@ -16,6 +16,7 @@ import com.dothantech.printer.IDzPrinter.PrinterInfo;
 import com.dothantech.printer.IDzPrinter.PrinterState;
 import com.dothantech.printer.IDzPrinter.ProgressInfo;
 import com.petkit.matetool.R;
+import com.petkit.matetool.ui.utils.PrintUtils;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -138,7 +139,7 @@ public class PrintActivity extends Activity {
         initialView();
 
         // 调用LPAPI对象的init方法初始化对象
-        this.api = LPAPI.Factory.createInstance(mCallback);
+        this.api = PrintUtils.getApi();
 
         // 尝试连接上次成功连接的打印机
         if (mPrinterAddress != null) {
@@ -153,10 +154,10 @@ public class PrintActivity extends Activity {
     @Override
     protected void onDestroy() {
         // 应用退出时，调用LPAPI对象的quit方法断开打印机连接
-        api.quit();
+//        api.quit();
 
         // 应用退出时需要的操作
-        fini();
+//        fini();
 
         super.onDestroy();
     }
@@ -252,11 +253,11 @@ public class PrintActivity extends Activity {
 //        return api.commitJob();
 
 
-        api.startJob(48 , 30 , 0);
+        api.startJob(48, 30, 0);
         api.setItemHorizontalAlignment(IAtBitmap.ItemAlignment.MIDDLE);
-        api.draw2DQRCode(text, 16 , 2 , 15 );
-        api.draw1DBarcode(text, IAtBitmap.BarcodeType1D.CODE128, 0 , 18 , 48 , 7 , 0);
-        api.drawText(text, 0 , 25 , 48 , 3 , IAtBitmap.FontStyle.REGULAR);
+        api.draw2DQRCode(text, 16, 2, 15);
+        api.draw1DBarcode(text, IAtBitmap.BarcodeType1D.CODE128, 0, 18, 48, 7, 0);
+        api.drawText(text, 0, 25, 48, 3, IAtBitmap.FontStyle.REGULAR);
         return api.commitJob();
     }
 
@@ -575,7 +576,7 @@ public class PrintActivity extends Activity {
         if (stateAlertDialog != null && stateAlertDialog.isShowing()) {
             stateAlertDialog.setTitle(str);
         } else {
-            stateAlertDialog = new AlertDialog.Builder(PrintActivity.this).setCancelable(false).setTitle(str).show();
+            stateAlertDialog = new AlertDialog.Builder(PrintActivity.this).setCancelable(true).setTitle(str).show();
         }
     }
 

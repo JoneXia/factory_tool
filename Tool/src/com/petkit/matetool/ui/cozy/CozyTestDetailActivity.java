@@ -32,6 +32,7 @@ import com.petkit.matetool.ui.cozy.mode.CozyState;
 import com.petkit.matetool.ui.cozy.mode.CozyTestUnit;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.ui.utils.PetkitSocketInstance;
+import com.petkit.matetool.ui.utils.PrintResultCallback;
 import com.petkit.matetool.ui.utils.PrintUtils;
 import com.petkit.matetool.ui.utils.WifiAdminSimple;
 import com.petkit.matetool.utils.DateUtil;
@@ -58,10 +59,9 @@ import static com.petkit.matetool.utils.Globals.TEST_PASS;
 ;
 
 /**
- *
  * Created by Jone on 17/4/24.
  */
-public class CozyTestDetailActivity extends BaseActivity implements PetkitSocketInstance.IPetkitSocketListener {
+public class CozyTestDetailActivity extends BaseActivity implements PetkitSocketInstance.IPetkitSocketListener, PrintResultCallback {
 
     private Tester mTester;
     private int mCurTestStep;
@@ -88,7 +88,7 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(savedInstanceState != null) {
+        if (savedInstanceState != null) {
             mDeviceTestUnits = (ArrayList<CozyTestUnit>) savedInstanceState.getSerializable("TestUnits");
             mCurTestStep = savedInstanceState.getInt("CurrentTestStep");
             mDevice = (Device) savedInstanceState.getSerializable("Device");
@@ -115,7 +115,8 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
 
         PetkitSocketInstance.getInstance().setPetkitSocketListener(this);
 
-        IDzPrinter.Factory.getInstance().init(this, mCallback);
+        PrintUtils.initApi(this);
+
     }
 
 
@@ -159,8 +160,8 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                 mDescTextView.setText("mac:" + mDevice.getMac() + "\n" + "sn:" + mDevice.getSn());
                 break;
             case TEST_MODE_SN:
-                if(!isEmpty(mDevice.getSn())) {
-                    if(mDeviceTestUnits.get(mCurTestStep).getState() != 2 || (mErrorDevice != null && !mDevice.getSn().equals(mErrorDevice.getSn()))) {
+                if (!isEmpty(mDevice.getSn())) {
+                    if (mDeviceTestUnits.get(mCurTestStep).getState() != 2 || (mErrorDevice != null && !mDevice.getSn().equals(mErrorDevice.getSn()))) {
                         mDeviceTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                     }
                     mDescTextView.setText("mac:" + mDevice.getMac() + "\n" + "sn:" + mDevice.getSn());
@@ -218,7 +219,7 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                 mBtn2.setText(R.string.Set_print);
                 mBtn2.setVisibility(View.VISIBLE);
                 mBtn2.setBackgroundResource(R.drawable.selector_gray);
-                if(mDeviceTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
+                if (mDeviceTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
                     mBtn3.setText(R.string.Succeed);
                     mBtn3.setBackgroundResource(R.drawable.selector_blue);
                 } else {
@@ -229,7 +230,7 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
             case TEST_MODE_SN:
                 mBtn1.setText(R.string.Write);
                 mBtn2.setVisibility(View.INVISIBLE);
-                if(mDeviceTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
+                if (mDeviceTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
                     mBtn3.setText(R.string.Succeed);
                     mBtn3.setBackgroundResource(R.drawable.selector_blue);
                 } else {
@@ -272,10 +273,10 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
             case R.id.test_btn_1:
                 switch (mDeviceTestUnits.get(mCurTestStep).getType()) {
                     case TEST_MODE_PRINT:
-                        if(isPrinterConnected()) {
-                            if(isEmpty(mDevice.getSn())) {
+                        if (isPrinterConnected()) {
+                            if (isEmpty(mDevice.getSn())) {
                                 showShortToast("SN还未写入，不能打印！");
-                            } else if(isEmpty(mDevice.getMac())) {
+                            } else if (isEmpty(mDevice.getMac())) {
                                 showShortToast("MAC为空，不能打印！");
                             } else {
                                 HashMap<String, String> params = new HashMap<>();
@@ -367,7 +368,7 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                         mDeviceTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                     default:
                         isWriteEndCmd = true;
-                        if(mDeviceTestUnits.get(mCurTestStep).getResult() != TEST_PASS) {
+                        if (mDeviceTestUnits.get(mCurTestStep).getResult() != TEST_PASS) {
                             mDeviceTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
                         }
 
@@ -396,14 +397,14 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
 
         mTempResult = 0;
         mTempSensorResult = true;
-        if(mDeviceTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
+        if (mDeviceTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
             mDeviceTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
             refershBtnView();
         }
     }
 
     private void gotoNextTestModule() {
-        if(mCurTestStep == mDeviceTestUnits.size() - 1 || !isAutoTest) {
+        if (mCurTestStep == mDeviceTestUnits.size() - 1 || !isAutoTest) {
             finish();
         } else {
             mTempResult = 0;
@@ -447,11 +448,11 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
         switch (key) {
             case 163:
                 JSONObject jsonObject = JSONUtils.getJSONObject(data);
-                if(!jsonObject.isNull("state")) {
+                if (!jsonObject.isNull("state")) {
                     try {
                         switch (jsonObject.getInt("state")) {
                             case 1:
-                                if(isWriteEndCmd) {
+                                if (isWriteEndCmd) {
                                     isWriteEndCmd = false;
                                     gotoNextTestModule();
                                 } else {
@@ -480,21 +481,21 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
 
                 switch (moduleStateStruct.getModule()) {
                     case 0:
-                        if(moduleStateStruct.getSub0() > 0) {
+                        if (moduleStateStruct.getSub0() > 0) {
                             desc.append("\n").append("扩展cpu").append("：").append("通信").append("-").append(moduleStateStruct.getSub0() == 1 ? "正常" : "异常");
                         }
 //                        if(moduleStateStruct.getSub1() > 0) {
 //                            mTempResult = mTempResult | 0x1;
 //                            desc.append("\n").append("扩展cpu").append("：").append("wifi按键").append("-").append(getKeyDescByState(moduleStateStruct.getSub1()));
 //                        }
-                        if(moduleStateStruct.getSub2() > 0) {
+                        if (moduleStateStruct.getSub2() > 0) {
                             mTempResult = mTempResult | 0x1;
                             desc.append("\n").append("扩展cpu").append("：").append("功能键").append("-").append(getKeyDescByState(moduleStateStruct.getSub2()));
                         }
                         result = mTempResult == 0x1;
                         break;
                     case 6:
-                        if(moduleStateStruct.getSub0() > -1) {
+                        if (moduleStateStruct.getSub0() > -1) {
                             desc.append("\n").append("红外信号").append("：").append(moduleStateStruct.getSub0() == 1 ? "遮挡" : "不遮挡");
                             mTempResult = mTempResult | (moduleStateStruct.getSub0() == 1 ? 0x1 : 0x10);
                             result = mTempResult == 0x11;
@@ -539,7 +540,7 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                                     && (moduleStateStruct.getSub3() >= 150 && moduleStateStruct.getSub3() <= 1500);
                         } else {
                             result = moduleStateStruct.getSub0() == 2 && moduleStateStruct.getSub1() < 1000
-                                    && moduleStateStruct.getSub2() >= 5000  && moduleStateStruct.getSub2() <= 7000
+                                    && moduleStateStruct.getSub2() >= 5000 && moduleStateStruct.getSub2() <= 7000
                                     && (moduleStateStruct.getSub3() >= 150 && moduleStateStruct.getSub3() <= 1500);
                         }
                         if (!result) {
@@ -560,14 +561,14 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                     }
                 });
 
-                if(result) {
+                if (result) {
                     mDeviceTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                     refershBtnView();
                 }
                 break;
             case 161:
                 jsonObject = JSONUtils.getJSONObject(data);
-                if(!jsonObject.isNull("state")) {
+                if (!jsonObject.isNull("state")) {
                     try {
                         switch (jsonObject.getInt("state")) {
                             case 0:
@@ -593,7 +594,7 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                 break;
             case 165:
                 jsonObject = JSONUtils.getJSONObject(data);
-                if(!jsonObject.isNull("state")) {
+                if (!jsonObject.isNull("state")) {
                     try {
                         switch (jsonObject.getInt("state")) {
                             case 1:
@@ -616,18 +617,18 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                 mDescTextView.append("\n擦除ID后需要重新测试！");
                 break;
             case 222:
-                String DISPLAY_GAP  = "  ";
+                String DISPLAY_GAP = "  ";
                 CozyState info = new Gson().fromJson(data, CozyState.class);
                 desc = new StringBuilder();
                 desc.append("\n").append(getTempFormat(info.getWk_temp())).append(DISPLAY_GAP)
                         .append(getTempFormat(info.getTs_temp())).append(DISPLAY_GAP)
                         .append(getTempFormat(info.getAir_temp())).append(DISPLAY_GAP)
-                        .append(Math.round(info.getAir_humi()/10f)).append("%").append(DISPLAY_GAP)
+                        .append(Math.round(info.getAir_humi() / 10f)).append("%").append(DISPLAY_GAP)
                         .append(info.getFan()).append(DISPLAY_GAP)
                         .append(getZLPmode(info.getWk_mode()));
 
                 FileUtils.writeStringToFile(mCacheFileName, convertDataToFileContent(data), true);
-                if(mDescTextView.getLineCount() > 100) {
+                if (mDescTextView.getLineCount() > 100) {
                     mDescTextView.setText("");
                 }
                 mDescTextView.append(desc.toString());
@@ -672,7 +673,7 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
     private boolean printBarcode(String onedBarcde, String twodBarcde) {
         LoadDialog.show(this, "正在打印标签，请稍后……");
 
-        return PrintUtils.printText(onedBarcde,twodBarcde,callback);
+        return PrintUtils.printText(onedBarcde, twodBarcde);
     }
 
     private String getZLPmode(int mode) {
@@ -706,11 +707,11 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
     }
 
     private String getVoltageFormat(int voltage) {
-        return String.format("%.3fV", voltage/1000f);
+        return String.format("%.3fV", voltage / 1000f);
     }
 
     private String getTempFormat(int temp) {
-        return String.format("%.1f℃", temp/10f);
+        return String.format("%.1f℃", temp / 10f);
     }
 
     private String getKeyDescByState(int state) {
@@ -748,77 +749,6 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
     /********************************************************************************************************************************************/
     // DzPrinter连接打印功能相关
     /********************************************************************************************************************************************/
-
-    // 调用IDzPrinter对象的init方法时用到的IDzPrinterCallback对象
-    private final IDzPrinter.IDzPrinterCallback mCallback = new IDzPrinter.IDzPrinterCallback() {
-
-        /****************************************************************************************************************************************/
-        // 所有回调函数都是在打印线程中被调用，因此如果需要刷新界面，需要发送消息给界面主线程，以避免互斥等繁琐操作。
-        /****************************************************************************************************************************************/
-
-        // 打印机连接状态发生变化时被调用
-        @Override
-        public void onStateChange(IDzPrinter.PrinterAddress arg0, IDzPrinter.PrinterState arg1) {
-            final IDzPrinter.PrinterAddress printer = arg0;
-            switch (arg1) {
-                case Connected:
-                case Connected2:
-                    break;
-
-                case Disconnected:
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
-        // 蓝牙适配器状态发生变化时被调用
-        @Override
-        public void onProgressInfo(IDzPrinter.ProgressInfo arg0, Object arg1) {
-        }
-
-
-        // 打印标签的进度发生变化是被调用
-        @Override
-        public void onPrintProgress(IDzPrinter.PrinterAddress address, Object bitmapData, IDzPrinter.PrintProgress progress, Object addiInfo) {
-            switch (progress) {
-                case Success:
-                    // 打印标签成功，发送通知，刷新界面提示
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            LoadDialog.dismissDialog();
-
-                            mDescTextView.append("\n" + getString(R.string.printsuccess));
-                            mDeviceTestUnits.get(mCurTestStep).setResult(TEST_PASS);
-                            refershBtnView();
-                        }
-                    });
-                    break;
-
-                case Failed:
-                    // 打印标签失败，发送通知，刷新界面提示
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mDescTextView.append(getString(R.string.printfailed));
-                        }
-                    });
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
-        @Override
-        public void onPrinterDiscovery(IDzPrinter.PrinterAddress address, IDzPrinter.PrinterInfo info) {
-
-        }
-    };
-
 
 
     private EditText et1 = null;
@@ -900,7 +830,7 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
         }
         WifiAdminSimple simple = new WifiAdminSimple(this);
         String apSsid = simple.getWifiConnectedSsid();
-        if(apSsid == null) {
+        if (apSsid == null) {
             showShortToast("请先连接到特定的WIFI");
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -935,11 +865,11 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
 
 
     private void startSetSn() {
-        if(isEmpty(mDevice.getSn()) || (mDeviceTestUnits.get(mCurTestStep).getState() == 2
+        if (isEmpty(mDevice.getSn()) || (mDeviceTestUnits.get(mCurTestStep).getState() == 2
                 && mErrorDevice != null && mDevice.getSn().equals(mErrorDevice.getSn()))) {
             boolean result = true;
             for (CozyTestUnit unit : mDeviceTestUnits) {
-                if(unit.getType() != CozyUtils.CozyTestModes.TEST_MODE_SN &&
+                if (unit.getType() != CozyUtils.CozyTestModes.TEST_MODE_SN &&
                         unit.getType() != CozyUtils.CozyTestModes.TEST_MODE_PRINT
                         && unit.getResult() != TEST_PASS) {
                     result = false;
@@ -947,18 +877,18 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                 }
             }
 
-            if(!result) {
+            if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
                 String sn = CozyUtils.generateSNForTester(mTester);
-                if(sn == null) {
+                if (sn == null) {
                     showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
                     return;
                 }
                 HashMap<String, Object> payload = new HashMap<>();
                 payload.put("mac", mDevice.getMac());
                 payload.put("sn", sn);
-                if(mDeviceTestUnits.get(mCurTestStep).getState() == 2) {
+                if (mDeviceTestUnits.get(mCurTestStep).getState() == 2) {
                     payload.put("force", 100);
                 }
                 mDevice.setSn(sn);
@@ -974,71 +904,35 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
     }
 
 
-    private final LPAPI.Callback callback = new LPAPI.Callback() {
-
-        /****************************************************************************************************************************************/
-        // 所有回调函数都是在打印线程中被调用，因此如果需要刷新界面，需要发送消息给界面主线程，以避免互斥等繁琐操作。
-
-        /****************************************************************************************************************************************/
-
-        // 打印机连接状态发生变化时被调用
-        @Override
-        public void onStateChange(IDzPrinter.PrinterAddress arg0, IDzPrinter.PrinterState arg1) {
-            final IDzPrinter.PrinterAddress printer = arg0;
-            switch (arg1) {
-                case Connected:
-                case Connected2:
-                    break;
-
-                case Disconnected:
-                    break;
-
-                default:
-                    break;
+    @Override
+    public void onPrintSuccess() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                LoadDialog.dismissDialog();
+                mDescTextView.append("\n" + getString(R.string.printsuccess));
+                mDeviceTestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                refershBtnView();
             }
-        }
+        });
+    }
 
-        // 蓝牙适配器状态发生变化时被调用
-        @Override
-        public void onProgressInfo(IDzPrinter.ProgressInfo arg0, Object arg1) {
-        }
+    @Override
+    public void onPrintFailed() {
 
-        @Override
-        public void onPrinterDiscovery(IDzPrinter.PrinterAddress arg0, IDzPrinter.PrinterInfo arg1) {
-        }
-
-        // 打印标签的进度发生变化是被调用
-        @Override
-        public void onPrintProgress(IDzPrinter.PrinterAddress address, Object bitmapData, IDzPrinter.PrintProgress progress, Object addiInfo) {
-            switch (progress) {
-                case Success:
-                    // 打印标签成功，发送通知，刷新界面提示
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            mDescTextView.append("\n" + getString(R.string.printsuccess));
-                            mDeviceTestUnits.get(mCurTestStep).setResult(TEST_PASS);
-                            refershBtnView();
-                        }
-                    });
-                    break;
-
-                case Failed:
-                    // 打印标签失败，发送通知，刷新界面提示
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mDescTextView.append(getString(R.string.printfailed));
-                        }
-                    });
-                    break;
-
-                default:
-                    break;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                LoadDialog.dismissDialog();
+                mDescTextView.append(getString(R.string.printfailed));
             }
-        }
-    };
+        });
+    }
 
 
+    @Override
+    protected void onDestroy() {
+        PrintUtils.quit();
+        super.onDestroy();
+    }
 }

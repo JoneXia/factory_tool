@@ -28,6 +28,7 @@ import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.feeder.mode.ModuleStateStruct;
 import com.petkit.matetool.ui.feeder.utils.FeederUtils;
 import com.petkit.matetool.ui.utils.PetkitSocketInstance;
+import com.petkit.matetool.ui.utils.PrintResultCallback;
 import com.petkit.matetool.ui.utils.PrintUtils;
 import com.petkit.matetool.utils.DateUtil;
 import com.petkit.matetool.utils.JSONUtils;
@@ -49,7 +50,7 @@ import static com.petkit.matetool.utils.Globals.TEST_PASS;
 /**
  * Created by Jone on 17/4/24.
  */
-public class FeederTestDetailActivity extends BaseActivity implements PetkitSocketInstance.IPetkitSocketListener {
+public class FeederTestDetailActivity extends BaseActivity implements PetkitSocketInstance.IPetkitSocketListener, PrintResultCallback {
 
     private Tester mTester;
     private int mCurTestStep;
@@ -93,7 +94,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
 
         PetkitSocketInstance.getInstance().setPetkitSocketListener(this);
 
-//        IDzPrinter.Factory.getInstance().init(this, mCallback);
+        PrintUtils.initApi(this);
     }
 
 
@@ -245,7 +246,8 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                                 params.put("MAC", mFeeder.getMac());
                                 String oneBarCode = "SN:" + mFeeder.getSn();
 //                                String twoBarCode = "SN:" + mFeeder.getSn() + ";MAC:" + mFeeder.getMac();
-                                PrintUtils.printText(oneBarCode, new Gson().toJson(params), callback);
+                                LoadDialog.show(this, "正在打印标签，请稍后……");
+                                PrintUtils.printText(oneBarCode, new Gson().toJson(params));
                             }
                         } else {
                             showShortToast("请先连接打印机！");
@@ -766,70 +768,35 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
         return view;
     }
 
-    private final LPAPI.Callback callback = new LPAPI.Callback() {
 
-        /****************************************************************************************************************************************/
-        // 所有回调函数都是在打印线程中被调用，因此如果需要刷新界面，需要发送消息给界面主线程，以避免互斥等繁琐操作。
-
-        /****************************************************************************************************************************************/
-
-        // 打印机连接状态发生变化时被调用
-        @Override
-        public void onStateChange(IDzPrinter.PrinterAddress arg0, IDzPrinter.PrinterState arg1) {
-            final IDzPrinter.PrinterAddress printer = arg0;
-            switch (arg1) {
-                case Connected:
-                case Connected2:
-                    break;
-
-                case Disconnected:
-                    break;
-
-                default:
-                    break;
+    @Override
+    public void onPrintSuccess() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                LoadDialog.dismissDialog();
+                mDescTextView.append("\n" + getString(R.string.printsuccess));
+                mFeederTestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                refershBtnView();
             }
-        }
+        });
+    }
 
-        // 蓝牙适配器状态发生变化时被调用
-        @Override
-        public void onProgressInfo(IDzPrinter.ProgressInfo arg0, Object arg1) {
-        }
-
-        @Override
-        public void onPrinterDiscovery(IDzPrinter.PrinterAddress arg0, IDzPrinter.PrinterInfo arg1) {
-        }
-
-        // 打印标签的进度发生变化是被调用
-        @Override
-        public void onPrintProgress(IDzPrinter.PrinterAddress address, Object bitmapData, IDzPrinter.PrintProgress progress, Object addiInfo) {
-            switch (progress) {
-                case Success:
-                    // 打印标签成功，发送通知，刷新界面提示
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            mDescTextView.append("\n" + getString(R.string.printsuccess));
-                            mFeederTestUnits.get(mCurTestStep).setResult(TEST_PASS);
-                            refershBtnView();
-                        }
-                    });
-                    break;
-
-                case Failed:
-                    // 打印标签失败，发送通知，刷新界面提示
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mDescTextView.append(getString(R.string.printfailed));
-                        }
-                    });
-                    break;
-
-                default:
-                    break;
+    @Override
+    public void onPrintFailed() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                LoadDialog.dismissDialog();
+                mDescTextView.append(getString(R.string.printfailed));
             }
-        }
-    };
+        });
+    }
 
+
+    @Override
+    protected void onDestroy() {
+        PrintUtils.quit();
+        super.onDestroy();
+    }
 }
