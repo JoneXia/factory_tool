@@ -54,12 +54,16 @@ public class PrintUtils {
         return true;
     }
 
+    public static void initApi() {
+        api = LPAPI.Factory.createInstance(mCallback);
+    }
+
     public static void initApi(PrintResultCallback printResultCallback) {
         callback = printResultCallback;
         api = LPAPI.Factory.createInstance(mCallback);
     }
 
-    public static  LPAPI getApi() {
+    public static LPAPI getApi() {
         return api;
     }
 
@@ -69,6 +73,17 @@ public class PrintUtils {
             api.quit();
             api = null;
         }
+    }
+
+
+    public static boolean printText(String onedBarcde, String twodBarcde, PrintResultCallback printResultCallback) {
+        callback = printResultCallback;
+        api.startJob(48, 30, 0);
+        api.setItemHorizontalAlignment(IAtBitmap.ItemAlignment.MIDDLE);
+        api.draw2DQRCode(twodBarcde, 16, 2, 15);
+        api.draw1DBarcode(onedBarcde, IAtBitmap.BarcodeType1D.CODE128, 0, 18, 48, 7, 0);
+        api.drawText(onedBarcde, 0, 25, 48, 3, IAtBitmap.FontStyle.REGULAR);
+        return api.commitJob();
     }
 
 

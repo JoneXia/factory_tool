@@ -20,6 +20,7 @@ import com.petkit.matetool.model.DevicesError;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.K2.utils.K2Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.utils.PrintUtils;
 import com.petkit.matetool.utils.FileUtils;
 import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.JSONUtils;
@@ -41,7 +42,7 @@ import static com.petkit.matetool.ui.K2.utils.K2Utils.FILE_MAINTAIN_INFO_NAME;
 
 /**
  * K2测试，测试准备，需要登录，已经缓存数据处理
- *
+ * <p>
  * Created by Jone on 17/4/19.
  */
 public class K2TestPrepareActivity extends BaseActivity {
@@ -93,6 +94,8 @@ public class K2TestPrepareActivity extends BaseActivity {
         }
 
         mDevicesError = K2Utils.getDevicesErrorMsg();
+
+        PrintUtils.initApi();
     }
 
     @Override
@@ -103,10 +106,16 @@ public class K2TestPrepareActivity extends BaseActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PrintUtils.quit();
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.login:
-                if(mTester != null) {
+                if (mTester != null) {
                     if (K2Utils.checkHasSnCache()) {
                         LoadDialog.show(this);
                         startUploadSn();
@@ -116,11 +125,11 @@ public class K2TestPrepareActivity extends BaseActivity {
                 } else {
                     String name = nameEdit.getEditableText().toString();
                     String pw = pwEdit.getEditableText().toString();
-                    if(isEmpty(name)) {
+                    if (isEmpty(name)) {
                         showShortToast("请输入用户名");
                         return;
                     }
-                    if(isEmpty(pw)) {
+                    if (isEmpty(pw)) {
                         showShortToast("请输入密码");
                         return;
                     }
@@ -128,16 +137,16 @@ public class K2TestPrepareActivity extends BaseActivity {
                 }
                 break;
             case R.id.logout:
-                if(mDevicesError != null) {
+                if (mDevicesError != null) {
                     showShortToast("还有异常数据需要处理，完成后才能登出！");
-                } else if(K2Utils.checkHasSnCache()) {
+                } else if (K2Utils.checkHasSnCache()) {
                     showShortToast("还有未上传的测试数据，需要先上传完成才能登出！");
                 } else {
                     logout();
                 }
                 break;
             case R.id.upload:
-                if(mDevicesError != null) {
+                if (mDevicesError != null) {
                     Bundle bundle = new Bundle();
                     bundle.putSerializable(K2Utils.EXTRA_K2_TESTER, mTester);
                     startActivityWithData(K2ErrorListActivity.class, bundle, false);
@@ -149,15 +158,15 @@ public class K2TestPrepareActivity extends BaseActivity {
         }
     }
 
-    private void updateView () {
-        if(mTester != null) {
+    private void updateView() {
+        if (mTester != null) {
             mDevicesError = K2Utils.getDevicesErrorMsg();
-            if(mDevicesError != null) {
+            if (mDevicesError != null) {
                 promptText.setText("检测到异常数据，需要先处理，才能开始测试！");
                 actionBtn.setVisibility(View.GONE);
                 uploadBtn.setVisibility(View.VISIBLE);
                 uploadBtn.setText("处理异常");
-            } else if(K2Utils.checkHasSnCache()) {
+            } else if (K2Utils.checkHasSnCache()) {
                 promptText.setText("还有未上传的测试数据，需要先上传完成才能开始测试！");
                 actionBtn.setVisibility(View.GONE);
                 uploadBtn.setVisibility(View.VISIBLE);
@@ -169,7 +178,7 @@ public class K2TestPrepareActivity extends BaseActivity {
 
                 File dir = new File(K2Utils.getK2StoryDir());
                 String[] files = dir.list();
-                if(files != null && files.length > 0) {
+                if (files != null && files.length > 0) {
                     uploadBtn.setVisibility(View.VISIBLE);
                     uploadBtn.setText("开始上传");
                 } else {
@@ -214,13 +223,13 @@ public class K2TestPrepareActivity extends BaseActivity {
 
                 JSONObject jsonObject = JSONUtils.getJSONObject(responseResult);
                 JSONObject dataObj = JSONUtils.getJSONObject(jsonObject, "data");
-                if(dataObj != null) {
+                if (dataObj != null) {
                     try {
                         String token = JSONUtils.getValue(dataObj, "token");
                         long timestamp = dataObj.getLong("timestamp");
                         String factory = dataObj.getString("factory");
                         String station = dataObj.getString("station");
-                        if(Math.abs(System.currentTimeMillis() - timestamp) < 60 * 60 * 1000) {
+                        if (Math.abs(System.currentTimeMillis() - timestamp) < 60 * 60 * 1000) {
                             mTester = new Tester();
                             mTester.setCode(factory);
                             mTester.setStation(station);
@@ -231,7 +240,7 @@ public class K2TestPrepareActivity extends BaseActivity {
                             AsyncHttpUtil.addHttpHeader("F-Session", token);
                             testerInfoTextView.setText("当前用户名：" + mTester.getName());
 
-                            if(K2Utils.checkHasSnCache()) {
+                            if (K2Utils.checkHasSnCache()) {
                                 isLogining = true;
                                 startUploadSn();
                             } else {
@@ -326,7 +335,7 @@ public class K2TestPrepareActivity extends BaseActivity {
                 JSONObject jsonObject = JSONUtils.getJSONObject(responseResult);
                 JSONObject dataObj = JSONUtils.getJSONObject(jsonObject, "data");
                 try {
-                    if(jsonObject.getInt("code") == 0 && dataObj != null && !dataObj.isNull("sn")) {
+                    if (jsonObject.getInt("code") == 0 && dataObj != null && !dataObj.isNull("sn")) {
                         String sn = dataObj.getString("sn");
                         K2Utils.initSnSerializableNumber(sn);
                     }
@@ -360,7 +369,7 @@ public class K2TestPrepareActivity extends BaseActivity {
         File dir = new File(K2Utils.getK2StoryDir());
         String[] files = dir.list();
 
-        if(files != null && files.length > 0) {
+        if (files != null && files.length > 0) {
             uploadSn(new File(dir, files[0]));
         } else if (isLogining) {
             getLastSN();
@@ -378,16 +387,16 @@ public class K2TestPrepareActivity extends BaseActivity {
     private void uploadSn(final File file) {
         String content = FileUtils.readFileToString(file);
 
-        if(isEmpty(content)) {
+        if (isEmpty(content)) {
             file.delete();
             startUploadSn();
             return;
         }
 
         String api;
-        if(FILE_MAINTAIN_INFO_NAME.equals(file.getName())) {
+        if (FILE_MAINTAIN_INFO_NAME.equals(file.getName())) {
             api = "/api/k2/maintain/repair";
-        } else if(FILE_CHECK_INFO_NAME.equals(file.getName())) {
+        } else if (FILE_CHECK_INFO_NAME.equals(file.getName())) {
             api = "/api/k2/maintain/inspect";
         } else {
             api = "/api/k2/batch";
@@ -413,7 +422,7 @@ public class K2TestPrepareActivity extends BaseActivity {
                                     startUploadSn();
                                     break;
                                 default:
-                                    if(!result.isNull("data")) {
+                                    if (!result.isNull("data")) {
                                         mDevicesError = gson.fromJson(result.getString("data"), DevicesError.class);
                                         K2Utils.storeDuplicatedInfo(mDevicesError);
                                         file.delete();
@@ -449,22 +458,23 @@ public class K2TestPrepareActivity extends BaseActivity {
 
     private String getDeviceInfo(Context context) {
         String m_szDevIDShort = "35" + //we make this look like a valid IMEI
-                Build.BOARD.length()%10 + Build.BRAND.length()%10 +
-                Build.CPU_ABI.length()%10 + Build.DEVICE.length()%10 +
-                Build.DISPLAY.length()%10 + Build.HOST.length()%10 +
-                Build.ID.length()%10 + Build.MANUFACTURER.length()%10 +
-                Build.MODEL.length()%10 + Build.PRODUCT.length()%10 +
-                Build.TAGS.length()%10 + Build.TYPE.length()%10 + Build.USER.length()%10 ; //13 digits
+                Build.BOARD.length() % 10 + Build.BRAND.length() % 10 +
+                Build.CPU_ABI.length() % 10 + Build.DEVICE.length() % 10 +
+                Build.DISPLAY.length() % 10 + Build.HOST.length() % 10 +
+                Build.ID.length() % 10 + Build.MANUFACTURER.length() % 10 +
+                Build.MODEL.length() % 10 + Build.PRODUCT.length() % 10 +
+                Build.TAGS.length() % 10 + Build.TYPE.length() % 10 + Build.USER.length() % 10; //13 digits
 
         String m_szAndroidID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        WifiManager wm = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
+        WifiManager wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         String m_szWLANMAC = wm.getConnectionInfo().getMacAddress();
 
-        BluetoothAdapter m_BluetoothAdapter = BluetoothAdapter.getDefaultAdapter();; // Local Bluetooth adapter
+        BluetoothAdapter m_BluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        ; // Local Bluetooth adapter
         String m_szBTMAC = m_BluetoothAdapter.getAddress();
 
-        String m_szLongID = m_szDevIDShort + m_szAndroidID+ m_szWLANMAC + m_szBTMAC;
+        String m_szLongID = m_szDevIDShort + m_szAndroidID + m_szWLANMAC + m_szBTMAC;
         // compute md5
         MessageDigest m = null;
         try {
@@ -472,18 +482,18 @@ public class K2TestPrepareActivity extends BaseActivity {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-        m.update(m_szLongID.getBytes(),0,m_szLongID.length());
+        m.update(m_szLongID.getBytes(), 0, m_szLongID.length());
         // get md5 bytes
         byte p_md5Data[] = m.digest();
         // create a hex string
         String m_szUniqueID = new String();
-        for (int i=0;i<p_md5Data.length;i++) {
-            int b =  (0xFF & p_md5Data[i]);
+        for (int i = 0; i < p_md5Data.length; i++) {
+            int b = (0xFF & p_md5Data[i]);
             // if it is a single digit, make sure it have 0 in front (proper padding)
             if (b <= 0xF)
-                m_szUniqueID+="0";
+                m_szUniqueID += "0";
             // add number to string
-            m_szUniqueID+=Integer.toHexString(b);
+            m_szUniqueID += Integer.toHexString(b);
         }   // hex string to uppercase
         m_szUniqueID = m_szUniqueID.toUpperCase();
         return m_szUniqueID;

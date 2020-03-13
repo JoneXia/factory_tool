@@ -54,7 +54,7 @@ import static com.petkit.matetool.utils.Globals.TEST_PASS;
 /**
  * Created by Jone on 17/4/24.
  */
-public class K2TestDetailActivity extends BaseActivity implements PetkitSocketInstance.IPetkitSocketListener, PrintResultCallback {
+public class K2TestDetailActivity extends BaseActivity implements PetkitSocketInstance.IPetkitSocketListener {
 
     private Tester mTester;
     private int mCurTestStep;
@@ -101,7 +101,6 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
 
         PetkitSocketInstance.getInstance().setPetkitSocketListener(this);
 
-        PrintUtils.initApi(this);
     }
 
 
@@ -435,7 +434,6 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        PrintUtils.quit();
         stopBle();
     }
 
@@ -721,7 +719,29 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
     }
 
     private boolean printBarcode(String onedBarcde, String twodBarcde) {
-        return PrintUtils.printText(onedBarcde, twodBarcde);
+        return PrintUtils.printText(onedBarcde, twodBarcde, new PrintResultCallback() {
+            @Override
+            public void onPrintSuccess() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mDescTextView.append("\n" + getString(R.string.printsuccess));
+                        mK2TestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                        refershBtnView();
+                    }
+                });
+            }
+
+            @Override
+            public void onPrintFailed() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mDescTextView.append(getString(R.string.printfailed));
+                    }
+                });
+            }
+        });
     }
 
 
@@ -1012,25 +1032,4 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
     }
 
 
-    @Override
-    public void onPrintSuccess() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mDescTextView.append("\n" + getString(R.string.printsuccess));
-                mK2TestUnits.get(mCurTestStep).setResult(TEST_PASS);
-                refershBtnView();
-            }
-        });
-    }
-
-    @Override
-    public void onPrintFailed() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mDescTextView.append(getString(R.string.printfailed));
-            }
-        });
-    }
 }
