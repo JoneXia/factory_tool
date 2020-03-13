@@ -162,13 +162,14 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
                 break;
             case R.id.test_auto:
                 if (testComplete) {
-                    LoadDialog.show(this);
-                    HashMap<String, Object> params = new HashMap<>();
-                    params.put("mac", mCurDevice.getMac());
-                    params.put("state", getTestTypeCode());
-                    params.put("opt", 1);
-
-                    PetkitSocketInstance.getInstance().sendString(K2Utils.getRequestForKeyAndPayload(160, params));
+//                    LoadDialog.show(this);
+//                    HashMap<String, Object> params = new HashMap<>();
+//                    params.put("mac", mCurDevice.getMac());
+//                    params.put("state", getTestTypeCode());
+//                    params.put("opt", 1);
+//
+//                    PetkitSocketInstance.getInstance().sendString(K2Utils.getRequestForKeyAndPayload(160, params));
+                    finish();
                 } else {
                     startTestDetail(true, 0);
                 }
@@ -178,24 +179,25 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
 
     @Override
     public void onBackPressed() {
-        if (mCurDevice != null && testComplete) {
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.Prompt)
-                    .setMessage("测试已完成，请先点击确认来完成测试项目！")
-                    .setNegativeButton(R.string.OK, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            LoadDialog.show(K2TestMainActivity.this);
-                            HashMap<String, Object> params = new HashMap<>();
-                            params.put("mac", mCurDevice.getMac());
-                            params.put("state", getTestTypeCode());
-                            params.put("opt", 1);
-
-                            PetkitSocketInstance.getInstance().sendString(K2Utils.getRequestForKeyAndPayload(160, params));
-                        }
-                    })
-                    .show();
-        } else if (mCurDevice != null && mTestType == K2Utils.TYPE_CHECK) {
+//        if (mCurDevice != null && testComplete) {
+//            new AlertDialog.Builder(this)
+//                    .setTitle(R.string.Prompt)
+//                    .setMessage("测试已完成，请先点击确认来完成测试项目！")
+//                    .setNegativeButton(R.string.OK, new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            LoadDialog.show(K2TestMainActivity.this);
+//                            HashMap<String, Object> params = new HashMap<>();
+//                            params.put("mac", mCurDevice.getMac());
+//                            params.put("state", getTestTypeCode());
+//                            params.put("opt", 1);
+//
+//                            PetkitSocketInstance.getInstance().sendString(K2Utils.getRequestForKeyAndPayload(160, params));
+//                        }
+//                    })
+//                    .show();
+//        } else
+        if (mCurDevice != null && mTestType == K2Utils.TYPE_CHECK) {
             boolean hasError = false;
             for (K2TestUnit unit : mK2TestUnits) {
                 if(unit.getResult() == Globals.TEST_FAILED) {
