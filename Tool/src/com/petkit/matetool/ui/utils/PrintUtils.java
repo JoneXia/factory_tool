@@ -1,17 +1,11 @@
 package com.petkit.matetool.ui.utils;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.dothantech.lpapi.IAtBitmap;
 import com.dothantech.lpapi.LPAPI;
 import com.dothantech.printer.IDzPrinter;
 import com.petkit.android.widget.LoadDialog;
-import com.petkit.matetool.R;
-import com.petkit.matetool.ui.mate.MainActivity;
-
-import static com.petkit.matetool.utils.Globals.TEST_PASS;
 
 /**
  * Created by Jone on 17/4/24.
@@ -67,6 +61,9 @@ public class PrintUtils {
         return api;
     }
 
+    public static void setCallback(PrintResultCallback callback) {
+        PrintUtils.callback = callback;
+    }
 
     public static void quit() {
         if (api != null) {
@@ -76,14 +73,14 @@ public class PrintUtils {
     }
 
 
-    public static boolean printText(String onedBarcde, String twodBarcde, PrintResultCallback printResultCallback) {
+    public static boolean printText(String onedBarcde, String twodBarcde, int copies, PrintResultCallback printResultCallback) {
         callback = printResultCallback;
         api.startJob(48, 30, 0);
         api.setItemHorizontalAlignment(IAtBitmap.ItemAlignment.MIDDLE);
         api.draw2DQRCode(twodBarcde, 16, 2, 15);
-        api.draw1DBarcode(onedBarcde, IAtBitmap.BarcodeType1D.CODE128, 0, 18, 48, 7, 0);
+        api.draw1DBarcode(onedBarcde, IAtBitmap.BarcodeType1D.CODE128, 0, 18, 52, 7, 0);
         api.drawText(onedBarcde, 0, 25, 48, 3, IAtBitmap.FontStyle.REGULAR);
-        return api.commitJob();
+        return api.commitJobWithParam(getPrintParam(copies, 0));
     }
 
 
@@ -110,6 +107,9 @@ public class PrintUtils {
             switch (arg1) {
                 case Connected:
                 case Connected2:
+                    if (callback != null) {
+                        callback.onConnected();
+                    }
                     break;
                 case Disconnected:
                     break;
@@ -150,5 +150,18 @@ public class PrintUtils {
             }
         }
     };
+
+    // 获取打印时需要的打印参数
+    private static Bundle getPrintParam(int copies, int orientation) {
+        Bundle param = new Bundle();
+        param.putInt(IDzPrinter.PrintParamName.PRINT_DIRECTION, orientation);
+        param.putInt(IDzPrinter.PrintParamName.PRINT_COPIES, copies);
+        param.putInt(IDzPrinter.PrintParamName.GAP_TYPE, 2);
+        param.putInt(IDzPrinter.PrintParamName.PRINT_DENSITY, 14);
+        param.putInt(IDzPrinter.PrintParamName.PRINT_SPEED, 2);
+
+        return param;
+    }
+
 
 }

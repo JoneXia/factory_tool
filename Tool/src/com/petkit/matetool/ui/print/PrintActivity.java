@@ -1,32 +1,14 @@
 package com.petkit.matetool.ui.print;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.dothantech.lpapi.IAtBitmap;
-import com.dothantech.lpapi.LPAPI;
-import com.dothantech.lpapi.LPAPI.BarcodeType;
-import com.dothantech.printer.IDzPrinter;
-import com.dothantech.printer.IDzPrinter.PrintParamName;
-import com.dothantech.printer.IDzPrinter.PrintProgress;
-import com.dothantech.printer.IDzPrinter.PrinterAddress;
-import com.dothantech.printer.IDzPrinter.PrinterInfo;
-import com.dothantech.printer.IDzPrinter.PrinterState;
-import com.dothantech.printer.IDzPrinter.ProgressInfo;
-import com.petkit.matetool.R;
-import com.petkit.matetool.ui.utils.PrintUtils;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.content.SharedPreferences.Editor;
-import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -43,6 +25,22 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dothantech.lpapi.IAtBitmap;
+import com.dothantech.lpapi.LPAPI;
+import com.dothantech.lpapi.LPAPI.BarcodeType;
+import com.dothantech.printer.IDzPrinter;
+import com.dothantech.printer.IDzPrinter.PrintParamName;
+import com.dothantech.printer.IDzPrinter.PrinterAddress;
+import com.dothantech.printer.IDzPrinter.PrinterState;
+import com.petkit.matetool.R;
+import com.petkit.matetool.ui.utils.PrintResultCallback;
+import com.petkit.matetool.ui.utils.PrintUtils;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 @SuppressLint("InflateParams")
 public class PrintActivity extends Activity {
 
@@ -51,80 +49,20 @@ public class PrintActivity extends Activity {
     /********************************************************************************************************************************************/
 
     // LPAPI 打印机操作相关的回调函数。
-    private final LPAPI.Callback mCallback = new LPAPI.Callback() {
-
-        /****************************************************************************************************************************************/
-        // 所有回调函数都是在打印线程中被调用，因此如果需要刷新界面，需要发送消息给界面主线程，以避免互斥等繁琐操作。
-
-        /****************************************************************************************************************************************/
-
-        // 打印机连接状态发生变化时被调用
+    private final PrintResultCallback mCallback = new PrintResultCallback() {
         @Override
-        public void onStateChange(PrinterAddress arg0, PrinterState arg1) {
-            final PrinterAddress printer = arg0;
-            switch (arg1) {
-                case Connected:
-                case Connected2:
-                    // 打印机连接成功，发送通知，刷新界面提示
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            onPrinterConnected(printer);
-                        }
-                    });
-                    break;
-
-                case Disconnected:
-                    // 打印机连接失败、断开连接，发送通知，刷新界面提示
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            onPrinterDisconnected();
-                        }
-                    });
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
-        // 蓝牙适配器状态发生变化时被调用
-        @Override
-        public void onProgressInfo(ProgressInfo arg0, Object arg1) {
+        public void onPrintSuccess() {
+            onPrintSuccess();
         }
 
         @Override
-        public void onPrinterDiscovery(PrinterAddress arg0, PrinterInfo arg1) {
+        public void onPrintFailed() {
+            onPrintFailed();
         }
 
-        // 打印标签的进度发生变化是被调用
         @Override
-        public void onPrintProgress(PrinterAddress address, Object bitmapData, PrintProgress progress, Object addiInfo) {
-            switch (progress) {
-                case Success:
-                    // 打印标签成功，发送通知，刷新界面提示
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            onPrintSuccess();
-                        }
-                    });
-                    break;
-
-                case Failed:
-                    // 打印标签失败，发送通知，刷新界面提示
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            onPrintFailed();
-                        }
-                    });
-                    break;
-
-                default:
-                    break;
-            }
+        public void onConnected() {
+            onPrinterConnected();
         }
     };
 
@@ -140,6 +78,7 @@ public class PrintActivity extends Activity {
 
         // 调用LPAPI对象的init方法初始化对象
         this.api = PrintUtils.getApi();
+        PrintUtils.setCallback(mCallback);
 
         // 尝试连接上次成功连接的打印机
         if (mPrinterAddress != null) {
@@ -525,11 +464,10 @@ public class PrintActivity extends Activity {
     }
 
     // 连接打印机成功时操作
-    private void onPrinterConnected(PrinterAddress printer) {
+    private void onPrinterConnected() {
         // 连接打印机成功时，刷新界面提示，保存相关信息
         clearAlertDialog();
         Toast.makeText(PrintActivity.this, this.getResources().getString(R.string.connectprintersuccess), Toast.LENGTH_SHORT).show();
-        mPrinterAddress = printer;
         // 调用LPAPI对象的getPrinterInfo方法获得当前连接的打印机信息
         String txt = getResources().getString(R.string.printer) + getResources().getString(R.string.chinesecolon);
         txt += api.getPrinterInfo().deviceName + "\n";

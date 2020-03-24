@@ -159,7 +159,7 @@ public class PetkitBLEManager {
             DeviceInfo deviceInfo = createDeviceInfo(device, rssi, scanRecord);
 
             if (mBleListener != null) {
-                mBleListener.onLeScan(device, deviceInfo);
+                mBleListener.onLeScan(device, deviceInfo, rssi);
             }
         }
     };
@@ -173,7 +173,7 @@ public class PetkitBLEManager {
             DeviceInfo deviceInfo = createDeviceInfo(device, result.getRssi(), result.getScanRecord().getBytes());
 
             if (mBleListener != null) {
-                mBleListener.onLeScan(device, deviceInfo);
+                mBleListener.onLeScan(device, deviceInfo, result.getRssi());
             }
 
         }
@@ -575,7 +575,7 @@ public class PetkitBLEManager {
 
 
     public interface onPetkitBleListener {
-        void onLeScan(BluetoothDevice device, DeviceInfo deviceInfo);
+        void onLeScan(BluetoothDevice device, DeviceInfo deviceInfo, int rssi);
         void onStateChanged(PetkitBLEConsts.ConnectState state);
         void onReceiveCustomData(int key, String data);
         void onError(int errCode);

@@ -280,6 +280,7 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
             intent.putExtra("AutoTest", isAuto);
             intent.putExtra(K2Utils.EXTRA_K2_TESTER, mTester);
             intent.putExtra(K2Utils.EXTRA_ERROR_K2, mErrorDevice);
+            intent.putExtra("TestType", mTestType);
             startActivityForResult(intent, 0x12);
         } else {
             showShortToast(mInfoTestTextView.getText().toString());

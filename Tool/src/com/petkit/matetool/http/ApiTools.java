@@ -8,7 +8,7 @@ public class ApiTools {
 //	public static final String MODEL = "PRD";
 
 	public static String SAMPLE_API_URI =
-			MODEL.equals("TEST") ? "sandbox-factory.petkit.com" : "factory.petkit.com";
+			MODEL.equals("TEST") ? "sandbox-factory.petkit.cn" : "factory.petkit.com";
 
 	public static String getSampleApiUri() {
 		return getApiHTTPUri();

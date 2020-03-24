@@ -14,8 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.dothantech.lpapi.IAtBitmap;
-import com.dothantech.lpapi.LPAPI;
 import com.dothantech.printer.IDzPrinter;
 import com.google.gson.Gson;
 import com.petkit.android.ble.DeviceInfo;
@@ -853,9 +851,15 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
         PetkitBLEManager.getInstance().setBleListener(new PetkitBLEManager.onPetkitBleListener() {
 
             @Override
-            public void onLeScan(BluetoothDevice device, DeviceInfo deviceInfo) {
-                mDescTextView.append("\n搜索到设备");
-                PetkitBLEManager.getInstance().connect(T3TestDetailActivity.this, device);
+            public void onLeScan(BluetoothDevice device, DeviceInfo deviceInfo, int rssi) {
+                mDescTextView.append("\n搜索到设备，信号为： " + rssi);
+                mDescTextView.append("\n蓝牙测试完成");
+                PetkitBLEManager.getInstance().stopScan();
+
+                mT3TestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                refershBtnView();
+
+//                PetkitBLEManager.getInstance().connect(T3TestDetailActivity.this, device);
             }
 
             @Override

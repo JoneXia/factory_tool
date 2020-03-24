@@ -48,6 +48,7 @@ public class K2StartActivity extends BaseActivity {
         testInfo.setText(getString(R.string.Feeder_test_info_format));
 
         findViewById(R.id.test_case1).setOnClickListener(this);
+        findViewById(R.id.test_case1).setVisibility(View.GONE);
         findViewById(R.id.test_case2).setOnClickListener(this);
         findViewById(R.id.test_case3).setOnClickListener(this);
         findViewById(R.id.test_case4).setOnClickListener(this);

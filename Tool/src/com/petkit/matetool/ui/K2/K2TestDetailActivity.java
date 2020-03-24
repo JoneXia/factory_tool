@@ -14,8 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.dothantech.lpapi.IAtBitmap;
-import com.dothantech.lpapi.LPAPI;
 import com.dothantech.printer.IDzPrinter;
 import com.google.gson.Gson;
 import com.petkit.android.ble.DeviceInfo;
@@ -47,6 +45,7 @@ import java.util.HashMap;
 import static com.petkit.matetool.ble.PetkitBLEConsts.ConnectState.BLE_STATE_SERVICE_DISCOVERED_SUCCESS;
 import static com.petkit.matetool.ui.K2.utils.K2Utils.DC_RANGE;
 import static com.petkit.matetool.ui.K2.utils.K2Utils.K2TestModes.TEST_MODE_AUTO;
+import static com.petkit.matetool.ui.K2.utils.K2Utils.TYPE_TEST;
 import static com.petkit.matetool.ui.utils.PrintUtils.isPrinterConnected;
 import static com.petkit.matetool.utils.Globals.TEST_FAILED;
 import static com.petkit.matetool.utils.Globals.TEST_PASS;
@@ -63,6 +62,7 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
     private Device mDevice, mErrorDevice;
     private boolean isWriteEndCmd = false;
     private boolean isAutoTest = false;
+    private int mTestType;
 
     private TextView mDescTextView, mPromptTextView;
     private Button mBtn1, mBtn2, mBtn3;
@@ -83,6 +83,7 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
             isAutoTest = savedInstanceState.getBoolean("AutoTest");
             mTester = (Tester) savedInstanceState.getSerializable(K2Utils.EXTRA_K2_TESTER);
             mErrorDevice = (Device) savedInstanceState.getSerializable(K2Utils.EXTRA_ERROR_K2);
+            mTestType = savedInstanceState.getInt("TestType");
         } else {
             mK2TestUnits = (ArrayList<K2TestUnit>) getIntent().getSerializableExtra("TestUnits");
             mCurTestStep = getIntent().getIntExtra("CurrentTestStep", 0);
@@ -90,6 +91,7 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
             isAutoTest = getIntent().getBooleanExtra("AutoTest", true);
             mTester = (Tester) getIntent().getSerializableExtra(K2Utils.EXTRA_K2_TESTER);
             mErrorDevice = (Device) getIntent().getSerializableExtra(K2Utils.EXTRA_ERROR_K2);
+            mTestType = getIntent().getIntExtra("TestType", K2Utils.TYPE_CHECK);
         }
 
         setContentView(R.layout.activity_feeder_test_detail);
@@ -114,6 +116,7 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
         outState.putBoolean("AutoTest", isAutoTest);
         outState.putSerializable(K2Utils.EXTRA_K2_TESTER, mTester);
         outState.putSerializable(K2Utils.EXTRA_ERROR_K2, mErrorDevice);
+        outState.putSerializable("TestType", mTestType);
     }
 
     @Override
@@ -707,39 +710,26 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
         }
     }
 
-    private Bundle getPrintParam() {
-        Bundle param = new Bundle();
-
-        param.putInt(IDzPrinter.PrintParamName.PRINT_DIRECTION, 0);
-        param.putInt(IDzPrinter.PrintParamName.PRINT_COPIES, 2);
-        param.putInt(IDzPrinter.PrintParamName.GAP_TYPE, 2);
-        param.putInt(IDzPrinter.PrintParamName.PRINT_DENSITY, 14);
-        param.putInt(IDzPrinter.PrintParamName.PRINT_SPEED, 2);
-        return param;
-    }
 
     private boolean printBarcode(String onedBarcde, String twodBarcde) {
-        return PrintUtils.printText(onedBarcde, twodBarcde, new PrintResultCallback() {
+        return PrintUtils.printText(onedBarcde, twodBarcde, mTestType == TYPE_TEST ? 2 : 1, new PrintResultCallback() {
             @Override
             public void onPrintSuccess() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mDescTextView.append("\n" + getString(R.string.printsuccess));
-                        mK2TestUnits.get(mCurTestStep).setResult(TEST_PASS);
-                        refershBtnView();
-                    }
+                runOnUiThread(() -> {
+                    mDescTextView.append("\n" + getString(R.string.printsuccess));
+                    mK2TestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                    refershBtnView();
                 });
             }
 
             @Override
             public void onPrintFailed() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mDescTextView.append(getString(R.string.printfailed));
-                    }
-                });
+                runOnUiThread(() -> mDescTextView.append(getString(R.string.printfailed)));
+            }
+
+            @Override
+            public void onConnected() {
+
             }
         });
     }
@@ -944,11 +934,19 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
         PetkitBLEManager.getInstance().setBleListener(new PetkitBLEManager.onPetkitBleListener() {
 
             @Override
-            public void onLeScan(BluetoothDevice device, DeviceInfo deviceInfo) {
-                mDescTextView.append("\n搜索到设备");
-                PetkitBLEManager.getInstance().connect(K2TestDetailActivity.this, device);
+            public void onLeScan(BluetoothDevice device, DeviceInfo deviceInfo, int rssi) {
+                mDescTextView.append("\n搜索到设备，信号为： " + rssi);
+                mDescTextView.append("\n蓝牙测试完成");
+                if (isInAutoUnits) {
+                    mK2AutoTestUnits.get(mAutoUnitStep).setResult(TEST_PASS);
+                    gotoNextAutoUnit();
+                } else {
+                    mK2TestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                    refershBtnView();
+                }
 
                 PetkitBLEManager.getInstance().stopScan();
+//                PetkitBLEManager.getInstance().connect(K2TestDetailActivity.this, device);
             }
 
             @Override
