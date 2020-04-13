@@ -720,7 +720,13 @@ public class AndroidBLEActionService extends BLEActionService {
 		if (device != null && !deviceInfoExists(device.getAddress())) {
 			LogcatStorageHelper.addLog("onLeScan, scanRecord: " + parse(scanRecord));
 			PetkitLog.d("onLeScan, scanRecord: " + parse(scanRecord));
+
 			DeviceInfo deviceInfo = createDeviceInfo(device, rssi, scanRecord);
+
+			PetkitLog.d("onLeScan, device: " + device.toString());
+			PetkitLog.d("onLeScan, deviceInfo: " + deviceInfo.toString());
+
+
 			if(!checkDeviceFilter(deviceInfo.getName())){
 				return;
 			}

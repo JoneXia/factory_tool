@@ -1,9 +1,5 @@
 package com.petkit.matetool.ble;
 
-import java.util.UUID;
-
-import blufi.espressif.params.BlufiParameter;
-
 public class PetkitBLEConsts {
 
 
@@ -93,9 +89,9 @@ public class PetkitBLEConsts {
 
     public static final String BLUFI_PREFIX = "BLUFI";
 
-    public static final UUID UUID_SERVICE = BlufiParameter.UUID_SERVICE;
-    public static final UUID UUID_WRITE_CHARACTERISTIC = BlufiParameter.UUID_WRITE_CHARACTERISTIC;
-    public static final UUID UUID_NOTIFICATION_CHARACTERISTIC = BlufiParameter.UUID_NOTIFICATION_CHARACTERISTIC;
+//    public static final UUID UUID_SERVICE = BlufiParameter.UUID_SERVICE;
+//    public static final UUID UUID_WRITE_CHARACTERISTIC = BlufiParameter.UUID_WRITE_CHARACTERISTIC;
+//    public static final UUID UUID_NOTIFICATION_CHARACTERISTIC = BlufiParameter.UUID_NOTIFICATION_CHARACTERISTIC;
 
     public static final String KEY_BLE_DEVICE = "key_ble_device";
 

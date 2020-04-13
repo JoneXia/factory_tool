@@ -1,12 +1,15 @@
 package com.petkit.matetool.ui.t3;
 
 import android.app.AlertDialog;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.le.ScanFilter;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,12 +19,14 @@ import android.widget.TextView;
 
 import com.dothantech.printer.IDzPrinter;
 import com.google.gson.Gson;
+import com.petkit.android.ble.BLEConsts;
 import com.petkit.android.ble.DeviceInfo;
+import com.petkit.android.ble.service.AndroidBLEActionService;
+import com.petkit.android.utils.CommonUtils;
 import com.petkit.android.utils.LogcatStorageHelper;
+import com.petkit.android.utils.PetkitLog;
 import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
-import com.petkit.matetool.ble.PetkitBLEConsts;
-import com.petkit.matetool.ble.PetkitBLEManager;
 import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.DeviceModuleStateStruct;
 import com.petkit.matetool.model.Tester;
@@ -62,6 +67,7 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
     private boolean isAutoTest = false;
     private String mAgeingResult = null;    //老化测试的结果
     private int mTempStep; //有些测试项中会细分成几步
+    private String bleMac;
 
     private TextView mDescTextView, mPromptTextView;
     private Button mBtn1, mBtn2, mBtn3;
@@ -88,6 +94,8 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
         }
 
         setContentView(R.layout.activity_feeder_test_detail);
+
+        registerBoradcastReceiver();
     }
 
     @Override
@@ -830,98 +838,6 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
     }
 
 
-    private void startBleTest(String mac) {
-
-        if (mac == null) {
-            mDescTextView.append("\n蓝牙MAC异常，测试失败");
-        } else if (mac.length() == 12) {
-            StringBuffer stringBuffer = new StringBuffer(mac);
-//            stringBuffer.append(mac, 0, 2).append(":").append(mac, 2, 2).append(":")
-//                    .append(mac, 4, 2).append(":").append(mac, 6, 2).append(":")
-//                    .append(mac, 8, 2).append(":").append(mac, 10, 2);
-            stringBuffer.insert(10, ':');
-            stringBuffer.insert(8, ':');
-            stringBuffer.insert(6, ':');
-            stringBuffer.insert(4, ':');
-            stringBuffer.insert(2, ':');
-            mac = stringBuffer.toString();
-        }
-
-
-        PetkitBLEManager.getInstance().setBleListener(new PetkitBLEManager.onPetkitBleListener() {
-
-            @Override
-            public void onLeScan(BluetoothDevice device, DeviceInfo deviceInfo, int rssi) {
-                mDescTextView.append("\n搜索到设备，信号为： " + rssi);
-                mDescTextView.append("\n蓝牙测试完成");
-                PetkitBLEManager.getInstance().stopScan();
-
-                mT3TestUnits.get(mCurTestStep).setResult(TEST_PASS);
-                refershBtnView();
-
-//                PetkitBLEManager.getInstance().connect(T3TestDetailActivity.this, device);
-            }
-
-            @Override
-            public void onStateChanged(PetkitBLEConsts.ConnectState state) {
-                switch (state) {
-                    case BLE_STATE_CONNECTED:
-                        mDescTextView.append("\n蓝牙连接成功，开始连接GATT");
-                        break;
-                    case BLE_STATE_CONNECTING:
-                        mDescTextView.append("\n开始连接设备");
-                        break;
-                    case BLE_STATE_GATT_FAILED:
-                        mDescTextView.append("\nGATT连接失败，测试失败");
-                        break;
-                    case BLE_STATE_DISCONNECTED:
-                        mDescTextView.append("\n设备已断开连接");
-                        break;
-                    case BLE_STATE_GATT_SUCCESS:
-                        mDescTextView.append("\nGATT连接成功，开始查找服务");
-                        break;
-                    case BLE_STATE_CONNECT_FAILED:
-                        mDescTextView.append("\n设备连接失败，测试失败");
-                        break;
-                    case BLE_STATE_SERVICE_DISCOVERED_FAILED:
-                        mDescTextView.append("\n设备服务异常，测试失败");
-                        break;
-                    case BLE_STATE_SERVICE_DISCOVERED_SUCCESS:
-                        mDescTextView.append("\n查找服务成功，连接完成");
-
-                        HashMap<String, Object> data = new HashMap<>();
-                        data.put("key", 110);
-                        PetkitBLEManager.getInstance().postCustomData(new Gson().toJson(data));
-
-                        mDescTextView.append("\n开始发送数据");
-                        break;
-                }
-            }
-
-            @Override
-            public void onReceiveCustomData(int key, String data) {
-                switch (key) {
-                    case 110:
-                        mDescTextView.append("\n数据已接收，测试完成");
-
-                        mT3TestUnits.get(mCurTestStep).setResult(TEST_PASS);
-                        refershBtnView();
-                        break;
-                }
-            }
-
-            @Override
-            public void onError(int errCode) {
-                mDescTextView.append("\n蓝牙出错，测试失败，errorCode： " + errCode);
-                LogcatStorageHelper.addLog("PetkitBleListener onError: " + errCode);
-            }
-        });
-
-        ScanFilter scanFilter = new ScanFilter.Builder().setDeviceAddress(mac).build();
-        PetkitBLEManager.getInstance().startScan(scanFilter);
-    }
-
-
     @Override
     public void onPrintSuccess() {
         runOnUiThread(new Runnable() {
@@ -950,5 +866,113 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
     protected void onDestroy() {
         PrintUtils.quit();
         super.onDestroy();
+
+        unregisterBroadcastReceiver();
+    }
+
+
+
+    private void startBleTest(String mac) {
+
+        if (mac == null || mac.length() != 12) {
+            mDescTextView.append("\n蓝牙MAC异常，测试失败");
+        } else {
+            StringBuffer stringBuffer = new StringBuffer(mac);
+//            stringBuffer.append(mac, 0, 2).append(":").append(mac, 2, 2).append(":")
+//                    .append(mac, 4, 2).append(":").append(mac, 6, 2).append(":")
+//                    .append(mac, 8, 2).append(":").append(mac, 10, 2);
+            stringBuffer.insert(10, ':');
+            stringBuffer.insert(8, ':');
+            stringBuffer.insert(6, ':');
+            stringBuffer.insert(4, ':');
+            stringBuffer.insert(2, ':');
+            mac = stringBuffer.toString();
+        }
+
+        bleMac = mac;
+
+        if(CommonUtils.getAndroidSDKVersion() >= 18){
+            if (!getPackageManager().hasSystemFeature(
+                    PackageManager.FEATURE_BLUETOOTH_LE)) {
+                return;
+            }
+
+            Bundle bundle = new Bundle();
+            bundle.putInt(BLEConsts.EXTRA_ACTION, BLEConsts.BLE_ACTION_SCAN);
+            final Intent service = new Intent(this, AndroidBLEActionService.class);
+            service.putExtras(bundle);
+            startService(service);
+        }else {
+            CommonUtils.showShortToast(this, "你的手机蓝牙不支持");
+        }
+    }
+
+
+
+
+    private BroadcastReceiver mBroadcastReceiver;
+
+    private void registerBoradcastReceiver() {
+        mBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context arg0, Intent arg1) {
+                PetkitLog.d("" + arg1.getAction());
+
+                switch (arg1.getAction()) {
+                    case BLEConsts.BROADCAST_PROGRESS:
+                        int progress = arg1.getIntExtra(BLEConsts.EXTRA_PROGRESS, 0);
+
+                        switch (progress) {
+                            case BLEConsts.PROGRESS_SCANING_TIMEOUT:
+                            case BLEConsts.PROGRESS_SCANING_FAILED:
+                            case BLEConsts.ERROR_DEVICE_DISCONNECTED:
+                            case BLEConsts.PROGRESS_DISCONNECTING:
+                            case BLEConsts.ERROR_SYNC_INIT_FAIL:
+                            case BLEConsts.ERROR_DEVICE_ID_NULL:
+                                mDescTextView.append("\n蓝牙搜索结束");
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+
+                    case BLEConsts.BROADCAST_ERROR:
+                        progress = arg1.getIntExtra(BLEConsts.EXTRA_DATA, 0);
+                        break;
+                    case BLEConsts.BROADCAST_SCANED_DEVICE:
+                        DeviceInfo deviceInfo = (DeviceInfo) arg1.getSerializableExtra(BLEConsts.EXTRA_DEVICE_INFO);
+                        if(deviceInfo.getName() == null){
+                            return;
+                        }
+
+                        if (deviceInfo.getAddress()!=null && deviceInfo.getAddress().equalsIgnoreCase(bleMac)){
+                            mDescTextView.append("\n搜索到设备，信号为： " + deviceInfo.getRssi());
+                            mDescTextView.append("\n蓝牙测试完成");
+                            mT3TestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                            refershBtnView();
+
+                            stopBleScan();
+                        }
+                        break;
+                }
+            }
+        };
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BLEConsts.BROADCAST_PROGRESS);
+        filter.addAction(BLEConsts.BROADCAST_ERROR);
+        filter.addAction(BLEConsts.BROADCAST_LOG);
+        filter.addAction(BLEConsts.BROADCAST_SCANED_DEVICE);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver, filter);
+    }
+
+    private void unregisterBroadcastReceiver() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);
+    }
+
+    private void stopBleScan () {
+        Intent intent = new Intent(BLEConsts.BROADCAST_ACTION);
+        intent.putExtra(BLEConsts.EXTRA_ACTION, BLEConsts.ACTION_ABORT);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 }

@@ -75,22 +75,30 @@ public class PrintUtils {
 
     public static boolean printText(String onedBarcde, String twodBarcde, int copies, PrintResultCallback printResultCallback) {
         callback = printResultCallback;
-        api.startJob(48, 30, 0);
+        IAtBitmap api = IAtBitmap.Factory.createInstance();
+
+        api.startJob(48 * 100, 30 * 100);
         api.setItemHorizontalAlignment(IAtBitmap.ItemAlignment.MIDDLE);
-        api.draw2DQRCode(twodBarcde, 16, 2, 15);
-        api.draw1DBarcode(onedBarcde, IAtBitmap.BarcodeType1D.CODE128, 0, 18, 52, 7, 0);
-        api.drawText(onedBarcde, 0, 25, 48, 3, IAtBitmap.FontStyle.REGULAR);
-        return api.commitJobWithParam(getPrintParam(copies, 0));
+        api.draw2DQRCode(twodBarcde, 16 * 100, 2 * 100, 15 * 100);
+        api.draw1DBarcode(onedBarcde, IAtBitmap.BarcodeType1D.CODE128, 0 * 100, 18 * 100, 48 * 100, 7 * 100, 0);
+        api.drawText(onedBarcde, 0 * 100, 25 * 100, 48 * 100, 3 *100, 280, IAtBitmap.FontStyle.REGULAR);
+        api.endJob();
+
+        return IDzPrinter.Factory.getInstance().print(api, getPrintParam(copies, 0));
     }
 
 
     public static boolean printText(String onedBarcde, String twodBarcde) {
-        api.startJob(48, 30, 0);
+        IAtBitmap api = IAtBitmap.Factory.createInstance();
+
+        api.startJob(48 * 100, 30 * 100);
         api.setItemHorizontalAlignment(IAtBitmap.ItemAlignment.MIDDLE);
-        api.draw2DQRCode(twodBarcde, 16, 2, 15);
-        api.draw1DBarcode(onedBarcde, IAtBitmap.BarcodeType1D.CODE128, 0, 18, 48, 7, 0);
-        api.drawText(onedBarcde, 0, 25, 48, 3, IAtBitmap.FontStyle.REGULAR);
-        return api.commitJob();
+        api.draw2DQRCode(twodBarcde, 16 * 100, 2 * 100, 15 * 100);
+        api.draw1DBarcode(onedBarcde, IAtBitmap.BarcodeType1D.CODE128, 0 * 100, 18 * 100, 48 * 100, 7 * 100, 0);
+        api.drawText(onedBarcde, 0 * 100, 25 * 100, 48 * 100, 3 *100, 280, IAtBitmap.FontStyle.REGULAR);
+        api.endJob();
+
+        return IDzPrinter.Factory.getInstance().print(api, getPrintParam(1, 0));
     }
 
     private static final LPAPI.Callback mCallback = new LPAPI.Callback() {

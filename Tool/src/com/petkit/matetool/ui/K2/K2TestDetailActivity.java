@@ -1,12 +1,15 @@
 package com.petkit.matetool.ui.K2;
 
 import android.app.AlertDialog;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.le.ScanFilter;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,18 +19,21 @@ import android.widget.TextView;
 
 import com.dothantech.printer.IDzPrinter;
 import com.google.gson.Gson;
+import com.petkit.android.ble.BLEConsts;
 import com.petkit.android.ble.DeviceInfo;
+import com.petkit.android.ble.service.AndroidBLEActionService;
+import com.petkit.android.utils.CommonUtils;
 import com.petkit.android.utils.LogcatStorageHelper;
+import com.petkit.android.utils.PetkitLog;
 import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
-import com.petkit.matetool.ble.PetkitBLEConsts;
-import com.petkit.matetool.ble.PetkitBLEManager;
 import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.DeviceModuleStateStruct;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.K2.mode.K2TestUnit;
 import com.petkit.matetool.ui.K2.utils.K2Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.ui.print.PrintActivity;
 import com.petkit.matetool.ui.utils.PetkitSocketInstance;
 import com.petkit.matetool.ui.utils.PrintResultCallback;
@@ -42,8 +48,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-import static com.petkit.matetool.ble.PetkitBLEConsts.ConnectState.BLE_STATE_SERVICE_DISCOVERED_SUCCESS;
 import static com.petkit.matetool.ui.K2.utils.K2Utils.DC_RANGE;
+import static com.petkit.matetool.ui.K2.utils.K2Utils.K2TestModes.TEST_MODE_AGEINGRESULT;
 import static com.petkit.matetool.ui.K2.utils.K2Utils.K2TestModes.TEST_MODE_AUTO;
 import static com.petkit.matetool.ui.K2.utils.K2Utils.TYPE_TEST;
 import static com.petkit.matetool.ui.utils.PrintUtils.isPrinterConnected;
@@ -63,6 +69,8 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
     private boolean isWriteEndCmd = false;
     private boolean isAutoTest = false;
     private int mTestType;
+    private String bleMac;
+    private String mAgeingResult = "null";
 
     private TextView mDescTextView, mPromptTextView;
     private Button mBtn1, mBtn2, mBtn3;
@@ -95,6 +103,8 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
         }
 
         setContentView(R.layout.activity_feeder_test_detail);
+
+        registerBoradcastReceiver();
     }
 
     @Override
@@ -184,6 +194,9 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
             case TEST_MODE_FAN:
                 mPromptTextView.setText("测试风扇，会自动切换转速！");
                 break;
+            case TEST_MODE_AGEINGRESULT:
+                mPromptTextView.setText("观察老化数据，手动判断结果！");
+                break;
             default:
                 break;
         }
@@ -196,6 +209,7 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
             case TEST_MODE_TEMP:
             case TEST_MODE_LED:
             case TEST_MODE_LED_2:
+            case TEST_MODE_AGEINGRESULT:
                 mBtn1.setText(R.string.Start);
                 mBtn2.setText(R.string.Failure);
                 mBtn2.setBackgroundResource(R.drawable.selector_red);
@@ -261,7 +275,7 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
             case R.id.test_btn_1:
                 switch (mK2TestUnits.get(mCurTestStep).getType()) {
                     case TEST_MODE_PRINT:
-                        if (isPrinterConnected()) {
+                        if (PrintUtils.isPrinterConnected()) {
                             if (isEmpty(mDevice.getSn())) {
                                 showShortToast("SN还未写入，不能打印！");
                             } else if (isEmpty(mDevice.getMac())) {
@@ -281,10 +295,12 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         showSNSetDialog();
                         break;
                     case TEST_MODE_SN:
-                        startSetSn();
+                        HashMap<String, Object> params = new HashMap<>();
+                        params.put("mac", mDevice.getMac());
+                        PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(167, params));
                         break;
                     case TEST_MODE_MAC:
-                        HashMap<String, Object> params = new HashMap<>();
+                        params = new HashMap<>();
                         params.put("mac", mDevice.getMac());
                         PetkitSocketInstance.getInstance().sendString(K2Utils.getRequestForKeyAndPayload(165, params));
                         break;
@@ -292,6 +308,11 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         params = new HashMap<>();
                         params.put("mac", mDevice.getMac());
                         PetkitSocketInstance.getInstance().sendString(K2Utils.getRequestForKeyAndPayload(162, params));
+                        break;
+                    case TEST_MODE_AGEINGRESULT:
+                        params = new HashMap<>();
+                        params.put("mac", mDevice.getMac());
+                        PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(167, params));
                         break;
                     default:
                         startTestModule();
@@ -320,6 +341,10 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         params.put("state", 1);
                         PetkitSocketInstance.getInstance().sendString(K2Utils.getRequestForKeyAndPayload(163, params));
                         break;
+                    case TEST_MODE_AGEINGRESULT:
+                        mK2TestUnits.get(mCurTestStep).setResult(TEST_FAILED);
+                        gotoNextTestModule();
+                        break;
                 }
                 break;
             case R.id.test_btn_3:
@@ -332,6 +357,7 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                     case TEST_MODE_TEMP:
                     case TEST_MODE_LED:
                     case TEST_MODE_LED_2:
+                    case TEST_MODE_AGEINGRESULT:
                         mK2TestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         gotoNextTestModule();
                         break;
@@ -393,6 +419,7 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
         mAutoUnitStep++;
 
         if (mK2AutoTestUnits.size() > 0 && mAutoUnitStep < mK2AutoTestUnits.size()) {
+            mDescTextView.append("\n------");
             mDescTextView.append("\n开始进行：" + mK2AutoTestUnits.get(mAutoUnitStep).getName());
 
             HashMap<String, Object> params = new HashMap<>();
@@ -417,6 +444,7 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                     break;
                 }
             }
+            mDescTextView.append("\n------");
             mDescTextView.append("\n自动项测试已完成，结果：" + (result ? "成功" : "失败"));
 
             mK2TestUnits.get(mCurTestStep).setResult(result ? TEST_PASS : TEST_FAILED);
@@ -437,7 +465,9 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        stopBle();
+
+        stopBleScan();
+        unregisterBroadcastReceiver();
     }
 
     @Override
@@ -536,7 +566,7 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                             desc.append("\n").append("风扇异常！");
                         } else {
                             desc.append("\n").append("风扇正常，目标转速：").append(moduleStateStruct.getSub0()).append("，实际转速：").append(moduleStateStruct.getSub1());
-                            result = (Math.abs(moduleStateStruct.getSub1() * 1.0f / moduleStateStruct.getSub0() - 1) < 0.1);
+                            result = moduleStateStruct.getState() == 1;
                         }
                         break;
                     case 8:
@@ -586,7 +616,12 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         break;
                 }
                 mDescTextView.append(desc.toString());
-                new Handler().post(() -> mDescScrollView.fullScroll(ScrollView.FOCUS_DOWN));
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mDescScrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                    }
+                });
 
                 if (isInAutoUnits) {
                     if (result) {
@@ -596,8 +631,8 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 } else {
                     if (result) {
                         mK2TestUnits.get(mCurTestStep).setResult(TEST_PASS);
-                        refershBtnView();
                     }
+                    refershBtnView();
                 }
 
                 break;
@@ -621,7 +656,7 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                                 } else if (opt == 1) {
                                     mDescTextView.append("\n写入SN成功");
                                     K2Utils.removeTempDeviceInfo(mDevice);
-                                    K2Utils.storeSucceedDeviceInfo(mDevice, "null");
+                                    K2Utils.storeSucceedDeviceInfo(mDevice, mAgeingResult);
 
                                     mK2TestUnits.get(mCurTestStep).setResult(TEST_PASS);
                                     refershBtnView();
@@ -665,6 +700,13 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 mDescTextView.append("\n请重启设备，确认ID是否擦除！");
                 mDescTextView.append("\n擦除ID后需要重新测试！");
                 break;
+            case 167:
+                mAgeingResult = data;
+                if (TEST_MODE_AGEINGRESULT == mK2TestUnits.get(mCurTestStep).getType()) {
+                    mDescTextView.setText(data);
+                } else {
+                    startSetSn();
+                }
         }
     }
 
@@ -715,16 +757,24 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
         return PrintUtils.printText(onedBarcde, twodBarcde, mTestType == TYPE_TEST ? 2 : 1, new PrintResultCallback() {
             @Override
             public void onPrintSuccess() {
-                runOnUiThread(() -> {
-                    mDescTextView.append("\n" + getString(R.string.printsuccess));
-                    mK2TestUnits.get(mCurTestStep).setResult(TEST_PASS);
-                    refershBtnView();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mDescTextView.append("\n" + getString(R.string.printsuccess));
+                        mK2TestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                        refershBtnView();
+                    }
                 });
             }
 
             @Override
             public void onPrintFailed() {
-                runOnUiThread(() -> mDescTextView.append(getString(R.string.printfailed)));
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mDescTextView.append(getString(R.string.printfailed));
+                    }
+                });
             }
 
             @Override
@@ -903,8 +953,6 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
         return view;
     }
 
-    private PetkitBLEConsts.ConnectState mBleState;
-
     private void startBleTest(String mac) {
 
         if (mac == null || mac.length() != 12) {
@@ -922,112 +970,101 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
             mac = stringBuffer.toString();
         }
 
-        if (mBleState == BLE_STATE_SERVICE_DISCOVERED_SUCCESS) {
-            HashMap<String, Object> data = new HashMap<>();
-            data.put("key", 110);
-            PetkitBLEManager.getInstance().postCustomData(new Gson().toJson(data));
+        bleMac = mac;
 
-            mDescTextView.append("\n开始发送数据");
-            return;
+        if(CommonUtils.getAndroidSDKVersion() >= 18){
+            if (!getPackageManager().hasSystemFeature(
+                    PackageManager.FEATURE_BLUETOOTH_LE)) {
+                return;
+            }
+
+            Bundle bundle = new Bundle();
+            bundle.putInt(BLEConsts.EXTRA_ACTION, BLEConsts.BLE_ACTION_SCAN);
+            final Intent service = new Intent(this, AndroidBLEActionService.class);
+            service.putExtras(bundle);
+            startService(service);
+        }else {
+            CommonUtils.showShortToast(this, "你的手机蓝牙不支持");
         }
+    }
 
-        PetkitBLEManager.getInstance().setBleListener(new PetkitBLEManager.onPetkitBleListener() {
 
+
+
+    private BroadcastReceiver mBroadcastReceiver;
+
+    private void registerBoradcastReceiver() {
+        mBroadcastReceiver = new BroadcastReceiver() {
             @Override
-            public void onLeScan(BluetoothDevice device, DeviceInfo deviceInfo, int rssi) {
-                mDescTextView.append("\n搜索到设备，信号为： " + rssi);
-                mDescTextView.append("\n蓝牙测试完成");
-                if (isInAutoUnits) {
-                    mK2AutoTestUnits.get(mAutoUnitStep).setResult(TEST_PASS);
-                    gotoNextAutoUnit();
-                } else {
-                    mK2TestUnits.get(mCurTestStep).setResult(TEST_PASS);
-                    refershBtnView();
-                }
+            public void onReceive(Context arg0, Intent arg1) {
+                PetkitLog.d("" + arg1.getAction());
 
-                PetkitBLEManager.getInstance().stopScan();
-//                PetkitBLEManager.getInstance().connect(K2TestDetailActivity.this, device);
-            }
+                switch (arg1.getAction()) {
+                    case BLEConsts.BROADCAST_PROGRESS:
+                        int progress = arg1.getIntExtra(BLEConsts.EXTRA_PROGRESS, 0);
 
-            @Override
-            public void onStateChanged(PetkitBLEConsts.ConnectState state) {
-                mBleState = state;
-                runOnUiThread(() -> {
-                    switch (state) {
-                        case BLE_STATE_CONNECTED:
-                            mDescTextView.append("\n蓝牙连接成功，开始连接GATT");
-                            break;
-                        case BLE_STATE_CONNECTING:
-                            mDescTextView.append("\n开始连接设备");
-                            break;
-                        case BLE_STATE_GATT_FAILED:
-                            mDescTextView.append("\nGATT连接已断开");
-                            break;
-                        case BLE_STATE_DISCONNECTED:
-                            mDescTextView.append("\n设备已断开连接");
-                            break;
-                        case BLE_STATE_GATT_SUCCESS:
-                            mDescTextView.append("\nGATT连接成功，开始查找服务");
-                            break;
-                        case BLE_STATE_CONNECT_FAILED:
-                            mDescTextView.append("\n设备连接失败，测试失败");
-                            break;
-                        case BLE_STATE_SERVICE_DISCOVERED_FAILED:
-                            mDescTextView.append("\n设备服务异常，测试失败");
-                            break;
-                        case BLE_STATE_SERVICE_DISCOVERED_SUCCESS:
-                            mDescTextView.append("\n查找服务成功，连接完成");
+                        switch (progress) {
+                            case BLEConsts.PROGRESS_SCANING_TIMEOUT:
+                            case BLEConsts.PROGRESS_SCANING_FAILED:
+                            case BLEConsts.ERROR_DEVICE_DISCONNECTED:
+                            case BLEConsts.PROGRESS_DISCONNECTING:
+                            case BLEConsts.ERROR_SYNC_INIT_FAIL:
+                            case BLEConsts.ERROR_DEVICE_ID_NULL:
+                                mDescTextView.append("\n蓝牙搜索结束");
+                                if (isInAutoUnits) {
+                                    gotoNextAutoUnit();
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
 
-                            HashMap<String, Object> data = new HashMap<>();
-                            data.put("key", 110);
-                            PetkitBLEManager.getInstance().postCustomData(new Gson().toJson(data));
+                    case BLEConsts.BROADCAST_ERROR:
+                        progress = arg1.getIntExtra(BLEConsts.EXTRA_DATA, 0);
+                        break;
+                    case BLEConsts.BROADCAST_SCANED_DEVICE:
+                        DeviceInfo deviceInfo = (DeviceInfo) arg1.getSerializableExtra(BLEConsts.EXTRA_DEVICE_INFO);
 
-                            mDescTextView.append("\n开始发送数据");
-                            break;
-                    }
-                });
-            }
+                        PetkitLog.d("onLeScan, deviceInfo k2: " + deviceInfo.toString());
 
-            @Override
-            public void onReceiveCustomData(int key, String data) {
-                runOnUiThread(() -> {
-                    mDescTextView.append("\n数据: " + data);
-                    switch (key) {
-                        case 110:
-                            mDescTextView.append("\n数据已接收，测试完成");
+                        if(deviceInfo.getName() == null){
+                            return;
+                        }
 
-                            stopBle();
-                            mDescTextView.append("\n测试完成，开始断开蓝牙");
+                        if (deviceInfo.getAddress()!=null && deviceInfo.getAddress().equalsIgnoreCase(bleMac)){
+                            mDescTextView.append("\n搜索到设备，信号为： " + deviceInfo.getRssi());
+                            mDescTextView.append("\n蓝牙测试完成");
                             if (isInAutoUnits) {
                                 mK2AutoTestUnits.get(mAutoUnitStep).setResult(TEST_PASS);
-                                gotoNextAutoUnit();
                             } else {
                                 mK2TestUnits.get(mCurTestStep).setResult(TEST_PASS);
                                 refershBtnView();
                             }
-                            break;
-                    }
-                });
-            }
 
-            @Override
-            public void onError(int errCode) {
-                mDescTextView.append("\n蓝牙出错，测试失败，errorCode： " + errCode);
-                LogcatStorageHelper.addLog("PetkitBleListener onError: " + errCode);
+                            stopBleScan();
+                        }
+                        break;
+                }
             }
-        });
+        };
 
-        ScanFilter scanFilter = new ScanFilter.Builder().setDeviceAddress(mac.toUpperCase()).build();
-        PetkitBLEManager.getInstance().startScan(scanFilter);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BLEConsts.BROADCAST_PROGRESS);
+        filter.addAction(BLEConsts.BROADCAST_ERROR);
+        filter.addAction(BLEConsts.BROADCAST_LOG);
+        filter.addAction(BLEConsts.BROADCAST_SCANED_DEVICE);
+        LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver, filter);
     }
 
-    private void stopBle() {
-        HashMap<String, Object> data = new HashMap<>();
-        data.put("key", 101);
-        PetkitBLEManager.getInstance().postCustomData(new Gson().toJson(data));
-
-        PetkitBLEManager.getInstance().close();
+    private void unregisterBroadcastReceiver() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);
     }
 
+    private void stopBleScan () {
+        Intent intent = new Intent(BLEConsts.BROADCAST_ACTION);
+        intent.putExtra(BLEConsts.EXTRA_ACTION, BLEConsts.ACTION_ABORT);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
 
 }

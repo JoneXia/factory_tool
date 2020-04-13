@@ -68,6 +68,7 @@ public class K2Utils {
         TEST_MODE_SN,   //写SN
         TEST_MODE_RESET_SN, //重置SN
         TEST_MODE_RESET_ID, //清除ID
+        TEST_MODE_AGEINGRESULT,
         TEST_MODE_PRINT     //打印标签
     }
 
@@ -136,7 +137,11 @@ public class K2Utils {
             results.add(new K2TestUnit(K2TestModes.TEST_MODE_SN, "写入SN", 12, 2));
             results.add(new K2TestUnit(K2TestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
         } else {
-            if (type == TYPE_MAINTAIN) {        //擦除ID选项先关闭，暂不开放
+            if (type != TYPE_TEST) {
+                results.add(new K2TestUnit(K2TestModes.TEST_MODE_AGEINGRESULT, "老化结果", 97, 1));
+            }
+
+            if (type == TYPE_MAINTAIN) {
                 results.add(new K2TestUnit(K2TestModes.TEST_MODE_DC, "电压测试", 0, 1));
                 results.add(new K2TestUnit(K2TestModes.TEST_MODE_TIME, "时钟测试", 11, 1));
                 results.add(new K2TestUnit(K2TestModes.TEST_MODE_FAN, "风扇测试", 7, 1));
@@ -145,8 +150,8 @@ public class K2Utils {
                 results.add(new K2TestUnit(K2TestModes.TEST_MODE_AUTO, "自动项测试", 10, 1));
             }
 
-            results.add(new K2TestUnit(K2TestModes.TEST_MODE_LED, "数码管和蜂鸣器", 1, 1));
-            results.add(new K2TestUnit(K2TestModes.TEST_MODE_LED_2, "LED灯测试", 3, 1));
+            results.add(new K2TestUnit(K2TestModes.TEST_MODE_LED, "LED灯和蜂鸣器", 1, 1));
+//            results.add(new K2TestUnit(K2TestModes.TEST_MODE_LED_2, "LED灯测试", 3, 1));
             results.add(new K2TestUnit(K2TestModes.TEST_MODE_KEY, "按键测试", 2, 2));
             results.add(new K2TestUnit(K2TestModes.TEST_MODE_HOLZER, "液位霍尔测试", 9, 1));
             results.add(new K2TestUnit(K2TestModes.TEST_MODE_TEMP, "温湿度测试", 8, 1));

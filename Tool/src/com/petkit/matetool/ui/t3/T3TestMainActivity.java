@@ -639,16 +639,21 @@ public class T3TestMainActivity extends BaseActivity implements PetkitSocketInst
                 .setCancelable(false)
                 .setTitle(R.string.Prompt)
                 .setMessage("无法获取WiFi信息，Android系统要求打开GPS定位服务才能获取到WiFi信息，请开启。")
-                .setPositiveButton(R.string.OK,
-                        (dialog, which) -> {
-                            // 转到手机设置界面，用户设置GPS
-                            Intent intent = new Intent(
-                                    Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                            startActivityForResult(intent, 0); // 设置完成后返回到原来的界面
-                        })
+                .setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // 转到手机设置界面，用户设置GPS
+                        Intent intent = new Intent(
+                                Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivityForResult(intent, 0); // 设置完成后返回到原来的界面
+                    }
+                })
                 .setNegativeButton(R.string.Cancel,
-                        (dialog, which) -> {
-                            dialog.dismiss();
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
                         }).show();
 
     }
