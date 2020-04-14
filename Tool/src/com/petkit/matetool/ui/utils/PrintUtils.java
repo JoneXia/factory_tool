@@ -27,12 +27,12 @@ public class PrintUtils {
     public static final String KeyDefaultText2 = "DefaultText2";
     public static final String KeyDefault1dBarcode = "Default1dBarcode";
     public static final String KeyDefault2dBarcode = "Default2dBarcode";
-    private static LPAPI api;
+//    private static LPAPI api;
     private static PrintResultCallback callback;
 
     public static boolean isPrinterConnected() {
         // 调用LPAPI对象的getPrinterState方法获取当前打印机的连接状态
-        IDzPrinter.PrinterState state = api.getPrinterState();
+        IDzPrinter.PrinterState state = IDzPrinter.Factory.getInstance().getPrinterState();
 
         // 打印机未连接
         if (state == null || state.equals(IDzPrinter.PrinterState.Disconnected)) {
@@ -48,28 +48,12 @@ public class PrintUtils {
         return true;
     }
 
-    public static void initApi() {
-        api = LPAPI.Factory.createInstance(mCallback);
-    }
-
-    public static void initApi(PrintResultCallback printResultCallback) {
-        callback = printResultCallback;
-        api = LPAPI.Factory.createInstance(mCallback);
-    }
-
-    public static LPAPI getApi() {
-        return api;
-    }
-
     public static void setCallback(PrintResultCallback callback) {
         PrintUtils.callback = callback;
     }
 
     public static void quit() {
-        if (api != null) {
-            api.quit();
-            api = null;
-        }
+        IDzPrinter.Factory.getInstance().quit();
     }
 
 

@@ -14,8 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.dothantech.lpapi.IAtBitmap;
-import com.dothantech.lpapi.LPAPI;
 import com.dothantech.printer.IDzPrinter;
 import com.google.gson.Gson;
 import com.petkit.android.utils.CommonUtils;
@@ -27,10 +25,10 @@ import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.DeviceModuleStateStruct;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.base.BaseActivity;
-import com.petkit.matetool.ui.print.PrintActivity;
 import com.petkit.matetool.ui.cozy.mode.CozyState;
 import com.petkit.matetool.ui.cozy.mode.CozyTestUnit;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
+import com.petkit.matetool.ui.print.PrintActivity;
 import com.petkit.matetool.ui.utils.PetkitSocketInstance;
 import com.petkit.matetool.ui.utils.PrintResultCallback;
 import com.petkit.matetool.ui.utils.PrintUtils;
@@ -115,7 +113,7 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
 
         PetkitSocketInstance.getInstance().setPetkitSocketListener(this);
 
-        PrintUtils.initApi(this);
+        PrintUtils.setCallback(this);
 
     }
 
@@ -932,7 +930,6 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
 
     @Override
     protected void onDestroy() {
-        PrintUtils.quit();
         super.onDestroy();
     }
 }

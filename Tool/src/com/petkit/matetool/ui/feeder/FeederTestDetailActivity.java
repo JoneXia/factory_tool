@@ -12,21 +12,18 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.dothantech.lpapi.IAtBitmap;
-import com.dothantech.lpapi.LPAPI;
-import com.dothantech.printer.IDzPrinter;
 import com.google.gson.Gson;
 import com.petkit.android.utils.LogcatStorageHelper;
 import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
+import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.base.BaseActivity;
-import com.petkit.matetool.ui.print.PrintActivity;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.ui.feeder.mode.Feeder;
 import com.petkit.matetool.ui.feeder.mode.FeederTestUnit;
-import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.feeder.mode.ModuleStateStruct;
 import com.petkit.matetool.ui.feeder.utils.FeederUtils;
+import com.petkit.matetool.ui.print.PrintActivity;
 import com.petkit.matetool.ui.utils.PetkitSocketInstance;
 import com.petkit.matetool.ui.utils.PrintResultCallback;
 import com.petkit.matetool.ui.utils.PrintUtils;
@@ -94,7 +91,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
 
         PetkitSocketInstance.getInstance().setPetkitSocketListener(this);
 
-        PrintUtils.initApi(this);
+        PrintUtils.setCallback(this);
     }
 
 
@@ -796,7 +793,6 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
 
     @Override
     protected void onDestroy() {
-        PrintUtils.quit();
         super.onDestroy();
     }
 }

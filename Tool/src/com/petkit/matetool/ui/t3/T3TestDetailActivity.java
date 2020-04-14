@@ -105,7 +105,7 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
         PetkitSocketInstance.getInstance().setPetkitSocketListener(this);
 
 
-        PrintUtils.initApi(this);
+        PrintUtils.setCallback(this);
     }
 
 
@@ -864,7 +864,6 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
 
     @Override
     protected void onDestroy() {
-        PrintUtils.quit();
         super.onDestroy();
 
         unregisterBroadcastReceiver();

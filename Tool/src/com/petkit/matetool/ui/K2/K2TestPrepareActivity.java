@@ -20,7 +20,6 @@ import com.petkit.matetool.model.DevicesError;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.K2.utils.K2Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
-import com.petkit.matetool.ui.utils.PrintUtils;
 import com.petkit.matetool.utils.FileUtils;
 import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.JSONUtils;
@@ -94,8 +93,6 @@ public class K2TestPrepareActivity extends BaseActivity {
         }
 
         mDevicesError = K2Utils.getDevicesErrorMsg();
-
-        PrintUtils.initApi();
     }
 
     @Override
@@ -108,7 +105,6 @@ public class K2TestPrepareActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        PrintUtils.quit();
     }
 
     @Override

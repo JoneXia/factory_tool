@@ -17,7 +17,6 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.dothantech.printer.IDzPrinter;
 import com.google.gson.Gson;
 import com.petkit.android.ble.BLEConsts;
 import com.petkit.android.ble.DeviceInfo;
@@ -25,7 +24,6 @@ import com.petkit.android.ble.service.AndroidBLEActionService;
 import com.petkit.android.utils.CommonUtils;
 import com.petkit.android.utils.LogcatStorageHelper;
 import com.petkit.android.utils.PetkitLog;
-import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.DeviceModuleStateStruct;
@@ -52,7 +50,6 @@ import static com.petkit.matetool.ui.K2.utils.K2Utils.DC_RANGE;
 import static com.petkit.matetool.ui.K2.utils.K2Utils.K2TestModes.TEST_MODE_AGEINGRESULT;
 import static com.petkit.matetool.ui.K2.utils.K2Utils.K2TestModes.TEST_MODE_AUTO;
 import static com.petkit.matetool.ui.K2.utils.K2Utils.TYPE_TEST;
-import static com.petkit.matetool.ui.utils.PrintUtils.isPrinterConnected;
 import static com.petkit.matetool.utils.Globals.TEST_FAILED;
 import static com.petkit.matetool.utils.Globals.TEST_PASS;
 
@@ -820,82 +817,6 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
 
         return desc;
     }
-
-    /********************************************************************************************************************************************/
-    // DzPrinter连接打印功能相关
-    /********************************************************************************************************************************************/
-
-    // 调用IDzPrinter对象的init方法时用到的IDzPrinterCallback对象
-    private final IDzPrinter.IDzPrinterCallback mCallback = new IDzPrinter.IDzPrinterCallback() {
-
-        /****************************************************************************************************************************************/
-        // 所有回调函数都是在打印线程中被调用，因此如果需要刷新界面，需要发送消息给界面主线程，以避免互斥等繁琐操作。
-
-        /****************************************************************************************************************************************/
-
-        // 打印机连接状态发生变化时被调用
-        @Override
-        public void onStateChange(IDzPrinter.PrinterAddress arg0, IDzPrinter.PrinterState arg1) {
-            final IDzPrinter.PrinterAddress printer = arg0;
-            switch (arg1) {
-                case Connected:
-                case Connected2:
-                    break;
-
-                case Disconnected:
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
-        // 蓝牙适配器状态发生变化时被调用
-        @Override
-        public void onProgressInfo(IDzPrinter.ProgressInfo arg0, Object arg1) {
-        }
-
-
-        // 打印标签的进度发生变化是被调用
-        @Override
-        public void onPrintProgress(IDzPrinter.PrinterAddress address, Object bitmapData, IDzPrinter.PrintProgress progress, Object addiInfo) {
-            switch (progress) {
-                case Success:
-                    // 打印标签成功，发送通知，刷新界面提示
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            LoadDialog.dismissDialog();
-
-                            mDescTextView.append("\n" + getString(R.string.printsuccess));
-                            mK2TestUnits.get(mCurTestStep).setResult(TEST_PASS);
-                            refershBtnView();
-                        }
-                    });
-                    break;
-
-                case Failed:
-                    // 打印标签失败，发送通知，刷新界面提示
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mDescTextView.append(getString(R.string.printfailed));
-                        }
-                    });
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
-        @Override
-        public void onPrinterDiscovery(IDzPrinter.PrinterAddress address, IDzPrinter.PrinterInfo info) {
-
-        }
-    };
-
 
     private EditText et1 = null;
     private EditText et2 = null;
