@@ -180,6 +180,7 @@ public class PrintActivity extends BaseActivity {
         super.onDestroy();
 
         fini();
+        PrintUtils.init(this);
     }
 
     // 应用退出时需要的操作

@@ -31,6 +31,7 @@ import com.petkit.matetool.ui.mate.SelectActivity;
 import com.petkit.matetool.ui.permission.PermissionDialogActivity;
 import com.petkit.matetool.ui.permission.mode.PermissionBean;
 import com.petkit.matetool.ui.t3.T3TestPrepareActivity;
+import com.petkit.matetool.ui.utils.PrintUtils;
 import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.Utils;
 import com.petkit.matetool.widget.LoadDialog;
@@ -83,6 +84,13 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
         super.onStop();
 
         unregisterBoradcastReceiver();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        PrintUtils.quit();
     }
 
     @Override

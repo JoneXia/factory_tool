@@ -37,6 +37,8 @@ public class BaseApplication extends SugarApp {
 		MultiDex.install(this);
 	}
 
+
+
 	public static DisplayMetrics getDisplayMetrics(Activity activity){
 		if(dm == null || dm.widthPixels == 0){
 			if(activity != null){

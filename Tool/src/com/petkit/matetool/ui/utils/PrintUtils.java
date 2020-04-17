@@ -1,5 +1,6 @@
 package com.petkit.matetool.ui.utils;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import com.dothantech.lpapi.IAtBitmap;
@@ -51,6 +52,11 @@ public class PrintUtils {
     public static void setCallback(PrintResultCallback callback) {
         PrintUtils.callback = callback;
     }
+
+    public static void init(Context context) {
+        IDzPrinter.Factory.getInstance().init(context, mCallback);
+    }
+
 
     public static void quit() {
         IDzPrinter.Factory.getInstance().quit();

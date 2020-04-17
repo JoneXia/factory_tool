@@ -4,10 +4,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import com.dothantech.printer.IDzPrinter;
 import com.petkit.matetool.R;
-import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.model.Tester;
+import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.feederMini.utils.FeederMiniUtils;
 
 /**
@@ -92,9 +91,6 @@ public class FeederMiniStartActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        // 应用退出时，调用IDzPrinter对象的quit方法断开打印机连接
-        IDzPrinter.Factory.getInstance().quit();
     }
 
 
