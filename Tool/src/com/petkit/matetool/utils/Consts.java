@@ -116,9 +116,10 @@ public class Consts {
 
 	/**
 	 *
-	 *
+	 1.0说明:
+	 1. 添加K2产测的全流程
 	 *
 	 */
-	public static final String TOOL_K2_VERSION	= "0.1";
+	public static final String TOOL_K2_VERSION	= "1.0";
 
 }

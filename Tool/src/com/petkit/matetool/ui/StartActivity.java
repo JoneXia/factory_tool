@@ -299,6 +299,7 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
 
         tempRadioButton = (RadioButton) findViewById(R.id.toilet);
         tempRadioButton.setText("自动猫厕所（T3）" + " v" + TOOL_T3_VERSION);
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.k2);
         tempRadioButton.setText("净味器（K2）" + " v" + TOOL_K2_VERSION);
