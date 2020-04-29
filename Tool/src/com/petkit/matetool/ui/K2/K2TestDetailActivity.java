@@ -49,7 +49,6 @@ import java.util.HashMap;
 import static com.petkit.matetool.ui.K2.utils.K2Utils.DC_RANGE;
 import static com.petkit.matetool.ui.K2.utils.K2Utils.K2TestModes.TEST_MODE_AGEINGRESULT;
 import static com.petkit.matetool.ui.K2.utils.K2Utils.K2TestModes.TEST_MODE_AUTO;
-import static com.petkit.matetool.ui.K2.utils.K2Utils.TYPE_TEST;
 import static com.petkit.matetool.utils.Globals.TEST_FAILED;
 import static com.petkit.matetool.utils.Globals.TEST_PASS;
 
@@ -65,7 +64,6 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
     private Device mDevice, mErrorDevice;
     private boolean isWriteEndCmd = false;
     private boolean isAutoTest = false;
-    private int mTestType;
     private String bleMac;
     private String mAgeingResult = "null";
 
@@ -88,7 +86,6 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
             isAutoTest = savedInstanceState.getBoolean("AutoTest");
             mTester = (Tester) savedInstanceState.getSerializable(K2Utils.EXTRA_K2_TESTER);
             mErrorDevice = (Device) savedInstanceState.getSerializable(K2Utils.EXTRA_ERROR_K2);
-            mTestType = savedInstanceState.getInt("TestType");
         } else {
             mK2TestUnits = (ArrayList<K2TestUnit>) getIntent().getSerializableExtra("TestUnits");
             mCurTestStep = getIntent().getIntExtra("CurrentTestStep", 0);
@@ -96,7 +93,6 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
             isAutoTest = getIntent().getBooleanExtra("AutoTest", true);
             mTester = (Tester) getIntent().getSerializableExtra(K2Utils.EXTRA_K2_TESTER);
             mErrorDevice = (Device) getIntent().getSerializableExtra(K2Utils.EXTRA_ERROR_K2);
-            mTestType = getIntent().getIntExtra("TestType", K2Utils.TYPE_CHECK);
         }
 
         setContentView(R.layout.activity_feeder_test_detail);
@@ -123,7 +119,6 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
         outState.putBoolean("AutoTest", isAutoTest);
         outState.putSerializable(K2Utils.EXTRA_K2_TESTER, mTester);
         outState.putSerializable(K2Utils.EXTRA_ERROR_K2, mErrorDevice);
-        outState.putSerializable("TestType", mTestType);
     }
 
     @Override
@@ -751,7 +746,7 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
 
 
     private boolean printBarcode(String onedBarcde, String twodBarcde) {
-        return PrintUtils.printText(onedBarcde, twodBarcde, mTestType == TYPE_TEST ? 2 : 1, new PrintResultCallback() {
+        return PrintUtils.printText(onedBarcde, twodBarcde, mK2TestUnits.get(mCurTestStep).getState(), new PrintResultCallback() {
             @Override
             public void onPrintSuccess() {
                 runOnUiThread(new Runnable() {

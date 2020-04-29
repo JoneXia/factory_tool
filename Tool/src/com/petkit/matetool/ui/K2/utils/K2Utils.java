@@ -161,7 +161,7 @@ public class K2Utils {
                     results.add(new K2TestUnit(K2TestModes.TEST_MODE_SN, "写入SN", 12, 1));
 //                    results.add(new CozyTestUnit(K2TestModes.TEST_MODE_RESET_SN, "重写SN", 97, 1));
                 }
-                results.add(new K2TestUnit(K2TestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
+                results.add(new K2TestUnit(K2TestModes.TEST_MODE_PRINT, "打印标签", -1, type == TYPE_TEST ? 2 : 1));
             }
 
             if (type == TYPE_MAINTAIN) {        //擦除ID选项先关闭，暂不开放

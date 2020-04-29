@@ -244,7 +244,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
                                 String oneBarCode = "SN:" + mFeeder.getSn();
 //                                String twoBarCode = "SN:" + mFeeder.getSn() + ";MAC:" + mFeeder.getMac();
                                 LoadDialog.show(this, "正在打印标签，请稍后……");
-                                PrintUtils.printText(oneBarCode, new Gson().toJson(params));
+                                PrintUtils.printText(oneBarCode, new Gson().toJson(params), mFeederTestUnits.get(mCurTestStep).getState());
                             }
                         } else {
                             showShortToast("请先连接打印机！");

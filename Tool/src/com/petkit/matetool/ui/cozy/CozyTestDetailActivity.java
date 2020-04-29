@@ -671,7 +671,7 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
     private boolean printBarcode(String onedBarcde, String twodBarcde) {
         LoadDialog.show(this, "正在打印标签，请稍后……");
 
-        return PrintUtils.printText(onedBarcde, twodBarcde);
+        return PrintUtils.printText(onedBarcde, twodBarcde, mDeviceTestUnits.get(mCurTestStep).getState());
     }
 
     private String getZLPmode(int mode) {

@@ -740,7 +740,7 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
     }
 
     private boolean printBarcode(String onedBarcde, String twodBarcde) {
-        return PrintUtils.printText(onedBarcde, twodBarcde);
+        return PrintUtils.printText(onedBarcde, twodBarcde, mT3TestUnits.get(mCurTestStep).getState());
     }
 
     private String getKeyDescByState(int state) {

@@ -78,7 +78,7 @@ public class PrintUtils {
     }
 
 
-    public static boolean printText(String onedBarcde, String twodBarcde) {
+    public static boolean printText(String onedBarcde, String twodBarcde, int copies) {
         IAtBitmap api = IAtBitmap.Factory.createInstance();
 
         api.startJob(48 * 100, 30 * 100);
@@ -88,7 +88,7 @@ public class PrintUtils {
         api.drawText(onedBarcde, 0 * 100, 25 * 100, 48 * 100, 3 *100, 280, IAtBitmap.FontStyle.REGULAR);
         api.endJob();
 
-        return IDzPrinter.Factory.getInstance().print(api, getPrintParam(1, 0));
+        return IDzPrinter.Factory.getInstance().print(api, getPrintParam(copies, 0));
     }
 
     private static final LPAPI.Callback mCallback = new LPAPI.Callback() {

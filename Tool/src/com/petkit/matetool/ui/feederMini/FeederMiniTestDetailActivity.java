@@ -680,7 +680,7 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
     }
 
     private boolean printBarcode(String onedBarcde, String twodBarcde) {
-        return PrintUtils.printText(onedBarcde, twodBarcde);
+        return PrintUtils.printText(onedBarcde, twodBarcde, mFeederMiniTestUnits.get(mCurTestStep).getState());
     }
 
     private String getKeyDescByState(int state) {
