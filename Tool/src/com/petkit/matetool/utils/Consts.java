@@ -118,8 +118,12 @@ public class Consts {
 	 *
 	 1.0说明:
 	 1. 添加K2产测的全流程
+
+	 1.1说明:
+	 1. 放宽电压判定范围
+	 2. 自动项测试增加保护
 	 *
 	 */
-	public static final String TOOL_K2_VERSION	= "1.0";
+	public static final String TOOL_K2_VERSION	= "1.1";
 
 }
