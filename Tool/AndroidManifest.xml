@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.petkit.matetool"
-          android:versionCode="1800"
-          android:versionName="3.3.4">
+          android:versionCode="1900"
+          android:versionName="3.3.5">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
@@ -36,7 +36,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".ui.StartActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="fullSensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -44,100 +44,100 @@
         </activity>
         <activity
             android:name=".ui.mate.SelectActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="fullSensor">
         </activity>
         <activity
             android:name=".ui.mate.MainActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="fullSensor">
         </activity>
         <activity
             android:name=".ui.mate.InputActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="fullSensor">
         </activity>
         <activity
             android:name=".ui.mate.SpotActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="fullSensor">
         </activity>
         <activity
             android:name=".ui.mate.SettingActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="fullSensor">
         </activity>
         <activity
             android:name=".ui.mate.WriteSnActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="fullSensor">
         </activity>
         <activity
             android:name=".ui.mate.ImageTestActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="fullSensor">
         </activity>
         <activity
             android:name=".ui.mate.FocusTestActivity"
-            android:screenOrientation="landscape">
+            android:screenOrientation="fullSensor">
         </activity>
         <activity
             android:name=".ui.mate.PlayActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="fullSensor">
         </activity>
         <activity
             android:name=".ui.mate.BroadcastDisplayActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="fullSensor">
         </activity>
         <activity
             android:name=".ui.permission.PermissionDialogActivity"
-            android:screenOrientation="portrait"
+            android:screenOrientation="fullSensor"
             android:theme="@style/petkit_theme_dialog">
         </activity>
-        <activity android:name=".ui.go.GoTestMainActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.go.GoTestMainActivity" android:screenOrientation="fullSensor"/>
 
-        <activity android:name=".ui.print.PrintActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.feeder.FeederStartActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.feeder.FeederTestMainActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.feeder.FeederTestDetailActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.feeder.FeederTestPrepareActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.feeder.FeederErrorListActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.feeder.FeederScanActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".ui.feeder.FeederStorageActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".ui.feeder.FeederStorageFileActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.print.PrintActivity" android:screenOrientation="fullSensor" />
+        <activity android:name=".ui.feeder.FeederStartActivity" android:screenOrientation="fullSensor" />
+        <activity android:name=".ui.feeder.FeederTestMainActivity" android:screenOrientation="fullSensor" />
+        <activity android:name=".ui.feeder.FeederTestDetailActivity" android:screenOrientation="fullSensor" />
+        <activity android:name=".ui.feeder.FeederTestPrepareActivity" android:screenOrientation="fullSensor" />
+        <activity android:name=".ui.feeder.FeederErrorListActivity" android:screenOrientation="fullSensor" />
+        <activity android:name=".ui.feeder.FeederScanActivity" android:screenOrientation="fullSensor"/>
+        <activity android:name=".ui.feeder.FeederStorageActivity" android:screenOrientation="fullSensor"/>
+        <activity android:name=".ui.feeder.FeederStorageFileActivity" android:screenOrientation="fullSensor"/>
 
         <!-- Device -->
-        <activity android:name=".ui.cozy.CozyStartActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.cozy.CozyTestMainActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.cozy.CozyTestDetailActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.cozy.CozyTestPrepareActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.cozy.CozyErrorListActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.cozy.CozyScanActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".ui.cozy.CozyStorageActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".ui.cozy.CozyStorageFileActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.cozy.CozyStartActivity" android:screenOrientation="fullSensor" />
+        <activity android:name=".ui.cozy.CozyTestMainActivity" android:screenOrientation="fullSensor" />
+        <activity android:name=".ui.cozy.CozyTestDetailActivity" android:screenOrientation="fullSensor" />
+        <activity android:name=".ui.cozy.CozyTestPrepareActivity" android:screenOrientation="fullSensor" />
+        <activity android:name=".ui.cozy.CozyErrorListActivity" android:screenOrientation="fullSensor" />
+        <activity android:name=".ui.cozy.CozyScanActivity" android:screenOrientation="fullSensor"/>
+        <activity android:name=".ui.cozy.CozyStorageActivity" android:screenOrientation="fullSensor"/>
+        <activity android:name=".ui.cozy.CozyStorageFileActivity" android:screenOrientation="fullSensor"/>
 
         <!-- Feeder Mini -->
-        <activity android:name=".ui.feederMini.FeederMiniStartActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.feederMini.FeederMiniTestMainActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.feederMini.FeederMiniTestDetailActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.feederMini.FeederMiniTestPrepareActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.feederMini.FeederMiniErrorListActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.feederMini.FeederMiniScanActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".ui.feederMini.FeederMiniStorageActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".ui.feederMini.FeederMiniStorageFileActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.feederMini.FeederMiniStartActivity" android:screenOrientation="fullSensor" />
+        <activity android:name=".ui.feederMini.FeederMiniTestMainActivity" android:screenOrientation="fullSensor" />
+        <activity android:name=".ui.feederMini.FeederMiniTestDetailActivity" android:screenOrientation="fullSensor" />
+        <activity android:name=".ui.feederMini.FeederMiniTestPrepareActivity" android:screenOrientation="fullSensor" />
+        <activity android:name=".ui.feederMini.FeederMiniErrorListActivity" android:screenOrientation="fullSensor" />
+        <activity android:name=".ui.feederMini.FeederMiniScanActivity" android:screenOrientation="fullSensor"/>
+        <activity android:name=".ui.feederMini.FeederMiniStorageActivity" android:screenOrientation="fullSensor"/>
+        <activity android:name=".ui.feederMini.FeederMiniStorageFileActivity" android:screenOrientation="fullSensor"/>
 
         <!-- T3 -->
-        <activity android:name=".ui.t3.T3StartActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.t3.T3TestMainActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.t3.T3TestDetailActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.t3.T3TestPrepareActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.t3.T3ErrorListActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.t3.T3ScanActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".ui.t3.T3StorageActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".ui.t3.T3StorageFileActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.t3.T3StartActivity" android:screenOrientation="fullSensor" />
+        <activity android:name=".ui.t3.T3TestMainActivity" android:screenOrientation="fullSensor" />
+        <activity android:name=".ui.t3.T3TestDetailActivity" android:screenOrientation="fullSensor" />
+        <activity android:name=".ui.t3.T3TestPrepareActivity" android:screenOrientation="fullSensor" />
+        <activity android:name=".ui.t3.T3ErrorListActivity" android:screenOrientation="fullSensor" />
+        <activity android:name=".ui.t3.T3ScanActivity" android:screenOrientation="fullSensor"/>
+        <activity android:name=".ui.t3.T3StorageActivity" android:screenOrientation="fullSensor"/>
+        <activity android:name=".ui.t3.T3StorageFileActivity" android:screenOrientation="fullSensor"/>
 
         <!-- K2 -->
-        <activity android:name=".ui.K2.K2StartActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.K2.K2TestMainActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.K2.K2TestDetailActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.K2.K2TestPrepareActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.K2.K2ErrorListActivity" android:screenOrientation="portrait" />
-        <activity android:name=".ui.K2.K2ScanActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".ui.K2.K2StorageActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".ui.K2.K2StorageFileActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".ui.K2.K2StartActivity" android:screenOrientation="fullSensor" />
+        <activity android:name=".ui.K2.K2TestMainActivity" android:screenOrientation="fullSensor" />
+        <activity android:name=".ui.K2.K2TestDetailActivity" android:screenOrientation="fullSensor" />
+        <activity android:name=".ui.K2.K2TestPrepareActivity" android:screenOrientation="fullSensor" />
+        <activity android:name=".ui.K2.K2ErrorListActivity" android:screenOrientation="fullSensor" />
+        <activity android:name=".ui.K2.K2ScanActivity" android:screenOrientation="fullSensor"/>
+        <activity android:name=".ui.K2.K2StorageActivity" android:screenOrientation="fullSensor"/>
+        <activity android:name=".ui.K2.K2StorageFileActivity" android:screenOrientation="fullSensor"/>
 
 
         <meta-data

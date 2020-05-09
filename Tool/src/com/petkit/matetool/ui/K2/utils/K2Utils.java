@@ -49,7 +49,7 @@ public class K2Utils {
     public static final String FILE_CHECK_INFO_NAME     = "K2_check_info.txt";
     public static final String K2_STORE_DIR     = ".K2/";
 
-    public static final Integer[] DC_RANGE = new Integer[]{5850, 6150};
+    public static final Integer[] DC_RANGE = new Integer[]{5500, 6500};
 
     public static ArrayList<Device> mTempDevices = new ArrayList<>();
 

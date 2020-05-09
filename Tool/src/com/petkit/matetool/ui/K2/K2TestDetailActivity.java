@@ -516,8 +516,10 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 boolean result = false;
                 StringBuilder desc = new StringBuilder();
 
-                if (mK2TestUnits.get(mCurTestStep).getType() != TEST_MODE_AUTO
-                        && moduleStateStruct.getModule() != mK2TestUnits.get(mCurTestStep).getModule()) {
+                if ((mK2TestUnits.get(mCurTestStep).getType() == TEST_MODE_AUTO && mK2AutoTestUnits != null &&
+                        mK2AutoTestUnits.get(mAutoUnitStep).getModule() != moduleStateStruct.getModule())
+                    || (mK2TestUnits.get(mCurTestStep).getType() != TEST_MODE_AUTO &&
+                        moduleStateStruct.getModule() != mK2TestUnits.get(mCurTestStep).getModule())) {
                     LogcatStorageHelper.addLog("response和request的module不一致！放弃！");
                     return;
                 }
