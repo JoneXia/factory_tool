@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import static com.petkit.matetool.ui.t3.utils.T3Utils.T3TestModes.TEST_MODE_AUTO;
 import static com.petkit.matetool.ui.t3.utils.T3Utils.T3TestModes.TEST_MODE_AGEINGRESULT;
 import static com.petkit.matetool.ui.utils.PrintUtils.isPrinterConnected;
 import static com.petkit.matetool.utils.Globals.TEST_FAILED;
@@ -66,12 +67,17 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
     private boolean isWriteEndCmd = false;
     private boolean isAutoTest = false;
     private String mAgeingResult = null;    //老化测试的结果
-    private int mTempStep; //有些测试项中会细分成几步
+    private int mTempStep; //有些测试项中会细分成几步，红外测试时使用
     private String bleMac;
 
     private TextView mDescTextView, mPromptTextView;
     private Button mBtn1, mBtn2, mBtn3;
     private ScrollView mDescScrollView;
+
+    private ArrayList<T3TestUnit> mT3AutoTestUnits;
+    private boolean isInAutoUnits = false;
+    private int mAutoUnitStep; //有些测试项中会细分成几步
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,9 +192,6 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
             case TEST_MODE_PYROELECTRIC:
                 mPromptTextView.setText("需分别测试红外热释有信号和没信号！");
                 break;
-            case TEST_MODE_MICRO_SWITCH:
-                mPromptTextView.setText("需分别测试微动开关打开和关闭！");
-                break;
             case TEST_MODE_HOLZER:
                 mPromptTextView.setText("需分别测试锁止和不锁止！");
                 break;
@@ -197,6 +200,9 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 break;
             case TEST_MODE_TIME:
                 mPromptTextView.setText("测试设备时钟正常！");
+                break;
+            case TEST_MODE_AUTO:
+                mPromptTextView.setText("自动测试项包括：电压、RTC、蓝牙，点击开始后程序自动完成检测。");
                 break;
             default:
                 break;
@@ -310,7 +316,6 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 switch (mT3TestUnits.get(mCurTestStep).getType()) {
                     case TEST_MODE_LED:
                     case TEST_MODE_DEODORANT:
-                    case TEST_MODE_MICRO_SWITCH:
                         isWriteEndCmd = true;
                         mT3TestUnits.get(mCurTestStep).setResult(TEST_FAILED);
 
@@ -364,16 +369,70 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 params.put("state", mT3TestUnits.get(mCurTestStep).getState());
                 params.put("time", DateUtil.formatISO8601DateWithMills(new Date()));
                 break;
+            case TEST_MODE_AUTO:
+                startAutoUnitsTest();
+                return;
 
             default:
                 params.put("state", mT3TestUnits.get(mCurTestStep).getState());
                 break;
         }
 
+        mTempStep = 0;
         PetkitSocketInstance.getInstance().sendString(T3Utils.getRequestForKeyAndPayload(163, params));
 
         if (mT3TestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
             mT3TestUnits.get(mCurTestStep).setResult(TEST_FAILED);
+            refershBtnView();
+        }
+    }
+
+    private void startAutoUnitsTest() {
+        if (isInAutoUnits) {
+            return;
+        }
+
+        mT3AutoTestUnits = T3Utils.generateT3AutoTestUnits();
+        isInAutoUnits = true;
+        mAutoUnitStep = -1;
+
+        gotoNextAutoUnit();
+
+    }
+
+    private void gotoNextAutoUnit() {
+        mAutoUnitStep++;
+
+        if (mT3AutoTestUnits.size() > 0 && mAutoUnitStep < mT3AutoTestUnits.size()) {
+            mDescTextView.append("\n------");
+            mDescTextView.append("\n开始进行：" + mT3AutoTestUnits.get(mAutoUnitStep).getName());
+
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("module", mT3AutoTestUnits.get(mAutoUnitStep).getModule());
+            params.put("state", mT3AutoTestUnits.get(mAutoUnitStep).getState());
+            switch (mT3AutoTestUnits.get(mAutoUnitStep).getType()) {
+                case TEST_MODE_TIME:
+                    params.put("time", DateUtil.formatISO8601DateWithMills(new Date()));
+                    break;
+            }
+
+            PetkitSocketInstance.getInstance().sendString(T3Utils.getRequestForKeyAndPayload(163, params));
+        } else {
+            isInAutoUnits = false;
+
+            boolean result = true;
+            for (T3TestUnit unit : mT3AutoTestUnits) {
+                if (unit.getType() != T3Utils.T3TestModes.TEST_MODE_SN &&
+                        unit.getType() != T3Utils.T3TestModes.TEST_MODE_PRINT
+                        && unit.getResult() != TEST_PASS) {
+                    result = false;
+                    break;
+                }
+            }
+            mDescTextView.append("\n------");
+            mDescTextView.append("\n自动项测试已完成，结果：" + (result ? "成功" : "失败"));
+
+            mT3TestUnits.get(mCurTestStep).setResult(result ? TEST_PASS : TEST_FAILED);
             refershBtnView();
         }
     }
@@ -443,7 +502,10 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 boolean result = false;
                 StringBuilder desc = new StringBuilder();
 
-                if (moduleStateStruct.getModule() != mT3TestUnits.get(mCurTestStep).getModule()) {
+                if ((mT3TestUnits.get(mCurTestStep).getType() == TEST_MODE_AUTO && mT3AutoTestUnits != null &&
+                        mT3AutoTestUnits.get(mAutoUnitStep).getModule() != moduleStateStruct.getModule())
+                        || (mT3TestUnits.get(mCurTestStep).getType() != TEST_MODE_AUTO &&
+                        moduleStateStruct.getModule() != mT3TestUnits.get(mCurTestStep).getModule())) {
                     LogcatStorageHelper.addLog("response和request的module不一致！放弃！");
                     return;
                 }
@@ -479,37 +541,84 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         result = mTempResult == 0x111;
                         break;
                     case 3:
-                        desc.append("\n").append("红外").append("-");
+                        desc.append("\n").append("红外").append("-").append(Integer.toBinaryString(moduleStateStruct.getState())).append("-");
 
-                        if ((moduleStateStruct.getState() & 0x1) == 1) {
-                            mTempResult = (mTempResult | 0x10);
-                            desc.append("门：遮挡；");
-                        } else {
-                            mTempResult = (mTempResult | 0x1);
-                            desc.append("门：不遮挡；");
+                        if (mTempStep == 0 || mTempStep > 4) {
+                            mTempStep = 1;
+                            desc.append("\n开始测试:门\n");
                         }
-                        if ((moduleStateStruct.getState() >> 1 & 0x1) == 1) {
-                            mTempResult = (mTempResult | 0x1000);
-                            desc.append("防夹左：遮挡； \n");
-                        } else {
-                            mTempResult = (mTempResult | 0x100);
-                            desc.append("防夹左：不遮挡； \n");
+
+                        switch (mTempStep) {
+                            case 1:
+                                if ((moduleStateStruct.getState() & 0xf) == 0x1) {
+                                    mTempResult = (mTempResult | 0x10);
+                                    desc.append("门：遮挡；");
+                                }
+
+                                if ((moduleStateStruct.getState() & 0x1) == 0) {
+                                    mTempResult = (mTempResult | 0x1);
+                                    desc.append("门：不遮挡；");
+                                }
+
+                                if (mTempResult == 0x11) {
+                                    desc.append("\n测试完成：门，结果正常");
+                                    mTempStep++;
+                                    mTempResult = 0;
+                                    desc.append("\n开始测试：防夹左\n");
+                                }
+                                break;
+                            case 2:
+                                if ((moduleStateStruct.getState() & 0xf) == 0x2) {
+                                    mTempResult = (mTempResult | 0x10);
+                                    desc.append("防夹左：遮挡；");
+                                }
+
+                                if ((moduleStateStruct.getState() & 0x2) == 0) {
+                                    mTempResult = (mTempResult | 0x1);
+                                    desc.append("防夹左：不遮挡；");
+                                }
+                                if (mTempResult == 0x11) {
+                                    desc.append("\n测试完成：防夹左，结果正常");
+                                    mTempStep++;
+                                    mTempResult = 0;
+                                    desc.append("\n开始测试：防夹右\n");
+                                }
+                                break;
+                            case 3:
+                                if ((moduleStateStruct.getState() & 0xf) == 0x4) {
+                                    mTempResult = (mTempResult | 0x10);
+                                    desc.append("防夹右：遮挡；");
+                                }
+
+                                if ((moduleStateStruct.getState() & 0x4) == 0) {
+                                    mTempResult = (mTempResult | 0x1);
+                                    desc.append("防夹右：不遮挡；");
+                                }
+                                if (mTempResult == 0x11) {
+                                    desc.append("\n测试完成：防夹右，结果正常");
+                                    mTempStep++;
+                                    mTempResult = 0;
+                                    desc.append("\n开始测试：排废盒：\n");
+                                }
+                                break;
+                            case 4:
+                                if ((moduleStateStruct.getState() & 0xf) == 0x8) {
+                                    mTempResult = (mTempResult | 0x10);
+                                    desc.append("排废盒：遮挡；");
+                                }
+
+                                if ((moduleStateStruct.getState() & 0x8) == 0) {
+                                    mTempResult = (mTempResult | 0x1);
+                                    desc.append("排废盒：不遮挡；");
+                                }
+                                if (mTempResult == 0x11) {
+                                    desc.append("\n测试完成：排废盒，结果正常");
+                                    mTempResult = 0;
+                                    result = true;
+                                }
+                                break;
                         }
-                        if ((moduleStateStruct.getState() >> 2 & 0x1) == 1) {
-                            mTempResult = (mTempResult | 0x100000);
-                            desc.append("防夹右：遮挡；");
-                        } else {
-                            mTempResult = (mTempResult | 0x10000);
-                            desc.append("防夹右：不遮挡；");
-                        }
-                        if ((moduleStateStruct.getState() >> 3 & 0x1) == 1) {
-                            mTempResult = (mTempResult | 0x10000000);
-                            desc.append("排废盒：遮挡；\n----");
-                        } else {
-                            mTempResult = (mTempResult | 0x1000000);
-                            desc.append("排废盒：不遮挡；\n----");
-                        }
-                        result = mTempResult == 0x11111111;
+
                         break;
                     case 4:
                         desc.append("\n").append("电机").append("-").append(moduleStateStruct.getState() == 1 ? "正常" : "异常").append("\n")
@@ -616,8 +725,15 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                     }
                 });
 
-                if (result) {
-                    mT3TestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                if (isInAutoUnits) {
+                    if (result) {
+                        mT3AutoTestUnits.get(mAutoUnitStep).setResult(TEST_PASS);
+                        gotoNextAutoUnit();
+                    }
+                } else {
+                    if (result) {
+                        mT3TestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                    }
                     refershBtnView();
                 }
                 break;
@@ -929,6 +1045,9 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                             case BLEConsts.ERROR_SYNC_INIT_FAIL:
                             case BLEConsts.ERROR_DEVICE_ID_NULL:
                                 mDescTextView.append("\n蓝牙搜索结束");
+                                if (isInAutoUnits) {
+                                    gotoNextAutoUnit();
+                                }
                                 break;
                             default:
                                 break;

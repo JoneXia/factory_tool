@@ -63,7 +63,6 @@ public class T3Utils {
         TEST_MODE_BALANCE,  //秤读取
         TEST_MODE_DEODORANT, //雾化器
         TEST_MODE_PYROELECTRIC, //红外热释
-        TEST_MODE_MICRO_SWITCH, //微动开关
         TEST_MODE_HOLZER, //沙桶霍尔
         TEST_MODE_BT,   //蓝牙
         TEST_MODE_TIME, //时钟
@@ -72,6 +71,7 @@ public class T3Utils {
         TEST_MODE_RESET_SN, //重置SN
         TEST_MODE_RESET_ID, //清除ID
         TEST_MODE_AGEINGRESULT, //老化数据
+        TEST_MODE_AUTO,
         TEST_MODE_PRINT     //打印标签
     }
 
@@ -111,6 +111,20 @@ public class T3Utils {
     }
 
     /**
+     *
+     * @return ArrayList
+     */
+    public static ArrayList<T3TestUnit> generateT3AutoTestUnits() {
+        ArrayList<T3TestUnit> results = new ArrayList<>();
+
+        results.add(new T3TestUnit(T3TestModes.TEST_MODE_DC, "电压测试", 0, 1));
+        results.add(new T3TestUnit(T3TestModes.TEST_MODE_TIME, "时钟测试", 11, 1));
+        results.add(new T3TestUnit(T3TestModes.TEST_MODE_BT, "蓝牙测试", 10, 1));
+
+        return results;
+    }
+
+    /**
      * 获取不同的测试模式对应的测试项
      * @param type 测试类型
      * @return 测试项
@@ -128,21 +142,14 @@ public class T3Utils {
                 results.add(new T3TestUnit(T3TestModes.TEST_MODE_AGEINGRESULT, "老化结果", 97, 1));
             }
 
-            /**
-             * TEST_MODE_DC,   //电压
-             *         TEST_MODE_LED,  //显示屏和蜂鸣器
-             *         TEST_MODE_KEY,  //按键
-             *         TEST_MODE_IR,   //红外
-             *         TEST_MODE_MOTOR,    //电机
-             *         TEST_MODE_BALANCE,  //秤
-             *         TEST_MODE_DEODORANT, //雾化器
-             *         TEST_MODE_PYROELECTRIC, //红外热释
-             *         TEST_MODE_MICRO_SWITCH, //微动开关
-             *         TEST_MODE_HOLZER, //沙桶霍尔
-             *         TEST_MODE_BT,   //蓝牙
-             *         TEST_MODE_TIME, //时钟
-             */
-            results.add(new T3TestUnit(T3TestModes.TEST_MODE_DC, "电压测试", 0, 1));
+            if (type == TYPE_MAINTAIN) {
+                results.add(new T3TestUnit(T3TestModes.TEST_MODE_DC, "电压测试", 0, 1));
+                results.add(new T3TestUnit(T3TestModes.TEST_MODE_TIME, "时钟测试", 11, 1));
+                results.add(new T3TestUnit(T3TestModes.TEST_MODE_BT, "蓝牙测试", 10, 1));
+            } else {
+                results.add(new T3TestUnit(T3TestModes.TEST_MODE_AUTO, "自动项测试", 10, 1));
+            }
+
             results.add(new T3TestUnit(T3TestModes.TEST_MODE_LED, "显示屏和蜂鸣器测试", 1, 1));
             results.add(new T3TestUnit(T3TestModes.TEST_MODE_KEY, "按键测试", 2, 1));
             results.add(new T3TestUnit(T3TestModes.TEST_MODE_IR, "红外测试", 3, 1));
@@ -156,10 +163,7 @@ public class T3Utils {
 
             results.add(new T3TestUnit(T3TestModes.TEST_MODE_DEODORANT, "雾化器", 6, 1));
             results.add(new T3TestUnit(T3TestModes.TEST_MODE_PYROELECTRIC, "红外热释", 7, 1));
-            results.add(new T3TestUnit(T3TestModes.TEST_MODE_MICRO_SWITCH, "微动开关", 8, 1));
             results.add(new T3TestUnit(T3TestModes.TEST_MODE_HOLZER, "沙桶霍尔", 9, 1));
-            results.add(new T3TestUnit(T3TestModes.TEST_MODE_BT, "蓝牙测试", 10, 1));
-            results.add(new T3TestUnit(T3TestModes.TEST_MODE_TIME, "时钟测试", 11, 1));
 
             if (type != TYPE_TEST_PARTIALLY) {
                 if (type == TYPE_TEST) {

@@ -98,6 +98,10 @@ public class TesterManagerUtils {
     public static void removeTesterForType(int type) {
         Tester tester = mTesterTempList.get(type);
 
+        if (tester == null) {
+            return;
+        }
+
         Set<Map.Entry<Integer, Tester>> set= mTesterTempList.entrySet();
         Iterator<Map.Entry<Integer, Tester>> iterator= set.iterator();
         while(iterator.hasNext()){
