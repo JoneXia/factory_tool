@@ -502,7 +502,8 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 boolean result = false;
                 StringBuilder desc = new StringBuilder();
 
-                if ((mT3TestUnits.get(mCurTestStep).getType() == TEST_MODE_AUTO && mT3AutoTestUnits != null &&
+                if ((mT3TestUnits.get(mCurTestStep).getType() == TEST_MODE_AUTO &&
+                        mT3AutoTestUnits != null && mAutoUnitStep < mT3AutoTestUnits.size() &&
                         mT3AutoTestUnits.get(mAutoUnitStep).getModule() != moduleStateStruct.getModule())
                         || (mT3TestUnits.get(mCurTestStep).getType() != TEST_MODE_AUTO &&
                         moduleStateStruct.getModule() != mT3TestUnits.get(mCurTestStep).getModule())) {
@@ -1064,10 +1065,15 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         }
 
                         if (deviceInfo.getAddress()!=null && deviceInfo.getAddress().equalsIgnoreCase(bleMac)){
+
                             mDescTextView.append("\n搜索到设备，信号为： " + deviceInfo.getRssi());
                             mDescTextView.append("\n蓝牙测试完成");
-                            mT3TestUnits.get(mCurTestStep).setResult(TEST_PASS);
-                            refershBtnView();
+                            if (isInAutoUnits) {
+                                mT3AutoTestUnits.get(mAutoUnitStep).setResult(TEST_PASS);
+                            } else {
+                                mT3TestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                                refershBtnView();
+                            }
 
                             stopBleScan();
                         }

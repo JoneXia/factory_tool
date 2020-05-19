@@ -516,7 +516,8 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 boolean result = false;
                 StringBuilder desc = new StringBuilder();
 
-                if ((mK2TestUnits.get(mCurTestStep).getType() == TEST_MODE_AUTO && mK2AutoTestUnits != null &&
+                if ((mK2TestUnits.get(mCurTestStep).getType() == TEST_MODE_AUTO &&
+                        mK2AutoTestUnits != null && mAutoUnitStep < mK2AutoTestUnits.size() &&
                         mK2AutoTestUnits.get(mAutoUnitStep).getModule() != moduleStateStruct.getModule())
                     || (mK2TestUnits.get(mCurTestStep).getType() != TEST_MODE_AUTO &&
                         moduleStateStruct.getModule() != mK2TestUnits.get(mCurTestStep).getModule())) {
