@@ -54,18 +54,18 @@
             android:text="喂食器MINI-D2"/>
 
         <RadioButton
-            android:id="@+id/toilet"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dip"
-            android:text="自动猫厕所-T3"/>
-
-        <RadioButton
             android:id="@+id/k2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dip"
             android:text="净味器-K2"/>
+
+        <RadioButton
+            android:id="@+id/toilet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dip"
+            android:text="自动猫厕所-T3"/>
 
     </RadioGroup>
 

@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="app_name">小佩产测工具</string>
+
+    <!--global word-->
+    <string name="Warning">警告</string>
+    <string name="Cancel">取消</string>
+    <string name="OK">确定</string>
+    <string name="Done">完成</string>
+    <string name="Save">保存</string>
+    <string name="Add">新增</string>
+    <string name="Delete">删除</string>
+    <string name="Deleting">删除中</string>
+    <string name="Clear">清空</string>
+    <string name="Send">发送</string>
+    <string name="Sending">发送中</string>
+    <string name="Sent">已发送</string>
+    <string name="Resend">重新发送</string>
+    <string name="Upgrade">升级</string>
+    <string name="Camera">照相机</string>
+    <string name="Album">相册</string>
+    <string name="Connect">链接</string>
+    <string name="Connecting">链接中</string>
+    <string name="Reply">回复</string>
+    <string name="Next">下一步</string>
+    <string name="Login">登录</string>
+    <string name="Logout">注销</string>
+    <string name="Register">注册</string>
+    <string name="Skip">跳过</string>
+    <string name="Bind">绑定</string>
+    <string name="Binding">绑定中</string>
+    <string name="Male">男</string>
+    <string name="Female">女</string>
+    <string name="Male2">公</string>
+    <string name="Female2">母</string>
+    <string name="Success">成功</string>
+    <string name="Succeed">成功</string>
+    <string name="Failure">失败</string>
+    <string name="Name">姓名</string>
+    <string name="Nickname">昵称</string>
+    <string name="Category">种类</string>
+    <string name="Age">年龄</string>
+    <string name="Gender">性别</string>
+    <string name="Weight">体重</string>
+    <string name="Comment">评论</string>
+    <string name="Report">举报</string>
+    <string name="Post">发帖</string>
+    <string name="Posting">发帖中</string>
+    <string name="Posted">已发帖</string>
+    <string name="Website">官方网站</string>
+    <string name="Weibo">官方微博</string>
+    <string name="Evaluation">评价</string>
+    <string name="Avatar">头像</string>
+    <string name="OTA">固件升级</string>
+    <string name="Start">开始</string>
+    <string name="Restart">重新开始</string>
+    <string name="Stop">停止</string>
+    <string name="Favor">赞</string>
+    <string name="Call">呼叫</string>
+    <string name="Collect">收藏</string>
+    <string name="Collected">已收藏</string>
+    <string name="Uncollect">取消收藏</string>
+    <string name="Uncollected">已取消收藏</string>
+    <string name="Settings">设置</string>
+    <string name="Image">图片</string>
+    <string name="Birth">生日</string>
+    <string name="Time">时间</string>
+    <string name="Date">日期</string>
+    <string name="Share">分享</string>
+    <string name="Vaccines">疫苗</string>
+    <string name="Insecticide">驱虫</string>
+    <string name="Loading">加载中</string>
+    <string name="Star">星</string>
+    <string name="Synchronize">同步</string>
+    <string name="Synchronizing">同步中</string>
+    <string name="Synchronized">同步完成</string>
+    <string name="Champion">冠军</string>
+    <string name="Latest">最新</string>
+    <string name="Hottest">最热</string>
+    <string name="Battery">电量</string>
+    <string name="Prompt">温馨提示</string>
+    <string name="Circle">●</string>
+    <string name="Activity">活动量</string>
+    <string name="Consumption">消耗</string>
+    <string name="Mood">心情</string>
+    <string name="Health">健康</string>
+    <string name="Reference">参考</string>
+    <string name="Downloading">下载中</string>
+    <string name="Installing">安装中</string>
+    <string name="Retry">重试</string>
+    <string name="Search">搜索</string>
+    <string name="Processing">处理中</string>
+
+    <!--unit-->
+    <string name="Unit_g">g</string>
+    <string name="Unit_kg">kg</string>
+    <string name="Unit_year">年</string>
+    <string name="Unit_years">年</string>
+    <string name="Unit_age">岁</string>
+    <string name="Unit_ages">岁</string>
+    <string name="Unit_month">个月</string>
+    <string name="Unit_months">个月</string>
+    <string name="Unit_week">周</string>
+    <string name="Unit_weeks">周</string>
+    <string name="Unit_day">天</string>
+    <string name="Unit_days">天</string>
+    <string name="Unit_hour">小时</string>
+    <string name="Unit_hours">小时</string>
+    <string name="Unit_minute">分钟</string>
+    <string name="Unit_minutes">分钟</string>
+    <string name="Unit_gram">克</string>
+    <string name="Unit_kcal">千卡</string>
+    <string name="Unit_meter">米</string>
+    <string name="Unit_kilometer">千米</string>
+    <string name="Unit_time_just_now">刚刚</string>
+    <string name="Unit_time_ago"><xliff:g id="prefix">%s</xliff:g>前</string>
+
+
+    <string name="Hint_network_failed">网络连接异常</string>
+    <string name="Tap_to_refresh">点击刷新</string>
+    <string name="Status_error">联网失败，点击重试</string>
+    <string name="No_content_tap_to_reload">暂无内容，点击重试</string>
+    <string name="Release_to_refresh">释放刷新</string>
+    <string name="Pull_to_refresh">下拉刷新</string>
+    <string name="Pull_to_load_more">上拉加载更多</string>
+    <string name="Tap_to_load_more">点击加载更多</string>
+    <string name="No_more_data">无更多数据</string>
+
+    <string name="fixture_number">工位号</string>
+    <string name="start_test">开始测试</string>
+    <string name="self_test">系统自测，等待测试结果\n请稍后。。。</string>
+    <string name="scan_mate_test">扫描设备中。。。</string>
+    <string name="test_succeed">成功</string>
+    <string name="test_failed">失败</string>
+    <string name="test_case1">板测</string>
+    <string name="test_case2">调焦</string>
+    <string name="test_case3">终测</string>
+    <string name="test_case4">抽检</string>
+    <string name="test_case6">广播查询</string>
+    <string name="loading">正在搜索设备......</string>
+    <string name="test_retry">重新测试</string>
+    <string name="FixtureNumNotSame">搜索到一台设备，但工位号不一致！</string>
+    <string name="ok">确认</string>
+    <string name="cancel">取消</string>
+    <string name="stop_test">关闭测试</string>
+    <string name="turn_left">向左旋转</string>
+    <string name="clear">清除缓存</string>
+    <string name="settings">设置</string>
+    <string name="turn_right">向右旋转</string>
+    <string name="input_error"> 输入不能为空或输入不合法</string>
+    <string name="should_select_test">请选择测试机类型</string>
+    <string name="push_test_result">提交结果</string>
+    <string name="auto_test_mode">自动模式</string>
+    <string name="start_video">开始视频</string>
+    <string name="stop_video">结束视频</string>
+    <string name="input_sn">输入SN</string>
+    <string name="sn_error">SN长度不正确，请确认</string>
+
+    <string-array name="mTestItemStyle">
+        <item>指示灯</item>
+        <item>红外灯</item>
+        <item>PA控制</item>
+        <item>IR-cut</item>
+        <item>RESET按键</item>
+        <item>电压ADC</item>
+        <item>云台马达</item>
+        <item>逗宠</item>
+        <item>MIC</item>
+        <item>蓝牙</item>
+        <item>视频</item>
+    </string-array>
+    <string-array name="mTestItemPro">
+        <item>灯带</item>
+        <item>指示灯</item>
+        <item>红外灯</item>
+        <item>PA控制</item>
+        <item>IR-cut</item>
+        <item>RESET按键</item>
+        <item>电压ADC</item>
+        <item>云台马达</item>
+        <item>逗宠</item>
+        <item>MIC</item>
+        <item>蓝牙</item>
+        <item>视频</item>
+    </string-array>
+
+    <string name="Title_select_mode">选择工站</string>
+    <string name="Test_info_format">测试类型：<xliff:g id="prefix">%s</xliff:g>，工位：<xliff:g id="prefix">%s</xliff:g></string>
+
+    <string name="Confirm_select_focus_mode">请先选择图像模式</string>
+    <string name="Focus_mode_video">视频调焦</string>
+    <string name="Focus_mode_images">图像调焦</string>
+
+    <string name="Regist_successful">注册成功</string>
+    <string name="Regist_failed">注册失败</string>
+    <string name="Entry_test_mode_failed">进入测试模式失败</string>
+
+    <string name="Confirm_clear_all_test">确认清除测试状态为0？</string>
+
+    <string name="Test_canceled">测试结束</string>
+    <string name="Hint_work_station_empty">请先选择工位</string>
+    <string name="Hint_mate_style_empty">请先选择mate类型</string>
+    <string name="Hint_test_case_not_compelte">还有项目未测试，请确认!!!</string>
+    <string name="Hint_wait_result_for_write_sn">正在写SN，请等待写入结果。。。</string>
+    <string name="Hint_sn_not_valid">SN格式不正确，请重新输入</string>
+    <string name="Confrim_paste_sn_in_write_way">请正确粘贴SN条码！</string>
+    <string name="Hint_failed_to_write_sn">SN写入失败！</string>
+    <string name="Retry_to_write_sn">点击重新写SN</string>
+    <string name="Title_input_sn">请输入SN码</string>
+
+    <string name="broadcast_receiving">广播查询中...</string>
+    <string name="Device_mac_format">蓝牙MAC：<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Device_ip_format">IP地址：<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Device_station_format">工位号：<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Device_status_format">工站号：<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Device_rssi_format">信号：<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Device_sn_format">SN号：<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Copy_sn">复制SN</string>
+
+    <!-- Feeder test -->
+    <string name="Feeder">喂食器</string>
+    <string name="feeder_test_case1">半成品测试</string>
+    <string name="feeder_test_case2">成品测试</string>
+    <string name="feeder_test_case3">维修</string>
+    <string name="feeder_test_case4">抽检</string>
+    <string name="feeder_test_case5">入库</string>
+
+    <string name="Set_wifi">设置WIFI</string>
+    <string name="Test_auto">自动模式</string>
+    <string name="Set_print">设置打印机</string>
+    <string name="Connect_device">连接设备</string>
+
+    <string name="Title_prepare">测试准备</string>
+    <string name="Print">打印</string>
+    <string name="Write">写入</string>
+    <string name="Permission_storage">存储空间</string>
+    <string name="Permission_phone_state">设备信息</string>
+    <string name="Permission_location">位置信息</string>
+    <string name="Hint_permission_storage_must_request">我们需要获取存储空间，为你存储个人信息；否则，你将无法正常使用小佩宠物</string>
+
+    <string name="Hint_input_account">请输入账号</string>
+    <string name="Hint_input_password">请输入密码</string>
+
+    <string name="Feeder_test_info_format">请选择工站</string>
+
+    <string-array name="Feeder_test_items">
+        <item>门马达</item>
+        <item>叶轮马达</item>
+        <item>灯</item>
+        <item>beep</item>
+        <item>dc电压</item>
+        <item>bat电池</item>
+        <item>秤校准</item>
+        <item>写入SN</item>
+        <item>打印标签</item>
+    </string-array>
+
+    <string name="printer">打印机</string>
+    <string name="chinesecolon">：</string>
+    <string name="printtext">打印文本</string>
+    <string name="printtext1dbarcode">文本一维码</string>
+    <string name="print2dbarcode">打印二维码</string>
+    <string name="printbitmap">打印图片</string>
+    <string name="romupgrade">打印机固件升级</string>
+    <string name="noconnectprinter">打印机：未连接打印机</string>
+    <string name="unsupportedbluetooth">当前设备不支持蓝牙！</string>
+    <string name="unenablebluetooth">蓝牙适配器未开启！</string>
+    <string name="selectbondeddevice">选择已绑定的设备</string>
+    <string name="setprintquality">设置打印质量</string>
+    <string name="setprintdensity">设置打印浓度</string>
+    <string name="setprintspeed">设置打印速度</string>
+    <string name="setgaptype">设置间隔类型</string>
+    <string name="printquality">打印质量：\n</string>
+    <string name="printdensity">打印浓度：\n</string>
+    <string name="printspeed">打印速度：\n</string>
+    <string name="gaptype">间隔类型：\n</string>
+    <string name="nowisconnectingprinter">正在连接</string>
+    <string name="connectprintersuccess">连接打印机成功！</string>
+    <string name="connectprinterfailed">连接打印机失败！</string>
+    <string name="nowisprinting">正在打印标签&#8230;</string>
+    <string name="printsuccess">标签打印成功！</string>
+    <string name="printfailed">标签打印失败！</string>
+    <string name="pleaseconnectprinter">打印机未连接，请先连接打印机！</string>
+    <string name="waitconnectingprinter">正在连接打印机，请稍候！</string>
+    <string name="textvalue">文本数据：</string>
+    <string name="onedbarcodevalue">一维码数据：</string>
+    <string name="twodbarcodevalue">二维码数据：</string>
+    <string name="bitmappreview">图片预览</string>
+    <string name="defaulttextone">小佩智能喂食器 Feeder</string>
+    <string name="defaulttexttwo">小佩智能喂食器 Feeder</string>
+    <string name="defaultonedbarcode">SN:0A170511P10000</string>
+    <string name="defaulttwodbarcode">SN:0A170511P10000;MAC:5ecf7f24eafc</string>
+    <string name="print_param_default">随打印机设置</string>
+
+    <string name="scan_allcode_hint">将标签对入取景框，即可自动扫描</string>
+
+    <string name="Mate_microphone">麦克风</string>
+
+
+    <string name="s_wific">配置网络</string>
+    <string name="s_wifici">连接中…</string>
+    <string name="s_wificed">已连接</string>
+    <string name="s_rst">复位</string>
+    <string name="s_spd">已暂停</string>
+    <string name="s_rst_i">正在复位</string>
+    <string name="s_rst_ovr">复位完成</string>
+    <string name="s_od_rmv">立即除臭</string>
+    <string name="s_od_rmvi">除臭中…</string>
+    <string name="s_od_rmvd">除臭完成</string>
+    <string name="s_cln">立即清理</string>
+    <string name="s_cln_i">正在清理</string>
+    <string name="s_cln_ovr">清理完成</string>
+    <string name="s_dmp">清空猫砂</string>
+    <string name="s_dmp_i">正在清空</string>
+    <string name="s_dmp_ovr">清空完成</string>
+    <string name="s_smth">抚平猫砂</string>
+    <string name="s_smth_ing">正在抚平</string>
+    <string name="s_smth_ovr">抚平完成</string>
+    <string name="s_bk2main">返回首页</string>
+    <string name="s_ota_ing">升级中…</string>
+    <string name="s_err_tip">设备故障</string>
+    <string name="s_litter">猫砂余量</string>
+    <string name="s_cln_soon">即将清理</string>
+    <string name="s_err_app">设备故障，请在APP内查看详情</string>
+    <string name="s_err_i_1">内桶未锁止！</string>
+    <string name="s_err_i_2">上盖未合上！</string>
+    <string name="s_sfty_spd">无法完成操作</string>
+    <string name="s_lt_lack">猫砂余量不足，请添加</string>
+    <string name="s_drt_lack">除臭剂已用完，请补充</string>
+    <string name="s_bx_full">排废盒已满，请清理</string>
+    <string name="s_around">猫已进入检测区域</string>
+    <string name="s_pet_w">猫的体重</string>
+    <string name="s_pet_in">猫在厕所内</string>
+    <string name="s_after">后开始清理</string>
+    <string name="s_15min">15分钟</string>
+    <string name="s_14min">14分钟</string>
+    <string name="s_13min">13分钟</string>
+    <string name="s_12min">12分钟</string>
+    <string name="s_11min">11分钟</string>
+    <string name="s_10min">10分钟</string>
+    <string name="s_9min">9分钟</string>
+    <string name="s_8min">8分钟</string>
+    <string name="s_7min">7分钟</string>
+    <string name="s_6min">6分钟</string>
+    <string name="s_5min">5分钟</string>
+    <string name="s_4min">4分钟</string>
+    <string name="s_3min">3分钟</string>
+    <string name="s_2min">2分钟</string>
+
+
+</resources>

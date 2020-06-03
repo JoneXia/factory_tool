@@ -2,6 +2,7 @@ package com.petkit.matetool.ui.t3;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.petkit.matetool.R;
@@ -51,7 +52,9 @@ public class T3StartActivity extends BaseActivity {
         findViewById(R.id.test_case3).setOnClickListener(this);
         findViewById(R.id.test_case4).setOnClickListener(this);
         findViewById(R.id.test_case5).setOnClickListener(this);
-        findViewById(R.id.test_case5).setVisibility(View.GONE);
+        findViewById(R.id.test_case5).setOnClickListener(this);
+
+        ((Button) findViewById(R.id.test_case5)).setText("位图生成");
     }
 
     @Override
@@ -84,7 +87,7 @@ public class T3StartActivity extends BaseActivity {
             case R.id.test_case5:
                 bundle = new Bundle();
                 bundle.putSerializable(T3Utils.EXTRA_T3_TESTER, mTester);
-                startActivityWithData(T3StorageActivity.class, bundle, false);
+                startActivityWithData(T3LanguageActivity.class, bundle, false);
                 break;
         }
     }

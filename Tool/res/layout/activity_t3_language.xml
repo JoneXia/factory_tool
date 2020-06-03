@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <!-- select mode -->
+    <TextView
+        style="@style/Text_Small_Gray"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="字符串转换成位图。"
+        android:padding="15dip" />
+
+    <EditText
+        android:id="@+id/edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="70dip"
+        android:textStyle="bold"
+        android:hint="请输入字符串"/>
+
+    <Button
+        android:id="@+id/test_case1"
+        style="@style/Text_Large_Black"
+        android:layout_width="match_parent"
+        android:layout_height="70dip"
+        android:layout_marginTop="10dip"
+        android:text="输入文本转bmp" />
+
+    <Button
+        android:id="@+id/test_case2"
+        style="@style/Text_Large_Black"
+        android:layout_width="match_parent"
+        android:layout_height="70dip"
+        android:layout_marginTop="10dip"
+        android:text="转换所有文字" />
+
+    <Button
+        android:id="@+id/test_case3"
+        style="@style/Text_Large_Black"
+        android:layout_width="match_parent"
+        android:layout_height="70dip"
+        android:layout_marginTop="10dip"
+        android:visibility="gone"
+        android:text="保存bmp" />
+
+</LinearLayout>

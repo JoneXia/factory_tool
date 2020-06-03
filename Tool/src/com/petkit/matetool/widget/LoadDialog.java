@@ -1,8 +1,6 @@
 package com.petkit.matetool.widget;
 
 
-import com.petkit.matetool.R;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -13,6 +11,8 @@ import android.view.WindowManager;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.petkit.matetool.R;
 
 
 /**
@@ -129,4 +129,15 @@ public class LoadDialog extends Dialog{
     		loadDialog = null;
     	}
     }
+
+    public static void updateText(String text) {
+		if (loadDialog == null || !loadDialog.isShowing()) {
+			return;
+		}
+
+		TextView loadingText = (TextView) loadDialog.findViewById(R.id.loading_text);
+		if(!TextUtils.isEmpty(text)){
+			loadingText.setText(text);
+		}
+	}
 }

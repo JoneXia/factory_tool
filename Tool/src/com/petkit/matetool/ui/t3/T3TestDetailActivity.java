@@ -339,6 +339,7 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                     case TEST_MODE_SN:
                     case TEST_MODE_MAC:
                     case TEST_MODE_PRINT:
+                    case TEST_MODE_RESET_SN:
                         gotoNextTestModule();
                         break;
                     case TEST_MODE_AGEINGRESULT:
@@ -929,6 +930,7 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 HashMap<String, Object> payload = new HashMap<>();
                 payload.put("mac", mac);
                 payload.put("sn", sn);
+                payload.put("opt", 1);
                 payload.put("force", 100);
                 PetkitSocketInstance.getInstance().sendString(T3Utils.getRequestForKeyAndPayload(161, payload));
             }

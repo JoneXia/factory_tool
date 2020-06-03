@@ -1,5 +1,8 @@
 package com.petkit.android.utils;
 
+import android.content.Context;
+
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,9 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
-import android.content.Context;
-import android.util.Log;
+import java.io.OutputStream;
 
 public class FileUtils {
 
@@ -129,8 +130,42 @@ public class FileUtils {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
+	public static void bytesToFile(byte[] buffer, final String filePath){
+
+		File file = new File(filePath);
+		OutputStream output = null;
+		BufferedOutputStream bufferedOutput = null;
+
+		try {
+			output = new FileOutputStream(file);
+			bufferedOutput = new BufferedOutputStream(output);
+			bufferedOutput.write(buffer);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally{
+			if(null!=bufferedOutput){
+				try {
+					bufferedOutput.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+			if(null != output){
+				try {
+					output.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+
+	}
+
 	/**
 	 * 从assets中读取文件
 	 * @param context

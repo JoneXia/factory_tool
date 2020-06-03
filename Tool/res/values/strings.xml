@@ -297,4 +297,55 @@
 
 	<string name="Mate_microphone">麦克风</string>
 
+	<string name="s_wific">Configure the network</string>
+	<string name="s_wifici">Connecting…</string>
+	<string name="s_wificed">Connected</string>
+	<string name="s_rst">Reset</string>
+	<string name="s_spd">Paused</string>
+	<string name="s_rst_i">Resetting</string>
+	<string name="s_rst_ovr">Reset complete</string>
+	<string name="s_od_rmv">Deodorize now</string>
+	<string name="s_od_rmvi">Deodorizing…</string>
+	<string name="s_od_rmvd">Deodorized</string>
+	<string name="s_cln">Clean now</string>
+	<string name="s_cln_i">Clean</string>
+	<string name="s_cln_ovr">Cleaned</string>
+	<string name="s_dmp">Empty cat litter</string>
+	<string name="s_dmp_i">Emptying</string>
+	<string name="s_dmp_ovr">Emptied</string>
+	<string name="s_smth">Level cat litter</string>
+	<string name="s_smth_ing">Leveling</string>
+	<string name="s_smth_ovr">Leveled</string>
+	<string name="s_bk2main">Return to homepage</string>
+	<string name="s_ota_ing">Upgrading</string>
+	<string name="s_err_tip">Equipment failure</string>
+	<string name="s_litter">Cat litter amount</string>
+	<string name="s_cln_soon">Preparing to clean</string>
+	<string name="s_err_app">Equipment failure, check the details in the app</string>
+	<string name="s_err_i_1">Inner barrel not locked!</string>
+	<string name="s_err_i_2">Lid is not closed!</string>
+	<string name="s_sfty_spd">Unable to complete operation</string>
+	<string name="s_lt_lack">Not enough cat litter, please add some</string>
+	<string name="s_drt_lack">Deodorizer used up, please refill</string>
+	<string name="s_bx_full">Waste bin is full. Please empty</string>
+	<string name="s_around">Cat has entered detection area</string>
+	<string name="s_pet_w">Cat weight</string>
+	<string name="s_pet_in">Cat is in the litter box</string>
+	<string name="s_after">Start cleaning afterwards</string>
+	<string name="s_15min">15 mins</string>
+	<string name="s_14min">14 mins</string>
+	<string name="s_13min">13 mins</string>
+	<string name="s_12min">12 mins</string>
+	<string name="s_11min">11 mins</string>
+	<string name="s_10min">10 mins</string>
+	<string name="s_9min">9 mins</string>
+	<string name="s_8min">8 mins</string>
+	<string name="s_7min">7 mins</string>
+	<string name="s_6min">6 mins</string>
+	<string name="s_5min">5 mins</string>
+	<string name="s_4min">4 mins</string>
+	<string name="s_3min">3 mins</string>
+	<string name="s_2min">2 mins</string>
+
+
 </resources>
