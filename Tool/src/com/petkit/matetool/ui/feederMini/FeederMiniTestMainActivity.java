@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +18,14 @@ import android.widget.TextView;
 
 import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
+import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.feeder.mode.Feeder;
-import com.petkit.matetool.model.Tester;
-import com.petkit.matetool.ui.utils.PetkitSocketInstance;
-import com.petkit.matetool.ui.utils.WifiAdminSimple;
 import com.petkit.matetool.ui.feederMini.mode.FeederMiniTestUnit;
 import com.petkit.matetool.ui.feederMini.utils.FeederMiniUtils;
+import com.petkit.matetool.ui.utils.PetkitSocketInstance;
+import com.petkit.matetool.ui.utils.WifiAdminSimple;
+import com.petkit.matetool.ui.wifi.WifiManagerActivity;
 import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.JSONUtils;
 
@@ -146,7 +146,8 @@ public class FeederMiniTestMainActivity extends BaseActivity implements PetkitSo
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.set_wifi:
-                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+//                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                showWifiManager();
                 break;
             case R.id.connect_dev:
                 refreshView();
@@ -277,6 +278,25 @@ public class FeederMiniTestMainActivity extends BaseActivity implements PetkitSo
         }
     }
 
+    private void showWifiManager() {
+        switch (mTestType) {
+            case FeederMiniUtils.TYPE_TEST_PARTIALLY:
+                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_FEEDER_A_HW2_"));
+                break;
+            case FeederMiniUtils.TYPE_TEST:
+                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_FEEDER_B_HW2_"));
+                break;
+            case FeederMiniUtils.TYPE_MAINTAIN:
+                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_FEEDER_"));
+                break;
+            case FeederMiniUtils.TYPE_CHECK:
+            case FeederMiniUtils.TYPE_DUPLICATE_MAC:
+            case FeederMiniUtils.TYPE_DUPLICATE_SN:
+                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_FEEDER_HW2_"));
+                break;
+        }
+    }
+    
     private void refreshView() {
         String apSsid = mWifiAdminSimple.getWifiConnectedSsid();
         if(apSsid == null) {

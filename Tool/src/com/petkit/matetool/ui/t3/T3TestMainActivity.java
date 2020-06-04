@@ -29,6 +29,7 @@ import com.petkit.matetool.ui.t3.mode.T3TestUnit;
 import com.petkit.matetool.ui.t3.utils.T3Utils;
 import com.petkit.matetool.ui.utils.PetkitSocketInstance;
 import com.petkit.matetool.ui.utils.WifiAdminSimple;
+import com.petkit.matetool.ui.wifi.WifiManagerActivity;
 import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.JSONUtils;
 
@@ -151,7 +152,8 @@ public class T3TestMainActivity extends BaseActivity implements PetkitSocketInst
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.set_wifi:
-                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+//                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                showWifiManager();
                 break;
             case R.id.connect_dev:
                 refreshView();
@@ -333,6 +335,25 @@ public class T3TestMainActivity extends BaseActivity implements PetkitSocketInst
         }
 
         mAdapter.notifyDataSetChanged();
+    }
+
+    private void showWifiManager() {
+        switch (mTestType) {
+            case T3Utils.TYPE_TEST_PARTIALLY:
+                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_TOILET_A_HW1_"));
+                break;
+            case T3Utils.TYPE_TEST:
+                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_TOILET_B_HW1_"));
+                break;
+            case T3Utils.TYPE_MAINTAIN:
+            case T3Utils.TYPE_CHECK:
+                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_TOILET_"));
+                break;
+            case T3Utils.TYPE_DUPLICATE_MAC:
+            case T3Utils.TYPE_DUPLICATE_SN:
+                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_TOILET_HW1_"));
+                break;
+        }
     }
 
     private void refreshBottomButton () {

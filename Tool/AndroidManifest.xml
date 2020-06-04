@@ -236,6 +236,14 @@
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"/>
 
+        <!-- wifi manager -->
+
+        <activity
+            android:name=".ui.wifi.WifiManagerActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/petkit_theme_dialog">
+        </activity>
 
         <meta-data
             android:name="UMENG_APPKEY"

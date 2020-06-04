@@ -29,6 +29,7 @@ import com.petkit.matetool.ui.K2.utils.K2Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.utils.PetkitSocketInstance;
 import com.petkit.matetool.ui.utils.WifiAdminSimple;
+import com.petkit.matetool.ui.wifi.WifiManagerActivity;
 import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.JSONUtils;
 
@@ -151,7 +152,8 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.set_wifi:
-                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+//                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                showWifiManager();
                 break;
             case R.id.connect_dev:
                 refreshView();
@@ -177,24 +179,7 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
 
     @Override
     public void onBackPressed() {
-//        if (mCurDevice != null && testComplete) {
-//            new AlertDialog.Builder(this)
-//                    .setTitle(R.string.Prompt)
-//                    .setMessage("测试已完成，请先点击确认来完成测试项目！")
-//                    .setNegativeButton(R.string.OK, new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            LoadDialog.show(K2TestMainActivity.this);
-//                            HashMap<String, Object> params = new HashMap<>();
-//                            params.put("mac", mCurDevice.getMac());
-//                            params.put("state", getTestTypeCode());
-//                            params.put("opt", 1);
-//
-//                            PetkitSocketInstance.getInstance().sendString(K2Utils.getRequestForKeyAndPayload(160, params));
-//                        }
-//                    })
-//                    .show();
-//        } else
+
         if (mCurDevice != null && mTestType == K2Utils.TYPE_CHECK) {
             boolean hasError = false;
             for (K2TestUnit unit : mK2TestUnits) {
@@ -282,6 +267,26 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
             startActivityForResult(intent, 0x12);
         } else {
             showShortToast(mInfoTestTextView.getText().toString());
+        }
+    }
+
+
+    private void showWifiManager() {
+        switch (mTestType) {
+            case K2Utils.TYPE_TEST_PARTIALLY:
+                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_K2_A_HW1_"));
+                break;
+            case K2Utils.TYPE_TEST:
+                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_K2_B_HW1_"));
+                break;
+            case K2Utils.TYPE_MAINTAIN:
+                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_K2_"));
+                break;
+            case K2Utils.TYPE_CHECK:
+            case K2Utils.TYPE_DUPLICATE_MAC:
+            case K2Utils.TYPE_DUPLICATE_SN:
+                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_K2_HW1_"));
+                break;
         }
     }
 

@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +26,7 @@ import com.petkit.matetool.ui.cozy.mode.CozyTestUnit;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.ui.utils.PetkitSocketInstance;
 import com.petkit.matetool.ui.utils.WifiAdminSimple;
+import com.petkit.matetool.ui.wifi.WifiManagerActivity;
 import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.JSONUtils;
 
@@ -148,7 +148,8 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.set_wifi:
-                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+//                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                showWifiManager();
                 break;
             case R.id.connect_dev:
                 refreshView();
@@ -276,6 +277,24 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
             startActivityForResult(intent, 0x12);
         } else {
             showShortToast(mInfoTestTextView.getText().toString());
+        }
+    }
+
+
+    private void showWifiManager() {
+        switch (mTestType) {
+            case CozyUtils.TYPE_TEST_PARTIALLY:
+                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_COZY_A_"));
+                break;
+            case CozyUtils.TYPE_TEST:
+                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_COZY_B_"));
+                break;
+            case CozyUtils.TYPE_MAINTAIN:
+            case CozyUtils.TYPE_CHECK:
+            case CozyUtils.TYPE_DUPLICATE_MAC:
+            case CozyUtils.TYPE_DUPLICATE_SN:
+                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_COZY_"));
+                break;
         }
     }
 

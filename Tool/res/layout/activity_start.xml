@@ -65,6 +65,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dip"
+            android:visibility="gone"
             android:text="自动猫厕所-T3"/>
 
     </RadioGroup>

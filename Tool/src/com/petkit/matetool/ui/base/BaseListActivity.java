@@ -52,7 +52,7 @@ public abstract class BaseListActivity extends BaseActivity implements PullToRef
 			if(BaseListActivity.this.getCurrentFocus() != null){
 				((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
 						.hideSoftInputFromWindow(BaseListActivity.this
-								.getCurrentFocus().getWindowToken(),
+										.getCurrentFocus().getWindowToken(),
 								InputMethodManager.HIDE_NOT_ALWAYS);
 			}
 		}

@@ -33,12 +33,15 @@ public class Consts {
 	 v1.14说明：
 	 1. 优化账号管理机制；
 
-
 	 v1.15说明：
 	 1. 解决写入SN的问题
 
+	 v1.16说明：
+	 1. 新增工具内切换WiFi的功能，按设备类型自动过滤WiFi
+	 2. 修复自动横屏问题
+
 	 */
-	public static final String TOOL_FEEDER_VERSION	= "1.15";
+	public static final String TOOL_FEEDER_VERSION	= "1.16";
 
 
 	/**
@@ -85,8 +88,12 @@ public class Consts {
 
 	 v1.10说明：
 	 1. 升级为宠物窝new，SN规则的产品位标识从"B改为C"
+
+	 v1.11说明：
+	 1. 新增工具内切换WiFi的功能，按设备类型自动过滤WiFi
+	 2. 修复自动横屏问题
 	 */
-	public static final String TOOL_COZY	= "1.10";
+	public static final String TOOL_COZY	= "1.11";
 
 
 	/**
@@ -102,8 +109,11 @@ public class Consts {
 	 * 当该情况发生时，需按照如下步骤进行补救：1. 重启设备；2. 进入抽检，连接设备AP；3. 连接AP后，工具自动识别出异常设备，并保存设备数据；4. 打印标签。
 	 * 注意这个过程中不能杀掉产测App，否则临时数据将丢失，以后无法再自动保存设备数据了。
 
+	 v1.3说明：
+	 1. 新增工具内切换WiFi的功能，按设备类型自动过滤WiFi
+	 2. 修复自动横屏问题
 	 */
-	public static final String TOOL_FEEDER_MINI_VERSION	= "1.2";
+	public static final String TOOL_FEEDER_MINI_VERSION	= "1.3";
 
 
 	/**
@@ -114,15 +124,18 @@ public class Consts {
 	 1.1说明:
 	 1. 放宽电压判定范围
 	 2. 自动项测试增加保护
+
+	 v1.2说明：
+	 1. 新增工具内切换WiFi的功能，按设备类型自动过滤WiFi
+	 2. 修复自动横屏问题
 	 *
 	 */
-	public static final String TOOL_K2_VERSION	= "1.1";
+	public static final String TOOL_K2_VERSION	= "1.2";
 
 
 	/**
 	 *
 	 * 0.2说明:
-	 * 	 1. 增加
 	 *
 	 *
 	 */

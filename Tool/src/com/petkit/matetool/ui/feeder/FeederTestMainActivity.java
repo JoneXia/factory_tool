@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,9 +24,10 @@ import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.feeder.mode.Feeder;
 import com.petkit.matetool.ui.feeder.mode.FeederTestUnit;
 import com.petkit.matetool.ui.feeder.utils.FeederUtils;
+import com.petkit.matetool.ui.feederMini.utils.FeederMiniUtils;
 import com.petkit.matetool.ui.utils.PetkitSocketInstance;
 import com.petkit.matetool.ui.utils.WifiAdminSimple;
-import com.petkit.matetool.ui.feederMini.utils.FeederMiniUtils;
+import com.petkit.matetool.ui.wifi.WifiManagerActivity;
 import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.JSONUtils;
 
@@ -148,7 +148,8 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.set_wifi:
-                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+//                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                showWifiManager();
                 break;
             case R.id.connect_dev:
                 refreshView();
@@ -278,6 +279,23 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
             startActivityForResult(intent, 0x12);
         } else {
             showShortToast(mInfoTestTextView.getText().toString());
+        }
+    }
+
+    private void showWifiManager() {
+        switch (mTestType) {
+            case FeederUtils.TYPE_TEST_PARTIALLY:
+                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_AP_A_"));
+                break;
+            case FeederUtils.TYPE_TEST:
+                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_AP_B_"));
+                break;
+            case FeederUtils.TYPE_MAINTAIN:
+            case FeederUtils.TYPE_CHECK:
+            case FeederUtils.TYPE_DUPLICATE_MAC:
+            case FeederUtils.TYPE_DUPLICATE_SN:
+                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_AP_"));
+                break;
         }
     }
 
