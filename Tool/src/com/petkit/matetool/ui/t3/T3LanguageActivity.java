@@ -102,6 +102,7 @@ public class T3LanguageActivity extends BaseActivity {
         }
     }
 
+
     public Bitmap createBitmapFromText(String text, String locale) {
         Paint paint = new Paint();
         paint.setTextAlign(Paint.Align.LEFT);
@@ -119,7 +120,7 @@ public class T3LanguageActivity extends BaseActivity {
 
         Paint.FontMetricsInt fm = paint.getFontMetricsInt();
 
-        int width = (int)paint.measureText(text);
+        int width = (int)paint.measureText(text) + 2;
         int height = fm.descent - fm.ascent + 4;
 
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
@@ -138,48 +139,16 @@ public class T3LanguageActivity extends BaseActivity {
         FileUtils.bytesToFile(bitmaps, filePath);
     }
 
+    private void saveConfigFileForLocaleStringBitmapMode(LocaleStringBitmapMode mode, String file) {
 
-//
-//    /**
-//     * 生成视图的预览
-//     * @param activity
-//     * @param v
-//     * @return  视图生成失败返回null
-//     *          视图生成成功返回视图的绝对路径
-//     */
-//    public String saveImageForView (Activity activity, View v) {
-//        Bitmap bitmap;
-//        SimpleDateFormat time = new SimpleDateFormat("yyyyMMddHHmmss");
-//        String fileName = time.format(System.currentTimeMillis());
-//        String path = CommonUtils.getAppDirPath() + fileName + "-2.jpg";
-//        String bitmapPath = CommonUtils.getAppDirPath() + fileName + "-3.bmp";
-//        View view = activity.getWindow().getDecorView();
-//        view.setDrawingCacheEnabled(true);
-//        view.buildDrawingCache();
-//        bitmap = view.getDrawingCache();
-//        Rect frame = new Rect();
-//        activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
-//        int[] location = new int[2];
-//        v.getLocationOnScreen(location);
-//        try {
-//            bitmap = Bitmap.createBitmap(bitmap, location[0], location[1], v.getWidth(), v.getHeight());
-//
-//            FileOutputStream fout = new FileOutputStream(path);
-//            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fout);
-//            return path;
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IllegalArgumentException e) {
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } finally {
-//            // 清理缓存
-//            view.destroyDrawingCache();
-//        }
-//        return null;
-//
-//    }
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append("pic_bin_name,length,x_size,y_size").append("\n");
+        for (StringBitmapMode mode1 : mode.getStrings()) {
+            stringBuffer.append(mode1.getConfigString()).append("\n");
+        }
 
+        FileUtils.writeStringToFile(file, stringBuffer.toString());
+    }
 
     private void startConvert() {
 
@@ -273,9 +242,16 @@ public class T3LanguageActivity extends BaseActivity {
 
                 for (StringBitmapMode mode1 : mode.getStrings()) {
                     Bitmap bitmap = createBitmapFromText(mode1.getText(), mode.getLocale());
+
+                    mode1.setWidth(bitmap.getWidth());
+                    mode1.setHeight(bitmap.getHeight());
+                    mode1.setSize((int) (bitmap.getWidth() * Math.ceil(bitmap.getHeight() / 8d)));
+
                     saveBmpToFile(bitmap, bmpFileDir + mode.getLocale() + "/" + mode1.getName() + ".bmp");
                     publishProgress(current++);
                 }
+
+                saveConfigFileForLocaleStringBitmapMode(mode, bmpFileDir + mode.getLocale() + String.format("/head_config_lan_%s.csv", mode.getLocale()));
             }
             return false;
         }
