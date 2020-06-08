@@ -123,6 +123,14 @@ public class T3LanguageActivity extends BaseActivity {
         int width = (int)paint.measureText(text) + 2;
         int height = fm.descent - fm.ascent + 4;
 
+        if ((width % 2) != 0) {
+            width++;
+        }
+
+        if ((height % 2) != 0) {
+            height++;
+        }
+
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         canvas.drawColor(Color.BLACK);
