@@ -174,7 +174,7 @@ public class T3Utils {
 
             if (type == TYPE_MAINTAIN) {        //擦除ID选项先关闭，暂不开放
                 results.add(new T3TestUnit(T3TestModes.TEST_MODE_RESET_SN, "重写SN", 97, 1));
-//                results.add(new CozyTestUnit(T3TestModes.TEST_MODE_RESET_ID, "擦除ID", 98, 1));
+                results.add(new T3TestUnit(T3TestModes.TEST_MODE_RESET_ID, "擦除ID", 98, 1));
             }
         }
         return results;

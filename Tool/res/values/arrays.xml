@@ -89,6 +89,9 @@
         <item>s_err_tip</item>
         <item>s_litter</item>
         <item>s_cln_soon</item>
+        <item>s_cali</item>
+        <item>s_cali_ing</item>
+        <item>s_cali_ovr</item>
         <item>s_err_app</item>
         <item>s_err_i_1</item>
         <item>s_err_i_2</item>
@@ -99,7 +102,6 @@
         <item>s_around</item>
         <item>s_pet_w</item>
         <item>s_pet_in</item>
-        <item>s_after</item>
         <item>s_15min</item>
         <item>s_14min</item>
         <item>s_13min</item>
