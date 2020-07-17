@@ -148,7 +148,7 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 break;
             case TEST_MODE_SN:
                 if (!isEmpty(mDevice.getSn())) {
-                    if (mK2TestUnits.get(mCurTestStep).getState() != 2 || (mErrorDevice != null && !mDevice.getSn().equals(mErrorDevice.getSn()))) {
+                    if (mErrorDevice != null && !mDevice.getSn().equals(mErrorDevice.getSn())) {
                         mK2TestUnits.get(mCurTestStep).setResult(TEST_PASS);
                     }
                     mDescTextView.setText("mac:" + mDevice.getMac() + "\n" + "sn:" + mDevice.getSn());
@@ -267,6 +267,20 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
             case R.id.test_btn_1:
                 switch (mK2TestUnits.get(mCurTestStep).getType()) {
                     case TEST_MODE_PRINT:
+                        boolean result = true;
+                        for (K2TestUnit unit : mK2TestUnits) {
+                            if (unit.getType() != K2Utils.K2TestModes.TEST_MODE_PRINT
+                                    && unit.getResult() != TEST_PASS) {
+                                result = false;
+                                break;
+                            }
+                        }
+
+                        if (!result) {
+                            showShortToast("还有未完成的测试项，不能写入SN！");
+                            return;
+                        }
+
                         if (PrintUtils.isPrinterConnected()) {
                             if (isEmpty(mDevice.getSn())) {
                                 showShortToast("SN还未写入，不能打印！");
@@ -344,6 +358,7 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                     case TEST_MODE_SN:
                     case TEST_MODE_MAC:
                     case TEST_MODE_PRINT:
+                    case TEST_MODE_RESET_SN:
                         gotoNextTestModule();
                         break;
                     case TEST_MODE_TEMP:
@@ -649,12 +664,9 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                                     payload.put("opt", 1);
                                     PetkitSocketInstance.getInstance().sendString(K2Utils.getRequestForKeyAndPayload(161, payload));
                                 } else if (opt == 1) {
-                                    mDescTextView.append("\n写入SN成功");
-                                    K2Utils.removeTempDeviceInfo(mDevice);
-                                    K2Utils.storeSucceedDeviceInfo(mDevice, mAgeingResult);
+                                    mDescTextView.append("\n进行读取校验");
 
-                                    mK2TestUnits.get(mCurTestStep).setResult(TEST_PASS);
-                                    refershBtnView();
+                                    PetkitSocketInstance.getInstance().sendString(K2Utils.getDefaultRequestForKey(110));
                                 } else {
                                     mDescTextView.append("\n opt参数错误！值为：" + opt);
                                 }
@@ -702,6 +714,33 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 } else {
                     startSetSn();
                 }
+                break;
+            case 110:
+                try {
+                    jsonObject = JSONUtils.getJSONObject(data);
+                    String mac = null, sn = null;
+                    if (!jsonObject.isNull("mac")) {
+                        mac = jsonObject.getString("mac");
+                    }
+                    if (!jsonObject.isNull("sn")) {
+                        sn = jsonObject.getString("sn");
+                    }
+
+                    if (mDevice.getMac() != null && mDevice.getMac().equalsIgnoreCase(mac) &&
+                            mDevice.getSn() != null && mDevice.getSn().equalsIgnoreCase(sn)) {
+                        mDescTextView.append("\n写入SN成功");
+                        K2Utils.removeTempDeviceInfo(mDevice);
+                        K2Utils.storeSucceedDeviceInfo(mDevice, mAgeingResult);
+
+                        mK2TestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                        refershBtnView();
+                    } else {
+                        mDescTextView.append("\n读取校验失败");
+                    }
+                } catch (JSONException e) {
+                    mDescTextView.append("\n读取校验失败");
+                }
+                break;
         }
     }
 

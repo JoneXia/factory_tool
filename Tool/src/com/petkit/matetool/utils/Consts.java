@@ -128,9 +128,13 @@ public class Consts {
 	 v1.2说明：
 	 1. 新增工具内切换WiFi的功能，按设备类型自动过滤WiFi
 	 2. 修复自动横屏问题
+
+	 v1.3说明：
+	 1. 写入SN成功以后增加读取校验过程，确保写入和读取完全一致。
+	 2. 维修中增加重写SN
 	 *
 	 */
-	public static final String TOOL_K2_VERSION	= "1.2";
+	public static final String TOOL_K2_VERSION	= "1.3";
 
 
 	/**
