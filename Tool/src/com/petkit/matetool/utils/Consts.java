@@ -139,10 +139,10 @@ public class Consts {
 
 	/**
 	 *
-	 * 0.2说明:
-	 *
+	 * 1.0说明:
+	 * 1. 支持小佩全自动猫厕所（T3）产测全流程
 	 *
 	 */
-	public static final String TOOL_T3_VERSION	= "0.2";
+	public static final String TOOL_T3_VERSION	= "1.0";
 
 }

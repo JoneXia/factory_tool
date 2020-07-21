@@ -63,7 +63,8 @@ public class T3Utils {
         TEST_MODE_BALANCE,  //秤读取
         TEST_MODE_DEODORANT, //雾化器
         TEST_MODE_PYROELECTRIC, //红外热释
-        TEST_MODE_HOLZER, //沙桶霍尔
+        TEST_MODE_HOLZER, //滚筒霍尔
+        TEST_MODE_COVER_HOLZER, //上盖霍尔
         TEST_MODE_BT,   //蓝牙
         TEST_MODE_TIME, //时钟
         TEST_MODE_MAC,
@@ -161,9 +162,10 @@ public class T3Utils {
                 results.add(new T3TestUnit(T3TestModes.TEST_MODE_BALANCE, "秤读取", 5, 3));
             }
 
-            results.add(new T3TestUnit(T3TestModes.TEST_MODE_DEODORANT, "雾化器", 6, 1));
+            results.add(new T3TestUnit(T3TestModes.TEST_MODE_DEODORANT, "除臭模组", 6, 1));
             results.add(new T3TestUnit(T3TestModes.TEST_MODE_PYROELECTRIC, "红外热释", 7, 1));
-            results.add(new T3TestUnit(T3TestModes.TEST_MODE_HOLZER, "沙桶霍尔", 9, 1));
+            results.add(new T3TestUnit(T3TestModes.TEST_MODE_HOLZER, "滚筒霍尔", 9, 1));
+            results.add(new T3TestUnit(T3TestModes.TEST_MODE_COVER_HOLZER, "上盖霍尔", 12, 1));
 
             if (type != TYPE_TEST_PARTIALLY) {
                 if (type == TYPE_TEST) {
@@ -173,8 +175,8 @@ public class T3Utils {
             }
 
             if (type == TYPE_MAINTAIN) {        //擦除ID选项先关闭，暂不开放
-                results.add(new T3TestUnit(T3TestModes.TEST_MODE_RESET_SN, "重写SN", 97, 1));
-                results.add(new T3TestUnit(T3TestModes.TEST_MODE_RESET_ID, "擦除ID", 98, 1));
+//                results.add(new T3TestUnit(T3TestModes.TEST_MODE_RESET_SN, "重写SN", 97, 1));
+//                results.add(new T3TestUnit(T3TestModes.TEST_MODE_RESET_ID, "擦除ID", 98, 1));
             }
         }
         return results;

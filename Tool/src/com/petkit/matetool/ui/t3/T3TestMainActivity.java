@@ -162,13 +162,14 @@ public class T3TestMainActivity extends BaseActivity implements PetkitSocketInst
                 break;
             case R.id.test_auto:
                 if (testComplete) {
-                    LoadDialog.show(this);
-                    HashMap<String, Object> params = new HashMap<>();
-                    params.put("mac", mCurDevice.getMac());
-                    params.put("state", getTestTypeCode());
-                    params.put("opt", 1);
-
-                    PetkitSocketInstance.getInstance().sendString(T3Utils.getRequestForKeyAndPayload(160, params));
+//                    LoadDialog.show(this);
+//                    HashMap<String, Object> params = new HashMap<>();
+//                    params.put("mac", mCurDevice.getMac());
+//                    params.put("state", getTestTypeCode());
+//                    params.put("opt", 1);
+//
+//                    PetkitSocketInstance.getInstance().sendString(T3Utils.getRequestForKeyAndPayload(160, params));
+                    finish();
                 } else {
                     startTestDetail(true, 0);
                 }
@@ -185,13 +186,14 @@ public class T3TestMainActivity extends BaseActivity implements PetkitSocketInst
                     .setNegativeButton(R.string.OK, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            LoadDialog.show(T3TestMainActivity.this);
-                            HashMap<String, Object> params = new HashMap<>();
-                            params.put("mac", mCurDevice.getMac());
-                            params.put("state", getTestTypeCode());
-                            params.put("opt", 1);
-
-                            PetkitSocketInstance.getInstance().sendString(T3Utils.getRequestForKeyAndPayload(160, params));
+//                            LoadDialog.show(T3TestMainActivity.this);
+//                            HashMap<String, Object> params = new HashMap<>();
+//                            params.put("mac", mCurDevice.getMac());
+//                            params.put("state", getTestTypeCode());
+//                            params.put("opt", 1);
+//
+//                            PetkitSocketInstance.getInstance().sendString(T3Utils.getRequestForKeyAndPayload(160, params));
+                            finish();
                         }
                     })
                     .show();

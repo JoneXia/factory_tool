@@ -297,12 +297,12 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
         tempRadioButton = (RadioButton) findViewById(R.id.feeder_mini);
         tempRadioButton.setText("喂食器Mini（D2）" + " v" + TOOL_FEEDER_MINI_VERSION);
 
-        tempRadioButton = (RadioButton) findViewById(R.id.toilet);
-        tempRadioButton.setVisibility(View.GONE);
-        tempRadioButton.setText("自动猫厕所（T3）" + " v" + TOOL_T3_VERSION);
-
         tempRadioButton = (RadioButton) findViewById(R.id.k2);
         tempRadioButton.setText("净味器（K2）" + " v" + TOOL_K2_VERSION);
+
+        tempRadioButton = (RadioButton) findViewById(R.id.toilet);
+//        tempRadioButton.setVisibility(View.GONE);
+        tempRadioButton.setText("自动猫厕所（T3）" + " v" + TOOL_T3_VERSION);
     }
 
     private void registerBoradcastReceiver() {

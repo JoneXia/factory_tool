@@ -30,6 +30,7 @@ import com.petkit.matetool.R;
 import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.DeviceModuleStateStruct;
 import com.petkit.matetool.model.Tester;
+import com.petkit.matetool.ui.K2.utils.K2Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.ui.print.PrintActivity;
@@ -48,8 +49,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-import static com.petkit.matetool.ui.t3.utils.T3Utils.T3TestModes.TEST_MODE_AUTO;
 import static com.petkit.matetool.ui.t3.utils.T3Utils.T3TestModes.TEST_MODE_AGEINGRESULT;
+import static com.petkit.matetool.ui.t3.utils.T3Utils.T3TestModes.TEST_MODE_AUTO;
 import static com.petkit.matetool.ui.utils.PrintUtils.isPrinterConnected;
 import static com.petkit.matetool.utils.Globals.TEST_FAILED;
 import static com.petkit.matetool.utils.Globals.TEST_PASS;
@@ -195,6 +196,9 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
             case TEST_MODE_HOLZER:
                 mPromptTextView.setText("需分别测试锁止和不锁止！");
                 break;
+            case TEST_MODE_COVER_HOLZER:
+                mPromptTextView.setText("需分别测试上盖盖上与取下！");
+                break;
             case TEST_MODE_BT:
                 mPromptTextView.setText("需测试蓝牙正常工作！");
                 break;
@@ -328,7 +332,15 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         startActivity(PrintActivity.class);
                         break;
                     case TEST_MODE_AGEINGRESULT:
+                        mT3TestUnits.get(mCurTestStep).setResult(TEST_FAILED);
+                        gotoNextTestModule();
+                        break;
                     case TEST_MODE_BALANCE:
+                        params = new HashMap<>();
+                        params.put("module", mT3TestUnits.get(mCurTestStep).getModule());
+                        params.put("state", 0);
+                        PetkitSocketInstance.getInstance().sendString(T3Utils.getRequestForKeyAndPayload(163, params));
+
                         mT3TestUnits.get(mCurTestStep).setResult(TEST_FAILED);
                         gotoNextTestModule();
                         break;
@@ -346,13 +358,22 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         mT3TestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         gotoNextTestModule();
                         break;
+                    case TEST_MODE_BALANCE:
+                        HashMap<String, Object> params = new HashMap<>();
+                        params.put("module", mT3TestUnits.get(mCurTestStep).getModule());
+                        params.put("state", 0);
+                        PetkitSocketInstance.getInstance().sendString(T3Utils.getRequestForKeyAndPayload(163, params));
+
+                        mT3TestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                        gotoNextTestModule();
+                        break;
                     default:
                         isWriteEndCmd = true;
                         if (mT3TestUnits.get(mCurTestStep).getResult() != TEST_PASS) {
                             mT3TestUnits.get(mCurTestStep).setResult(TEST_FAILED);
                         }
 
-                        HashMap<String, Object> params = new HashMap<>();
+                        params = new HashMap<>();
                         params.put("module", mT3TestUnits.get(mCurTestStep).getModule());
                         params.put("state", 0);
                         PetkitSocketInstance.getInstance().sendString(T3Utils.getRequestForKeyAndPayload(163, params));
@@ -649,11 +670,11 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                                     mTempResult = mTempResult | 0x1;
                                     break;
                                 case 1:
-                                    desc.append("2KG模式");
+                                    desc.append("10KG模式");
                                     mTempResult = mTempResult | 0x10;
                                     break;
                                 case 2:
-                                    desc.append("4KG模式");
+                                    desc.append("20KG模式");
                                     mTempResult = mTempResult | 0x100;
                                     break;
                                 case 3:
@@ -718,6 +739,16 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                             result = true;
                         }
                         break;
+                    case 12:
+                        if (moduleStateStruct.getState() > 0) {
+                            mTempResult = mTempResult | 0x1;
+                            desc.append("\n").append("上盖：").append("已安装");
+                        } else {
+                            mTempResult = mTempResult | 0x10;
+                            desc.append("\n").append("上盖：").append("已打开");
+                        }
+                        result = mTempResult == 0x11;
+                        break;
                 }
                 mDescTextView.append(desc.toString());
                 new Handler().post(new Runnable() {
@@ -743,18 +774,26 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 jsonObject = JSONUtils.getJSONObject(data);
                 if (!jsonObject.isNull("state")) {
                     try {
+                        int opt = jsonObject.getInt("opt");
                         switch (jsonObject.getInt("state")) {
                             case 0:
                                 mDescTextView.append("\n写入命令失败");
                                 break;
                             case 1:
-                                mDescTextView.append("\n写入SN成功");
+                                if (opt == 0) {
+                                    mDescTextView.append("\n确认写入状态");
+                                    HashMap<String, Object> payload = new HashMap<>();
+                                    payload.put("mac", mDevice.getMac());
+                                    payload.put("sn", mDevice.getSn());
+                                    payload.put("opt", 1);
+                                    PetkitSocketInstance.getInstance().sendString(K2Utils.getRequestForKeyAndPayload(161, payload));
+                                } else if (opt == 1) {
+                                    mDescTextView.append("\n进行读取校验");
 
-                                T3Utils.removeTempDeviceInfo(mDevice);
-                                T3Utils.storeSucceedDeviceInfo(mDevice, mAgeingResult);
-
-                                mT3TestUnits.get(mCurTestStep).setResult(TEST_PASS);
-                                refershBtnView();
+                                    PetkitSocketInstance.getInstance().sendString(K2Utils.getDefaultRequestForKey(110));
+                                } else {
+                                    mDescTextView.append("\n opt参数错误！值为：" + opt);
+                                }
                                 break;
                             case 2:
                                 mDescTextView.append("\n写入SN失败");
@@ -800,6 +839,32 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                     startSetSn();
                 }
                 break;
+            case 110:
+                try {
+                    jsonObject = JSONUtils.getJSONObject(data);
+                    String mac = null, sn = null;
+                    if (!jsonObject.isNull("mac")) {
+                        mac = jsonObject.getString("mac");
+                    }
+                    if (!jsonObject.isNull("sn")) {
+                        sn = jsonObject.getString("sn");
+                    }
+
+                    if (mDevice.getMac() != null && mDevice.getMac().equalsIgnoreCase(mac) &&
+                            mDevice.getSn() != null && mDevice.getSn().equalsIgnoreCase(sn)) {
+                        mDescTextView.append("\n写入SN成功");
+                        T3Utils.removeTempDeviceInfo(mDevice);
+                        T3Utils.storeSucceedDeviceInfo(mDevice, mAgeingResult);
+
+                        mT3TestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                        refershBtnView();
+                    } else {
+                        mDescTextView.append("\n读取校验失败");
+                    }
+                } catch (JSONException e) {
+                    mDescTextView.append("\n读取校验失败");
+                }
+                break;
         }
     }
 
@@ -836,12 +901,14 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 if (mT3TestUnits.get(mCurTestStep).getState() == 2) {
                     payload.put("force", 100);
                 }
+                payload.put("opt", 0);
                 PetkitSocketInstance.getInstance().sendString(T3Utils.getRequestForKeyAndPayload(161, payload));
             }
         } else {
             HashMap<String, Object> params = new HashMap<>();
             params.put("mac", mDevice.getMac());
             params.put("sn", mDevice.getSn());
+            params.put("opt", 0);
             PetkitSocketInstance.getInstance().sendString(T3Utils.getRequestForKeyAndPayload(161, params));
         }
     }
@@ -930,7 +997,7 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 HashMap<String, Object> payload = new HashMap<>();
                 payload.put("mac", mac);
                 payload.put("sn", sn);
-                payload.put("opt", 1);
+                payload.put("opt", 0);
                 payload.put("force", 100);
                 PetkitSocketInstance.getInstance().sendString(T3Utils.getRequestForKeyAndPayload(161, payload));
             }
@@ -1048,6 +1115,7 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                             case BLEConsts.ERROR_SYNC_INIT_FAIL:
                             case BLEConsts.ERROR_DEVICE_ID_NULL:
                                 mDescTextView.append("\n蓝牙搜索结束");
+//                                stopBleScan();
                                 if (isInAutoUnits) {
                                     gotoNextAutoUnit();
                                 }

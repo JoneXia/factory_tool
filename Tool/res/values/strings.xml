@@ -332,7 +332,7 @@
 	<string name="s_drt_lack">No more concentrated solution remaining, please refill</string>
 	<string name="s_bx_full">Waste collection bin is full, please empty</string>
 	<string name="s_around">Cat has entered detection area</string>
-	<string name="s_pet_w">Cat weight</string>
+	<string name="s_pet_w_r">Cat weight</string>
 	<string name="s_pet_in">Cat is in the litter box</string>
 	<string name="s_15min">Initiate cleaning in 15 minutes</string>
 	<string name="s_14min">Initiate cleaning in 14 minutes</string>
@@ -348,6 +348,7 @@
 	<string name="s_4min">Initiate cleaning in 4 minutes</string>
 	<string name="s_3min">Initiate cleaning in 3 minutes</string>
 	<string name="s_2min">Initiate cleaning in 2 minutes</string>
+	<string name="s_pet_w">Add weight</string>
 
 
 </resources>
