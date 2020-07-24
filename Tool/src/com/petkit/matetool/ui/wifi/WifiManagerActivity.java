@@ -2,6 +2,7 @@ package com.petkit.matetool.ui.wifi;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.ScanResult;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -12,6 +13,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -30,7 +32,7 @@ public class WifiManagerActivity extends BaseListActivity {
 
     private String mWifiFilterString;
     private WifiUtils mWifiUtils;
-    private List<String> mWifiList;
+    private List<ScanResult> mWifiList;
 
     private WifisListAdapter mAdapter;
 
@@ -88,7 +90,9 @@ public class WifiManagerActivity extends BaseListActivity {
 
     @Override
     protected void onRefresh() {
-
+        refreshWifiList();
+        mAdapter.notifyDataSetChanged();
+        mListView.onRefreshComplete();
     }
 
     @Override
@@ -104,7 +108,7 @@ public class WifiManagerActivity extends BaseListActivity {
             @Override
             public void run() {
                 super.run();
-                final boolean result = mWifiUtils.connectWifiTest(mAdapter.getItem(position), "");
+                final boolean result = mWifiUtils.connectWifiTest(mAdapter.getItem(position).SSID, "");
 
                 runOnUiThread(new Runnable() {
                     @Override
@@ -136,14 +140,14 @@ public class WifiManagerActivity extends BaseListActivity {
     }
 
     private void refreshWifiList() {
-        List<String> wifis = mWifiUtils.getScanWifiResult();
+        List<ScanResult> wifis = mWifiUtils.getScanWifiResults();
 
         if (TextUtils.isEmpty(mWifiFilterString)) {
             mWifiList = wifis;
         } else {
             mWifiList = new ArrayList<>();
-            for (String ssid : wifis) {
-                if (!TextUtils.isEmpty(ssid) && ssid.contains(mWifiFilterString)) {
+            for (ScanResult ssid : wifis) {
+                if (ssid != null && ssid.SSID.contains(mWifiFilterString)) {
                     mWifiList.add(ssid);
                 }
             }
@@ -161,11 +165,11 @@ public class WifiManagerActivity extends BaseListActivity {
 
         @Override
         public int getCount() {
-            return mWifiList.size();
+            return mWifiList == null ? 0 : mWifiList.size();
         }
 
         @Override
-        public String getItem(int position) {
+        public ScanResult getItem(int position) {
             return mWifiList.get(position);
         }
 
@@ -183,19 +187,36 @@ public class WifiManagerActivity extends BaseListActivity {
                 convertView = LayoutInflater.from(WifiManagerActivity.this).inflate(R.layout.adapter_wifi_list, parent, false);
                 viewHolder = new ViewHolder();
                 viewHolder.name = (TextView) convertView.findViewById(R.id.wifi_name);
+                viewHolder.rssi = (ImageView) convertView.findViewById(R.id.wifi_rssi);
 
                 convertView.setTag(viewHolder);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
 
-            viewHolder.name.setText(mWifiList.get(position));
+            viewHolder.name.setText(mWifiList.get(position).SSID);
+            switch (mWifiList.get(position).level) {
+                case 1:
+                    viewHolder.rssi.setImageResource(R.drawable.ic_wifi_1);
+                    break;
+                case 2:
+                    viewHolder.rssi.setImageResource(R.drawable.ic_wifi_2);
+                    break;
+                case 3:
+                    viewHolder.rssi.setImageResource(R.drawable.ic_wifi_3);
+                    break;
+                default:
+                    viewHolder.rssi.setImageResource(R.drawable.ic_wifi_4);
+                    break;
+            }
+
 
             return convertView;
         }
 
         class ViewHolder {
             TextView name;
+            ImageView rssi;
         }
     }
 

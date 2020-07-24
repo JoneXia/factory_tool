@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Timer;
 
 import static android.content.Context.WIFI_SERVICE;
+import static android.net.wifi.WifiManager.WIFI_STATE_DISABLING;
 
 public class WifiUtils {
 	// 上下文Context对象
@@ -86,6 +87,23 @@ public class WifiUtils {
 		}
 		return ssids;
 	}
+
+	/**
+	 * 搜索附近的热点信息，并返回所有热点为信息的SSID集合数据
+	 */
+	public List<ScanResult> getScanWifiResults() {
+		if (mWifiManager.getWifiState() == WIFI_STATE_DISABLING
+				|| mWifiManager.getWifiState() == WifiManager.WIFI_STATE_DISABLED) {
+			mWifiManager.setWifiEnabled(true);
+		}
+		// 开始扫描热点
+		mWifiManager.disconnect();
+		mWifiManager.reconnect();
+
+		mWifiManager.startScan();
+		return mWifiManager.getScanResults();
+	}
+
 
 	/**
 	 * 连接wifi 参数：wifi的ssid及wifi的密码
