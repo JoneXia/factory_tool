@@ -1139,12 +1139,23 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         if (deviceInfo.getAddress()!=null && deviceInfo.getAddress().equalsIgnoreCase(bleMac)){
 
                             mDescTextView.append("\n搜索到设备，信号为： " + deviceInfo.getRssi());
-                            mDescTextView.append("\n蓝牙测试完成");
-                            if (isInAutoUnits) {
-                                mT3AutoTestUnits.get(mAutoUnitStep).setResult(TEST_PASS);
+
+                            if (deviceInfo.getRssi() >= -60) {
+                                mDescTextView.append("\n蓝牙测试完成");
+                                if (isInAutoUnits) {
+                                    mT3AutoTestUnits.get(mAutoUnitStep).setResult(TEST_PASS);
+                                } else {
+                                    mT3TestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                                    refershBtnView();
+                                }
                             } else {
-                                mT3TestUnits.get(mCurTestStep).setResult(TEST_PASS);
-                                refershBtnView();
+                                mDescTextView.append("\n蓝牙信号弱，请检查！");
+                                if (isInAutoUnits) {
+                                    mT3AutoTestUnits.get(mAutoUnitStep).setResult(TEST_FAILED);
+                                } else {
+                                    mT3TestUnits.get(mCurTestStep).setResult(TEST_FAILED);
+                                    refershBtnView();
+                                }
                             }
 
                             stopBleScan();
