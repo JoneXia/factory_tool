@@ -59,7 +59,8 @@ public class T3Utils {
         TEST_MODE_KEY,  //按键
         TEST_MODE_IR,   //红外
         TEST_MODE_MOTOR,    //电机
-        TEST_MODE_BALANCE_SET,  //秤校准
+        TEST_MODE_BALANCE_SET,  //半成品秤校准
+        TEST_MODE_BALANCE_SET_2,  //成品秤校准
         TEST_MODE_BALANCE,  //秤读取
         TEST_MODE_DEODORANT, //雾化器
         TEST_MODE_PYROELECTRIC, //红外热释
@@ -154,13 +155,15 @@ public class T3Utils {
             results.add(new T3TestUnit(T3TestModes.TEST_MODE_LED, "显示屏和蜂鸣器测试", 1, 1));
             results.add(new T3TestUnit(T3TestModes.TEST_MODE_KEY, "按键测试", 2, 1));
             results.add(new T3TestUnit(T3TestModes.TEST_MODE_IR, "红外测试", 3, 1));
-            results.add(new T3TestUnit(T3TestModes.TEST_MODE_MOTOR, "马达测试", 4, 1));
 
-            if (type != TYPE_CHECK) {
+            if (type == TYPE_TEST) {
+                results.add(new T3TestUnit(T3TestModes.TEST_MODE_BALANCE_SET_2, "秤校准", 5, 1));
+            } else if (type != TYPE_CHECK) {
                 results.add(new T3TestUnit(T3TestModes.TEST_MODE_BALANCE_SET, "秤校准", 5, 1));
             } else {
                 results.add(new T3TestUnit(T3TestModes.TEST_MODE_BALANCE, "秤读取", 5, 3));
             }
+            results.add(new T3TestUnit(T3TestModes.TEST_MODE_MOTOR, "马达测试", 4, 1));
 
             results.add(new T3TestUnit(T3TestModes.TEST_MODE_DEODORANT, "除臭模组", 6, 1));
             results.add(new T3TestUnit(T3TestModes.TEST_MODE_PYROELECTRIC, "红外热释", 7, 1));

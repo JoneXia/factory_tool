@@ -313,9 +313,9 @@
     <string name="s_dmp">倾空猫砂</string>
     <string name="s_dmp_i">正在倾空</string>
     <string name="s_dmp_ovr">倾空完成</string>
-    <string name="s_smth">抚平猫砂</string>
-    <string name="s_smth_ing">正在抚平</string>
-    <string name="s_smth_ovr">抚平完成</string>
+    <string name="s_smth">平整猫砂</string>
+    <string name="s_smth_ing">正在平整</string>
+    <string name="s_smth_ovr">平整完成</string>
     <string name="s_bk2main">返回首页</string>
     <string name="s_ota_ing">正在升级</string>
     <string name="s_err_tip">设备故障</string>

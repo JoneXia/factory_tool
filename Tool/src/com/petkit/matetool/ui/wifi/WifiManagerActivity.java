@@ -187,6 +187,7 @@ public class WifiManagerActivity extends BaseListActivity {
                 convertView = LayoutInflater.from(WifiManagerActivity.this).inflate(R.layout.adapter_wifi_list, parent, false);
                 viewHolder = new ViewHolder();
                 viewHolder.name = (TextView) convertView.findViewById(R.id.wifi_name);
+                viewHolder.rssiValue = (TextView) convertView.findViewById(R.id.tv_wifi_rssi);
                 viewHolder.rssi = (ImageView) convertView.findViewById(R.id.wifi_rssi);
 
                 convertView.setTag(viewHolder);
@@ -195,27 +196,28 @@ public class WifiManagerActivity extends BaseListActivity {
             }
 
             viewHolder.name.setText(mWifiList.get(position).SSID);
-            switch (mWifiList.get(position).level) {
-                case 1:
-                    viewHolder.rssi.setImageResource(R.drawable.ic_wifi_1);
-                    break;
-                case 2:
-                    viewHolder.rssi.setImageResource(R.drawable.ic_wifi_2);
-                    break;
-                case 3:
-                    viewHolder.rssi.setImageResource(R.drawable.ic_wifi_3);
-                    break;
-                default:
-                    viewHolder.rssi.setImageResource(R.drawable.ic_wifi_4);
-                    break;
-            }
+            viewHolder.rssiValue.setText(mWifiList.get(position).level + "");
+//            switch (mWifiList.get(position).level) {
+//                case 1:
+//                    viewHolder.rssi.setImageResource(R.drawable.ic_wifi_1);
+//                    break;
+//                case 2:
+//                    viewHolder.rssi.setImageResource(R.drawable.ic_wifi_2);
+//                    break;
+//                case 3:
+//                    viewHolder.rssi.setImageResource(R.drawable.ic_wifi_3);
+//                    break;
+//                default:
+//                    viewHolder.rssi.setImageResource(R.drawable.ic_wifi_4);
+//                    break;
+//            }
 
 
             return convertView;
         }
 
         class ViewHolder {
-            TextView name;
+            TextView name, rssiValue;
             ImageView rssi;
         }
     }

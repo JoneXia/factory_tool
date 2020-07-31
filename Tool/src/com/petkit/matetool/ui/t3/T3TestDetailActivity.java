@@ -51,6 +51,7 @@ import java.util.HashMap;
 
 import static com.petkit.matetool.ui.t3.utils.T3Utils.T3TestModes.TEST_MODE_AGEINGRESULT;
 import static com.petkit.matetool.ui.t3.utils.T3Utils.T3TestModes.TEST_MODE_AUTO;
+import static com.petkit.matetool.ui.t3.utils.T3Utils.T3TestModes.TEST_MODE_BALANCE_SET;
 import static com.petkit.matetool.ui.utils.PrintUtils.isPrinterConnected;
 import static com.petkit.matetool.utils.Globals.TEST_FAILED;
 import static com.petkit.matetool.utils.Globals.TEST_PASS;
@@ -182,6 +183,7 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 mPromptTextView.setText("观察秤数据，手动判断是否正常！");
                 break;
             case TEST_MODE_BALANCE_SET:
+            case TEST_MODE_BALANCE_SET_2:
                 mPromptTextView.setText("秤校准，请按照提示操作！");
                 break;
             case TEST_MODE_MOTOR:
@@ -670,11 +672,11 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                                     mTempResult = mTempResult | 0x1;
                                     break;
                                 case 1:
-                                    desc.append("10KG模式");
+                                    desc.append(mT3TestUnits.get(mCurTestStep).getType() == TEST_MODE_BALANCE_SET ? "10KG模式" : "4KG模式");
                                     mTempResult = mTempResult | 0x10;
                                     break;
                                 case 2:
-                                    desc.append("20KG模式");
+                                    desc.append(mT3TestUnits.get(mCurTestStep).getType() == TEST_MODE_BALANCE_SET ? "20KG模式" : "8KG模式");
                                     mTempResult = mTempResult | 0x100;
                                     break;
                                 case 3:

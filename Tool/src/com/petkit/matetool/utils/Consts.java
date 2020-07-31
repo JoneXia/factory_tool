@@ -142,7 +142,12 @@ public class Consts {
 	 * 1.0说明:
 	 * 1. 支持小佩全自动猫厕所（T3）产测全流程
 	 *
+	 * 1.1说明：
+	 * 1. 调整秤校准和马达测试的顺序
+	 * 2. 优化秤校准过程，区分半成品、成品
+	 * 3. WiFi选择界面增加信号强度显示
+	 *
 	 */
-	public static final String TOOL_T3_VERSION	= "1.0";
+	public static final String TOOL_T3_VERSION	= "1.1";
 
 }
