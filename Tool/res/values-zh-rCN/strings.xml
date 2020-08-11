@@ -333,6 +333,7 @@
     <string name="s_bx_full">集便盒已满，请清理</string>
     <string name="s_around">猫已靠近检测区域</string>
     <string name="s_pet_w_r">猫咪体重</string>
+    <string name="s_pet_w">增加重量</string>
     <string name="s_pet_in">猫咪已进入</string>
     <string name="s_15min">15分钟后开始清理</string>
     <string name="s_14min">14分钟后开始清理</string>
@@ -348,7 +349,6 @@
     <string name="s_4min">4分钟后开始清理</string>
     <string name="s_3min">3分钟后开始清理</string>
     <string name="s_2min">2分钟后开始清理</string>
-    <string name="s_pet_w">增加重量</string>
 
 
 </resources>

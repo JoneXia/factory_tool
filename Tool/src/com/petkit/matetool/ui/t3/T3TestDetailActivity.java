@@ -855,7 +855,7 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                     if (mDevice.getMac() != null && mDevice.getMac().equalsIgnoreCase(mac) &&
                             mDevice.getSn() != null && mDevice.getSn().equalsIgnoreCase(sn)) {
                         mDescTextView.append("\n写入SN成功");
-                        T3Utils.removeTempDeviceInfo(mDevice);
+//                        T3Utils.removeTempDeviceInfo(mDevice);
                         T3Utils.storeSucceedDeviceInfo(mDevice, mAgeingResult);
 
                         mT3TestUnits.get(mCurTestStep).setResult(TEST_PASS);
@@ -895,7 +895,7 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 mDevice.setCreation(System.currentTimeMillis());
 
                 //写入设备前先存储到临时数据区，写入成功后需删除
-                T3Utils.storeTempDeviceInfo(mDevice);
+//                T3Utils.storeTempDeviceInfo(mDevice);
 
                 HashMap<String, Object> payload = new HashMap<>();
                 payload.put("mac", mDevice.getMac());
@@ -994,7 +994,7 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 }
                 mDevice.setSn(sn);
 
-                T3Utils.storeTempDeviceInfo(mDevice);
+//                T3Utils.storeTempDeviceInfo(mDevice);
 
                 HashMap<String, Object> payload = new HashMap<>();
                 payload.put("mac", mac);

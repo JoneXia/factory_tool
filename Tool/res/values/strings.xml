@@ -303,12 +303,12 @@
 	<string name="s_rst">Reset</string>
 	<string name="s_spd">Paused</string>
 	<string name="s_rst_i">Resetting</string>
-	<string name="s_rst_ovr">Reset complete</string>
+	<string name="s_rst_ovr">Reset completed</string>
 	<string name="s_od_rmv">Deodorize now</string>
 	<string name="s_od_rmvi">Deodorizing…</string>
 	<string name="s_od_rmvd">Deodorized</string>
 	<string name="s_cln">Clean now</string>
-	<string name="s_cln_i">Clean</string>
+	<string name="s_cln_i">Cleaning</string>
 	<string name="s_cln_ovr">Cleaned</string>
 	<string name="s_dmp">Empty cat litter</string>
 	<string name="s_dmp_i">Emptying</string>
@@ -318,21 +318,22 @@
 	<string name="s_smth_ovr">Leveled</string>
 	<string name="s_bk2main">Return to homepage</string>
 	<string name="s_ota_ing">Upgrading</string>
-	<string name="s_err_tip">Equipment failure</string>
+	<string name="s_err_tip">Device failure</string>
 	<string name="s_litter">Remaining cat litter</string>
 	<string name="s_cln_soon">Preparing to clean</string>
 	<string name="s_cali">Calibrate immediately</string>
 	<string name="s_cali_ing">Calibrating</string>
-	<string name="s_cali_ovr">Calibrating complete</string>
-	<string name="s_err_app">Equipment failure, check the details in the app</string>
-	<string name="s_err_i_1">Inner barrel not locked!</string>
-	<string name="s_err_i_2">Lid is not closed!</string>
-	<string name="s_sfty_spd">Unable to complete operation</string>
-	<string name="s_lt_lack">Not enough cat litter, please add some</string>
-	<string name="s_drt_lack">No more concentrated solution remaining, please refill</string>
+	<string name="s_cali_ovr">Calibrating completed</string>
+	<string name="s_err_app">Device failure, check the details in the app</string>
+	<string name="s_err_i_1">Cylinder unlocked!</string>
+	<string name="s_err_i_2">Upper cover not closed!</string>
+	<string name="s_sfty_spd">Can not complete the operation</string>
+	<string name="s_lt_lack">Insufficient cat litter, please add more</string>
+	<string name="s_drt_lack">No more purifying liquid remaining, please refill</string>
 	<string name="s_bx_full">Waste collection bin is full, please empty</string>
-	<string name="s_around">Cat has entered detection area</string>
+	<string name="s_around">The cat has approached the detection zone</string>
 	<string name="s_pet_w_r">Cat weight</string>
+	<string name="s_pet_w">Add weight</string>
 	<string name="s_pet_in">Cat is in the litter box</string>
 	<string name="s_15min">Initiate cleaning in 15 minutes</string>
 	<string name="s_14min">Initiate cleaning in 14 minutes</string>
@@ -348,7 +349,6 @@
 	<string name="s_4min">Initiate cleaning in 4 minutes</string>
 	<string name="s_3min">Initiate cleaning in 3 minutes</string>
 	<string name="s_2min">Initiate cleaning in 2 minutes</string>
-	<string name="s_pet_w">Add weight</string>
 
 
 </resources>

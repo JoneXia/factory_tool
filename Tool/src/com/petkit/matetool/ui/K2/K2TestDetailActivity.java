@@ -729,7 +729,7 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                     if (mDevice.getMac() != null && mDevice.getMac().equalsIgnoreCase(mac) &&
                             mDevice.getSn() != null && mDevice.getSn().equalsIgnoreCase(sn)) {
                         mDescTextView.append("\n写入SN成功");
-                        K2Utils.removeTempDeviceInfo(mDevice);
+//                        K2Utils.removeTempDeviceInfo(mDevice);
                         K2Utils.storeSucceedDeviceInfo(mDevice, mAgeingResult);
 
                         mK2TestUnits.get(mCurTestStep).setResult(TEST_PASS);

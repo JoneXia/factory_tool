@@ -267,49 +267,6 @@ public class T3Utils {
     }
 
     /**
-     * 生成的SN时，先存储临时数据，SN成功写入设备后从临时数据中删除
-     *
-     * @param device 猫厕所
-     */
-    public static void storeTempDeviceInfo(Device device) {
-        for (Device temp : mTempDevices) {
-            if (temp.equals(device)) {
-                return;
-            }
-        }
-
-        mTempDevices.add(device);
-    }
-
-    /**
-     * 移除临时数据中的device
-     * @param device device
-     */
-    public static void removeTempDeviceInfo(Device device) {
-        for (Device temp : mTempDevices) {
-            if (temp.equals(device)) {
-                mTempDevices.remove(temp);
-                return;
-            }
-        }
-    }
-
-    /**
-     * 检查临时数据中是否存在Device
-     * @param device
-     * @return
-     */
-    public static boolean isDeviceInTemp(Device device) {
-        for (Device temp : mTempDevices) {
-            if (temp.equals(device)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * 存储测试完成的设备信息
      * @param device 猫厕所
      */
