@@ -46,7 +46,7 @@ import static com.petkit.matetool.ui.t3.utils.BitmapFormat.BITMAP_8_BIT_COLOR;
  */
 public class T3LanguageActivity extends BaseActivity {
 
-    private String[] LocaleList = new String[]{"zh", "en"};
+    private String[] LocaleList = new String[]{"zh_CN", "en_US", "zh_TW", "es_ES", "ko_KR", "it_IT", "ja_JP", "pt_PT", "de_DE", "fr_FR", "ru_RU"};
 
 
     private Tester mTester;
@@ -108,7 +108,7 @@ public class T3LanguageActivity extends BaseActivity {
         paint.setTextAlign(Paint.Align.LEFT);
         paint.setColor(Color.WHITE);
         Typeface typeface;
-        if (new Locale(locale).equals(Locale.CHINESE)) {
+        if ("zh_CN".equalsIgnoreCase(locale) || "zh_TW".equalsIgnoreCase(locale)) {
             typeface = Typeface.createFromAsset(getAssets(), "fonts/SourceHanSansCN-Normal.ttf");
             paint.setTextSize(22);
         } else {
@@ -212,7 +212,13 @@ public class T3LanguageActivity extends BaseActivity {
 
     Resources getResourcesByLocale( Resources res, String localeName ) {
         Configuration conf = new Configuration(res.getConfiguration());
-        conf.locale = new Locale(localeName);
+        if (localeName != null && localeName.contains("_")) {
+            String[] params = localeName.split("_");
+            conf.locale = new Locale(params[0], params[1]);
+        } else {
+            conf.locale = new Locale(localeName);
+        }
+
         return new Resources(res.getAssets(), res.getDisplayMetrics(), conf);
     }
 

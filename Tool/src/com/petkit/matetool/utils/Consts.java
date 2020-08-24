@@ -147,7 +147,11 @@ public class Consts {
 	 * 2. 优化秤校准过程，区分半成品、成品
 	 * 3. WiFi选择界面增加信号强度显示
 	 *
+	 * 1.2说明：
+	 * 1. 修复部分机型偶现的闪退问题
+	 * 2. 修复偶现的错误数据上传问题
+	 *
 	 */
-	public static final String TOOL_T3_VERSION	= "1.1";
+	public static final String TOOL_T3_VERSION	= "1.2";
 
 }

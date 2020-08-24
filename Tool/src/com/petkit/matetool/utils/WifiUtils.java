@@ -203,6 +203,10 @@ public class WifiUtils {
 		List<WifiConfiguration> configs = mWifiManager.getConfiguredNetworks();
 		List<WifiConfiguration> configRomoves = new ArrayList<>();
 
+		if (configs == null) {
+			return configRomoves;
+		}
+
 		for (WifiConfiguration config : configs) {
 			if (config.SSID != null && config.SSID.equals("\"" + ssid + "\"")) {
 				configRomoves.add(config);

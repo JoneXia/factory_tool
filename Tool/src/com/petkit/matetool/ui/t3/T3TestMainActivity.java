@@ -487,7 +487,7 @@ public class T3TestMainActivity extends BaseActivity implements PetkitSocketInst
                 }
                 break;
             case 160:
-//                if(!testComplete) {
+                if(!testComplete) {
 //                    //最近写入SN后，没有及时收到写入成功的通知，需补打印条码
 //                    if(T3Utils.isDeviceInTemp(mCurDevice)) {
 //                        LogcatStorageHelper.addLog("检测到该设备写入SN时异常: " + mCurDevice.toString());
@@ -495,8 +495,8 @@ public class T3TestMainActivity extends BaseActivity implements PetkitSocketInst
 //                        T3Utils.storeSucceedDeviceInfo(mCurDevice, "");
 //                        showDeviceInTempDialog();
 //                    }
-//                    return;
-//                }
+                    return;
+                }
 
                 LoadDialog.dismissDialog();
                 JSONObject jsonObject = JSONUtils.getJSONObject(data);
