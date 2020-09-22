@@ -1,6 +1,6 @@
 package com.petkit.matetool.utils;
 
-public class Consts {
+public class Versions {
 
 	/**
 	 MATE版本说明：
@@ -153,5 +153,18 @@ public class Consts {
 	 *
 	 */
 	public static final String TOOL_T3_VERSION	= "1.2";
+
+
+	/**
+	 *
+	 * 1.0说明:
+	 * 1. 支持小佩行星喂食器（D3）产测全流程
+	 *
+	 *
+	 */
+	public static final String TOOL_D3_VERSION	= "0.1";
+
+
+
 
 }

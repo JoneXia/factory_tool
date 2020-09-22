@@ -2,6 +2,8 @@ package com.petkit.matetool.utils;
 
 import android.content.Context;
 
+import com.petkit.android.utils.PetkitLog;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -81,7 +83,7 @@ public class FileUtils {
 			
 			result = strBuffer.toString();
 		} catch (IOException e) {
-			CustomLog.e("readFileToString", e.getMessage());
+			PetkitLog.e("readFileToString", e.getMessage());
 		} 
 		return result;
 	}

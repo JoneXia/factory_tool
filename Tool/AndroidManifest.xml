@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.petkit.matetool"
-          android:versionCode="2500"
-          android:versionName="3.3.13">
+          android:versionCode="2600"
+          android:versionName="3.4.0">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
@@ -237,13 +237,39 @@
             tools:ignore="LockedOrientationActivity"/>
 
         <!-- wifi manager -->
-
         <activity
             android:name=".ui.wifi.WifiManagerActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"
             android:theme="@style/petkit_theme_dialog">
         </activity>
+
+        <!-- AQ -->
+        <activity
+            android:name=".ui.aq.AQCalculateActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
+        </activity>
+
+        <!-- D3 -->
+        <activity android:name=".ui.D3.D3StartActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".ui.D3.D3TestMainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".ui.D3.D3TestDetailActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".ui.D3.D3TestPrepareActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".ui.D3.D3ErrorListActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".ui.D3.D3StorageFileActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"/>
 
         <meta-data
             android:name="UMENG_APPKEY"

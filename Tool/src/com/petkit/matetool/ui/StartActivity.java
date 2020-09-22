@@ -21,7 +21,9 @@ import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.service.DatagramConsts;
 import com.petkit.matetool.service.DatagramProcessService;
+import com.petkit.matetool.ui.D3.D3TestPrepareActivity;
 import com.petkit.matetool.ui.K2.K2TestPrepareActivity;
+import com.petkit.matetool.ui.aq.AQCalculateActivity;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.cozy.CozyTestPrepareActivity;
 import com.petkit.matetool.ui.feeder.FeederTestPrepareActivity;
@@ -38,13 +40,14 @@ import com.petkit.matetool.widget.LoadDialog;
 
 import java.util.ArrayList;
 
-import static com.petkit.matetool.utils.Consts.TOOL_COZY;
-import static com.petkit.matetool.utils.Consts.TOOL_FEEDER_MINI_VERSION;
-import static com.petkit.matetool.utils.Consts.TOOL_FEEDER_VERSION;
-import static com.petkit.matetool.utils.Consts.TOOL_GO_VERSION;
-import static com.petkit.matetool.utils.Consts.TOOL_K2_VERSION;
-import static com.petkit.matetool.utils.Consts.TOOL_MATE_VERSION;
-import static com.petkit.matetool.utils.Consts.TOOL_T3_VERSION;
+import static com.petkit.matetool.utils.Versions.TOOL_COZY;
+import static com.petkit.matetool.utils.Versions.TOOL_D3_VERSION;
+import static com.petkit.matetool.utils.Versions.TOOL_FEEDER_MINI_VERSION;
+import static com.petkit.matetool.utils.Versions.TOOL_FEEDER_VERSION;
+import static com.petkit.matetool.utils.Versions.TOOL_GO_VERSION;
+import static com.petkit.matetool.utils.Versions.TOOL_K2_VERSION;
+import static com.petkit.matetool.utils.Versions.TOOL_MATE_VERSION;
+import static com.petkit.matetool.utils.Versions.TOOL_T3_VERSION;
 
 /**
  * 测试工具入口，设置测试设备类型和工位
@@ -113,6 +116,10 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.start_test:
+                if(!checkPermissions()) {
+                    return;
+                }
+
                 Bundle bundle;
                 switch (testStyle) {
                     case Globals.MATE_PRO:
@@ -135,108 +142,28 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
                         startService(service);
                         break;
                     case Globals.FEEDER:
-                        if(!Globals.checkPermission(this, Manifest.permission.ACCESS_WIFI_STATE) ||
-                                !Globals.checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) ||
-                                !Globals.checkPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                            bundle = new Bundle();
-                            ArrayList<PermissionBean> permissionBeens = new ArrayList<>();
-                            permissionBeens.add(new PermissionBean(Manifest.permission.ACCESS_WIFI_STATE, R.string.Permission_phone_state, R.drawable.permission_read_phone));
-                            permissionBeens.add(new PermissionBean(Manifest.permission.ACCESS_COARSE_LOCATION, R.string.Permission_location, R.drawable.permission_location));
-                            permissionBeens.add(new PermissionBean(Manifest.permission.ACCESS_FINE_LOCATION, R.string.Permission_location, R.drawable.permission_location));
-
-                            bundle.putSerializable(Globals.EXTRA_PERMISSION_CONTENT, permissionBeens);
-                            startActivityWithData(PermissionDialogActivity.class, bundle, false);
-                            return;
-                        }
-                        bundle = new Bundle();
-                        bundle.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
-                        startActivityWithData(FeederTestPrepareActivity.class, bundle, false);
+                        startActivity(FeederTestPrepareActivity.class);
                         break;
                     case Globals.COZY:
-                        if(!Globals.checkPermission(this, Manifest.permission.ACCESS_WIFI_STATE) ||
-                                !Globals.checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) ||
-                                !Globals.checkPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                            bundle = new Bundle();
-                            ArrayList<PermissionBean> permissionBeens = new ArrayList<>();
-                            permissionBeens.add(new PermissionBean(Manifest.permission.ACCESS_WIFI_STATE, R.string.Permission_phone_state, R.drawable.permission_read_phone));
-                            permissionBeens.add(new PermissionBean(Manifest.permission.ACCESS_COARSE_LOCATION, R.string.Permission_location, R.drawable.permission_location));
-                            permissionBeens.add(new PermissionBean(Manifest.permission.ACCESS_FINE_LOCATION, R.string.Permission_location, R.drawable.permission_location));
-
-                            bundle.putSerializable(Globals.EXTRA_PERMISSION_CONTENT, permissionBeens);
-                            startActivityWithData(PermissionDialogActivity.class, bundle, false);
-                            return;
-                        }
-                        bundle = new Bundle();
-                        bundle.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
-                        startActivityWithData(CozyTestPrepareActivity.class, bundle, false);
+                        startActivity(CozyTestPrepareActivity.class);
                         break;
                     case Globals.FEEDER_MINI:
-                        if(!Globals.checkPermission(this, Manifest.permission.ACCESS_WIFI_STATE) ||
-                                !Globals.checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) ||
-                                !Globals.checkPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                            bundle = new Bundle();
-                            ArrayList<PermissionBean> permissionBeens = new ArrayList<>();
-                            permissionBeens.add(new PermissionBean(Manifest.permission.ACCESS_WIFI_STATE, R.string.Permission_phone_state, R.drawable.permission_read_phone));
-                            permissionBeens.add(new PermissionBean(Manifest.permission.ACCESS_COARSE_LOCATION, R.string.Permission_location, R.drawable.permission_location));
-                            permissionBeens.add(new PermissionBean(Manifest.permission.ACCESS_FINE_LOCATION, R.string.Permission_location, R.drawable.permission_location));
-
-                            bundle.putSerializable(Globals.EXTRA_PERMISSION_CONTENT, permissionBeens);
-                            startActivityWithData(PermissionDialogActivity.class, bundle, false);
-                            return;
-                        }
-                        bundle = new Bundle();
-                        bundle.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
-                        startActivityWithData(FeederMiniTestPrepareActivity.class, bundle, false);
+                        startActivity(FeederMiniTestPrepareActivity.class);
                         break;
                     case Globals.GO:
-                        if(!Globals.checkPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                            bundle = new Bundle();
-                            ArrayList<PermissionBean> permissionBeens = new ArrayList<>();
-                            permissionBeens.add(new PermissionBean(Manifest.permission.ACCESS_FINE_LOCATION, R.string.Permission_location, R.drawable.permission_location));
-
-                            bundle.putSerializable(Globals.EXTRA_PERMISSION_CONTENT, permissionBeens);
-                            startActivityWithData(PermissionDialogActivity.class, bundle, false);
-                            return;
-                        }
-                        bundle = new Bundle();
-                        bundle.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
-                        startActivityWithData(GoTestMainActivity.class, bundle, false);
+                        startActivity(GoTestMainActivity.class);
                         break;
                     case Globals.T3:
-                        if(!Globals.checkPermission(this, Manifest.permission.ACCESS_WIFI_STATE) ||
-                                !Globals.checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) ||
-                                !Globals.checkPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                            bundle = new Bundle();
-                            ArrayList<PermissionBean> permissionBeens = new ArrayList<>();
-                            permissionBeens.add(new PermissionBean(Manifest.permission.ACCESS_WIFI_STATE, R.string.Permission_phone_state, R.drawable.permission_read_phone));
-                            permissionBeens.add(new PermissionBean(Manifest.permission.ACCESS_COARSE_LOCATION, R.string.Permission_location, R.drawable.permission_location));
-                            permissionBeens.add(new PermissionBean(Manifest.permission.ACCESS_FINE_LOCATION, R.string.Permission_location, R.drawable.permission_location));
-
-                            bundle.putSerializable(Globals.EXTRA_PERMISSION_CONTENT, permissionBeens);
-                            startActivityWithData(PermissionDialogActivity.class, bundle, false);
-                            return;
-                        }
-                        bundle = new Bundle();
-                        bundle.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
-                        startActivityWithData(T3TestPrepareActivity.class, bundle, false);
+                        startActivity(T3TestPrepareActivity.class);
                         break;
                     case Globals.K2:
-                        if(!Globals.checkPermission(this, Manifest.permission.ACCESS_WIFI_STATE) ||
-                                !Globals.checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) ||
-                                !Globals.checkPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                            bundle = new Bundle();
-                            ArrayList<PermissionBean> permissionBeens = new ArrayList<>();
-                            permissionBeens.add(new PermissionBean(Manifest.permission.ACCESS_WIFI_STATE, R.string.Permission_phone_state, R.drawable.permission_read_phone));
-                            permissionBeens.add(new PermissionBean(Manifest.permission.ACCESS_COARSE_LOCATION, R.string.Permission_location, R.drawable.permission_location));
-                            permissionBeens.add(new PermissionBean(Manifest.permission.ACCESS_FINE_LOCATION, R.string.Permission_location, R.drawable.permission_location));
-
-                            bundle.putSerializable(Globals.EXTRA_PERMISSION_CONTENT, permissionBeens);
-                            startActivityWithData(PermissionDialogActivity.class, bundle, false);
-                            return;
-                        }
-                        bundle = new Bundle();
-                        bundle.putInt(DatagramConsts.EXTRA_WORK_STATION, workStation);
-                        startActivityWithData(K2TestPrepareActivity.class, bundle, false);
+                        startActivity(K2TestPrepareActivity.class);
+                        break;
+                    case Globals.AQ:
+                        startActivity(AQCalculateActivity.class);
+                        break;
+                    case Globals.D3:
+                        startActivity(D3TestPrepareActivity.class);
                         break;
                 }
                 collapseSoftInputMethod(fixtureNumberEditText);
@@ -271,6 +198,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
             case R.id.k2:
                 testStyle = Globals.K2;
                 break;
+            case R.id.d3:
+                testStyle = Globals.D3;
+                break;
             default:
                 break;
         }
@@ -301,9 +231,30 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
         tempRadioButton.setText("净味器（K2）" + " v" + TOOL_K2_VERSION);
 
         tempRadioButton = (RadioButton) findViewById(R.id.toilet);
-//        tempRadioButton.setVisibility(View.GONE);
         tempRadioButton.setText("自动猫厕所（T3）" + " v" + TOOL_T3_VERSION);
+
+        tempRadioButton = (RadioButton) findViewById(R.id.d3);
+        tempRadioButton.setText("行星喂食器（D3）" + " v" + TOOL_D3_VERSION);
     }
+
+    private boolean checkPermissions() {
+        if(!Globals.checkPermission(this, Manifest.permission.ACCESS_WIFI_STATE) ||
+                !Globals.checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) ||
+                !Globals.checkPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            Bundle bundle = new Bundle();
+            ArrayList<PermissionBean> permissionBeens = new ArrayList<>();
+            permissionBeens.add(new PermissionBean(Manifest.permission.ACCESS_WIFI_STATE, R.string.Permission_phone_state, R.drawable.permission_read_phone));
+            permissionBeens.add(new PermissionBean(Manifest.permission.ACCESS_COARSE_LOCATION, R.string.Permission_location, R.drawable.permission_location));
+            permissionBeens.add(new PermissionBean(Manifest.permission.ACCESS_FINE_LOCATION, R.string.Permission_location, R.drawable.permission_location));
+
+            bundle.putSerializable(Globals.EXTRA_PERMISSION_CONTENT, permissionBeens);
+            startActivityWithData(PermissionDialogActivity.class, bundle, false);
+            return false;
+        }
+
+        return true;
+    }
+
 
     private void registerBoradcastReceiver() {
         mBroadcastReceiver = new BroadcastReceiver() {

@@ -2,6 +2,7 @@ package com.petkit.matetool.ui.base;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.petkit.android.utils.CommonUtils;
-import com.petkit.matetool.utils.ConvertDipPx;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -96,12 +96,22 @@ public class BaseUIUtils<T> {
 		toast.show();
 	}
 
+	public int dip2px(Context context, float dipValue){
+		final float scale=context.getResources().getDisplayMetrics().density;
+		return (int)(dipValue*scale+0.5f);
+	}
+
+	public int px2dip(Context context,float pxValue){
+		final float scale=context.getResources().getDisplayMetrics().density;
+		return (int)(pxValue/scale+0.5f);
+	}
+
 	public int dip2px(float dip) {
-		return ConvertDipPx.dip2px(mActivity, dip);
+		return dip2px(mActivity, dip);
 	}
 
 	public int px2dip(float px) {
-		return ConvertDipPx.px2dip(mActivity, px);
+		return px2dip(mActivity, px);
 	}
 
 	public void startActivity(Class<?> cls, boolean finish) {

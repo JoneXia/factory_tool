@@ -1,4 +1,4 @@
-package com.petkit.matetool.ui.K2;
+package com.petkit.matetool.ui.D3;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -23,8 +23,8 @@ import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.Tester;
-import com.petkit.matetool.ui.K2.mode.K2TestUnit;
-import com.petkit.matetool.ui.K2.utils.K2Utils;
+import com.petkit.matetool.ui.D3.mode.D3TestUnit;
+import com.petkit.matetool.ui.D3.utils.D3Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.utils.PetkitSocketInstance;
 import com.petkit.matetool.ui.utils.WifiAdminSimple;
@@ -42,7 +42,7 @@ import java.util.HashMap;
  *
  * Created by Jone on 17/4/24.
  */
-public class K2TestMainActivity extends BaseActivity implements PetkitSocketInstance.IPetkitSocketListener {
+public class D3TestMainActivity extends BaseActivity implements PetkitSocketInstance.IPetkitSocketListener {
 
     private static final int TEST_STATE_INVALID      = 0;
     private static final int TEST_STATE_CONNECTING      = 1;
@@ -55,7 +55,7 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
     private int mTestState;
     private Device mCurDevice, mErrorDevice;
 
-    private ArrayList<K2TestUnit> mK2TestUnits;
+    private ArrayList<D3TestUnit> mD3TestUnits;
     private TestItemAdapter mAdapter;
 
     private TextView mInfoTestTextView;
@@ -65,13 +65,13 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
-            mTester = (Tester) savedInstanceState.getSerializable(K2Utils.EXTRA_K2_TESTER);
+            mTester = (Tester) savedInstanceState.getSerializable(D3Utils.EXTRA_D3_TESTER);
             mTestType = savedInstanceState.getInt("TestType");
-            mErrorDevice = (Device) savedInstanceState.getSerializable(K2Utils.EXTRA_K2);
+            mErrorDevice = (Device) savedInstanceState.getSerializable(D3Utils.EXTRA_D3);
         } else {
-            mTester = (Tester) getIntent().getSerializableExtra(K2Utils.EXTRA_K2_TESTER);
-            mTestType = getIntent().getIntExtra("TestType", K2Utils.TYPE_TEST);
-            mErrorDevice = (Device) getIntent().getSerializableExtra(K2Utils.EXTRA_K2);
+            mTester = (Tester) getIntent().getSerializableExtra(D3Utils.EXTRA_D3_TESTER);
+            mTestType = getIntent().getIntExtra("TestType", D3Utils.TYPE_TEST);
+            mErrorDevice = (Device) getIntent().getSerializableExtra(D3Utils.EXTRA_D3);
         }
 
         setContentView(R.layout.activity_feeder_main_test);
@@ -83,14 +83,14 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putSerializable(K2Utils.EXTRA_K2_TESTER, mTester);
+        outState.putSerializable(D3Utils.EXTRA_D3_TESTER, mTester);
         outState.putInt("TestType", mTestType);
-        outState.putSerializable(K2Utils.EXTRA_K2, mErrorDevice);
+        outState.putSerializable(D3Utils.EXTRA_D3, mErrorDevice);
     }
 
     @Override
     protected void setupViews() {
-        setTitle("K2测试");
+        setTitle("行星喂食器");
 
         mWifiAdminSimple = new WifiAdminSimple(this);
 
@@ -99,7 +99,7 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
         findViewById(R.id.connect_dev).setOnClickListener(this);
         findViewById(R.id.test_auto).setOnClickListener(this);
 
-        mK2TestUnits = K2Utils.generateK2TestUnitsForType(mTestType);
+        mD3TestUnits = D3Utils.generateD3TestUnitsForType(mTestType);
 
         GridView gridView =(GridView) findViewById(R.id.gridView);
         mAdapter = new TestItemAdapter(this);
@@ -125,14 +125,14 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
     public void finish() {
 
         int position = 0;
-        for (K2TestUnit unit : mK2TestUnits) {
+        for (D3TestUnit unit : mD3TestUnits) {
             if(unit.getResult() == 1) {
                 position++;
             } else {
                 break;
             }
         }
-        if(position == mK2TestUnits.size()) {
+        if(position == mD3TestUnits.size()) {
             setResult(RESULT_OK);
         }
         super.finish();
@@ -161,14 +161,14 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
                 break;
             case R.id.test_auto:
                 if (testComplete) {
-//                    LoadDialog.show(this);
-//                    HashMap<String, Object> params = new HashMap<>();
-//                    params.put("mac", mCurDevice.getMac());
-//                    params.put("state", getTestTypeCode());
-//                    params.put("opt", 1);
+                    LoadDialog.show(this);
+                    HashMap<String, Object> params = new HashMap<>();
+                    params.put("mac", mCurDevice.getMac());
+                    params.put("state", getTestTypeCode());
+                    params.put("opt", 1);
 //
-//                    PetkitSocketInstance.getInstance().sendString(K2Utils.getRequestForKeyAndPayload(160, params));
-                    finish();
+                    PetkitSocketInstance.getInstance().sendString(D3Utils.getRequestForKeyAndPayload(160, params));
+//                    finish();
                 } else {
                     startTestDetail(true, 0);
                 }
@@ -178,10 +178,27 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
 
     @Override
     public void onBackPressed() {
+        if (mCurDevice != null && testComplete) {
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.Prompt)
+                    .setMessage("测试已完成，请先点击确认来完成测试项目！")
+                    .setNegativeButton(R.string.OK, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            LoadDialog.show(D3TestMainActivity.this);
+                            HashMap<String, Object> params = new HashMap<>();
+                            params.put("mac", mCurDevice.getMac());
+                            params.put("state", getTestTypeCode());
+                            params.put("opt", 1);
 
-        if (mCurDevice != null && mTestType == K2Utils.TYPE_CHECK) {
+                            PetkitSocketInstance.getInstance().sendString(D3Utils.getRequestForKeyAndPayload(160, params));
+//                            finish();
+                        }
+                    })
+                    .show();
+        } else if (mCurDevice != null && mTestType == D3Utils.TYPE_CHECK) {
             boolean hasError = false;
-            for (K2TestUnit unit : mK2TestUnits) {
+            for (D3TestUnit unit : mD3TestUnits) {
                 if(unit.getResult() == Globals.TEST_FAILED) {
                     hasError = true;
                     break;
@@ -196,7 +213,7 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 mCurDevice.setInspectStatus(0);
-                                K2Utils.storeCheckInfo(mCurDevice);
+                                D3Utils.storeCheckInfo(mCurDevice);
                                 mCurDevice = null;
                                 finish();
                             }
@@ -222,8 +239,8 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
         if(resultCode == RESULT_OK) {
             switch (requestCode) {
                 case 0x12:
-                    mK2TestUnits = (ArrayList<K2TestUnit>) data.getSerializableExtra("TestUnits");
-                    mCurDevice = (Device) data.getSerializableExtra(K2Utils.EXTRA_K2);
+                    mD3TestUnits = (ArrayList<D3TestUnit>) data.getSerializableExtra("TestUnits");
+                    mCurDevice = (Device) data.getSerializableExtra(D3Utils.EXTRA_D3);
                     mAdapter.notifyDataSetChanged();
                     checkTestComplete();
                     refreshBottomButton();
@@ -241,51 +258,30 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
             if(isAuto) {
                 int position = 0;
 
-                for (K2TestUnit unit : mK2TestUnits) {
+                for (D3TestUnit unit : mD3TestUnits) {
                     if (unit.getResult() == 1) {
                         position++;
                     } else {
                         break;
                     }
                 }
-                if (position == mK2TestUnits.size()) {
+                if (position == mD3TestUnits.size()) {
                     showShortToast("测试已完成");
                     return;
                 }
                 pos = position;
             }
 
-            Intent intent = new Intent(K2TestMainActivity.this, K2TestDetailActivity.class);
-            intent.putExtra("TestUnits", mK2TestUnits);
+            Intent intent = new Intent(D3TestMainActivity.this, D3TestDetailActivity.class);
+            intent.putExtra("TestUnits", mD3TestUnits);
             intent.putExtra("CurrentTestStep", pos);
-            intent.putExtra(K2Utils.EXTRA_K2, mCurDevice);
+            intent.putExtra(D3Utils.EXTRA_D3, mCurDevice);
             intent.putExtra("AutoTest", isAuto);
-            intent.putExtra(K2Utils.EXTRA_K2_TESTER, mTester);
-            intent.putExtra(K2Utils.EXTRA_ERROR_K2, mErrorDevice);
-            intent.putExtra("TestType", mTestType);
+            intent.putExtra(D3Utils.EXTRA_D3_TESTER, mTester);
+            intent.putExtra(D3Utils.EXTRA_ERROR_D3, mErrorDevice);
             startActivityForResult(intent, 0x12);
         } else {
             showShortToast(mInfoTestTextView.getText().toString());
-        }
-    }
-
-
-    private void showWifiManager() {
-        switch (mTestType) {
-            case K2Utils.TYPE_TEST_PARTIALLY:
-                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_K2_A_HW1_"));
-                break;
-            case K2Utils.TYPE_TEST:
-                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_K2_B_HW1_"));
-                break;
-            case K2Utils.TYPE_MAINTAIN:
-                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_K2_"));
-                break;
-            case K2Utils.TYPE_CHECK:
-            case K2Utils.TYPE_DUPLICATE_MAC:
-            case K2Utils.TYPE_DUPLICATE_SN:
-                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_K2_HW1_"));
-                break;
         }
     }
 
@@ -295,42 +291,42 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
             mInfoTestTextView.setText("请先连接到特定的WIFI，再进行测试！");
         } else {
             switch (mTestType) {
-                case K2Utils.TYPE_TEST_PARTIALLY:
-                    if (!apSsid.toUpperCase().startsWith("PETKIT_K2_A_HW1_")) {
-                        mInfoTestTextView.setText("请先连接到PETKIT_K2_A_HW1_开头的WIFI，再进行测试！");
+                case D3Utils.TYPE_TEST_PARTIALLY:
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_FEEDER_3_A_HW1_")) {
+                        mInfoTestTextView.setText("请先连接到PETKIT_FEEDER_3_A_HW1_开头的WIFI，再进行测试！");
                     } else {
                         connectAp();
                     }
                     break;
-                case K2Utils.TYPE_TEST:
-                    if (!apSsid.toUpperCase().startsWith("PETKIT_K2_B_HW1_")) {
-                        mInfoTestTextView.setText("请先连接到PETKIT_K2_B_HW1_开头的WIFI，再进行测试！");
+                case D3Utils.TYPE_TEST:
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_FEEDER_3_B_HW1_")) {
+                        mInfoTestTextView.setText("请先连接到PETKIT_FEEDER_3_B_HW1_开头的WIFI，再进行测试！");
                         return;
                     } else {
                         connectAp();
                     }
                     break;
-                case K2Utils.TYPE_MAINTAIN:
-                    if (!apSsid.toUpperCase().startsWith("PETKIT_K2_")) {
-                        mInfoTestTextView.setText("请先连接到PETKIT_K2_开头的WIFI，再进行测试！");
+                case D3Utils.TYPE_MAINTAIN:
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_FEEDER_3_")) {
+                        mInfoTestTextView.setText("请先连接到PETKIT_FEEDER_3_开头的WIFI，再进行测试！");
                         return;
                     } else {
                         connectAp();
                     }
                     break;
-                case K2Utils.TYPE_CHECK:
-                    if (!apSsid.toUpperCase().startsWith("PETKIT_K2_HW1_")
-                            || (apSsid.toUpperCase().startsWith("PETKIT_K2_A_") || apSsid.toUpperCase().startsWith("PETKIT_K2_B_"))) {
-                        mInfoTestTextView.setText("请先连接到PETKIT_K2_开头的WIFI，再进行测试！");
+                case D3Utils.TYPE_CHECK:
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_FEEDER_3_HW1_")
+                            || (apSsid.toUpperCase().startsWith("PETKIT_FEEDER_3_A_") || apSsid.toUpperCase().startsWith("PETKIT_FEEDER_3_B_"))) {
+                        mInfoTestTextView.setText("请先连接到<PETKIT_FEEDER_3_HW1_>开头的WIFI，再进行测试！");
                         return;
                     } else {
                         connectAp();
                     }
                     break;
-                case K2Utils.TYPE_DUPLICATE_MAC:
-                case K2Utils.TYPE_DUPLICATE_SN:
-                    if (!apSsid.toUpperCase().startsWith("PETKIT_K2_HW1_")) {
-                        mInfoTestTextView.setText("请先连接到PETKIT_K2_HW1_开头的WIFI，再进行测试！");
+                case D3Utils.TYPE_DUPLICATE_MAC:
+                case D3Utils.TYPE_DUPLICATE_SN:
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_FEEDER_3_HW1_")) {
+                        mInfoTestTextView.setText("请先连接到PETKIT_FEEDER_3_HW1_开头的WIFI，再进行测试！");
                         return;
                     } else {
                         connectAp();
@@ -340,6 +336,25 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
         }
 
         mAdapter.notifyDataSetChanged();
+    }
+
+    private void showWifiManager() {
+        switch (mTestType) {
+            case D3Utils.TYPE_TEST_PARTIALLY:
+                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_FEEDER_3_A_HW1_"));
+                break;
+            case D3Utils.TYPE_TEST:
+                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_FEEDER_3_B_HW1_"));
+                break;
+            case D3Utils.TYPE_MAINTAIN:
+            case D3Utils.TYPE_CHECK:
+                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_FEEDER_3_"));
+                break;
+            case D3Utils.TYPE_DUPLICATE_MAC:
+            case D3Utils.TYPE_DUPLICATE_SN:
+                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_FEEDER_3_HW1_"));
+                break;
+        }
     }
 
     private void refreshBottomButton () {
@@ -396,10 +411,10 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
     public void onConnected() {
         mInfoTestTextView.setText("设备已连接");
         mTestState = TEST_STATE_CONNECTED;
-        mK2TestUnits = K2Utils.generateK2TestUnitsForType(mTestType);
+        mD3TestUnits = D3Utils.generateD3TestUnitsForType(mTestType);
         mAdapter.notifyDataSetChanged();
 
-        PetkitSocketInstance.getInstance().sendString(K2Utils.getDefaultRequestForKey(110));
+        PetkitSocketInstance.getInstance().sendString(D3Utils.getDefaultRequestForKey(110));
     }
 
     @Override
@@ -444,7 +459,7 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
                         return;
                     }
 
-                    if(sn == null && K2Utils.checkMacIsDuplicate(mac)) {
+                    if(sn == null && D3Utils.checkMacIsDuplicate(mac)) {
                         mInfoTestTextView.setText("设备MAC出现重复，该设备属于故障设备，不能正常测试！");
                         PetkitSocketInstance.getInstance().disconnect();
                         return;
@@ -466,13 +481,20 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
                     params.put("mac", mCurDevice.getMac());
                     params.put("state", getTestTypeCode());
                     params.put("opt", 0);
-                    PetkitSocketInstance.getInstance().sendString(K2Utils.getRequestForKeyAndPayload(160, params));
+                    PetkitSocketInstance.getInstance().sendString(D3Utils.getRequestForKeyAndPayload(160, params));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 break;
             case 160:
                 if(!testComplete) {
+//                    //最近写入SN后，没有及时收到写入成功的通知，需补打印条码
+//                    if(D3Utils.isDeviceInTemp(mCurDevice)) {
+//                        LogcatStorageHelper.addLog("检测到该设备写入SN时异常: " + mCurDevice.toString());
+//                        D3Utils.removeTempDeviceInfo(mCurDevice);
+//                        D3Utils.storeSucceedDeviceInfo(mCurDevice, "");
+//                        showDeviceInTempDialog();
+//                    }
                     return;
                 }
 
@@ -516,12 +538,12 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
 
     private int getTestTypeCode() {
         switch (mTestType) {
-            case K2Utils.TYPE_TEST:
-            case K2Utils.TYPE_TEST_PARTIALLY:
+            case D3Utils.TYPE_TEST:
+            case D3Utils.TYPE_TEST_PARTIALLY:
                 return 1;
-            case K2Utils.TYPE_MAINTAIN:
+            case D3Utils.TYPE_MAINTAIN:
                 return 2;
-            case K2Utils.TYPE_CHECK:
+            case D3Utils.TYPE_CHECK:
                 return 3;
             default:
                 return 4;
@@ -537,12 +559,12 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
 
         @Override
         public int getCount() {
-            return mK2TestUnits.size();
+            return mD3TestUnits.size();
         }
 
         @Override
-        public K2TestUnit getItem(int position) {
-            return mK2TestUnits.get(position);
+        public D3TestUnit getItem(int position) {
+            return mD3TestUnits.get(position);
         }
 
         @Override
@@ -562,7 +584,7 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            K2TestUnit item = getItem(position);
+            D3TestUnit item = getItem(position);
 
             holder.name.setText(item.getName());
 
@@ -589,7 +611,7 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
 
     private void checkTestComplete() {
         int position = 0;
-        for (K2TestUnit unit : mK2TestUnits) {
+        for (D3TestUnit unit : mD3TestUnits) {
             if(unit.getResult() == 1) {
                 position++;
             } else {
@@ -597,18 +619,18 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
             }
         }
 
-        if(position >= mK2TestUnits.size() - 1) {       //维修和抽检，最后一项打印标签可以不执行，其他项都完成了就算成功
-            if (mTestType == K2Utils.TYPE_MAINTAIN) {
-                K2Utils.storeMainTainInfo(mCurDevice);
-                testComplete = position >= mK2TestUnits.size();
-            } else if (mTestType == K2Utils.TYPE_CHECK) {
+        if(position >= mD3TestUnits.size() - 1) {       //维修和抽检，最后一项打印标签可以不执行，其他项都完成了就算成功
+            if (mTestType == D3Utils.TYPE_MAINTAIN) {
+                D3Utils.storeMainTainInfo(mCurDevice);
+                testComplete = position >= mD3TestUnits.size();
+            } else if (mTestType == D3Utils.TYPE_CHECK) {
                 mCurDevice.setInspectStatus(1);
-                K2Utils.storeCheckInfo(mCurDevice);
-                testComplete = position >= mK2TestUnits.size();
-            } else if (mTestType == K2Utils.TYPE_TEST_PARTIALLY) {
-                testComplete = position >= mK2TestUnits.size();
-            } else if (mTestType == K2Utils.TYPE_TEST) {
-                testComplete = position >= mK2TestUnits.size();
+                D3Utils.storeCheckInfo(mCurDevice);
+                testComplete = position >= mD3TestUnits.size();
+            } else if (mTestType == D3Utils.TYPE_TEST_PARTIALLY) {
+                testComplete = position >= mD3TestUnits.size();
+            } else if (mTestType == D3Utils.TYPE_TEST) {
+                testComplete = position >= mD3TestUnits.size();
             }
         }
     }

@@ -43,6 +43,8 @@ public class Globals {
 	public static final int FEEDER_MINI =6;
 	public static final int T3 = 7;
     public static final int K2 = 8;
+	public static final int AQ = 9;
+	public static final int D3 = 10;
 //	public static int g_testStyle = 0;
 
 	/**
@@ -54,6 +56,7 @@ public class Globals {
 	public static final String DEVICE_TYPE_CODE_Z1S = "C";
 	public static final String DEVICE_TYPE_CODE_T3 = "D";
 	public static final String DEVICE_TYPE_CODE_K2 = "E";
+	public static final String DEVICE_TYPE_CODE_D3 = "F";
 
 	public static ArrayList<String> mTestItem = new ArrayList<String>();
 	public static int[] mTestResult = null;
@@ -75,12 +78,6 @@ public class Globals {
 		}
 		return false;
 	}
-	
-	public static final String TEST_CASE_BORAD_OR_FINAL = "TEST_CASE_BORAD_OR_FINAL"; 
-	public static final String TEST_ITEM_NAME = "TEST_ITEM_NAME"; 
-	
-	
-	public static boolean FocusTestImageMode = false;
 	
 	//test case
 	public final static int BoardTestMode = 6;
