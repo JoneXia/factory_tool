@@ -184,7 +184,7 @@ public class D3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 }
                 break;
             case TEST_MODE_KEY:
-                mPromptTextView.setText("需要分别测试功能键和reset键！");
+                mPromptTextView.setText("需要分别测试功能键和碗复位键！");
                 break;
             case TEST_MODE_DC:
                 mPromptTextView.setText("正常电压范围（单位mV）：[5000, 7000]");
@@ -586,7 +586,7 @@ public class D3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         }
                         if (moduleStateStruct.getSub1() > 0) {
                             mTempResult = mTempResult | 0x10;
-                            desc.append("\n").append("按键").append("-").append("reset键").append("-").append(getKeyDescByState(moduleStateStruct.getSub1()));
+                            desc.append("\n").append("按键").append("-").append("碗复位键").append("-").append(getKeyDescByState(moduleStateStruct.getSub1()));
                         }
                         if (moduleStateStruct.getSub2() > 0) {
                             mTempResult = mTempResult | 0x100;
