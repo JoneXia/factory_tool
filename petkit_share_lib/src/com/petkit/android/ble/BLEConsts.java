@@ -35,6 +35,7 @@ public class BLEConsts {
 	public static final int BLE_ACTION_GO_INIT				= 0xE;
 	public static final int BLE_ACTION_GO_CHANGE			= 0xF;
 	public static final int BLE_ACTION_GO_SAMPLING			= 0x10;
+	public static final int BLE_ACTION_AQ_TEST			= 0x11;
 
 
 	public static final int ACTION_PAUSE = 0;
@@ -490,9 +491,10 @@ public class BLEConsts {
 	public static final String K2_DISPLAY_NAME = "Petkit_K2";
 	public static final String T3_DISPLAY_NAME = "Petkit_T3";
 	public static final String D3_DISPLAY_NAME = "Petkit_D3";
+	public static final String AQ_DISPLAY_NAME = "Petkit_AQ";
 
 	public static final String[] DeviceFilter = new String[]{"PETKIT", "PETKIT2", PET_FIT_DISPLAY_NAME, PET_FIT2_DISPLAY_NAME,
-			PET_HOME, PET_MATE, GO_DISPLAY_NAME, K2_DISPLAY_NAME, T3_DISPLAY_NAME, D3_DISPLAY_NAME};
+			PET_HOME, PET_MATE, GO_DISPLAY_NAME, K2_DISPLAY_NAME, T3_DISPLAY_NAME, D3_DISPLAY_NAME, AQ_DISPLAY_NAME};
 	
 	public static final UUID ACC_SERVICE_UUID = UUID.fromString("0000aaa0-0000-1000-8000-00805f9b34fb");
 	public static final UUID ACC_DATA_UUID = UUID.fromString("0000aaa1-0000-1000-8000-00805f9b34fb");
@@ -518,6 +520,7 @@ public class BLEConsts {
 	public static final int OP_CODE_TRUN_OFF_SENSOR_KEY				= 'H';
 	public static final int OP_CODE_START_RESET_DEBUG_INFOR_KEY		= 'W';
 	public static final int OP_CODE_BATTERY_KEY						= 'B';
+	public static final int OP_CODE_AQ_TEST_ENTRY					= 240;
 	
 	public static final int ERROR_SYNC_MASK = 0x8000;
 	public static final int ERROR_SYNC_INIT_FAIL	= ERROR_SYNC_MASK | 0x01;

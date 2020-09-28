@@ -158,6 +158,16 @@ public class Versions {
 	/**
 	 *
 	 * 1.0说明:
+	 * 1. 支持智能鱼缸的整机测试
+	 *
+	 *
+	 */
+	public static final String TOOL_AQ_VERSION	= "0.1";
+
+
+	/**
+	 *
+	 * 1.0说明:
 	 * 1. 支持小佩行星喂食器（D3）产测全流程
 	 *
 	 *

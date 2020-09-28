@@ -246,7 +246,7 @@
 
         <!-- AQ -->
         <activity
-            android:name=".ui.aq.AQCalculateActivity"
+            android:name=".ui.aq.AQTestMainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
         </activity>

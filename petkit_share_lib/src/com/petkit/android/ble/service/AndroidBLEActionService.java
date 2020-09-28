@@ -4564,7 +4564,111 @@ public class AndroidBLEActionService extends BLEActionService {
 
 	}
 
+	@Override
+	protected void startAQTest(Intent intent) {
 
+		deviceId = null;
+		secretKey = null;
+		secret = null;
+
+		/*
+		 * Now let's connect to the device.
+		 * All the methods below are synchronous. The mLock object is used to wait for asynchronous calls.
+		 */
+		sendLogBroadcast("Connecting to target...");
+
+		try {
+
+			if(startConnectAndReconnect(intent, mBleDevice.getAddress(), BLEConsts.ACC_SERVICE_UUID, BLEConsts.ACC_CONTROL_UUID, BLEConsts.ACC_DATA_UUID)){
+				return;
+			}
+
+			if (mAborted) {
+				logi("Upload aborted");
+				sendLogBroadcast("Upload aborted");
+				terminateConnection(gatt, BLEConsts.ERROR_ABORTED);
+				return;
+			}
+			// Set up the temporary variable that will hold the responses
+			byte[] response = null;
+
+			// Enable notifications
+			enableCCCD(gatt, dataCharacteristic, BLEConsts.NOTIFICATIONS);
+			sendLogBroadcast("Notifications enabled");
+
+			boolean requestMtu = gatt.requestMtu(255);
+
+			updateProgressNotification(BLEConsts.PROGRESS_CONNECTED);
+
+			try {
+				waitUntilTimeOut(1000);
+				synchronized (mLock) {
+					while(!timeOut){
+						mLock.wait();
+					}
+				}
+			} catch (InterruptedException e) {
+			}
+
+			controlCharacteristic.setValue(buildOpCodeBuffer(BLEConsts.OP_CODE_AQ_TEST_ENTRY));
+			gatt.writeCharacteristic(controlCharacteristic);
+
+			PetkitLog.d("writeSyncCode  " + parse(buildOpCodeBuffer(BLEConsts.OP_CODE_AQ_TEST_ENTRY)));
+
+			//			writeSyncCode(gatt, controlCharacteristic, );
+			response = readNotificationResponse();
+			parserReceivedData(response);
+
+			updateProgressNotification(BLEConsts.PROGRESS_BLE_COMPLETED);
+
+//			startKeepAlive();// start send keepAlive message
+//			mPaused = true;
+//			waitIfPaused(true);
+
+			gatt.setCharacteristicNotification(dataCharacteristic, false);
+			disconnect(gatt);
+
+			// Close the device
+			refreshDeviceCache(gatt, false);
+			close(gatt);
+
+		} catch (DeviceDisconnectedException e) {
+			sendLogBroadcast("Device has disconneted");
+			loge(e.getMessage());
+			if (mNotificationsEnabled)
+				gatt.setCharacteristicNotification(dataCharacteristic, false);
+			close(gatt);
+			updateProgressNotification(BLEConsts.ERROR_DEVICE_DISCONNECTED); //TODO:
+		} catch (UnknownParametersException e) {
+			final int error = BLEConsts.ERROR_INVALID_PARAMETERS;
+			loge(e.getMessage());
+			sendLogBroadcast(e.getMessage());
+			terminateConnection(gatt, error);
+		} catch (UnknownResponseException e) {
+			final int error = BLEConsts.ERROR_INVALID_RESPONSE;
+			loge(e.getMessage());
+			sendLogBroadcast(e.getMessage());
+			terminateConnection(gatt, error);
+		} catch (BLEErrorException e) {
+			final int error = e.getErrorNumber() & ~ BLEConsts.ERROR_CONNECTION_MASK;
+			sendLogBroadcast(String.format("Error (0x%02X): %s", error, GattError.parse(error)));
+			terminateConnection(gatt, e.getErrorNumber());
+		} catch (BLEAbortedException e) {
+			sendLogBroadcast("action aborted");
+			terminateConnection(gatt, BLEConsts.ERROR_ABORTED);
+		}  catch (UnexpectedCompleteException e) {
+			final int error = e.getErrorNumber();
+			sendLogBroadcast(String.format("Error (0x%02X): %s", error, GattError.parse(error)));
+			loge(e.getMessage());
+			terminateConnection(gatt, e.getErrorNumber());
+		} catch (UnsupportedEncodingException e) {
+			final int error = BLEConsts.ERROR_UNSUPPORTED_ENCODING;
+			sendLogBroadcast(String.format("Error (0x%02X): %s", error, GattError.parse(error)));
+			loge(e.getMessage());
+			terminateConnection(gatt, error);
+		}
+
+	}
 
 
 }

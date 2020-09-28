@@ -518,6 +518,15 @@ public abstract class BLEActionService extends IntentService {
 				return;
 			}
 			startGoSampling(intent);
+			break;
+			case BLEConsts.BLE_ACTION_AQ_TEST:
+				mBleDevice = (DeviceInfo) intent.getSerializableExtra(BLEConsts.EXTRA_DEVICE_INFO);
+				if(mBleDevice == null || mBleDevice.getAddress() == null){
+					updateProgressNotification(BLEConsts.ERROR_DEVICE_ID_NULL);
+					return;
+				}
+				startAQTest(intent);
+				break;
 		default:
 			break;
 		}
@@ -1113,6 +1122,18 @@ public abstract class BLEActionService extends IntentService {
 			codeBuffer[1] = ((Integer)Integer.parseInt(addressString.substring(0, 2), 16)).byteValue();
 			codeBuffer[2] = ((Integer)Integer.parseInt(addressString.substring(2, 4), 16)).byteValue();
 			break;
+		case BLEConsts.OP_CODE_AQ_TEST_ENTRY:
+			codeBuffer = new byte[9];
+			codeBuffer[0] = (byte) 0xfa;
+			codeBuffer[1] = (byte) 0xfc;
+			codeBuffer[2] = (byte) 0xfd;
+			codeBuffer[3] = (byte) 240;
+			codeBuffer[4] = (byte) 1;
+			codeBuffer[5] = (byte) 1;
+			codeBuffer[6] = (byte) 0;
+			codeBuffer[7] = (byte) 0;
+			codeBuffer[8] = (byte) 0xfb;
+			break;
 
 		default:
 			codeBuffer[0] = (byte) key;
@@ -1548,6 +1569,23 @@ public abstract class BLEActionService extends IntentService {
 			PetkitLog.d("dateString: " + new String(dateArray));
 			PetkitLog.d("timeString " + new String(timeArray));
 			mBleDevice.setBuildDate(new String(dateArray) + " " + new String(timeArray));
+			break;
+		case (byte) 0xfa:
+			if (byteChar[3]  == 240 && byteChar[8] == 1) {
+				PetkitLog.d("AQ entry test success");
+			} else {
+				PetkitLog.d("AQ entry test failed");
+			}
+//			codeBuffer[0] = (byte) 0xfa;
+//			codeBuffer[1] = (byte) 0xfc;
+//			codeBuffer[2] = (byte) 0xfd;
+//			codeBuffer[3] = (byte) 240;
+//			codeBuffer[4] = (byte) 2;
+//			codeBuffer[5] = (byte) 0;
+//			codeBuffer[6] = (byte) 0;
+//			codeBuffer[7] = (byte) 1;
+//			codeBuffer[8] = (byte) 1;
+//			codeBuffer[9] = (byte) 0xfb;
 			break;
 
 		default:
@@ -2021,6 +2059,7 @@ public abstract class BLEActionService extends IntentService {
 	protected abstract void startGoOTA(final Intent intent);
 	protected abstract void startInitAndChangeGo(final Intent intent);
 	protected abstract void startGoSampling(final Intent intent);
+	protected abstract void startAQTest(final Intent intent);
 
 	protected abstract void onBlockTimer();
 	

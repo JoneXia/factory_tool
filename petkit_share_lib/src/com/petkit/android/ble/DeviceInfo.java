@@ -36,6 +36,8 @@ package com.petkit.android.ble;
 
 import android.bluetooth.BluetoothDevice;
 
+import com.petkit.android.utils.PetkitLog;
+
 import java.io.Serializable;
 
 
@@ -43,10 +45,13 @@ public class DeviceInfo implements Serializable {
 
 	private static final long serialVersionUID = -4523460236390521750L;
 
-	public static final int DEVICE_TYPE_FIT		= 1;
-	public static final int DEVICE_TYPE_FIT2		= 2;
-	public static final int DEVICE_TYPE_MATE		= 3;
-	public static final int DEVICE_TYPE_GO			= 4;
+	public static final int DEVICE_TYPE_FIT = 1;
+	public static final int DEVICE_TYPE_FIT2 = 2;
+	public static final int DEVICE_TYPE_MATE = 3;
+	public static final int DEVICE_TYPE_GO = 4;
+	public static final int DEVICE_TYPE_T3 = 7;
+	public static final int DEVICE_TYPE_K2 = 8;
+	public static final int DEVICE_TYPE_AQ = 10;
 	
 	private String address;
 	private String name;
@@ -55,6 +60,7 @@ public class DeviceInfo implements Serializable {
 	private String mac;
 	private boolean checked = false;
 	private String owner;
+	private byte[] scanRecord;
 
 	//设备类型：1： fit；2: fit2; 3： mate； 4： go
 	private int deviceType;
@@ -71,71 +77,125 @@ public class DeviceInfo implements Serializable {
 	public DeviceInfo(BluetoothDevice device, int rssi, byte[] scanRecord) {
 		address = device.getAddress();
 		name = device.getName();
+		this.scanRecord = scanRecord;
 		setTypeByName();
 		mRssi = rssi;
-		
-		if(scanRecord == null || scanRecord.length < 19){
+
+		if (scanRecord == null || scanRecord.length < 19) {
 			return;
 		}
+		PetkitLog.d("deviceName:" + name + " scanRecord:" + parse(scanRecord));
 
-		int i = 0;
-		while(i < scanRecord.length - 1){
-			int length = scanRecord[i];
-			int type = scanRecord[i+1];
-			if((type == 7 || type == 6) && length >= 11){
-				StringBuilder stringBuilder = new StringBuilder(12);
-				for (int j = i + 7; j > i + 1; j--)
-					stringBuilder.append(String.format("%02X", scanRecord[j]));
-				mac = stringBuilder.toString();
-				
-				if(DEVICE_TYPE_GO == deviceType || DEVICE_TYPE_MATE == deviceType){
-					for(int j = 0; j < 8; j++){
-						deviceId += ((scanRecord[j + i + 8] & 0xFF) << 8 * j);
-					}
-				}else {
-					for(int j = 0; j < 4; j++){
-						deviceId += ((scanRecord[j + i + 8] & 0xFF) << 8 * (3 - j));
-					}
+		int count = 0;
+		boolean isPetkit = true;
+		byte[] petkit = new byte[]{(byte) 0xBB, 0x3E, (byte) 0xE6, 0x08, 0x05, 0x72, 0x4D, (byte) 0x9F, (byte) 0x89, (byte) 0xE7, (byte) 0xBF, (byte) 0x91, (byte) 0xD8, (byte) 0xBD, 0x70, 0x5B};
+		while (count < scanRecord.length - 1) {
+			int len = scanRecord[count];
+			int type = scanRecord[count + 1];
+			// 判断是petkit设备
+			if (type == 0x07) {
+				if (petkit.length != len - 1) {
+					break;
 				}
-				break;
-            } else if(type == -1 && length == 26){  //oppo n3 ble special, no device name
-                byte[] standardByte = new byte[]{0x15, (byte) 0xBB, 0x3E, (byte) 0xE6, 0x08, 0x05, 0x72, 0x4D, (byte) 0x9F, (byte) 0x89, (byte) 0xE7, (byte) 0xBF, (byte) 0x91};
-
-                int j = 0;
-                for (; j < standardByte.length; j++) {
-                    if(scanRecord[i+5+j] != standardByte[j]){
-                        break;
-                    }
-                }
-                if(j == standardByte.length){
-					name = getDeviceNameByScanRecord(scanRecord[i + 26] & 0xff);
-					if(name == null){
+				int petkitCount = 0;
+				for (int checkCount = count + 2; checkCount <= count + len; checkCount++, petkitCount++) {
+					if (scanRecord[checkCount] != petkit[petkitCount]) {
+						isPetkit = false;
 						break;
 					}
+				}
+				if (!isPetkit) {
+					break;
+				}
 
-                    if(DEVICE_TYPE_GO == deviceType || DEVICE_TYPE_MATE == deviceType){
-						byte[] valueArray = new byte[8];
-						System.arraycopy(scanRecord, i + 18, valueArray, 0, 8);
-						String value = parse(valueArray);
-						try {
-							deviceId = Long.parseLong(value, 16);
-						} catch (NumberFormatException e) {
-
-						}
-                    }else {
-                        for(int z = 0; z < 4; z++){
-                            deviceId += ((scanRecord[i + 22 + z] & 0xFF) << 8 * (3 - z));
-                        }
-                    }
-
-                    if(deviceId == 0x10102 || deviceId == 0x1020304){
-                        deviceId = 0;
-                    }
-                }
-                break;
-            } else{
-				i += (length + 1);
 			}
+			// 判断设备类型
+			if (type == 0x16 && len == 9) {
+				getDeviceNameByScanRecord(scanRecord[count + len]);
+				if (DEVICE_TYPE_T3 != deviceType && DEVICE_TYPE_K2 != deviceType && DEVICE_TYPE_AQ != deviceType) {
+					break;
+				}
+			}
+			// 解析deviceId
+			if (type == 0x16 && len == 7) {
+				byte[] deviceIdData = new byte[6];
+				int tempCount = 0;
+				for (int parseCount = count + 2; parseCount <= count + len; parseCount++) {
+					deviceIdData[tempCount] = scanRecord[parseCount];
+					tempCount++;
+				}
+				try {
+					String value = parse(deviceIdData);
+					deviceId = Long.parseLong(value, 16);
+				} catch (NumberFormatException e) {
+					e.printStackTrace();
+					PetkitLog.d("parse devoceId error");
+				}
+			}
+			count += (len + 1);
+		}
+
+		if (DEVICE_TYPE_T3 != deviceType && DEVICE_TYPE_K2 != deviceType && DEVICE_TYPE_AQ != deviceType) {
+			int i = 0;
+			while (i < scanRecord.length - 1) {
+				int length = scanRecord[i];
+				int type = scanRecord[i + 1];
+				if ((type == 7 || type == 6) && length >= 11) {
+					StringBuilder stringBuilder = new StringBuilder(12);
+					for (int j = i + 7; j > i + 1; j--)
+						stringBuilder.append(String.format("%02X", scanRecord[j]));
+					mac = stringBuilder.toString();
+
+					if (DEVICE_TYPE_GO == deviceType || DEVICE_TYPE_MATE == deviceType) {
+						for (int j = 0; j < 8; j++) {
+							deviceId += ((scanRecord[j + i + 8] & 0xFF) << 8 * j);
+						}
+					} else {
+						for (int j = 0; j < 4; j++) {
+							deviceId += ((scanRecord[j + i + 8] & 0xFF) << 8 * (3 - j));
+						}
+					}
+					break;
+				} else if (type == -1 && length == 26) {  //oppo n3 ble special, no device name
+					byte[] standardByte = new byte[]{0x15, (byte) 0xBB, 0x3E, (byte) 0xE6, 0x08, 0x05, 0x72, 0x4D, (byte) 0x9F, (byte) 0x89, (byte) 0xE7, (byte) 0xBF, (byte) 0x91};
+
+					int j = 0;
+					for (; j < standardByte.length; j++) {
+						if (scanRecord[i + 5 + j] != standardByte[j]) {
+							break;
+						}
+					}
+					if (j == standardByte.length) {
+						name = getDeviceNameByScanRecord(scanRecord[i + 26] & 0xff);
+						if (name == null) {
+							break;
+						}
+
+						if (DEVICE_TYPE_GO == deviceType || DEVICE_TYPE_MATE == deviceType) {
+							byte[] valueArray = new byte[8];
+							System.arraycopy(scanRecord, i + 18, valueArray, 0, 8);
+							String value = parse(valueArray);
+							try {
+								deviceId = Long.parseLong(value, 16);
+							} catch (NumberFormatException e) {
+
+							}
+						} else {
+							for (int z = 0; z < 4; z++) {
+								deviceId += ((scanRecord[i + 22 + z] & 0xFF) << 8 * (3 - z));
+							}
+						}
+
+						if (deviceId == 0x10102 || deviceId == 0x1020304) {
+							deviceId = 0;
+						}
+					}
+					break;
+				} else {
+					i += (length + 1);
+				}
+			}
+
 		}
 		
 		if(name != null){
@@ -159,21 +219,30 @@ public class DeviceInfo implements Serializable {
 
     protected String getDeviceNameByScanRecord(int value){
         switch (value){
-            case 0xC5:
+			case 0xC5:
 				deviceType = DEVICE_TYPE_FIT;
-                return BLEConsts.PET_FIT_DISPLAY_NAME;
-            case 0xC3:
+				return BLEConsts.PET_FIT_DISPLAY_NAME;
+			case 0xC3:
 				deviceType = DEVICE_TYPE_FIT2;
-                return BLEConsts.PET_FIT2_DISPLAY_NAME;
-            case 0xC4:
+				return BLEConsts.PET_FIT2_DISPLAY_NAME;
+			case 0xC4:
 				deviceType = DEVICE_TYPE_MATE;
-                return BLEConsts.PET_MATE;
+				return BLEConsts.PET_MATE;
 			case 0xC6:
 				deviceType = DEVICE_TYPE_GO;
 				return BLEConsts.GO_DISPLAY_NAME;
-            default:
-                return null;
-        }
+			case 0xC7:
+				deviceType = DEVICE_TYPE_T3;
+				return BLEConsts.T3_DISPLAY_NAME;
+			case 0xC8:
+				deviceType = DEVICE_TYPE_K2;
+				return BLEConsts.K2_DISPLAY_NAME;
+			case 0xCA:
+				deviceType = DEVICE_TYPE_AQ;
+				return BLEConsts.AQ_DISPLAY_NAME;
+			default:
+				return null;
+		}
     }
 
 	private void setTypeByName() {
@@ -196,6 +265,9 @@ public class DeviceInfo implements Serializable {
 				break;
 			case BLEConsts.GO_DISPLAY_NAME:
 				deviceType = DEVICE_TYPE_GO;
+				break;
+			case BLEConsts.AQ_DISPLAY_NAME:
+				deviceType = DEVICE_TYPE_AQ;
 				break;
 		}
 	}

@@ -23,7 +23,7 @@ import com.petkit.matetool.service.DatagramConsts;
 import com.petkit.matetool.service.DatagramProcessService;
 import com.petkit.matetool.ui.D3.D3TestPrepareActivity;
 import com.petkit.matetool.ui.K2.K2TestPrepareActivity;
-import com.petkit.matetool.ui.aq.AQCalculateActivity;
+import com.petkit.matetool.ui.aq.AQTestMainActivity;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.cozy.CozyTestPrepareActivity;
 import com.petkit.matetool.ui.feeder.FeederTestPrepareActivity;
@@ -40,6 +40,7 @@ import com.petkit.matetool.widget.LoadDialog;
 
 import java.util.ArrayList;
 
+import static com.petkit.matetool.utils.Versions.TOOL_AQ_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_COZY;
 import static com.petkit.matetool.utils.Versions.TOOL_D3_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_FEEDER_MINI_VERSION;
@@ -160,7 +161,7 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
                         startActivity(K2TestPrepareActivity.class);
                         break;
                     case Globals.AQ:
-                        startActivity(AQCalculateActivity.class);
+                        startActivity(AQTestMainActivity.class);
                         break;
                     case Globals.D3:
                         startActivity(D3TestPrepareActivity.class);
@@ -201,6 +202,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
             case R.id.d3:
                 testStyle = Globals.D3;
                 break;
+            case R.id.aq:
+                testStyle = Globals.AQ;
+                break;
             default:
                 break;
         }
@@ -232,6 +236,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
 
         tempRadioButton = (RadioButton) findViewById(R.id.toilet);
         tempRadioButton.setText("自动猫厕所（T3）" + " v" + TOOL_T3_VERSION);
+
+        tempRadioButton = (RadioButton) findViewById(R.id.aq);
+        tempRadioButton.setText("智能鱼缸（AQ）" + " v" + TOOL_AQ_VERSION);
 
         tempRadioButton = (RadioButton) findViewById(R.id.d3);
         tempRadioButton.setText("行星喂食器（D3）" + " v" + TOOL_D3_VERSION);

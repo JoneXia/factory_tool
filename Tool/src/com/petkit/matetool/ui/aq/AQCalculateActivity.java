@@ -247,11 +247,11 @@ public class AQCalculateActivity extends BaseActivity {
 
         FileUtils.writeStringToFile(file, stringBuffer.toString(),true);
         light_pwm_t pwms = new light_pwm_t();
-        for (int i = 0; i <= 24*6; i++) {
-            calculatePMW(pwms, p_seconds, i*10*60);
-
-            savePMWs(pwms, formatTime(i*10), file);
-        }
+//        for (int i = 0; i <= 24*6; i++) {
+//            getPMWByColorTemperature(pwms, p_seconds, i*10*60);
+//
+//            savePMWs(pwms, formatTime(i*10), file);
+//        }
 
     }
 
@@ -260,8 +260,8 @@ public class AQCalculateActivity extends BaseActivity {
         StringBuffer stringBuffer = new StringBuffer();
 //        stringBuffer.append("time: ").append(time).append(", white_pwm: ").append(pwms.white_light_pwm).append(", warn_pwm:").append(pwms.warn_light_pwm)
 //                .append("\n");
-        stringBuffer.append(time).append(", ").append(pwms.total_pwm).append(", ").append(pwms.white_light_pwm).append(", ").append(pwms.warn_light_pwm)
-                .append("\n");
+//        stringBuffer.append(time).append(", ").append(pwms.total_pwm).append(", ").append(pwms.white_light_pwm).append(", ").append(pwms.warn_light_pwm)
+//                .append("\n");
 
         FileUtils.writeStringToFile(file, stringBuffer.toString(),true);
     }
@@ -275,7 +275,7 @@ public class AQCalculateActivity extends BaseActivity {
     public class light_pwm_t {
         public int white_light_pwm;
         public int warn_light_pwm;
-        public int total_pwm;
+        public int light;
     }
 
     //日出日路时间，基于0点的秒数
@@ -285,53 +285,45 @@ public class AQCalculateActivity extends BaseActivity {
     }
 
 
+    int getProgressForColorTemperature() {
 
-    int calculatePMW(light_pwm_t p_pwms, rise_down_sec_t p_seconds, int curSec) {
+        return 0;
+    }
 
-        if (curSec > p_seconds.down_seconds || curSec < p_seconds.rise_seconds) {
-            if (curSec > p_seconds.down_seconds && curSec - p_seconds.down_seconds < 3 * 60 * 60) {
-                p_pwms.total_pwm = 32 * (3 * 60 * 60 - curSec + p_seconds.down_seconds) / (3 * 60 * 60);
-                p_pwms.white_light_pwm = 0;
-                p_pwms.warn_light_pwm = p_pwms.total_pwm;
-            } else {
-                p_pwms.total_pwm = 0;
-                p_pwms.white_light_pwm = 0;
-                p_pwms.warn_light_pwm = 0;
-            }
-        } else if (curSec - p_seconds.rise_seconds < 30 * 60) {
-            p_pwms.total_pwm = 35 + 9 * (curSec - p_seconds.rise_seconds) / 1800;
-            p_pwms.white_light_pwm = 0;
-            p_pwms.warn_light_pwm = p_pwms.total_pwm;
-        } else if (curSec - p_seconds.rise_seconds < 90 * 60) {
-            p_pwms.total_pwm = 44 + 29 * (curSec - p_seconds.rise_seconds - 1800) / 3600;
-            p_pwms.white_light_pwm = (p_pwms.total_pwm - 44) * 2;
-            p_pwms.warn_light_pwm = 88 - p_pwms.total_pwm;
-        } else if (curSec - p_seconds.rise_seconds < 120 * 60) {
-            p_pwms.total_pwm = 73 + 7 * (curSec - p_seconds.rise_seconds - 5400) / 1800;
-            p_pwms.white_light_pwm = p_pwms.total_pwm;
-            p_pwms.warn_light_pwm = 0;
-        } else if (p_seconds.down_seconds - curSec < 120 * 60) {
-            p_pwms.total_pwm = 78 - 36 * (7200 - p_seconds.down_seconds + curSec) / 5400;
-            p_pwms.warn_light_pwm = p_pwms.total_pwm > 42 ? 78 - p_pwms.total_pwm : p_pwms.total_pwm;
-            p_pwms.white_light_pwm = p_pwms.total_pwm - p_pwms.warn_light_pwm;
-        } else if (p_seconds.down_seconds - curSec < 30 * 60) {
-            p_pwms.total_pwm = 42 - 7 * (1800 - p_seconds.down_seconds + curSec) / 1800;
-            p_pwms.white_light_pwm = 0;
-            p_pwms.warn_light_pwm = p_pwms.total_pwm;
-        } else {
-            int midSeconds = (p_seconds.down_seconds + p_seconds.rise_seconds) / 2;
-            if (midSeconds > curSec) {
-                p_pwms.total_pwm = 80 + 20 * (curSec - p_seconds.rise_seconds - 7200) / (midSeconds - p_seconds.rise_seconds - 7200);
-                p_pwms.white_light_pwm = p_pwms.total_pwm;
-                p_pwms.warn_light_pwm = 0;
-            } else {
-                p_pwms.total_pwm = 100 - 22 * (curSec - midSeconds) / (p_seconds.down_seconds - midSeconds - 7200);
-                p_pwms.white_light_pwm = p_pwms.total_pwm;
-                p_pwms.warn_light_pwm = 0;
-            }
-        }
+    int getPMWByColorTemperature(light_pwm_t p_pwms, int colorTemp) {
+
 
 
         return 0;
     }
+
+
+    /**
+     *
+     *
+     * @param times
+     * @param mouth
+     * @param day
+     * @param hours
+     * @param minutes
+     * @return
+     */
+    int calculateColorTemperature(int[] times, int mouth, int day, int hours, int minutes) {
+
+        int raiseTimeThisMouth = times[2*(mouth-1)];
+        int downTimeThisMouth = times[2*(mouth-1)+1];
+        int raiseTimeNextMouth = mouth == 12 ? times[0] : times[2*mouth];
+        int downTimeNextMouth = mouth == 12 ? times[1] : times[2*mouth+1];
+
+        int raiseTime = raiseTimeThisMouth + (raiseTimeNextMouth - raiseTimeThisMouth) * day / 30;
+        int downTime = downTimeThisMouth + (downTimeNextMouth - downTimeThisMouth) * day / 30;
+
+        //占空比按时间比例线性变换
+        //
+
+
+        return 0;
+    }
+
+
 }
