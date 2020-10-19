@@ -69,6 +69,9 @@ public class DeviceInfo implements Serializable {
 	private int fireware;
 	private String buildDate;
 
+	//AQ 整机测试结果
+	private int mTestResult;
+
 	public DeviceInfo() {
 		super();
 	}
@@ -393,5 +396,13 @@ public class DeviceInfo implements Serializable {
 
 	public void setFireware(int fireware) {
 		this.fireware = fireware;
+	}
+
+	public void setTestResult(int testResult) {
+		mTestResult = testResult;
+	}
+
+	public int getTestResult() {
+		return mTestResult;
 	}
 }

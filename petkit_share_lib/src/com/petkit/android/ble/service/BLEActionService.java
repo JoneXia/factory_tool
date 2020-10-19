@@ -1571,21 +1571,14 @@ public abstract class BLEActionService extends IntentService {
 			mBleDevice.setBuildDate(new String(dateArray) + " " + new String(timeArray));
 			break;
 		case (byte) 0xfa:
+			if (byteChar[3]  == 240) {
+				mBleDevice.setTestResult(byteChar[8]);
+			}
 			if (byteChar[3]  == 240 && byteChar[8] == 1) {
 				PetkitLog.d("AQ entry test success");
 			} else {
 				PetkitLog.d("AQ entry test failed");
 			}
-//			codeBuffer[0] = (byte) 0xfa;
-//			codeBuffer[1] = (byte) 0xfc;
-//			codeBuffer[2] = (byte) 0xfd;
-//			codeBuffer[3] = (byte) 240;
-//			codeBuffer[4] = (byte) 2;
-//			codeBuffer[5] = (byte) 0;
-//			codeBuffer[6] = (byte) 0;
-//			codeBuffer[7] = (byte) 1;
-//			codeBuffer[8] = (byte) 1;
-//			codeBuffer[9] = (byte) 0xfb;
 			break;
 
 		default:

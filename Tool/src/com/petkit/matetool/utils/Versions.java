@@ -162,7 +162,7 @@ public class Versions {
 	 *
 	 *
 	 */
-	public static final String TOOL_AQ_VERSION	= "0.1";
+	public static final String TOOL_AQ_VERSION	= "1.0";
 
 
 	/**
