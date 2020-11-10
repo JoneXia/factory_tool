@@ -139,7 +139,7 @@ public class FeederMiniUtils {
             }
 
             if (type == TYPE_MAINTAIN) {        //擦除ID选项先关闭，暂不开放
-//                results.add(new FeederMiniTestUnit(FeederMiniTestModes.TEST_MODE_RESET_ID, "擦除ID", 98, 1));
+                results.add(new FeederMiniTestUnit(FeederMiniTestModes.TEST_MODE_RESET_ID, "擦除ID", 98, 1));
             }
         }
         return results;

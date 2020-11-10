@@ -5,84 +5,90 @@
               android:padding="10dip"
               android:orientation="vertical">
 
-    <RadioGroup
-        android:id="@+id/mate_test_style"
-        android:layout_width="wrap_content"
+    <ScrollView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dip">
-
-        <RadioButton
-            android:id="@+id/mate_style"
+        >
+        <RadioGroup
+            android:id="@+id/mate_test_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:selectAllOnFocus="true"
-            android:text="Mate Style"/>
+            android:layout_marginTop="20dip">
 
-        <RadioButton
-            android:id="@+id/mate_pro"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dip"
-            android:text="Mate Pro"/>
+            <RadioButton
+                android:id="@+id/mate_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:selectAllOnFocus="true"
+                android:visibility="gone"
+                android:text="Mate Style"/>
 
-        <RadioButton
-            android:id="@+id/go"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dip"
-            android:text="Go抽检-G1"/>
+            <RadioButton
+                android:id="@+id/mate_pro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip"
+                android:visibility="gone"
+                android:text="Mate Pro"/>
 
-        <RadioButton
-            android:id="@+id/feeder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dip"
-            android:text="喂食器-D1"/>
+            <RadioButton
+                android:id="@+id/go"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip"
+                android:text="Go抽检-G1"/>
 
-        <RadioButton
-            android:id="@+id/cozy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dip"
-            android:text="宠物窝new-Z1s"/>
+            <RadioButton
+                android:id="@+id/feeder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip"
+                android:text="喂食器-D1"/>
 
-        <RadioButton
-            android:id="@+id/feeder_mini"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dip"
-            android:text="喂食器MINI-D2"/>
+            <RadioButton
+                android:id="@+id/cozy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip"
+                android:text="宠物窝new-Z1s"/>
 
-        <RadioButton
-            android:id="@+id/k2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dip"
-            android:text="净味器-K2"/>
+            <RadioButton
+                android:id="@+id/feeder_mini"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip"
+                android:text="喂食器MINI-D2"/>
 
-        <RadioButton
-            android:id="@+id/toilet"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dip"
-            android:text="自动猫厕所-T3"/>
+            <RadioButton
+                android:id="@+id/k2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip"
+                android:text="净味器-K2"/>
 
-        <RadioButton
-            android:id="@+id/aq"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dip"
-            android:text="智能鱼缸-AQ"/>
+            <RadioButton
+                android:id="@+id/toilet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip"
+                android:text="自动猫厕所-T3"/>
 
-        <RadioButton
-            android:id="@+id/d3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dip"
-            android:visibility="gone"
-            android:text="行星喂食器-D3"/>
+            <RadioButton
+                android:id="@+id/aq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip"
+                android:text="智能鱼缸-AQ"/>
 
-    </RadioGroup>
+            <RadioButton
+                android:id="@+id/d3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip"
+                android:text="行星喂食器-D3"/>
+
+        </RadioGroup>
+    </ScrollView>
 
     <EditText
         android:id="@+id/fixture_number_edittxt"
@@ -91,9 +97,15 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dip"
         android:layout_marginTop="20dip"
+        android:visibility="gone"
         android:hint="@string/fixture_number"
         android:inputType="number"
         android:maxLength="1"/>
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="0dip"
+        android:layout_weight="1" />
 
     <Button
         android:id="@+id/start_test"

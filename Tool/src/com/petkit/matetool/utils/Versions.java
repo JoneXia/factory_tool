@@ -172,7 +172,7 @@ public class Versions {
 	 *
 	 *
 	 */
-	public static final String TOOL_D3_VERSION	= "0.1";
+	public static final String TOOL_D3_VERSION	= "1.0";
 
 
 

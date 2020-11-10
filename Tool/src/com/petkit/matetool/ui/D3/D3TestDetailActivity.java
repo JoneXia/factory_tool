@@ -223,7 +223,7 @@ public class D3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 mPromptTextView.setText("测试电池运输模式，彻底断电");
                 break;
             case TEST_MODE_BT:
-                mPromptTextView.setText("测试蓝牙功能，检测蓝牙信号强度，需大于-60！");
+                mPromptTextView.setText("测试蓝牙功能，检测蓝牙信号强度，需大于-70！");
                 break;
             case TEST_MODE_TIME:
                 mPromptTextView.setText("测试设备时钟！");
@@ -577,6 +577,7 @@ public class D3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                             mTempResult = mTempResult | 0x10;
                             desc.append("\n").append("LED灯和语音已打开");
                         }
+                        desc.append("\n").append("当前温度：").append(moduleStateStruct.getSub0() / 10f + "℃");
                         result = mTempResult == 0x11;
                         break;
                     case 2:
@@ -606,8 +607,16 @@ public class D3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         } else {
                             desc.append("\n").append("红外-异常！");
                         }
-                        result = mTempResult == 0x11;
 
+                        if (moduleStateStruct.getSub0() > 0) {
+                            mTempResult = mTempResult | 0x100;
+                            desc.append("\n").append("粮桶霍尔：").append("有信号");
+                        } else {
+                            mTempResult = mTempResult | 0x1000;
+                            desc.append("\n").append("粮桶霍尔：").append("无信号");
+                        }
+
+                        result = mTempResult == 0x1111;
                         break;
                     case 4:
                         desc.append("\n").append("电机").append("-").append(moduleStateStruct.getState() == 1 ? "正常" : "异常")
@@ -658,6 +667,10 @@ public class D3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         int rightState = (moduleStateStruct.getState() >> 1) & 0x1;
                         desc.append("\n接近传感器： ").append(" 左 - ").append(leftState == 1 ? "已靠近； " : "未靠近； ")
                                 .append(" 右 - ").append(rightState == 1 ? "已靠近" : "未靠近");
+
+                        desc.append("\n").append("左侧读取数值：").append("-").append(moduleStateStruct.getSub0());
+                        desc.append("\n").append("右侧读取数值：").append("-").append(moduleStateStruct.getSub1());
+
                         if (leftState > 0) {
                             mTempResult = mTempResult | 0x1;
                         } else {
@@ -1099,7 +1112,7 @@ public class D3TestDetailActivity extends BaseActivity implements PetkitSocketIn
 
                             mDescTextView.append("\n搜索到设备，信号为： " + deviceInfo.getRssi());
 
-                            if (deviceInfo.getRssi() >= -60) {
+                            if (deviceInfo.getRssi() >= -70) {
                                 mDescTextView.append("\n蓝牙测试完成");
                                 if (isInAutoUnits) {
                                     mD3AutoTestUnits.get(mAutoUnitStep).setResult(TEST_PASS);

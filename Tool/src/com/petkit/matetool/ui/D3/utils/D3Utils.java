@@ -152,11 +152,11 @@ public class D3Utils {
                 results.add(new D3TestUnit(D3TestModes.TEST_MODE_AUTO, "自动项测试", 10, 1));
             }
 
-            results.add(new D3TestUnit(D3TestModes.TEST_MODE_LED, "指示灯和语音测试", 1, 1));
+            results.add(new D3TestUnit(D3TestModes.TEST_MODE_LED, "指示灯、语音、温度测试", 1, 1));
             results.add(new D3TestUnit(D3TestModes.TEST_MODE_KEY, "按键测试", 2, 1));
-            results.add(new D3TestUnit(D3TestModes.TEST_MODE_IR, "红外测试", 3, 1));
-            results.add(new D3TestUnit(D3TestModes.TEST_MODE_HOLZER, "粮桶霍尔", 8, 1));
-            results.add(new D3TestUnit(D3TestModes.TEST_MODE_TEMP, "环境温度", 9, 1));
+            results.add(new D3TestUnit(D3TestModes.TEST_MODE_IR, "红外、霍尔测试", 3, 1));
+//            results.add(new D3TestUnit(D3TestModes.TEST_MODE_HOLZER, "粮桶霍尔", 8, 1));
+//            results.add(new D3TestUnit(D3TestModes.TEST_MODE_TEMP, "环境温度", 9, 1));
             results.add(new D3TestUnit(D3TestModes.TEST_MODE_MOTOR, "马达测试", 4, 1));
 
             if (type != TYPE_CHECK && type != TYPE_TEST) {
@@ -167,7 +167,6 @@ public class D3Utils {
 
             results.add(new D3TestUnit(D3TestModes.TEST_MODE_PROXIMITY, "接近传感器", 6, 1));
             results.add(new D3TestUnit(D3TestModes.TEST_MODE_BAT, "电池", 7, 1));
-            results.add(new D3TestUnit(D3TestModes.TEST_MODE_BAT_SHIP, "电池运输模式", 12, 1));
 
             if (type != TYPE_TEST_PARTIALLY) {
                 if (type == TYPE_TEST) {
@@ -177,6 +176,7 @@ public class D3Utils {
             }
 
             if (type == TYPE_MAINTAIN) {        //擦除ID选项先关闭，暂不开放
+                results.add(new D3TestUnit(D3TestModes.TEST_MODE_BAT_SHIP, "电池运输模式", 12, 1));
 //                results.add(new D3TestUnit(D3TestModes.TEST_MODE_RESET_SN, "重写SN", 97, 1));
 //                results.add(new D3TestUnit(D3TestModes.TEST_MODE_RESET_ID, "擦除ID", 98, 1));
             }
