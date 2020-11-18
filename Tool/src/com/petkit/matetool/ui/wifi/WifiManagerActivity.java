@@ -26,6 +26,7 @@ import com.petkit.matetool.widget.LoadDialog;
 import com.petkit.matetool.widget.pulltorefresh.PullToRefreshBase;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class WifiManagerActivity extends BaseListActivity {
@@ -152,6 +153,8 @@ public class WifiManagerActivity extends BaseListActivity {
                 }
             }
         }
+
+        Collections.sort(mWifiList, new ScanResultSortUtil());
 
         if (mWifiList.size() == 0) {
             setListViewState(ListView_State_Empty);

@@ -170,9 +170,14 @@ public class Versions {
 	 * 1.0说明:
 	 * 1. 支持小佩行星喂食器（D3）产测全流程
 	 *
+	 * 1.1说明：
+	 * 1. 调整测试项顺序
+	 * 2. 抽检中去除打印SN
+	 * 3. 马达测试中增加光栅步数显示
+	 * 4. WiFi列表增加信号排序
 	 *
 	 */
-	public static final String TOOL_D3_VERSION	= "1.0";
+	public static final String TOOL_D3_VERSION	= "1.1";
 
 
 

@@ -214,7 +214,7 @@ public class D3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 mPromptTextView.setText("测试粮桶霍尔！");
                 break;
             case TEST_MODE_MOTOR:
-                mPromptTextView.setText("测试马达！");
+                mPromptTextView.setText("测试马达，需要分别测正转和反转，门位置都需要能关闭！");
                 break;
             case TEST_MODE_BAT:
                 mPromptTextView.setText("测试电池功能，观察电池电压！");
@@ -619,11 +619,12 @@ public class D3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         result = mTempResult == 0x1111;
                         break;
                     case 4:
-                        desc.append("\n").append("电机").append("-").append(moduleStateStruct.getState() == 1 ? "正常" : "异常")
-                                .append("\n霍尔").append("：").append((moduleStateStruct.getSub0() & 0x1) == 1 ? "位置到位" :"不到位")
+                        desc.append("\n").append("电机").append(": ").append(moduleStateStruct.getState() == 1 ? "正常" : "异常")
+                                .append("\n门位置").append("：").append((moduleStateStruct.getSub0() & 0x1) == 1 ? "关闭" :"打开")
                                 .append("\n方向").append("：").append(((moduleStateStruct.getSub0() >> 1) & 0x1) == 1 ? "反转" :"正转")
-                                .append("\n电流").append("：").append((moduleStateStruct.getSub2()) == 1 ? "正常" : "异常").append("\n-----");
+                                .append("\n电流").append("：").append((moduleStateStruct.getSub2()) == 1 ? "正常" : "异常");
 
+                        desc.append("\n").append("光栅步数：").append(moduleStateStruct.getSub1()).append("\n-----");
 
                         if (moduleStateStruct.getState() > 0) {
                             if ((moduleStateStruct.getSub0() & 0x3) == 3) {
