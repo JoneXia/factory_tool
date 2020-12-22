@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.petkit.android.utils.CommonUtils;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.D3.utils.D3Utils;
+import com.petkit.matetool.ui.D4.utils.D4Utils;
 import com.petkit.matetool.ui.K2.utils.K2Utils;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.ui.feeder.utils.FeederUtils;
@@ -32,6 +33,7 @@ public class TesterManagerUtils {
         getCurrentTesterForType(Globals.T3);
         getCurrentTesterForType(Globals.K2);
         getCurrentTesterForType(Globals.D3);
+        getCurrentTesterForType(Globals.D4);
     }
 
 
@@ -59,6 +61,9 @@ public class TesterManagerUtils {
                     break;
                 case Globals.D3:
                     testerString = CommonUtils.getSysMap(D3Utils.SHARED_D3_TESTER);
+                    break;
+                case Globals.D4:
+                    testerString = CommonUtils.getSysMap(D4Utils.SHARED_D4_TESTER);
                     break;
             }
             if(!TextUtils.isEmpty(testerString)) {
@@ -92,6 +97,9 @@ public class TesterManagerUtils {
                 break;
             case Globals.D3:
                 CommonUtils.addSysMap(D3Utils.SHARED_D3_TESTER, testerString);
+                break;
+            case Globals.D4:
+                CommonUtils.addSysMap(D4Utils.SHARED_D4_TESTER, testerString);
                 break;
         }
 
@@ -136,6 +144,9 @@ public class TesterManagerUtils {
                         break;
                     case Globals.D3:
                         CommonUtils.addSysMap(D3Utils.SHARED_D3_TESTER, "");
+                        break;
+                    case Globals.D4:
+                        CommonUtils.addSysMap(D4Utils.SHARED_D4_TESTER, "");
                         break;
                 }
                 iterator.remove();

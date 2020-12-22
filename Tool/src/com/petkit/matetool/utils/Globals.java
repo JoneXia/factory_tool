@@ -45,6 +45,8 @@ public class Globals {
     public static final int K2 = 8;
 	public static final int AQ = 9;
 	public static final int D3 = 10;
+	public static final int D4 = 11;
+
 //	public static int g_testStyle = 0;
 
 	/**
@@ -57,6 +59,7 @@ public class Globals {
 	public static final String DEVICE_TYPE_CODE_T3 = "D";
 	public static final String DEVICE_TYPE_CODE_K2 = "E";
 	public static final String DEVICE_TYPE_CODE_D3 = "F";
+	public static final String DEVICE_TYPE_CODE_D4 = "G";
 
 	public static ArrayList<String> mTestItem = new ArrayList<String>();
 	public static int[] mTestResult = null;

@@ -87,6 +87,13 @@
                 android:layout_marginTop="5dip"
                 android:text="行星喂食器-D3"/>
 
+            <RadioButton
+                android:id="@+id/d4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip"
+                android:text="喂食器SOLO-D4"/>
+
         </RadioGroup>
     </ScrollView>
 

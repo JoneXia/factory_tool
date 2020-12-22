@@ -22,6 +22,7 @@ import com.petkit.matetool.R;
 import com.petkit.matetool.service.DatagramConsts;
 import com.petkit.matetool.service.DatagramProcessService;
 import com.petkit.matetool.ui.D3.D3TestPrepareActivity;
+import com.petkit.matetool.ui.D4.D4TestPrepareActivity;
 import com.petkit.matetool.ui.K2.K2TestPrepareActivity;
 import com.petkit.matetool.ui.aq.AQTestMainActivity;
 import com.petkit.matetool.ui.base.BaseActivity;
@@ -43,6 +44,7 @@ import java.util.ArrayList;
 import static com.petkit.matetool.utils.Versions.TOOL_AQ_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_COZY;
 import static com.petkit.matetool.utils.Versions.TOOL_D3_VERSION;
+import static com.petkit.matetool.utils.Versions.TOOL_D4_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_FEEDER_MINI_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_FEEDER_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_GO_VERSION;
@@ -166,6 +168,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
                     case Globals.D3:
                         startActivity(D3TestPrepareActivity.class);
                         break;
+                    case Globals.D4:
+                        startActivity(D4TestPrepareActivity.class);
+                        break;
                 }
                 collapseSoftInputMethod(fixtureNumberEditText);
                 break;
@@ -201,6 +206,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
                 break;
             case R.id.d3:
                 testStyle = Globals.D3;
+                break;
+            case R.id.d4:
+                testStyle = Globals.D4;
                 break;
             case R.id.aq:
                 testStyle = Globals.AQ;
@@ -242,6 +250,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
 
         tempRadioButton = (RadioButton) findViewById(R.id.d3);
         tempRadioButton.setText("行星喂食器（D3）" + " v" + TOOL_D3_VERSION);
+
+        tempRadioButton = (RadioButton) findViewById(R.id.d4);
+        tempRadioButton.setText("喂食器SOLO（D4）" + " v" + TOOL_D4_VERSION);
     }
 
     private boolean checkPermissions() {
