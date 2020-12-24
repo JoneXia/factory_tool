@@ -184,7 +184,7 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 }
                 break;
             case TEST_MODE_KEY:
-                mPromptTextView.setText("需要分别测试功能键和reset键！");
+                mPromptTextView.setText("需要分别测试手动喂食键和WiFi设置键！");
                 break;
             case TEST_MODE_DC:
                 mPromptTextView.setText("正常电压范围（单位mV）：[5000, 7000]");
@@ -224,7 +224,6 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
         switch (mD4TestUnits.get(mCurTestStep).getType()) {
             case TEST_MODE_AGEINGRESULT:  // 人工判定结果
             case TEST_MODE_LED:
-            case TEST_MODE_BAT:
                 mBtn1.setText(R.string.Start);
                 mBtn2.setText(R.string.Failure);
                 mBtn2.setBackgroundResource(R.drawable.selector_red);
@@ -324,7 +323,6 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
             case R.id.test_btn_2:
                 switch (mD4TestUnits.get(mCurTestStep).getType()) {
                     case TEST_MODE_LED:
-                    case TEST_MODE_BAT:
                         isWriteEndCmd = true;
                         mD4TestUnits.get(mCurTestStep).setResult(TEST_FAILED);
 
@@ -351,7 +349,6 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         gotoNextTestModule();
                         break;
                     case TEST_MODE_AGEINGRESULT:
-                    case TEST_MODE_BAT:
                         mD4TestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         gotoNextTestModule();
                         break;
@@ -543,11 +540,11 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         }
                         if (moduleStateStruct.getSub1() > 0) {
                             mTempResult = mTempResult | 0x10;
-                            desc.append("\n").append("按键").append("-").append("reset键").append("-").append(getKeyDescByState(moduleStateStruct.getSub1()));
+                            desc.append("\n").append("按键").append("-").append("WiFi设置键").append("-").append(getKeyDescByState(moduleStateStruct.getSub1()));
                         }
                         if (moduleStateStruct.getSub2() > 0) {
                             mTempResult = mTempResult | 0x100;
-                            desc.append("\n").append("按键").append("-").append("功能键").append("-").append(getKeyDescByState(moduleStateStruct.getSub2()));
+                            desc.append("\n").append("按键").append("-").append("手动喂食键").append("-").append(getKeyDescByState(moduleStateStruct.getSub2()));
                         }
                         result = mTempResult == 0x111;
                         break;
@@ -572,8 +569,6 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                                 .append("\n方向").append("：").append(((moduleStateStruct.getSub0() >> 1) & 0x1) == 1 ? "反转" :"正转")
                                 .append("\n电流").append("：").append((moduleStateStruct.getSub2()) == 1 ? "正常" : "异常");
 
-                        desc.append("\n").append("光栅步数：").append(moduleStateStruct.getSub1()).append("\n-----");
-
                         if (moduleStateStruct.getState() > 0) {
                             if ((moduleStateStruct.getSub0() & 0x3) == 3) {
                                 mTempResult = (mTempResult | 0x1);
@@ -586,6 +581,13 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         break;
                     case 5:
                         desc.append("\n").append("电池电压").append(":").append(moduleStateStruct.getSub0()).append("mv");
+                        if (moduleStateStruct.getSub0() >= 5000) {
+                            mTempResult = (mTempResult | 0x1);
+                        }
+                        if (moduleStateStruct.getSub0() < 5000) {
+                            mTempResult = (mTempResult | 0x10);
+                        }
+                        result = mTempResult == 0x11;
                         break;
                     case 6:
                         desc.append("\n").append("蓝牙").append(":").append("已打开");

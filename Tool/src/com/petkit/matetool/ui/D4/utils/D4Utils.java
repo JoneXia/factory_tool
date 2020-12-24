@@ -148,8 +148,6 @@ public class D4Utils {
             results.add(new D4TestUnit(D4TestModes.TEST_MODE_LED, "指示灯、蜂鸣器测试", 1, 1));
             results.add(new D4TestUnit(D4TestModes.TEST_MODE_KEY, "按键测试", 2, 1));
             results.add(new D4TestUnit(D4TestModes.TEST_MODE_IR, "红外测试", 3, 1));
-//            results.add(new D4TestUnit(D4TestModes.TEST_MODE_HOLZER, "粮桶霍尔", 8, 1));
-//            results.add(new D4TestUnit(D4TestModes.TEST_MODE_TEMP, "环境温度", 9, 1));
             results.add(new D4TestUnit(D4TestModes.TEST_MODE_MOTOR, "马达测试", 4, 1));
             results.add(new D4TestUnit(D4TestModes.TEST_MODE_BAT, "电池", 5, 1));
 
