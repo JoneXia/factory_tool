@@ -16,6 +16,7 @@ import java.util.HashMap;
 
 import static com.petkit.android.utils.LogcatStorageHelper.getFileName;
 import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_Z1S;
+import static com.petkit.matetool.utils.Globals.PERMISSION_ERASE;
 
 /**
  * Created by Jone on 17/12/1.
@@ -120,13 +121,15 @@ public class CozyUtils {
             if (type != TYPE_TEST_PARTIALLY) {
                 if (type == TYPE_TEST) {
                     results.add(new CozyTestUnit(CozyTestModes.TEST_MODE_SN, "写入SN", 98, 2));
-//                    results.add(new DeviceTestUnit(CozyTestModes.TEST_MODE_RESET_SN, "重写SN", 97, 1));
                 }
                 results.add(new CozyTestUnit(CozyTestModes.TEST_MODE_PRINT, "打印标签", -1, type == TYPE_TEST ? 2 : 1));
             }
 
             if (type == TYPE_MAINTAIN) {        //擦除ID选项先关闭，暂不开放
-//                results.add(new DeviceTestUnit(CozyTestModes.TEST_MODE_RESET_ID, "擦除ID", 98, 1));
+                if (PERMISSION_ERASE) {
+                    results.add(new CozyTestUnit(CozyTestModes.TEST_MODE_RESET_SN, "重写SN", 97, 1));
+                    results.add(new CozyTestUnit(CozyTestModes.TEST_MODE_RESET_ID, "擦除ID", 98, 1));
+                }
             }
         }
         return results;

@@ -17,6 +17,7 @@ import java.util.HashMap;
 
 import static com.petkit.android.utils.LogcatStorageHelper.getFileName;
 import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_D2;
+import static com.petkit.matetool.utils.Globals.PERMISSION_ERASE;
 
 /**
  *
@@ -138,8 +139,10 @@ public class FeederMiniUtils {
             }
 
             if (type == TYPE_MAINTAIN) {        //擦除ID选项先关闭，暂不开放
-//                results.add(new FeederMiniTestUnit(FeederMiniTestModes.TEST_MODE_RESET_SN, "重写SN", 97, 1));
-//                results.add(new FeederMiniTestUnit(FeederMiniTestModes.TEST_MODE_RESET_ID, "擦除ID", 98, 1));
+                if (PERMISSION_ERASE) {
+                    results.add(new FeederMiniTestUnit(FeederMiniTestModes.TEST_MODE_RESET_SN, "重写SN", 97, 1));
+                    results.add(new FeederMiniTestUnit(FeederMiniTestModes.TEST_MODE_RESET_ID, "擦除ID", 98, 1));
+                }
             }
         }
         return results;
