@@ -189,7 +189,7 @@ public class Versions {
 	 * 1. 支持小佩喂食器SOLO（D4）产测全流程
 	 *
 	 */
-	public static final String TOOL_D4_VERSION	= "0.1";
+	public static final String TOOL_D4_VERSION	= "1.0";
 
 
 
