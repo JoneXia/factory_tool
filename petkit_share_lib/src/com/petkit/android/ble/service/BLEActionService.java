@@ -20,6 +20,7 @@ import com.petkit.android.ble.Conversion;
 import com.petkit.android.ble.DeviceInfo;
 import com.petkit.android.ble.FormatTransfer;
 import com.petkit.android.ble.WifiInfo;
+import com.petkit.android.ble.data.PetkitBleMsg;
 import com.petkit.android.ble.exception.BLEAbortedException;
 import com.petkit.android.ble.exception.BLEErrorException;
 import com.petkit.android.ble.exception.DeviceDisconnectedException;
@@ -159,6 +160,9 @@ public abstract class BLEActionService extends IntentService {
 	private byte[] mWifiSecretKey;
 
 
+	protected boolean mStep;
+	protected byte[] mStepRawData;
+
 	/**
 	 * <p>
 	 * Flag set to <code>true</code> when the DFU target had send a notification with status other than {@link #}. Setting it to <code>true</code> will abort sending firmware and
@@ -219,6 +223,22 @@ public abstract class BLEActionService extends IntentService {
 				mPaused = false;
 				mAborted = true;
 
+				// notify waiting thread
+				synchronized (mLock) {
+					mLock.notifyAll();
+				}
+				break;
+			case BLEConsts.ACTION_STEP_ENTRY:
+				mPaused = false;
+				mStepRawData = intent.getByteArrayExtra(BLEConsts.EXTRA_DATA);
+				// notify waiting thread
+				synchronized (mLock) {
+					mLock.notifyAll();
+				}
+				break;
+			case BLEConsts.ACTION_STEP_QUIT:
+				mStep = false;
+				mPaused = false;
 				// notify waiting thread
 				synchronized (mLock) {
 					mLock.notifyAll();
@@ -519,14 +539,22 @@ public abstract class BLEActionService extends IntentService {
 			}
 			startGoSampling(intent);
 			break;
-			case BLEConsts.BLE_ACTION_AQ_TEST:
-				mBleDevice = (DeviceInfo) intent.getSerializableExtra(BLEConsts.EXTRA_DEVICE_INFO);
-				if(mBleDevice == null || mBleDevice.getAddress() == null){
-					updateProgressNotification(BLEConsts.ERROR_DEVICE_ID_NULL);
-					return;
-				}
-				startAQTest(intent);
-				break;
+		case BLEConsts.BLE_ACTION_AQ_TEST:
+			mBleDevice = (DeviceInfo) intent.getSerializableExtra(BLEConsts.EXTRA_DEVICE_INFO);
+			if(mBleDevice == null || mBleDevice.getAddress() == null){
+				updateProgressNotification(BLEConsts.ERROR_DEVICE_ID_NULL);
+				return;
+			}
+			startAQTest(intent);
+			break;
+		case BLEConsts.BLE_ACTION_P3_TEST:
+			mBleDevice = (DeviceInfo) intent.getSerializableExtra(BLEConsts.EXTRA_DEVICE_INFO);
+			if(mBleDevice == null || mBleDevice.getAddress() == null){
+				updateProgressNotification(BLEConsts.ERROR_DEVICE_ID_NULL);
+				return;
+			}
+			startP3Test(intent);
+			break;
 		default:
 			break;
 		}
@@ -631,6 +659,19 @@ public abstract class BLEActionService extends IntentService {
 		
 		final Intent broadcast = new Intent(BLEConsts.BROADCAST_PROGRESS);
 		broadcast.putExtra(BLEConsts.EXTRA_DATA, data);
+		broadcast.putExtra(BLEConsts.EXTRA_DEVICE_INFO, mBleDevice);
+		broadcast.putExtra(BLEConsts.EXTRA_PROGRESS, progress);
+		LocalBroadcastManager.getInstance(this).sendBroadcast(broadcast);
+	}
+
+
+	protected void updateProgressNotification(int progress, ArrayList<PetkitBleMsg> msgs) {
+		PetkitLog.d("updateProgressNotification progress: " + progress);
+		if(isNeedStoreProgress)
+			CommonUtils.addSysIntMap(this, Consts.SHARED_DEVICE_CONNECT_STATE, progress);
+
+		final Intent broadcast = new Intent(BLEConsts.BROADCAST_PROGRESS);
+		broadcast.putExtra(BLEConsts.EXTRA_DATA, msgs);
 		broadcast.putExtra(BLEConsts.EXTRA_DEVICE_INFO, mBleDevice);
 		broadcast.putExtra(BLEConsts.EXTRA_PROGRESS, progress);
 		LocalBroadcastManager.getInstance(this).sendBroadcast(broadcast);
@@ -1123,16 +1164,16 @@ public abstract class BLEActionService extends IntentService {
 			codeBuffer[2] = ((Integer)Integer.parseInt(addressString.substring(2, 4), 16)).byteValue();
 			break;
 		case BLEConsts.OP_CODE_AQ_TEST_ENTRY:
-			codeBuffer = new byte[9];
-			codeBuffer[0] = (byte) 0xfa;
-			codeBuffer[1] = (byte) 0xfc;
-			codeBuffer[2] = (byte) 0xfd;
-			codeBuffer[3] = (byte) 240;
-			codeBuffer[4] = (byte) 1;
-			codeBuffer[5] = (byte) 1;
-			codeBuffer[6] = (byte) 0;
-			codeBuffer[7] = (byte) 0;
-			codeBuffer[8] = (byte) 0xfb;
+				codeBuffer = new byte[9];
+				codeBuffer[0] = (byte) 0xfa;
+				codeBuffer[1] = (byte) 0xfc;
+				codeBuffer[2] = (byte) 0xfd;
+				codeBuffer[3] = (byte) 240;
+				codeBuffer[4] = (byte) 1;
+				codeBuffer[5] = (byte) 1;
+				codeBuffer[6] = (byte) 0;
+				codeBuffer[7] = (byte) 0;
+				codeBuffer[8] = (byte) 0xfb;
 			break;
 
 		default:
@@ -2053,6 +2094,7 @@ public abstract class BLEActionService extends IntentService {
 	protected abstract void startInitAndChangeGo(final Intent intent);
 	protected abstract void startGoSampling(final Intent intent);
 	protected abstract void startAQTest(final Intent intent);
+	protected abstract void startP3Test(final Intent intent);
 
 	protected abstract void onBlockTimer();
 	

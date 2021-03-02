@@ -193,4 +193,12 @@ public class Versions {
 
 
 
+	/**
+	 *
+	 * 1.0说明:
+	 * 1. 支持智能猫狗牌（P3）产测全流程
+	 *
+	 */
+	public static final String TOOL_P3_VERSION	= "0.1";
+
 }

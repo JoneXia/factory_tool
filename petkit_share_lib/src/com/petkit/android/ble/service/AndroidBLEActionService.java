@@ -32,6 +32,8 @@ import com.petkit.android.ble.DeviceInfo;
 import com.petkit.android.ble.GattError;
 import com.petkit.android.ble.HexInputStream;
 import com.petkit.android.ble.ZipHexInputStream;
+import com.petkit.android.ble.data.P3DataUtils;
+import com.petkit.android.ble.data.PetkitBleMsg;
 import com.petkit.android.ble.exception.BLEAbortedException;
 import com.petkit.android.ble.exception.BLEErrorException;
 import com.petkit.android.ble.exception.DeviceDisconnectedException;
@@ -4615,7 +4617,6 @@ public class AndroidBLEActionService extends BLEActionService {
 
 			PetkitLog.d("writeSyncCode  " + parse(buildOpCodeBuffer(BLEConsts.OP_CODE_AQ_TEST_ENTRY)));
 
-			//			writeSyncCode(gatt, controlCharacteristic, );
 			response = readNotificationResponse();
 			parserReceivedData(response);
 
@@ -4670,5 +4671,180 @@ public class AndroidBLEActionService extends BLEActionService {
 
 	}
 
+
+	@Override
+	protected void startP3Test(Intent intent) {
+
+		deviceId = null;
+		secretKey = null;
+		secret = null;
+		byte[] sendData;
+
+		/*
+		 * Now let's connect to the device.
+		 * All the methods below are synchronous. The mLock object is used to wait for asynchronous calls.
+		 */
+		sendLogBroadcast("Connecting to target...");
+
+		try {
+
+			if(startConnectAndReconnect(intent, mBleDevice.getAddress(), BLEConsts.ACC_SERVICE_UUID, BLEConsts.ACC_CONTROL_UUID, BLEConsts.ACC_DATA_UUID)){
+				return;
+			}
+
+			if (mAborted) {
+				logi("Upload aborted");
+				sendLogBroadcast("Upload aborted");
+				terminateConnection(gatt, BLEConsts.ERROR_ABORTED);
+				return;
+			}
+			// Set up the temporary variable that will hold the responses
+			byte[] response = null;
+
+			// Enable notifications
+			enableCCCD(gatt, dataCharacteristic, BLEConsts.NOTIFICATIONS);
+			sendLogBroadcast("Notifications enabled");
+
+			boolean requestMtu = gatt.requestMtu(255);
+
+//			updateProgressNotification(BLEConsts.PROGRESS_CONNECTED);
+
+			try {
+				waitUntilTimeOut(500);
+				synchronized (mLock) {
+					while(!timeOut){
+						mLock.wait();
+					}
+				}
+			} catch (InterruptedException e) {
+			}
+
+//			ArrayList<PetkitBleMsg> msgs = new ArrayList<>();
+
+			writeSyncCodeNew(gatt, controlCharacteristic, P3DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_P3_TEST_ENTRY));
+			response = readNotificationResponse();
+			PetkitBleMsg msg = P3DataUtils.parseRawData(response);
+
+//			writeSyncCodeNew(gatt, controlCharacteristic, P3DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_BATTERY_KEY));
+//			response = readNotificationResponse();
+//			msg = P3DataUtils.parseRawData(response);
+//			if (msg == null) {
+////				throw new UnknownResponseException("B cmd error", P3DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_BATTERY_KEY), -1);
+//			}
+//			msgs.add(msg);
+//
+//			writeSyncCodeNew(gatt, controlCharacteristic, P3DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_P3_SENSOR_DATA));
+//			response = readNotificationResponse();
+//			msg = P3DataUtils.parseRawData(response);
+//			if (msg == null) {
+////				throw new UnknownResponseException(BLEConsts.OP_CODE_P3_SENSOR_DATA + " cmd error",
+////						P3DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_P3_SENSOR_DATA), -1);
+//			}
+//			msgs.add(msg);
+//
+//			writeSyncCodeNew(gatt, controlCharacteristic, P3DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_P3_RING));
+//			PetkitLog.d("writeSyncCodeNew  " + parse(P3DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_P3_RING)));
+//			response = readNotificationResponse();
+//			msg = P3DataUtils.parseRawData(response);
+//			if (msg == null) {
+////				throw new UnknownResponseException(BLEConsts.OP_CODE_P3_RING + " cmd error",
+////						P3DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_P3_RING), -1);
+//			}
+//			msgs.add(msg);
+
+			updateProgressNotification(BLEConsts.PROGRESS_CONNECTED);
+
+//			startKeepAlive();// start send keepAlive message
+			enterExternalStepControl();
+
+			gatt.setCharacteristicNotification(dataCharacteristic, false);
+			disconnect(gatt);
+
+			// Close the device
+			refreshDeviceCache(gatt, false);
+			close(gatt);
+
+		} catch (DeviceDisconnectedException e) {
+			sendLogBroadcast("Device has disconneted");
+			loge(e.getMessage());
+			if (mNotificationsEnabled)
+				gatt.setCharacteristicNotification(dataCharacteristic, false);
+			close(gatt);
+			updateProgressNotification(BLEConsts.ERROR_DEVICE_DISCONNECTED); //TODO:
+		} catch (UnknownResponseException e) {
+			final int error = BLEConsts.ERROR_INVALID_RESPONSE;
+			loge(e.getMessage());
+			sendLogBroadcast(e.getMessage());
+			terminateConnection(gatt, error);
+		} catch (BLEErrorException e) {
+			final int error = e.getErrorNumber() & ~ BLEConsts.ERROR_CONNECTION_MASK;
+			sendLogBroadcast(String.format("Error (0x%02X): %s", error, GattError.parse(error)));
+			terminateConnection(gatt, e.getErrorNumber());
+		} catch (BLEAbortedException e) {
+			sendLogBroadcast("action aborted");
+			terminateConnection(gatt, BLEConsts.ERROR_ABORTED);
+		}
+
+	}
+
+	private void enterExternalStepControl() throws BLEErrorException, DeviceDisconnectedException, BLEAbortedException, UnknownResponseException {
+
+		mStep = true;
+		while (!mAborted && mStep) {
+			mPaused = true;
+			waitIfPaused(false);
+
+			if (mStepRawData != null) {
+				ArrayList<PetkitBleMsg> msgs = new ArrayList<>();
+
+				writeSyncCodeNew(gatt, controlCharacteristic, mStepRawData);
+				byte[] response = readNotificationResponse();
+				PetkitBleMsg msg = P3DataUtils.parseRawData(response);
+				if (msg == null) {
+					throw new UnknownResponseException("Step cmd error", mStepRawData, -1);
+				}
+				msgs.add(msg);
+
+				updateProgressNotification(BLEConsts.PROGRESS_STEP_DATA, msgs);
+			}
+		}
+	}
+
+	private void writeSyncCodeNew(final BluetoothGatt gatt,
+							   final BluetoothGattCharacteristic characteristic,
+							   final byte[] value)
+			throws DeviceDisconnectedException, BLEErrorException,
+			BLEAbortedException {
+		mReceivedData = null;
+		mError = 0;
+		mRequestCompleted = false;
+		/*
+		 * Sending a command that will make the DFU target to reboot may cause
+		 * an error 133 (0x85 - Gatt Error). If so, with this flag set, the
+		 * error will not be shown to the user as the peripheral is disconnected
+		 * anyway. See: mGattCallback#onCharacteristicWrite(...) method
+		 */
+		PetkitLog.d("writeSyncCodeNew  " + parse(value));
+		characteristic.setValue(value);
+		sendLogBroadcast("writeSyncCodeNew" + characteristic.getUuid());
+		gatt.writeCharacteristic(characteristic);
+
+		// We have to wait for confirmation
+		try {
+			synchronized (mLock) {
+				while ((!mRequestCompleted && mConnectionState == BLEConsts.STATE_CONNECTED_AND_READY
+						&& mError == 0 && !mAborted) || mPaused)
+					mLock.wait();
+			}
+		} catch (final InterruptedException e) {
+			loge("Sleeping interrupted", e);
+		}
+		if (mAborted)
+			throw new BLEAbortedException();
+		if (!mResetRequestSent && mError != 0)
+			throw new BLEErrorException("Unable to write Op Code " + value[0], mError);
+		if (!mResetRequestSent && mConnectionState != BLEConsts.STATE_CONNECTED_AND_READY)
+			throw new DeviceDisconnectedException("Unable to write Op Code " + value[0], mConnectionState);
+	}
 
 }

@@ -8,6 +8,7 @@ import java.io.Serializable;
  */
 public class Device implements Serializable {
 
+    private String id = "";
     private String mac = "";
     private String sn = "";
     private String chipid = "";
@@ -33,6 +34,14 @@ public class Device implements Serializable {
             sn = "";
         }
         return sn;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public void setSn(String sn) {
@@ -81,7 +90,7 @@ public class Device implements Serializable {
 
     @Override
     public String toString() {
-        return "Feeder{" +
+        return "Device{" +
                 "mac='" + mac + '\'' +
                 ", sn='" + sn + '\'' +
                 ", chipid='" + chipid + '\'' +

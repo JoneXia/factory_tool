@@ -24,6 +24,7 @@ import com.petkit.matetool.service.DatagramProcessService;
 import com.petkit.matetool.ui.D3.D3TestPrepareActivity;
 import com.petkit.matetool.ui.D4.D4TestPrepareActivity;
 import com.petkit.matetool.ui.K2.K2TestPrepareActivity;
+import com.petkit.matetool.ui.P3.P3TestPrepareActivity;
 import com.petkit.matetool.ui.aq.AQTestMainActivity;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.cozy.CozyTestPrepareActivity;
@@ -50,6 +51,7 @@ import static com.petkit.matetool.utils.Versions.TOOL_FEEDER_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_GO_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_K2_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_MATE_VERSION;
+import static com.petkit.matetool.utils.Versions.TOOL_P3_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_T3_VERSION;
 
 /**
@@ -171,6 +173,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
                     case Globals.D4:
                         startActivity(D4TestPrepareActivity.class);
                         break;
+                    case Globals.P3:
+                        startActivity(P3TestPrepareActivity.class);
+                        break;
                 }
                 collapseSoftInputMethod(fixtureNumberEditText);
                 break;
@@ -213,6 +218,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
             case R.id.aq:
                 testStyle = Globals.AQ;
                 break;
+            case R.id.p3:
+                testStyle = Globals.P3;
+                break;
             default:
                 break;
         }
@@ -253,6 +261,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
 
         tempRadioButton = (RadioButton) findViewById(R.id.d4);
         tempRadioButton.setText("喂食器SOLO（D4）" + " v" + TOOL_D4_VERSION);
+
+        tempRadioButton = (RadioButton) findViewById(R.id.p3);
+        tempRadioButton.setText("智能猫狗牌（P3）" + " v" + TOOL_P3_VERSION);
     }
 
     private boolean checkPermissions() {

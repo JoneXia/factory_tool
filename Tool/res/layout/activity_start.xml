@@ -94,6 +94,13 @@
                 android:layout_marginTop="5dip"
                 android:text="喂食器SOLO-D4"/>
 
+            <RadioButton
+                android:id="@+id/p3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip"
+                android:text="智能猫狗牌-P3"/>
+
         </RadioGroup>
     </ScrollView>
 

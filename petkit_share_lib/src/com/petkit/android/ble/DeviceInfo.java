@@ -52,6 +52,7 @@ public class DeviceInfo implements Serializable {
 	public static final int DEVICE_TYPE_T3 = 7;
 	public static final int DEVICE_TYPE_K2 = 8;
 	public static final int DEVICE_TYPE_AQ = 10;
+	public static final int DEVICE_TYPE_P3 = 11;
 	
 	private String address;
 	private String name;
@@ -71,6 +72,9 @@ public class DeviceInfo implements Serializable {
 
 	//AQ 整机测试结果
 	private int mTestResult;
+
+	private String sn;
+	private long creation;
 
 	public DeviceInfo() {
 		super();
@@ -138,7 +142,7 @@ public class DeviceInfo implements Serializable {
 			count += (len + 1);
 		}
 
-		if (DEVICE_TYPE_T3 != deviceType && DEVICE_TYPE_K2 != deviceType && DEVICE_TYPE_AQ != deviceType) {
+		if (DEVICE_TYPE_T3 != deviceType && DEVICE_TYPE_K2 != deviceType && DEVICE_TYPE_AQ != deviceType && DEVICE_TYPE_P3 != deviceType) {
 			int i = 0;
 			while (i < scanRecord.length - 1) {
 				int length = scanRecord[i];
@@ -272,6 +276,9 @@ public class DeviceInfo implements Serializable {
 			case BLEConsts.AQ_DISPLAY_NAME:
 				deviceType = DEVICE_TYPE_AQ;
 				break;
+			case BLEConsts.P3_DISPLAY_NAME:
+				deviceType = DEVICE_TYPE_P3;
+				break;
 		}
 	}
 	
@@ -318,6 +325,22 @@ public class DeviceInfo implements Serializable {
 			mac = mac.replaceAll(":", "");
 		}
 		this.mac = mac;
+	}
+
+	public String getSn() {
+		return sn;
+	}
+
+	public void setSn(String sn) {
+		this.sn = sn;
+	}
+
+	public void setCreation(long creation) {
+		this.creation = creation;
+	}
+
+	public long getCreation() {
+		return creation;
 	}
 
 	public boolean isChecked() {
