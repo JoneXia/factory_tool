@@ -99,6 +99,8 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
         setContentView(R.layout.activity_feeder_test_detail);
 
         registerBoradcastReceiver();
+
+        startTestModule();
     }
 
     @Override
@@ -171,7 +173,14 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
                 mPromptTextView.setText("测试蜂鸣器，观察声音是否正常！");
                 break;
             case TEST_MODE_AUTO:
-                mPromptTextView.setText("自动测试项包括：电压、G-sensor数据，点击开始后程序自动完成检测。");
+                if (mTestType == P3Utils.TYPE_TEST_PARTIALLY) {
+                    mPromptTextView.setText("自动测试项包括：电压[2800, 3200]、G-sensor数据，点击开始后程序自动完成检测。");
+                } else {
+                    mPromptTextView.setText("自动测试项包括：电压[3000, 3350]、G-sensor数据，点击开始后程序自动完成检测。");
+                }
+                break;
+            case TEST_MODE_SENSOR:
+                mPromptTextView.setText("测试运动传感器，需要测试静置状态和运动状态！");
                 break;
             default:
                 break;
@@ -272,6 +281,7 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
                         mP3TestUnits.get(mCurTestStep).setResult(TEST_FAILED);
 
                         refershBtnView();
+                        gotoNextTestModule();
                         break;
                     case TEST_MODE_PRINT:
                         startActivity(PrintActivity.class);
@@ -302,13 +312,11 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
         switch (mP3TestUnits.get(mCurTestStep).getType()) {
             case TEST_MODE_AUTO:
                 startAutoUnitsTest();
-                return;
-
+                break;
             default:
+                sendBleData(P3DataUtils.buildOpCodeBuffer(mP3TestUnits.get(mCurTestStep).getModule()));
                 break;
         }
-
-        sendBleData(P3DataUtils.buildOpCodeBuffer(mP3TestUnits.get(mCurTestStep).getModule()));
 
         if (mP3TestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
             mP3TestUnits.get(mCurTestStep).setResult(TEST_FAILED);
@@ -372,6 +380,13 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
             mTempResult = 0;
             mCurTestStep++;
             refreshView();
+
+            if (mP3TestUnits.get(mCurTestStep).getType() != P3Utils.P3TestModes.TEST_MODE_SN
+                && mP3TestUnits.get(mCurTestStep).getType() != P3Utils.P3TestModes.TEST_MODE_RESET_SN
+                    && mP3TestUnits.get(mCurTestStep).getType() != P3Utils.P3TestModes.TEST_MODE_RESET_ID
+                    && mP3TestUnits.get(mCurTestStep).getType() != P3Utils.P3TestModes.TEST_MODE_PRINT) {
+                startTestModule();
+            }
         }
     }
 
@@ -427,15 +442,20 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
                 } else {
                     GsensorData gsensorData = new GsensorData(data);
 
+                    mDescTextView.append("\n");
+                    mDescTextView.append(gsensorData.toString());
+
                     if (lastGsensorData != null) {
                         int x, y, z;
-                        x = gsensorData.getX() - lastGsensorData.getX();
-                        y = gsensorData.getY() - lastGsensorData.getY();
-                        z = gsensorData.getZ() - lastGsensorData.getZ();
+                        x = Math.abs(gsensorData.getX() - lastGsensorData.getX());
+                        y = Math.abs(gsensorData.getY() - lastGsensorData.getY());
+                        z = Math.abs(gsensorData.getZ() - lastGsensorData.getZ());
 
+                        mDescTextView.append("，{" + x + ", " + y + ", " + z + "}");
                         if (x < P3_SENSOR_STANDARD_VALUE_MIN && y < P3_SENSOR_STANDARD_VALUE_MIN
                                 && z < P3_SENSOR_STANDARD_VALUE_MIN) {
                             mTempResult = mTempResult | 0x1000;
+                            mDescTextView.append("\n静置状态测试已通过");
                         }
 
                         if (x > P3_SENSOR_STANDARD_VALUE_MAX) {
@@ -455,9 +475,6 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
                         }
                     }
                     lastGsensorData = gsensorData;
-
-                    mDescTextView.append("\n");
-                    mDescTextView.append(lastGsensorData.toString());
                 }
                 break;
             case BLEConsts.OP_CODE_P3_WRITE_SN:
@@ -500,7 +517,7 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        sendBleData(P3DataUtils.buildOpCodeBuffer(mP3AutoTestUnits.get(mAutoUnitStep).getModule()));
+                        sendBleData(P3DataUtils.buildOpCodeBuffer(mP3AutoTestUnits.get(mAutoUnitStep).getModule()), false);
                     }
                 }, 1000);
             }
@@ -511,7 +528,7 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
                 new Handler().postDelayed(new Runnable() {
                       @Override
                       public void run() {
-                          sendBleData(P3DataUtils.buildOpCodeBuffer(mP3TestUnits.get(mCurTestStep).getModule()));
+                          sendBleData(P3DataUtils.buildOpCodeBuffer(mP3TestUnits.get(mCurTestStep).getModule()), false);
                       }
                   }, 1000);
             }
@@ -655,18 +672,24 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
         unregisterBroadcastReceiver();
     }
 
+    private void sendBleData(byte[] rawData) {
+        sendBleData(rawData, true);
+    }
+
     /**
      * 蓝牙发送数据，返回值在广播里
      *
      * @param rawData
      */
-    private void sendBleData(byte[] rawData) {
+    private void sendBleData(byte[] rawData, boolean showLog) {
         Intent intent = new Intent(BLEConsts.BROADCAST_ACTION);
         intent.putExtra(BLEConsts.EXTRA_ACTION, BLEConsts.ACTION_STEP_ENTRY);
         intent.putExtra(BLEConsts.EXTRA_DATA, rawData);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
-        mDescTextView.append("\n指令发送成功！");
+        if (showLog) {
+            mDescTextView.append("\n指令发送成功！");
+        }
     }
 
     private void showDeviceDisconnectDialog() {

@@ -299,7 +299,7 @@ public class P3ScanActivity extends BaseActivity implements View.OnClickListener
                             case BLEConsts.ERROR_SYNC_TIMEOUT:
                             default:
                                 LoadDialog.dismissDialog();
-                                CommonUtils.showShortToast(P3ScanActivity.this, "连接设备失败");
+                                CommonUtils.showShortToast(P3ScanActivity.this, "设备已断开");
                                 break;
                         }
                         break;

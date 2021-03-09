@@ -690,6 +690,8 @@ public abstract class BLEActionService extends IntentService {
 		broadcast.putExtra(BLEConsts.EXTRA_LOG_MESSAGE, fullMessage);
 		broadcast.putExtra(BLEConsts.EXTRA_DEVICE_INFO, mBleDevice);
 		LocalBroadcastManager.getInstance(this).sendBroadcast(broadcast);
+
+		LogcatStorageHelper.addLog(message);
 	}
 	
 	protected void sendErrorBroadcast(final int error) {

@@ -4790,10 +4790,7 @@ public class AndroidBLEActionService extends BLEActionService {
 	private void enterExternalStepControl() throws BLEErrorException, DeviceDisconnectedException, BLEAbortedException, UnknownResponseException {
 
 		mStep = true;
-		while (!mAborted && mStep) {
-			mPaused = true;
-			waitIfPaused(false);
-
+		while (!mAborted && mError == 0 && mStep && mConnectionState == BLEConsts.STATE_CONNECTED_AND_READY) {
 			if (mStepRawData != null) {
 				ArrayList<PetkitBleMsg> msgs = new ArrayList<>();
 
@@ -4806,8 +4803,19 @@ public class AndroidBLEActionService extends BLEActionService {
 				msgs.add(msg);
 
 				updateProgressNotification(BLEConsts.PROGRESS_STEP_DATA, msgs);
+				mStepRawData = null;
 			}
+
+			mPaused = true;
+			waitIfPaused(false);
 		}
+
+		if (mAborted)
+			throw new BLEAbortedException();
+		if (!mResetRequestSent && mError != 0)
+			throw new BLEErrorException("Error occurred  ", mError);
+		if (!mResetRequestSent && mConnectionState != BLEConsts.STATE_CONNECTED_AND_READY)
+			throw new DeviceDisconnectedException("Device disconnected", mConnectionState);
 	}
 
 	private void writeSyncCodeNew(final BluetoothGatt gatt,

@@ -40,7 +40,7 @@ public class P3Utils {
     public static final int TYPE_DUPLICATE_SN           = 6;
 
     public static final int P3_SENSOR_STANDARD_VALUE_MIN    = 10;
-    public static final int P3_SENSOR_STANDARD_VALUE_MAX    = 100;
+    public static final int P3_SENSOR_STANDARD_VALUE_MAX    = 200;
 
     public static final String EXTRA_P3_TESTER   = "EXTRA_P3_TESTER";
     public static final String EXTRA_P3   = "EXTRA_P3";
