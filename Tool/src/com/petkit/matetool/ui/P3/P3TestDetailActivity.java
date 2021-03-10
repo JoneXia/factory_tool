@@ -100,7 +100,12 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
 
         registerBoradcastReceiver();
 
-        startTestModule();
+        if (mP3TestUnits.get(mCurTestStep).getType() != P3Utils.P3TestModes.TEST_MODE_SN &&
+                mP3TestUnits.get(mCurTestStep).getType() != P3Utils.P3TestModes.TEST_MODE_PRINT &&
+                mP3TestUnits.get(mCurTestStep).getType() != P3Utils.P3TestModes.TEST_MODE_RESET_SN &&
+                mP3TestUnits.get(mCurTestStep).getType() != P3Utils.P3TestModes.TEST_MODE_RESET_ID) {
+            startTestModule();
+        }
     }
 
     @Override
