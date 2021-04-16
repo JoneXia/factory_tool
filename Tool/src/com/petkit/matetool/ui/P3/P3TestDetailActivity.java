@@ -169,7 +169,8 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
                 break;
             case TEST_MODE_DC:
                 if (mTestType == P3Utils.TYPE_TEST_PARTIALLY) {
-                    mPromptTextView.setText("正常电压范围（单位mV）：[2800, 3200]");
+//                    mPromptTextView.setText("正常电压范围（单位mV）：[2800, 3200]");
+                    mPromptTextView.setText("正常电压范围（单位mV）：[2500, 3300]");
                 } else {
                     mPromptTextView.setText("正常电压范围（单位mV）：[3000, 3350]");
                 }
@@ -179,7 +180,8 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
                 break;
             case TEST_MODE_AUTO:
                 if (mTestType == P3Utils.TYPE_TEST_PARTIALLY) {
-                    mPromptTextView.setText("自动测试项包括：电压[2800, 3200]、G-sensor数据，点击开始后程序自动完成检测。");
+//                    mPromptTextView.setText("自动测试项包括：电压[2800, 3200]、G-sensor数据，点击开始后程序自动完成检测。");
+                    mPromptTextView.setText("自动测试项包括：电压[2500, 3300]、G-sensor数据，点击开始后程序自动完成检测。");
                 } else {
                     mPromptTextView.setText("自动测试项包括：电压[3000, 3350]、G-sensor数据，点击开始后程序自动完成检测。");
                 }
@@ -431,7 +433,8 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
                     mDescTextView.append("，电量：" + battery);
 
                     if (mTestType == P3Utils.TYPE_TEST_PARTIALLY) {
-                        result = voltage >= 2800 && voltage <= 3200;
+//                        result = voltage >= 2800 && voltage <= 3200;
+                        result = voltage >= 2500 && voltage <= 3300;
                     } else {
                         result = voltage >= 3000 && voltage <= 3350;
                     }
@@ -448,7 +451,7 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
                     GsensorData gsensorData = new GsensorData(data);
 
                     mDescTextView.append("\n");
-                    mDescTextView.append(gsensorData.toString());
+//                    mDescTextView.append(gsensorData.toString());
 
                     if (lastGsensorData != null) {
                         int x, y, z;
@@ -456,21 +459,24 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
                         y = Math.abs(gsensorData.getY() - lastGsensorData.getY());
                         z = Math.abs(gsensorData.getZ() - lastGsensorData.getZ());
 
-                        mDescTextView.append("，{" + x + ", " + y + ", " + z + "}");
+                        mDescTextView.append("{X: " + x + ", Y: " + y + ", Z: " + z + "}");
                         if (x < P3_SENSOR_STANDARD_VALUE_MIN && y < P3_SENSOR_STANDARD_VALUE_MIN
-                                && z < P3_SENSOR_STANDARD_VALUE_MIN) {
+                                && z < P3_SENSOR_STANDARD_VALUE_MIN && (mTempResult & 0x1000) == 0x0000) {
                             mTempResult = mTempResult | 0x1000;
                             mDescTextView.append("\n静置状态测试已通过");
                         }
 
-                        if (x > P3_SENSOR_STANDARD_VALUE_MAX) {
+                        if (x > P3_SENSOR_STANDARD_VALUE_MAX && (mTempResult & 0x1) == 0x0) {
                             mTempResult = mTempResult | 0x1;
+                            mDescTextView.append("\nX轴测试已通过");
                         }
-                        if (y > P3_SENSOR_STANDARD_VALUE_MAX) {
+                        if (y > P3_SENSOR_STANDARD_VALUE_MAX && (mTempResult & 0x10) == 0x0) {
                             mTempResult = mTempResult | 0x10;
+                            mDescTextView.append("\nY轴测试已通过");
                         }
-                        if (z > P3_SENSOR_STANDARD_VALUE_MAX) {
+                        if (z > P3_SENSOR_STANDARD_VALUE_MAX && (mTempResult & 0x100) == 0x0) {
                             mTempResult = mTempResult | 0x100;
+                            mDescTextView.append("\nZ轴测试已通过");
                         }
 
                         result = mTempResult == 0x1111;
@@ -524,7 +530,7 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
                     public void run() {
                         sendBleData(P3DataUtils.buildOpCodeBuffer(mP3AutoTestUnits.get(mAutoUnitStep).getModule()), false);
                     }
-                }, 1000);
+                }, 10);
             }
         } else {
             if (result) {

@@ -40,7 +40,7 @@ public class P3Utils {
     public static final int TYPE_DUPLICATE_SN           = 6;
 
     public static final int P3_SENSOR_STANDARD_VALUE_MIN    = 10;
-    public static final int P3_SENSOR_STANDARD_VALUE_MAX    = 200;
+    public static final int P3_SENSOR_STANDARD_VALUE_MAX    = 1500;
 
     public static final String EXTRA_P3_TESTER   = "EXTRA_P3_TESTER";
     public static final String EXTRA_P3   = "EXTRA_P3";
@@ -135,17 +135,14 @@ public class P3Utils {
             results.add(new P3TestUnit(P3TestModes.TEST_MODE_SN, "写入SN", 98, 2));
             results.add(new P3TestUnit(P3TestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
         } else {
+            results.add(new P3TestUnit(P3TestModes.TEST_MODE_LED, "蜂鸣器测试", BLEConsts.OP_CODE_P3_RING, 1));
+
             if (type == TYPE_MAINTAIN) {
                 results.add(new P3TestUnit(P3TestModes.TEST_MODE_DC, "电量测试", BLEConsts.OP_CODE_BATTERY_KEY, 1));
                 results.add(new P3TestUnit(P3TestModes.TEST_MODE_SENSOR, "G-Sensor测试", BLEConsts.OP_CODE_P3_SENSOR_DATA, 1));
             } else {
                 results.add(new P3TestUnit(P3TestModes.TEST_MODE_AUTO, "自动项测试", 6, 1));
             }
-            if (type != TYPE_TEST_PARTIALLY) {
-
-            }
-
-            results.add(new P3TestUnit(P3TestModes.TEST_MODE_LED, "蜂鸣器测试", BLEConsts.OP_CODE_P3_RING, 1));
 
             if (type != TYPE_TEST_PARTIALLY) {
                 if (type == TYPE_TEST) {
@@ -153,7 +150,7 @@ public class P3Utils {
                 }
             }
             if (type != TYPE_TEST_PARTIALLY && type != TYPE_CHECK) {
-                results.add(new P3TestUnit(P3TestModes.TEST_MODE_PRINT, "打印标签", -1, type == TYPE_TEST ? 2 : 1));
+                results.add(new P3TestUnit(P3TestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
             }
 
             if (type == TYPE_MAINTAIN) {        //擦除ID选项先关闭，暂不开放
