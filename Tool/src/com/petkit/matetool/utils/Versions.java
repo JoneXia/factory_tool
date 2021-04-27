@@ -201,4 +201,14 @@ public class Versions {
 	 */
 	public static final String TOOL_P3_VERSION	= "1.0";
 
+
+	/**
+	 *
+	 * 1.0说明:
+	 * 1. 支持智能饮水机（W5）产测全流程
+	 *
+	 */
+	public static final String TOOL_W5_VERSION	= "1.0";
+
+
 }

@@ -9,6 +9,7 @@ import com.petkit.matetool.ui.D3.utils.D3Utils;
 import com.petkit.matetool.ui.D4.utils.D4Utils;
 import com.petkit.matetool.ui.K2.utils.K2Utils;
 import com.petkit.matetool.ui.P3.utils.P3Utils;
+import com.petkit.matetool.ui.W5.utils.W5Utils;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.ui.feeder.utils.FeederUtils;
 import com.petkit.matetool.ui.feederMini.utils.FeederMiniUtils;
@@ -36,6 +37,7 @@ public class TesterManagerUtils {
         getCurrentTesterForType(Globals.D3);
         getCurrentTesterForType(Globals.D4);
         getCurrentTesterForType(Globals.P3);
+        getCurrentTesterForType(Globals.W5);
     }
 
 
@@ -69,6 +71,9 @@ public class TesterManagerUtils {
                     break;
                 case Globals.P3:
                     testerString = CommonUtils.getSysMap(P3Utils.SHARED_P3_TESTER);
+                    break;
+                case Globals.W5:
+                    testerString = CommonUtils.getSysMap(W5Utils.SHARED_W5_TESTER);
                     break;
             }
             if(!TextUtils.isEmpty(testerString)) {
@@ -108,6 +113,9 @@ public class TesterManagerUtils {
                 break;
             case Globals.P3:
                 CommonUtils.addSysMap(P3Utils.SHARED_P3_TESTER, testerString);
+                break;
+            case Globals.W5:
+                CommonUtils.addSysMap(W5Utils.SHARED_W5_TESTER, testerString);
                 break;
         }
 
@@ -158,6 +166,9 @@ public class TesterManagerUtils {
                         break;
                     case Globals.P3:
                         CommonUtils.addSysMap(P3Utils.SHARED_P3_TESTER, "");
+                        break;
+                    case Globals.W5:
+                        CommonUtils.addSysMap(W5Utils.SHARED_W5_TESTER, "");
                         break;
                 }
                 iterator.remove();

@@ -25,6 +25,7 @@ import com.petkit.matetool.ui.D3.D3TestPrepareActivity;
 import com.petkit.matetool.ui.D4.D4TestPrepareActivity;
 import com.petkit.matetool.ui.K2.K2TestPrepareActivity;
 import com.petkit.matetool.ui.P3.P3TestPrepareActivity;
+import com.petkit.matetool.ui.W5.W5TestPrepareActivity;
 import com.petkit.matetool.ui.aq.AQTestMainActivity;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.cozy.CozyTestPrepareActivity;
@@ -53,6 +54,7 @@ import static com.petkit.matetool.utils.Versions.TOOL_K2_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_MATE_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_P3_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_T3_VERSION;
+import static com.petkit.matetool.utils.Versions.TOOL_W5_VERSION;
 
 /**
  * 测试工具入口，设置测试设备类型和工位
@@ -176,6 +178,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
                     case Globals.P3:
                         startActivity(P3TestPrepareActivity.class);
                         break;
+                    case Globals.W5:
+                        startActivity(W5TestPrepareActivity.class);
+                        break;
                 }
                 collapseSoftInputMethod(fixtureNumberEditText);
                 break;
@@ -221,6 +226,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
             case R.id.p3:
                 testStyle = Globals.P3;
                 break;
+            case R.id.w5:
+                testStyle = Globals.W5;
+                break;
             default:
                 break;
         }
@@ -264,6 +272,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
 
         tempRadioButton = (RadioButton) findViewById(R.id.p3);
         tempRadioButton.setText("智能猫狗牌（P3）" + " v" + TOOL_P3_VERSION);
+
+        tempRadioButton = (RadioButton) findViewById(R.id.w5);
+        tempRadioButton.setText("智能饮水机（W5/W5C）" + " v" + TOOL_W5_VERSION);
     }
 
     private boolean checkPermissions() {

@@ -1,4 +1,4 @@
-package com.petkit.matetool.ui.t3;
+package com.petkit.matetool.ui.W5;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
@@ -12,14 +12,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.petkit.android.http.AsyncHttpUtil;
+import com.petkit.android.utils.PetkitLog;
 import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.http.ApiTools;
 import com.petkit.matetool.http.AsyncHttpRespHandler;
 import com.petkit.matetool.model.DevicesError;
 import com.petkit.matetool.model.Tester;
+import com.petkit.matetool.ui.W5.utils.W5Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
-import com.petkit.matetool.ui.t3.utils.T3Utils;
 import com.petkit.matetool.utils.FileUtils;
 import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.JSONUtils;
@@ -35,16 +36,16 @@ import java.util.HashMap;
 
 import cz.msebera.android.httpclient.Header;
 
-import static com.petkit.matetool.ui.t3.utils.T3Utils.FILE_CHECK_INFO_NAME;
-import static com.petkit.matetool.ui.t3.utils.T3Utils.FILE_MAINTAIN_INFO_NAME;
+import static com.petkit.matetool.ui.W5.utils.W5Utils.FILE_CHECK_INFO_NAME;
+import static com.petkit.matetool.ui.W5.utils.W5Utils.FILE_MAINTAIN_INFO_NAME;
 
 
 /**
- * 猫厕所测试，测试准备，需要登录，已经缓存数据处理
+ * W5测试，测试准备，需要登录，已经缓存数据处理
  *
  * Created by Jone on 17/4/19.
  */
-public class T3TestPrepareActivity extends BaseActivity {
+public class W5TestPrepareActivity extends BaseActivity {
 
     private Tester mTester;
     private EditText nameEdit, pwEdit;
@@ -78,13 +79,11 @@ public class T3TestPrepareActivity extends BaseActivity {
 
         findViewById(R.id.logout).setOnClickListener(this);
 
-        mTester = TesterManagerUtils.getCurrentTesterForType(Globals.T3);
-
+        mTester = TesterManagerUtils.getCurrentTesterForType(Globals.W5);
 //        mTester = new Tester();
-//        mTester.setName("jone");
 //        mTester.setCode("00");
-//        mTester.setStation("6");
-
+//        mTester.setName("写死的账号");
+//        mTester.setStation("1");
         if (mTester != null) {
             if (!isEmpty(mTester.getName())) {
                 testerInfoTextView.setText("当前用户名：" + mTester.getName());
@@ -92,7 +91,7 @@ public class T3TestPrepareActivity extends BaseActivity {
             AsyncHttpUtil.addHttpHeader("F-Session", mTester.getSession());
         }
 
-        mDevicesError = T3Utils.getDevicesErrorMsg();
+        mDevicesError = W5Utils.getDevicesErrorMsg();
     }
 
     @Override
@@ -107,7 +106,7 @@ public class T3TestPrepareActivity extends BaseActivity {
         switch (v.getId()) {
             case R.id.login:
                 if(mTester != null) {
-                    if (T3Utils.checkHasSnCache()) {
+                    if (W5Utils.checkHasSnCache()) {
                         LoadDialog.show(this);
                         startUploadSn();
                     } else {
@@ -130,7 +129,7 @@ public class T3TestPrepareActivity extends BaseActivity {
             case R.id.logout:
                 if(mDevicesError != null) {
                     showShortToast("还有异常数据需要处理，完成后才能登出！");
-                } else if(T3Utils.checkHasSnCache()) {
+                } else if(W5Utils.checkHasSnCache()) {
                     showShortToast("还有未上传的测试数据，需要先上传完成才能登出！");
                 } else {
                     logout();
@@ -139,8 +138,8 @@ public class T3TestPrepareActivity extends BaseActivity {
             case R.id.upload:
                 if(mDevicesError != null) {
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable(T3Utils.EXTRA_T3_TESTER, mTester);
-                    startActivityWithData(T3ErrorListActivity.class, bundle, false);
+                    bundle.putSerializable(W5Utils.EXTRA_W5_TESTER, mTester);
+                    startActivityWithData(W5ErrorListActivity.class, bundle, false);
                 } else {
                     LoadDialog.show(this);
                     startUploadSn();
@@ -151,13 +150,13 @@ public class T3TestPrepareActivity extends BaseActivity {
 
     private void updateView () {
         if(mTester != null) {
-            mDevicesError = T3Utils.getDevicesErrorMsg();
+            mDevicesError = W5Utils.getDevicesErrorMsg();
             if(mDevicesError != null) {
                 promptText.setText("检测到异常数据，需要先处理，才能开始测试！");
                 actionBtn.setVisibility(View.GONE);
                 uploadBtn.setVisibility(View.VISIBLE);
                 uploadBtn.setText("处理异常");
-            } else if(T3Utils.checkHasSnCache()) {
+            } else if(W5Utils.checkHasSnCache()) {
                 promptText.setText("还有未上传的测试数据，需要先上传完成才能开始测试！");
                 actionBtn.setVisibility(View.GONE);
                 uploadBtn.setVisibility(View.VISIBLE);
@@ -167,7 +166,7 @@ public class T3TestPrepareActivity extends BaseActivity {
                 actionBtn.setText("进入测试");
                 actionBtn.setVisibility(View.VISIBLE);
 
-                File dir = new File(T3Utils.getT3StoryDir());
+                File dir = new File(W5Utils.getW5StoryDir());
                 String[] files = dir.list();
                 if(files != null && files.length > 0) {
                     uploadBtn.setVisibility(View.VISIBLE);
@@ -193,8 +192,8 @@ public class T3TestPrepareActivity extends BaseActivity {
 
     private void startTest() {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(T3Utils.EXTRA_T3_TESTER, mTester);
-        startActivityWithData(T3StartActivity.class, bundle, false);
+        bundle.putSerializable(W5Utils.EXTRA_W5_TESTER, mTester);
+        startActivityWithData(W5TypeSelecttActivity.class, bundle, false);
     }
 
 
@@ -226,12 +225,12 @@ public class T3TestPrepareActivity extends BaseActivity {
                             mTester.setStation(station);
                             mTester.setName(name);
                             mTester.setSession(token);
-                            TesterManagerUtils.addTesterForType(Globals.T3, mTester);
+                            TesterManagerUtils.addTesterForType(Globals.W5, mTester);
 
                             AsyncHttpUtil.addHttpHeader("F-Session", token);
                             testerInfoTextView.setText("当前用户名：" + mTester.getName());
 
-                            if(T3Utils.checkHasSnCache()) {
+                            if(W5Utils.checkHasSnCache()) {
                                 isLogining = true;
                                 startUploadSn();
                             } else {
@@ -315,7 +314,7 @@ public class T3TestPrepareActivity extends BaseActivity {
     }
 
     private void getLastSN() {
-        AsyncHttpUtil.get("/api/t3/latest", new AsyncHttpRespHandler(this) {
+        AsyncHttpUtil.get("/api/w5/latest", new AsyncHttpRespHandler(this) {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -328,7 +327,7 @@ public class T3TestPrepareActivity extends BaseActivity {
                 try {
                     if(jsonObject.getInt("code") == 0 && dataObj != null && !dataObj.isNull("sn")) {
                         String sn = dataObj.getString("sn");
-                        T3Utils.initSnSerializableNumber(sn);
+                        W5Utils.initSnSerializableNumber(sn);
                     }
                     LoadDialog.dismissDialog();
                     updateView();
@@ -351,13 +350,13 @@ public class T3TestPrepareActivity extends BaseActivity {
         LoadDialog.dismissDialog();
         AsyncHttpUtil.addHttpHeader("F-Session", "");
 
-        TesterManagerUtils.removeTesterForType(Globals.T3);
+        TesterManagerUtils.removeTesterForType(Globals.W5);
         mTester = null;
         updateView();
     }
 
     private void startUploadSn() {
-        File dir = new File(T3Utils.getT3StoryDir());
+        File dir = new File(W5Utils.getW5StoryDir());
         String[] files = dir.list();
 
         if(files != null && files.length > 0) {
@@ -386,11 +385,11 @@ public class T3TestPrepareActivity extends BaseActivity {
 
         String api;
         if(FILE_MAINTAIN_INFO_NAME.equals(file.getName())) {
-            api = "/api/t3/maintain/repair";
+            api = "/api/w5/maintain/repair";
         } else if(FILE_CHECK_INFO_NAME.equals(file.getName())) {
-            api = "/api/t3/maintain/inspect";
+            api = "/api/w5/maintain/inspect";
         } else {
-            api = "/api/t3/batch";
+            api = "/api/w5/batch";
         }
 
         HashMap<String, String> params = new HashMap<>();
@@ -415,7 +414,7 @@ public class T3TestPrepareActivity extends BaseActivity {
                                 default:
                                     if(!result.isNull("data")) {
                                         mDevicesError = gson.fromJson(result.getString("data"), DevicesError.class);
-                                        T3Utils.storeDuplicatedInfo(mDevicesError);
+                                        W5Utils.storeDuplicatedInfo(mDevicesError);
                                         file.delete();
                                         if (isLogining) {
                                             getLastSN();
@@ -441,6 +440,7 @@ public class T3TestPrepareActivity extends BaseActivity {
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                 super.onFailure(statusCode, headers, responseBody, error);
+                PetkitLog.er("error Code: " + statusCode + "msg: " + error.toString());
                 uploadSnFailed();
             }
         });

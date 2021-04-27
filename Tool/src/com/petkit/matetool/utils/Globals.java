@@ -20,7 +20,7 @@ public class Globals {
 
 	public static final String BROADCAST_PERMISSION_FINISHED = "com.petkit.android.BROADCAST_PERMISSION_FINISHED";
 
-	public static final boolean PERMISSION_ERASE = false;
+	public static final boolean PERMISSION_ERASE = true;
 	//test date
 	public static String g_date;
 	//worker station
@@ -48,6 +48,7 @@ public class Globals {
 	public static final int D3 = 10;
 	public static final int D4 = 11;
 	public static final int P3 = 12;
+	public static final int W5 = 13;
 
 //	public static int g_testStyle = 0;
 
@@ -63,6 +64,8 @@ public class Globals {
 	public static final String DEVICE_TYPE_CODE_D3 = "F";
 	public static final String DEVICE_TYPE_CODE_D4 = "G";
 	public static final String DEVICE_TYPE_CODE_P3 = "H";
+	public static final String DEVICE_TYPE_CODE_W5 = "I";
+	public static final String DEVICE_TYPE_CODE_W5C = "J";
 
 	public static ArrayList<String> mTestItem = new ArrayList<String>();
 	public static int[] mTestResult = null;
