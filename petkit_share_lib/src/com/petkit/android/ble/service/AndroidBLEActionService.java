@@ -32,6 +32,7 @@ import com.petkit.android.ble.DeviceInfo;
 import com.petkit.android.ble.GattError;
 import com.petkit.android.ble.HexInputStream;
 import com.petkit.android.ble.ZipHexInputStream;
+import com.petkit.android.ble.data.AqDataUtils;
 import com.petkit.android.ble.data.P3DataUtils;
 import com.petkit.android.ble.data.PetkitBleMsg;
 import com.petkit.android.ble.exception.BLEAbortedException;
@@ -4600,8 +4601,6 @@ public class AndroidBLEActionService extends BLEActionService {
 
 			boolean requestMtu = gatt.requestMtu(255);
 
-			updateProgressNotification(BLEConsts.PROGRESS_CONNECTED);
-
 			try {
 				waitUntilTimeOut(1000);
 				synchronized (mLock) {
@@ -4612,19 +4611,16 @@ public class AndroidBLEActionService extends BLEActionService {
 			} catch (InterruptedException e) {
 			}
 
-			controlCharacteristic.setValue(buildOpCodeBuffer(BLEConsts.OP_CODE_AQ_TEST_ENTRY));
-			gatt.writeCharacteristic(controlCharacteristic);
-
-			PetkitLog.d("writeSyncCode  " + parse(buildOpCodeBuffer(BLEConsts.OP_CODE_AQ_TEST_ENTRY)));
-
+			writeSyncCodeNew(gatt, controlCharacteristic, AqDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_AQ_TEST_ENTRY));
 			response = readNotificationResponse();
-			parserReceivedData(response);
+			PetkitBleMsg msg = P3DataUtils.parseRawData(response);
 
-			updateProgressNotification(BLEConsts.PROGRESS_BLE_COMPLETED);
+			if (msg != null) {
+				updateProgressNotification(BLEConsts.PROGRESS_CONNECTED);
+				updateProgressNotification(BLEConsts.PROGRESS_BLE_COMPLETED);
+			}
 
-//			startKeepAlive();// start send keepAlive message
-//			mPaused = true;
-//			waitIfPaused(true);
+//			enterExternalStepControl();
 
 			gatt.setCharacteristicNotification(dataCharacteristic, false);
 			disconnect(gatt);
@@ -4640,16 +4636,6 @@ public class AndroidBLEActionService extends BLEActionService {
 				gatt.setCharacteristicNotification(dataCharacteristic, false);
 			close(gatt);
 			updateProgressNotification(BLEConsts.ERROR_DEVICE_DISCONNECTED); //TODO:
-		} catch (UnknownParametersException e) {
-			final int error = BLEConsts.ERROR_INVALID_PARAMETERS;
-			loge(e.getMessage());
-			sendLogBroadcast(e.getMessage());
-			terminateConnection(gatt, error);
-		} catch (UnknownResponseException e) {
-			final int error = BLEConsts.ERROR_INVALID_RESPONSE;
-			loge(e.getMessage());
-			sendLogBroadcast(e.getMessage());
-			terminateConnection(gatt, error);
 		} catch (BLEErrorException e) {
 			final int error = e.getErrorNumber() & ~ BLEConsts.ERROR_CONNECTION_MASK;
 			sendLogBroadcast(String.format("Error (0x%02X): %s", error, GattError.parse(error)));
@@ -4657,16 +4643,6 @@ public class AndroidBLEActionService extends BLEActionService {
 		} catch (BLEAbortedException e) {
 			sendLogBroadcast("action aborted");
 			terminateConnection(gatt, BLEConsts.ERROR_ABORTED);
-		}  catch (UnexpectedCompleteException e) {
-			final int error = e.getErrorNumber();
-			sendLogBroadcast(String.format("Error (0x%02X): %s", error, GattError.parse(error)));
-			loge(e.getMessage());
-			terminateConnection(gatt, e.getErrorNumber());
-		} catch (UnsupportedEncodingException e) {
-			final int error = BLEConsts.ERROR_UNSUPPORTED_ENCODING;
-			sendLogBroadcast(String.format("Error (0x%02X): %s", error, GattError.parse(error)));
-			loge(e.getMessage());
-			terminateConnection(gatt, error);
 		}
 
 	}

@@ -250,6 +250,11 @@
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
         </activity>
+        <activity
+            android:name=".ui.aq.AQColorActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
+        </activity>
 
         <!-- D3 -->
         <activity android:name=".ui.D3.D3StartActivity"

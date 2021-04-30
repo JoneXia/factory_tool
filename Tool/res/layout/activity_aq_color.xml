@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/color_bg"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:padding="20dip"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/color_a"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <SeekBar
+        android:id="@+id/color_tp"
+        android:layout_marginTop="30dip"
+        android:max="100"
+        android:progress="50"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/color_picker"
+        android:text="选择颜色"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dip"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <EditText
+            android:id="@+id/color_r"
+            android:layout_margin="10dip"
+            android:inputType="number"
+            android:layout_width="50dip"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/color_g"
+            android:layout_margin="10dip"
+            android:layout_width="50dip"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/color_b"
+            android:layout_margin="10dip"
+            android:layout_width="50dip"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/color_input"
+        android:text="@string/OK"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dip"/>
+
+</LinearLayout>

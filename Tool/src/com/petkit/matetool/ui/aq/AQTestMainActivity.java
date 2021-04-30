@@ -207,6 +207,16 @@ public class AQTestMainActivity extends BaseActivity implements View.OnClickList
                 .show();
     }
 
+
+    private void entryColorTestActivity() {
+        LoadDialog.dismissDialog();
+
+        Intent intent = new Intent(this, AQColorActivity.class);
+        intent.putExtra(AQUtils.EXTRA_AQ, mBleDeviceInfo);
+        startActivity(intent);
+    }
+
+
     private BroadcastReceiver mBroadcastReceiver;
 
     private void registerBoradcastReceiver() {
