@@ -36,6 +36,7 @@ import com.petkit.matetool.ui.mate.SelectActivity;
 import com.petkit.matetool.ui.permission.PermissionDialogActivity;
 import com.petkit.matetool.ui.permission.mode.PermissionBean;
 import com.petkit.matetool.ui.t3.T3TestPrepareActivity;
+import com.petkit.matetool.ui.t4.T4TestPrepareActivity;
 import com.petkit.matetool.ui.utils.PrintUtils;
 import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.Utils;
@@ -54,6 +55,7 @@ import static com.petkit.matetool.utils.Versions.TOOL_K2_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_MATE_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_P3_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_T3_VERSION;
+import static com.petkit.matetool.utils.Versions.TOOL_T4_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_W5_VERSION;
 
 /**
@@ -181,6 +183,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
                     case Globals.W5:
                         startActivity(W5TestPrepareActivity.class);
                         break;
+                    case Globals.T4:
+                        startActivity(T4TestPrepareActivity.class);
+                        break;
                 }
                 collapseSoftInputMethod(fixtureNumberEditText);
                 break;
@@ -229,6 +234,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
             case R.id.w5:
                 testStyle = Globals.W5;
                 break;
+            case R.id.t4:
+                testStyle = Globals.T4;
+                break;
             default:
                 break;
         }
@@ -275,6 +283,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
 
         tempRadioButton = (RadioButton) findViewById(R.id.w5);
         tempRadioButton.setText("智能饮水机（W5/W5C）" + " v" + TOOL_W5_VERSION);
+
+        tempRadioButton = (RadioButton) findViewById(R.id.t4);
+        tempRadioButton.setText("智能猫厕所SOLO（T4）" + " v" + TOOL_T4_VERSION);
     }
 
     private boolean checkPermissions() {

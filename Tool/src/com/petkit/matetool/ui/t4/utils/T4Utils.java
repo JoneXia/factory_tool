@@ -1,11 +1,6 @@
-package com.petkit.matetool.ui.W5.utils;
-
-import android.content.Context;
-import android.content.Intent;
-import android.support.v4.content.LocalBroadcastManager;
+package com.petkit.matetool.ui.t4.utils;
 
 import com.google.gson.Gson;
-import com.petkit.android.ble.BLEConsts;
 import com.petkit.android.utils.CommonUtils;
 import com.petkit.android.utils.FileUtils;
 import com.petkit.android.utils.LogcatStorageHelper;
@@ -13,7 +8,7 @@ import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.DevicesError;
 import com.petkit.matetool.model.Tester;
-import com.petkit.matetool.ui.W5.mode.W5TestUnit;
+import com.petkit.matetool.ui.t4.mode.T4TestUnit;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,17 +16,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.petkit.android.utils.LogcatStorageHelper.getFileName;
-import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_W5;
-import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_W5C;
+import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_T4;
 import static com.petkit.matetool.utils.Globals.PERMISSION_ERASE;
 
 /**
  *
  * Created by Jone on 17/3/21.
  */
-public class W5Utils {
+public class T4Utils {
 
-    public static final String W5_SESSION = "W5_SESSION";
+    public static final String T4_SESSION = "T4_SESSION";
 
     public static final int TYPE_TEST_PARTIALLY         = 1;
     public static final int TYPE_TEST                   = 2;
@@ -40,40 +34,44 @@ public class W5Utils {
     public static final int TYPE_DUPLICATE_MAC          = 5;
     public static final int TYPE_DUPLICATE_SN           = 6;
 
-    public static final int W5_SENSOR_STANDARD_VALUE_MIN    = 10;
-    public static final int W5_SENSOR_STANDARD_VALUE_MAX    = 1500;
-
-    public static final String EXTRA_W5_TESTER   = "EXTRA_W5_TESTER";
-    public static final String EXTRA_W5   = "EXTRA_W5";
-    public static final String EXTRA_W5_TYPE = "EXTRA_W5_TYPE";
-    public static final String EXTRA_ERROR_W5   = "EXTRA_ERROR_W5";
-
-    public static final int W5_TYPE_NORMAL = 1;
-    public static final int W5_TYPE_MINI = 2;
+    public static final String EXTRA_T4_TESTER   = "EXTRA_T4_TESTER";
+    public static final String EXTRA_T4   = "EXTRA_T4";
+    public static final String EXTRA_ERROR_T4   = "EXTRA_ERROR_T4";
 
     private static final int MAX_SN_NUMBER_SESSION = 200;
 
-    public static final String SHARED_W5_TESTER = "SHARED_W5_TESTER";
+    public static final String SHARED_T4_TESTER = "SHARED_T4_TESTER";
 
-    private static final String SHARED_SERIALIZABLE_DAY     = "W5_SerializableDay";
-    private static final String SHARED_SERIALIZABLE_NUMBER     = "W5_SerializableNumber";
-    private static final String SHARED_SN_FILE_NAME     = "W5_SnFileName";
-    private static final String SHARED_SN_FILE_NUMBER     = "W5_SnFileNumber";
-    private static final String SHARED_W5_ERROR_INFO     = "W5_ERRORS";
+    private static final String SHARED_SERIALIZABLE_DAY     = "T4_SerializableDay";
+    private static final String SHARED_SERIALIZABLE_NUMBER     = "T4_SerializableNumber";
+    private static final String SHARED_SN_FILE_NAME     = "T4_SnFileName";
+    private static final String SHARED_SN_FILE_NUMBER     = "T4_SnFileNumber";
+    private static final String SHARED_T4_ERROR_INFO     = "T4_ERRORS";
 
-    public static final String FILE_MAINTAIN_INFO_NAME     = "W5_maintain_info.txt";
-    public static final String FILE_CHECK_INFO_NAME     = "W5_check_info.txt";
-    public static final String W5_STORE_DIR     = ".W5/";
+    public static final String FILE_MAINTAIN_INFO_NAME     = "T4_maintain_info.txt";
+    public static final String FILE_CHECK_INFO_NAME     = "T4_check_info.txt";
+    public static final String T4_STORE_DIR     = ".T4/";
 
     public static ArrayList<Device> mTempDevices = new ArrayList<>();
 
-    public enum W5TestModes {
+    public enum T4TestModes {
         TEST_MODE_DC,   //电压
-        TEST_MODE_LED,
-        TEST_MODE_PUMP,
+        TEST_MODE_LED,  //显示屏和蜂鸣器
+        TEST_MODE_KEY,  //按键
+        TEST_MODE_MOTOR,    //电机
+        TEST_MODE_MOTOR_2,   //集便盒电机
+        TEST_MODE_BALANCE_SET,  //半成品秤校准
+        TEST_MODE_BALANCE_SET_2,  //成品秤校准
+        TEST_MODE_BALANCE,  //秤读取
+        TEST_MODE_PROXIMITY, //接近
+        TEST_MODE_COVER_HOLZER, //上盖霍尔
+        TEST_MODE_BT,   //蓝牙
+        TEST_MODE_TIME, //时钟
+        TEST_MODE_MAC,
         TEST_MODE_SN,   //写SN
         TEST_MODE_RESET_SN, //重置SN
         TEST_MODE_RESET_ID, //清除ID
+        TEST_MODE_AGEINGRESULT, //老化数据
         TEST_MODE_AUTO,
         TEST_MODE_PRINT     //打印标签
     }
@@ -117,55 +115,69 @@ public class W5Utils {
      *
      * @return ArrayList
      */
-    public static ArrayList<W5TestUnit> generateW5AutoTestUnits() {
-        ArrayList<W5TestUnit> results = new ArrayList<>();
+    public static ArrayList<T4TestUnit> generateT4AutoTestUnits() {
+        ArrayList<T4TestUnit> results = new ArrayList<>();
 
-        results.add(new W5TestUnit(W5TestModes.TEST_MODE_DC, "电量测试", BLEConsts.OP_CODE_BATTERY_KEY, 1));
+        results.add(new T4TestUnit(T4TestModes.TEST_MODE_DC, "电压测试", 0, 1));
+        results.add(new T4TestUnit(T4TestModes.TEST_MODE_TIME, "时钟测试", 9, 1));
+        results.add(new T4TestUnit(T4TestModes.TEST_MODE_BT, "蓝牙测试", 8, 1));
 
         return results;
     }
 
     /**
-     *
-     TEST_MODE_DC,   //电压
-     TEST_MODE_LED,
-     TEST_MODE_PUMP,
-     */
-    /**
      * 获取不同的测试模式对应的测试项
      * @param type 测试类型
      * @return 测试项
      */
-    public static ArrayList<W5TestUnit> generateW5TestUnitsForType(int type) {
-        ArrayList<W5TestUnit> results = new ArrayList<>();
+    public static ArrayList<T4TestUnit> generateT4TestUnitsForType(int type) {
+        ArrayList<T4TestUnit> results = new ArrayList<>();
 
         if(type == TYPE_DUPLICATE_MAC) {
-
+            results.add(new T4TestUnit(T4TestModes.TEST_MODE_MAC, "设置重复", 99, 1));
         } else if(type == TYPE_DUPLICATE_SN){
-            results.add(new W5TestUnit(W5TestModes.TEST_MODE_SN, "写入SN", 98, 2));
-            results.add(new W5TestUnit(W5TestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
+            results.add(new T4TestUnit(T4TestModes.TEST_MODE_SN, "写入SN", 12, 2));
+            results.add(new T4TestUnit(T4TestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
         } else {
-//            results.add(new W5TestUnit(W5TestModes.TEST_MODE_LED, "LED灯测试", BLEConsts.OP_CODE_W5_TEST_STEP, 0));
-            results.add(new W5TestUnit(W5TestModes.TEST_MODE_DC, "电压测试", BLEConsts.OP_CODE_BATTERY_KEY, 0));
-            results.add(new W5TestUnit(W5TestModes.TEST_MODE_PUMP, "水泵测试", BLEConsts.OP_CODE_W5_TEST_STEP, 1));
-//            if (type == TYPE_MAINTAIN) {
-//                results.add(new W5TestUnit(W5TestModes.TEST_MODE_DC, "电量测试", BLEConsts.OP_CODE_BATTERY_KEY, 1));
-//                results.add(new W5TestUnit(W5TestModes.TEST_MODE_SENSOR, "G-Sensor测试", BLEConsts.OP_CODE_W5_SENSOR_DATA, 1));
-//            } else {
-//                results.add(new W5TestUnit(W5TestModes.TEST_MODE_AUTO, "自动项测试", 6, 1));
-//            }
+            if (type != TYPE_TEST_PARTIALLY) {
+                results.add(new T4TestUnit(T4TestModes.TEST_MODE_AGEINGRESULT, "老化结果", 97, 1));
+            }
+
+            if (type == TYPE_MAINTAIN) {
+                results.add(new T4TestUnit(T4TestModes.TEST_MODE_DC, "电压测试", 0, 1));
+                results.add(new T4TestUnit(T4TestModes.TEST_MODE_TIME, "时钟测试", 9, 1));
+                results.add(new T4TestUnit(T4TestModes.TEST_MODE_BT, "蓝牙测试", 8, 1));
+            } else {
+                results.add(new T4TestUnit(T4TestModes.TEST_MODE_AUTO, "自动项测试", 10, 1));
+            }
+
+            results.add(new T4TestUnit(T4TestModes.TEST_MODE_LED, "显示屏和蜂鸣器测试", 1, 1));
+            results.add(new T4TestUnit(T4TestModes.TEST_MODE_KEY, "按键测试", 2, 1));
+            results.add(new T4TestUnit(T4TestModes.TEST_MODE_MOTOR_2, "集便盒电机测试", 3, 1));
 
             if (type == TYPE_TEST) {
-                results.add(new W5TestUnit(W5TestModes.TEST_MODE_SN, "写入SN", 98, 2));
+                results.add(new T4TestUnit(T4TestModes.TEST_MODE_BALANCE_SET_2, "秤校准", 5, 1));
+            } else if (type != TYPE_CHECK) {
+                results.add(new T4TestUnit(T4TestModes.TEST_MODE_BALANCE_SET, "秤校准", 5, 1));
+            } else {
+                results.add(new T4TestUnit(T4TestModes.TEST_MODE_BALANCE, "秤读取", 5, 3));
             }
-            if (type != TYPE_TEST_PARTIALLY && type != TYPE_CHECK) {
-                results.add(new W5TestUnit(W5TestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
+            results.add(new T4TestUnit(T4TestModes.TEST_MODE_MOTOR, "马达测试", 4, 1));
+
+            results.add(new T4TestUnit(T4TestModes.TEST_MODE_PROXIMITY, "接近模组", 6, 1));
+            results.add(new T4TestUnit(T4TestModes.TEST_MODE_COVER_HOLZER, "上盖霍尔", 7, 1));
+
+            if (type != TYPE_TEST_PARTIALLY) {
+                if (type == TYPE_TEST) {
+                    results.add(new T4TestUnit(T4TestModes.TEST_MODE_SN, "写入SN", 12, 2));
+                }
+                results.add(new T4TestUnit(T4TestModes.TEST_MODE_PRINT, "打印标签", -1, type == TYPE_TEST ? 2 : 1));
             }
 
             if (type == TYPE_MAINTAIN) {        //擦除ID选项先关闭，暂不开放
                 if (PERMISSION_ERASE) {
-                    results.add(new W5TestUnit(W5TestModes.TEST_MODE_RESET_SN, "重写SN", 97, 1));
-                    results.add(new W5TestUnit(W5TestModes.TEST_MODE_RESET_ID, "擦除ID", 98, 1));
+                    results.add(new T4TestUnit(T4TestModes.TEST_MODE_RESET_SN, "重写SN", 97, 1));
+                    results.add(new T4TestUnit(T4TestModes.TEST_MODE_RESET_ID, "擦除ID", 98, 1));
                 }
             }
         }
@@ -177,9 +189,9 @@ public class W5Utils {
      * @param tester 测试者信息
      * @return sn
      */
-    public static String generateSNForTester(Tester tester, int w5Type) {
+    public static String generateSNForTester(Tester tester) {
         if(tester == null || !tester.checkValid()) {
-            throw  new RuntimeException("W5 Tester is invalid!");
+            throw  new RuntimeException("T4 Tester is invalid!");
         }
 
         String day = CommonUtils.getDateStringByOffset(0).substring(2);
@@ -191,7 +203,7 @@ public class W5Utils {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(tester.getCode())
                 .append(day)
-                .append(w5Type == W5_TYPE_MINI ? DEVICE_TYPE_CODE_W5C : DEVICE_TYPE_CODE_W5)
+                .append(DEVICE_TYPE_CODE_T4)
                 .append(tester.getStation())
                 .append(serializableNumber);
 
@@ -255,14 +267,14 @@ public class W5Utils {
 
     /**
      * 存储测试完成的设备信息
-     * @param device W5
+     * @param device 猫厕所
      */
     public static void storeSucceedDeviceInfo(Device device, String ageingResult) {
         if(device == null || !device.checkValid()) {
-            throw  new RuntimeException("store W5 failed, " + (device == null ? "W5 is null !" : device.toString()));
+            throw  new RuntimeException("store T4 failed, " + (device == null ? "T4 is null !" : device.toString()));
         }
 
-        PetkitLog.d("store W5 info: " + device.generateMainJson(ageingResult));
+        PetkitLog.d("store T4 info: " + device.generateMainJson(ageingResult));
         FileUtils.writeStringToFile(getStoreDeviceInfoFilePath(), device.generateMainJson(ageingResult) + ",", true);
     }
 
@@ -275,12 +287,12 @@ public class W5Utils {
         int fileSnNumber = CommonUtils.getSysIntMap(CommonUtils.getAppContext(), SHARED_SN_FILE_NUMBER, 0);
 
         if (fileName != null &&             //文件不存在，或者文件不是今天产生的，都需要重新生成文件
-                (!fileName.startsWith(getFileName()) || !(new File(getW5StoryDir() + fileName).exists()))) {
+                (!fileName.startsWith(getFileName()) || !(new File(getT4StoryDir() + fileName).exists()))) {
             fileName = null;
         }
 
         if(fileSnNumber >= MAX_SN_NUMBER_SESSION || CommonUtils.isEmpty(fileName)) {
-            String dir = getW5StoryDir();
+            String dir = getT4StoryDir();
             if(!new File(dir).exists()) {
                 new File(dir).mkdirs();
             }
@@ -306,7 +318,7 @@ public class W5Utils {
             fileSnNumber++;
             LogcatStorageHelper.addLog("file name: " + fileName + ", sn number: " + fileSnNumber);
             CommonUtils.addSysIntMap(CommonUtils.getAppContext(), SHARED_SN_FILE_NUMBER, fileSnNumber);
-            return getW5StoryDir() + fileName;
+            return getT4StoryDir() + fileName;
         }
     }
 
@@ -318,7 +330,7 @@ public class W5Utils {
     public static boolean checkMacIsDuplicate(String mac) {
         String fileName = CommonUtils.getSysMap(SHARED_SN_FILE_NAME);
         if(!CommonUtils.isEmpty(fileName)) {
-            String content = FileUtils.readFileToString(new File(getW5StoryDir() + fileName));
+            String content = FileUtils.readFileToString(new File(getT4StoryDir() + fileName));
             return content != null && content.contains(mac);
         }
 
@@ -330,7 +342,7 @@ public class W5Utils {
      * @return bool
      */
     public static boolean checkHasSnCache() {
-        String dir = getW5StoryDir();
+        String dir = getT4StoryDir();
         if(new File(dir).exists()) {
             String filename = getFileName();
             String[] files = new File(dir).list();
@@ -355,9 +367,9 @@ public class W5Utils {
     public static void storeDuplicatedInfo(DevicesError devicesError) {
         if(devicesError == null || ((devicesError.getMac() == null || devicesError.getMac().size() == 0)
                         && (devicesError.getSn() == null || devicesError.getSn().size() == 0))) {
-            CommonUtils.addSysMap(SHARED_W5_ERROR_INFO, "");
+            CommonUtils.addSysMap(SHARED_T4_ERROR_INFO, "");
         } else {
-            CommonUtils.addSysMap(SHARED_W5_ERROR_INFO, new Gson().toJson(devicesError));
+            CommonUtils.addSysMap(SHARED_T4_ERROR_INFO, new Gson().toJson(devicesError));
         }
     }
 
@@ -366,7 +378,7 @@ public class W5Utils {
      * @return DevicesError
      */
     public static DevicesError getDevicesErrorMsg() {
-        String msg = CommonUtils.getSysMap(SHARED_W5_ERROR_INFO);
+        String msg = CommonUtils.getSysMap(SHARED_T4_ERROR_INFO);
         if(CommonUtils.isEmpty(msg)) {
             return null;
         }
@@ -379,18 +391,18 @@ public class W5Utils {
         if(device == null || !device.checkValid()) {
             return;
         }
-        String dir = getW5StoryDir();
+        String dir = getT4StoryDir();
         if(!new File(dir).exists()) {
             new File(dir).mkdirs();
         }
 
-        String fileName = getW5StoryDir() + FILE_MAINTAIN_INFO_NAME;
+        String fileName = getT4StoryDir() + FILE_MAINTAIN_INFO_NAME;
         String content = FileUtils.readFileToString(new File(fileName));
         if(content != null && content.contains(device.getMac())) {
             return;
         }
         String info = device.generateJson();
-        PetkitLog.d("store W5 info: " + info);
+        PetkitLog.d("store T4 info: " + info);
         FileUtils.writeStringToFile(fileName, info + ",", true);
 
     }
@@ -400,28 +412,22 @@ public class W5Utils {
             return;
         }
 
-        String dir = getW5StoryDir();
+        String dir = getT4StoryDir();
         if(!new File(dir).exists()) {
             new File(dir).mkdirs();
         }
-        String fileName = getW5StoryDir() + FILE_CHECK_INFO_NAME;
+        String fileName = getT4StoryDir() + FILE_CHECK_INFO_NAME;
         String content = FileUtils.readFileToString(new File(fileName));
         if(content != null && content.contains(device.getMac())) {
             return;
         }
         String info = device.generateCheckJson();
-        PetkitLog.d("store W5 info: " + info);
+        PetkitLog.d("store T4 info: " + info);
         FileUtils.writeStringToFile(fileName, info + ",", true);
     }
 
-    public static String getW5StoryDir() {
-        return CommonUtils.getAppCacheDirPath() + W5_STORE_DIR;
-    }
-
-    public static void stopBle (Context context) {
-        Intent intent = new Intent(BLEConsts.BROADCAST_ACTION);
-        intent.putExtra(BLEConsts.EXTRA_ACTION, BLEConsts.ACTION_ABORT);
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    public static String getT4StoryDir() {
+        return CommonUtils.getAppCacheDirPath() + T4_STORE_DIR;
     }
 
 }

@@ -102,7 +102,7 @@ public class W5TestMainActivity extends BaseActivity {
 
     @Override
     protected void setupViews() {
-        setTitle("W5-" + getTitleByType());
+        setTitle((mW5Type == W5Utils.W5_TYPE_NORMAL ? "W5-" : "W5C-") + getTitleByType());
 
         mWifiAdminSimple = new WifiAdminSimple(this);
 

@@ -1,20 +1,21 @@
-package com.petkit.matetool.ui.P3;
+package com.petkit.matetool.ui.t4;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.petkit.matetool.R;
 import com.petkit.matetool.model.Tester;
-import com.petkit.matetool.ui.P3.utils.P3Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.t4.utils.T4Utils;
 
 /**
- * P3测试，选择工站
+ * 猫厕所测试，选择工站
  *
  * Created by Jone on 17/4/19.
  */
-public class P3StartActivity extends BaseActivity {
+public class T4StartActivity extends BaseActivity {
 
     private Tester mTester;
 
@@ -23,9 +24,9 @@ public class P3StartActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
-            mTester = (Tester) savedInstanceState.getSerializable(P3Utils.EXTRA_P3_TESTER);
+            mTester = (Tester) savedInstanceState.getSerializable(T4Utils.EXTRA_T4_TESTER);
         } else {
-            mTester = (Tester) getIntent().getSerializableExtra(P3Utils.EXTRA_P3_TESTER);
+            mTester = (Tester) getIntent().getSerializableExtra(T4Utils.EXTRA_T4_TESTER);
         }
 
         setContentView(R.layout.activity_feeder_start);
@@ -36,7 +37,7 @@ public class P3StartActivity extends BaseActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putSerializable(P3Utils.EXTRA_P3_TESTER, mTester);
+        outState.putSerializable(T4Utils.EXTRA_T4_TESTER, mTester);
     }
 
     @Override
@@ -51,8 +52,10 @@ public class P3StartActivity extends BaseActivity {
         findViewById(R.id.test_case3).setOnClickListener(this);
         findViewById(R.id.test_case4).setOnClickListener(this);
         findViewById(R.id.test_case5).setOnClickListener(this);
-        findViewById(R.id.test_case5).setVisibility(View.GONE);
-        findViewById(R.id.test_case1).setVisibility(View.GONE);
+        findViewById(R.id.test_case5).setOnClickListener(this);
+
+        ((Button) findViewById(R.id.test_case5)).setText("位图生成");
+        ((Button) findViewById(R.id.test_case5)).setVisibility(View.GONE);
     }
 
     @Override
@@ -60,32 +63,27 @@ public class P3StartActivity extends BaseActivity {
         switch (v.getId()) {
             case R.id.test_case1:
                 Bundle bundle = new Bundle();
-                bundle.putSerializable(P3Utils.EXTRA_P3_TESTER, mTester);
-                bundle.putInt("TestType", P3Utils.TYPE_TEST_PARTIALLY);
-                startActivityWithData(P3ScanActivity.class, bundle, false);
+                bundle.putSerializable(T4Utils.EXTRA_T4_TESTER, mTester);
+                bundle.putInt("TestType", T4Utils.TYPE_TEST_PARTIALLY);
+                startActivityWithData(T4TestMainActivity.class, bundle, false);
                 break;
             case R.id.test_case2:
                 bundle = new Bundle();
-                bundle.putSerializable(P3Utils.EXTRA_P3_TESTER, mTester);
-                bundle.putInt("TestType", P3Utils.TYPE_TEST);
-                startActivityWithData(P3ScanActivity.class, bundle, false);
+                bundle.putSerializable(T4Utils.EXTRA_T4_TESTER, mTester);
+                bundle.putInt("TestType", T4Utils.TYPE_TEST);
+                startActivityWithData(T4TestMainActivity.class, bundle, false);
                 break;
             case R.id.test_case3:
                 bundle = new Bundle();
-                bundle.putSerializable(P3Utils.EXTRA_P3_TESTER, mTester);
-                bundle.putInt("TestType", P3Utils.TYPE_MAINTAIN);
-                startActivityWithData(P3ScanActivity.class, bundle, false);
+                bundle.putSerializable(T4Utils.EXTRA_T4_TESTER, mTester);
+                bundle.putInt("TestType", T4Utils.TYPE_MAINTAIN);
+                startActivityWithData(T4TestMainActivity.class, bundle, false);
                 break;
             case R.id.test_case4:
                 bundle = new Bundle();
-                bundle.putSerializable(P3Utils.EXTRA_P3_TESTER, mTester);
-                bundle.putInt("TestType", P3Utils.TYPE_CHECK);
-                startActivityWithData(P3ScanActivity.class, bundle, false);
-                break;
-            case R.id.test_case5:
-                bundle = new Bundle();
-                bundle.putSerializable(P3Utils.EXTRA_P3_TESTER, mTester);
-                startActivityWithData(P3StorageFileActivity.class, bundle, false);
+                bundle.putSerializable(T4Utils.EXTRA_T4_TESTER, mTester);
+                bundle.putInt("TestType", T4Utils.TYPE_CHECK);
+                startActivityWithData(T4TestMainActivity.class, bundle, false);
                 break;
         }
     }

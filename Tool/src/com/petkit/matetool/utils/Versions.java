@@ -211,4 +211,13 @@ public class Versions {
 	public static final String TOOL_W5_VERSION	= "1.0";
 
 
+	/**
+	 *
+	 * 1.0说明:
+	 * 1. 支持智能猫厕所（T4）产测全流程
+	 *
+	 */
+	public static final String TOOL_T4_VERSION	= "0.1";
+
+
 }

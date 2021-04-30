@@ -96,7 +96,7 @@ public class W5ScanActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     protected void setupViews() {
-        setTitle("智能猫狗牌（W5）测试");
+        setTitle(mW5Type == W5Utils.W5_TYPE_NORMAL ? "智能饮水机（W5）测试" : "智能饮水机mini（W5C）测试");
 
         mW5TestUnits = W5Utils.generateW5TestUnitsForType(mTestType);
 
