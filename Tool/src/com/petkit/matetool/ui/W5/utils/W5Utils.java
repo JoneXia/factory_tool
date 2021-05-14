@@ -159,7 +159,7 @@ public class W5Utils {
                 results.add(new W5TestUnit(W5TestModes.TEST_MODE_SN, "写入SN", 98, 2));
             }
             if (type != TYPE_TEST_PARTIALLY && type != TYPE_CHECK) {
-                results.add(new W5TestUnit(W5TestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
+                results.add(new W5TestUnit(W5TestModes.TEST_MODE_PRINT, "打印标签", -1, type == TYPE_TEST ? 2 : 1));
             }
 
             if (type == TYPE_MAINTAIN) {        //擦除ID选项先关闭，暂不开放
