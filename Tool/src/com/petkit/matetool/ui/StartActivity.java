@@ -286,6 +286,7 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
 
         tempRadioButton = (RadioButton) findViewById(R.id.t4);
         tempRadioButton.setText("智能猫厕所SOLO（T4）" + " v" + TOOL_T4_VERSION);
+        tempRadioButton.setVisibility(View.GONE);
     }
 
     private boolean checkPermissions() {

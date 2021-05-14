@@ -429,15 +429,19 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
 
         switch (key) {
             case BLEConsts.OP_CODE_BATTERY_KEY:
+                if (mW5TestUnits.get(mCurTestStep).getType() != W5Utils.W5TestModes.TEST_MODE_DC) {
+                    return;
+                }
+
                 if (data.length < 3) {
                     mDescTextView.append("\n数据错误");
                 } else {
                     byte[] voltageByte = new byte[2];
                     System.arraycopy(data, 0, voltageByte, 0, 2);
                     short voltage = ByteUtil.bytes2Short(voltageByte);
-                    int battery = ByteUtil.toInt(data[2]);
+//                    int battery = ByteUtil.toInt(data[2]);
                     mDescTextView.append("\n电压：" + voltage);
-                    mDescTextView.append("，电量：" + battery);
+//                    mDescTextView.append("，电量：" + battery);
 
                     if (mTestType == W5Utils.TYPE_TEST_PARTIALLY) {
 //                        result = voltage >= 2800 && voltage <= 3200;
@@ -452,6 +456,10 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
                 }
                 break;
             case BLEConsts.OP_CODE_W5_PUMP_DATA:
+                if (mW5TestUnits.get(mCurTestStep).getType() != W5Utils.W5TestModes.TEST_MODE_PUMP) {
+                    return;
+                }
+
                 if (data.length < 1) {
                     mDescTextView.append("\n数据错误");
                 } else if (data[0] == 0){
@@ -482,6 +490,10 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
 //                }
                 break;
             case BLEConsts.OP_CODE_W5_WRITE_SN:
+                if (mW5TestUnits.get(mCurTestStep).getType() != W5Utils.W5TestModes.TEST_MODE_SN &&
+                        mW5TestUnits.get(mCurTestStep).getType() != W5Utils.W5TestModes.TEST_MODE_RESET_SN) {
+                    return;
+                }
                 if (data.length != 1) {
                     mDescTextView.append("\n数据错误，处理失败");
                 } else if (data[0] != 1){
