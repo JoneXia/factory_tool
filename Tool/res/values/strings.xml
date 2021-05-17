@@ -350,5 +350,14 @@
 	<string name="s_3min">Initiate cleaning in 3 minutes</string>
 	<string name="s_2min">Initiate cleaning in 2 minutes</string>
 
+	<!-- T4 dev -->
+	<string name="s_light">立即亮灯</string>
+	<string name="s_light_o">灯光已开启</string>
+	<string name="s_i_cnt">今日如厕</string>
+	<string name="s_sing">正在启动</string>
+	<string name="s_spr_fl">请先在App内关联净味器</string>
+	<string name="s_spr_fb">启动失败，请检查净味器电量</string>
+	<string name="s_spr_fn">启动失败，未找到净味器</string>
+	<string name="s_spr_bt">净味器电量不足，请更换电池</string>
 
 </resources>

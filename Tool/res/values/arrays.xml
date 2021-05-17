@@ -119,4 +119,65 @@
         <item>s_2min</item>
     </string-array>
 
+    <string-array name="t4_lcd_string_list">
+        <item>s_wific</item>
+        <item>s_wifici</item>
+        <item>s_wificed</item>
+        <item>s_rst</item>
+        <item>s_spd</item>
+        <item>s_rst_i</item>
+        <item>s_rst_ovr</item>
+        <item>s_od_rmv</item>
+        <item>s_od_rmvi</item>
+        <item>s_od_rmvd</item>
+        <item>s_cln</item>
+        <item>s_cln_i</item>
+        <item>s_cln_ovr</item>
+        <item>s_smth</item>
+        <item>s_smth_ing</item>
+        <item>s_smth_ovr</item>
+
+        <item>s_light</item>
+        <item>s_light_o</item>
+        <item>s_i_cnt</item>
+        <item>s_sing</item>
+        <item>s_spr_fl</item>
+        <item>s_spr_fb</item>
+        <item>s_spr_fn</item>
+        <item>s_spr_bt</item>
+
+        <item>s_bk2main</item>
+        <item>s_ota_ing</item>
+        <item>s_err_tip</item>
+        <item>s_cln_soon</item>
+        <item>s_cali</item>
+        <item>s_cali_ing</item>
+        <item>s_cali_ovr</item>
+        <item>s_err_app</item>
+        <item>s_err_i_1</item>
+        <item>s_err_i_2</item>
+        <item>s_sfty_spd</item>
+        <item>s_lt_lack</item>
+        <item>s_drt_lack</item>
+        <item>s_bx_full</item>
+        <item>s_around</item>
+        <item>s_pet_w</item>
+        <item>s_pet_w_r</item>
+        <item>s_pet_in</item>
+        <item>s_15min</item>
+        <item>s_14min</item>
+        <item>s_13min</item>
+        <item>s_12min</item>
+        <item>s_11min</item>
+        <item>s_10min</item>
+        <item>s_9min</item>
+        <item>s_8min</item>
+        <item>s_7min</item>
+        <item>s_6min</item>
+        <item>s_5min</item>
+        <item>s_4min</item>
+        <item>s_3min</item>
+        <item>s_2min</item>
+    </string-array>
+
 </resources>

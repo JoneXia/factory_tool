@@ -367,6 +367,9 @@
         <activity android:name=".ui.t4.T4StorageFileActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"/>
+        <activity android:name=".ui.t4.T4LanguageActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"/>
 
 
         <meta-data

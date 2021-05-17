@@ -297,6 +297,7 @@
 
     <string name="Mate_microphone">麦克风</string>
 
+    <!-- T3 dev -->
     <string name="s_wific">配置网络</string>
     <string name="s_wifici">正在配网</string>
     <string name="s_wificed">配网完成</string>
@@ -349,6 +350,16 @@
     <string name="s_4min">4分钟后开始清理</string>
     <string name="s_3min">3分钟后开始清理</string>
     <string name="s_2min">2分钟后开始清理</string>
+
+    <!-- T4 dev -->
+    <string name="s_light">立即亮灯</string>
+    <string name="s_light_o">灯光已开启</string>
+    <string name="s_i_cnt">今日如厕</string>
+    <string name="s_sing">正在启动</string>
+    <string name="s_spr_fl">请先在App内关联净味器</string>
+    <string name="s_spr_fb">启动失败，请检查净味器电量</string>
+    <string name="s_spr_fn">启动失败，未找到净味器</string>
+    <string name="s_spr_bt">净味器电量不足，请更换电池</string>
 
 
 </resources>

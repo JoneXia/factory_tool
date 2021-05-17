@@ -55,7 +55,6 @@ public class T4StartActivity extends BaseActivity {
         findViewById(R.id.test_case5).setOnClickListener(this);
 
         ((Button) findViewById(R.id.test_case5)).setText("位图生成");
-        ((Button) findViewById(R.id.test_case5)).setVisibility(View.GONE);
     }
 
     @Override
@@ -84,6 +83,12 @@ public class T4StartActivity extends BaseActivity {
                 bundle.putSerializable(T4Utils.EXTRA_T4_TESTER, mTester);
                 bundle.putInt("TestType", T4Utils.TYPE_CHECK);
                 startActivityWithData(T4TestMainActivity.class, bundle, false);
+                break;
+            case R.id.test_case5:
+                bundle = new Bundle();
+                bundle.putSerializable(T4Utils.EXTRA_T4_TESTER, mTester);
+                bundle.putInt("TestType", T4Utils.TYPE_CHECK);
+                startActivityWithData(T4LanguageActivity.class, bundle, false);
                 break;
         }
     }
