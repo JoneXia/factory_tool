@@ -501,10 +501,11 @@ public class BLEConsts {
 	public static final String AQ_DISPLAY_NAME = "Petkit_AQ";
 	public static final String P3_DISPLAY_NAME = "Petkit_P3";
 	public static final String W5_DISPLAY_NAME = "Petkit_W5C";
+	public static final String T4_DISPLAY_NAME = "Petkit_T4";
 
 	public static final String[] DeviceFilter = new String[]{"PETKIT", "PETKIT2", PET_FIT_DISPLAY_NAME, PET_FIT2_DISPLAY_NAME,
 			PET_HOME, PET_MATE, GO_DISPLAY_NAME, K2_DISPLAY_NAME, T3_DISPLAY_NAME, D3_DISPLAY_NAME, D4_DISPLAY_NAME,
-			AQ_DISPLAY_NAME, P3_DISPLAY_NAME, W5_DISPLAY_NAME};
+			AQ_DISPLAY_NAME, P3_DISPLAY_NAME, W5_DISPLAY_NAME, T4_DISPLAY_NAME};
 	
 	public static final UUID ACC_SERVICE_UUID = UUID.fromString("0000aaa0-0000-1000-8000-00805f9b34fb");
 	public static final UUID ACC_DATA_UUID = UUID.fromString("0000aaa1-0000-1000-8000-00805f9b34fb");

@@ -187,7 +187,7 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 mPromptTextView.setText("秤校准，请按照提示操作！");
                 break;
             case TEST_MODE_MOTOR:
-                mPromptTextView.setText("需分别测试初始位置霍尔和排废位置霍尔！");
+                mPromptTextView.setText("需分别测试初始位置霍尔、排废位置霍尔和抚平位置霍尔！");
                 break;
             case TEST_MODE_PROXIMITY:
                 mPromptTextView.setText("测试接近传感器！");
@@ -348,6 +348,7 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                     case TEST_MODE_MAC:
                     case TEST_MODE_PRINT:
                     case TEST_MODE_RESET_SN:
+                    case TEST_MODE_AUTO:
                         gotoNextTestModule();
                         break;
                     case TEST_MODE_AGEINGRESULT:
@@ -560,9 +561,12 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         result = mTempResult == 0x111;
                         break;
                     case 3:
-                        desc.append("\n").append("集便盒电机").append("-").append(moduleStateStruct.getState() == 0 ? "异常" : "正常")
-                                .append("霍尔").append("：").append((moduleStateStruct.getSub0() & 0x1) == 1 ? "关闭位置到位" :
-                                ((moduleStateStruct.getSub0() >> 1 & 0x1) == 1 ? "打开位置到位" : "不到位")).append("-");
+                        if ((moduleStateStruct.getSub0() & 0x1) == 1
+                                        || (moduleStateStruct.getSub0() >> 1 & 0x1) == 1) {
+                            desc.append("\n").append("集便盒电机").append("-").append(moduleStateStruct.getState() == 0 ? "异常" : "正常")
+                                    .append("霍尔").append("：").append((moduleStateStruct.getSub0() & 0x1) == 1 ? "关闭位置到位" :
+                                    ((moduleStateStruct.getSub0() >> 1 & 0x1) == 1 ? "打开位置到位" : "不到位")).append("-");
+                        }
 
                         if (moduleStateStruct.getState() > 0) {
                             if ((moduleStateStruct.getSub0() & 0x1) == 1) {
@@ -577,7 +581,8 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                     case 4:
                         desc.append("\n").append("电机").append("-").append(moduleStateStruct.getState() == 1 ? "正常" : "异常").append("\n")
                                 .append("霍尔").append("：").append((moduleStateStruct.getSub0() & 0x1) == 1 ? "初始位置到位" :
-                                ((moduleStateStruct.getSub0() >> 1 & 0x1) == 1 ? "排废位置到位" : "不到位"))
+                                ((moduleStateStruct.getSub0() >> 1 & 0x1) == 1 ? "排废位置到位" :
+                                        ((moduleStateStruct.getSub0() >> 2 & 0x1) == 1 ? "抚平位置到位" : "不到位")))
                                 .append("\n").append("码盘记步数").append("：").append(moduleStateStruct.getSub1())
                                 .append("\n").append("电流").append("：").append((moduleStateStruct.getSub2()) == 1 ? "正常" : "异常").append("\n-----");
 
@@ -589,8 +594,11 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                             if ((moduleStateStruct.getSub0() >> 1 & 0x1) == 1) {
                                 mTempResult = (mTempResult | 0x10);
                             }
+                            if ((moduleStateStruct.getSub0() >> 2 & 0x1) == 1) {
+                                mTempResult = (mTempResult | 0x100);
+                            }
                         }
-                        result = mTempResult == 0x11;
+                        result = mTempResult == 0x111;
                         break;
                     case 5:
                         if (mT4TestUnits.get(mCurTestStep).getState() == 1) {
@@ -620,10 +628,25 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         desc.append("\n").append("秤").append("-").append("实际克数").append("-").append(moduleStateStruct.getSub0()).append("克");
                         break;
                     case 6:
-                        desc.append("\n").append("接近").append("：").append((moduleStateStruct.getState() & 0x1) == 1 ? "左侧有信号" :
-                                ((moduleStateStruct.getSub0() >> 1 & 0x1) == 1 ? "右侧有信号" : "无信号"))
-                                .append("\n").append("左侧信号").append("：").append(moduleStateStruct.getSub1())
-                                .append("\n").append("右侧信号").append("：").append((moduleStateStruct.getSub2()));
+                        int leftState = moduleStateStruct.getState() & 0x1;
+                        int rightState = (moduleStateStruct.getState() >> 1) & 0x1;
+                        desc.append("\n接近传感器： ").append(" 左 - ").append(leftState == 1 ? "已靠近； " : "未靠近； ")
+                                .append(" 右 - ").append(rightState == 1 ? "已靠近" : "未靠近");
+
+                        desc.append("\n").append("左侧读取数值：").append(moduleStateStruct.getSub1());
+                        desc.append("\n").append("右侧读取数值：").append(moduleStateStruct.getSub2());
+
+                        if (leftState > 0) {
+                            mTempResult = mTempResult | 0x1;
+                        } else {
+                            mTempResult = mTempResult | 0x10;
+                        }
+                        if (rightState > 0) {
+                            mTempResult = mTempResult | 0x100;
+                        } else {
+                            mTempResult = mTempResult | 0x1000;
+                        }
+                        result = mTempResult == 0x1111;
                         break;
                     case 7:
                         if (moduleStateStruct.getState() > 0) {

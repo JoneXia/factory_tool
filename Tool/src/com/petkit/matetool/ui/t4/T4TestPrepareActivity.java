@@ -80,10 +80,10 @@ public class T4TestPrepareActivity extends BaseActivity {
 
         mTester = TesterManagerUtils.getCurrentTesterForType(Globals.T4);
 
-        mTester = new Tester();
-        mTester.setName("固定账号");
-        mTester.setCode("00");
-        mTester.setStation("1");
+//        mTester = new Tester();
+//        mTester.setName("固定账号");
+//        mTester.setCode("00");
+//        mTester.setStation("1");
 
         if (mTester != null) {
             if (!isEmpty(mTester.getName())) {
