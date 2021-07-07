@@ -564,8 +564,8 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         if ((moduleStateStruct.getSub0() & 0x1) == 1
                                         || (moduleStateStruct.getSub0() >> 1 & 0x1) == 1) {
                             desc.append("\n").append("集便盒电机").append("-").append(moduleStateStruct.getState() == 0 ? "异常" : "正常")
-                                    .append("霍尔").append("：").append((moduleStateStruct.getSub0() & 0x1) == 1 ? "关闭位置到位" :
-                                    ((moduleStateStruct.getSub0() >> 1 & 0x1) == 1 ? "打开位置到位" : "不到位")).append("-");
+                                    .append("霍尔").append("：").append((moduleStateStruct.getSub0() & 0x1) == 1 ? "打开位置到位" :
+                                    ((moduleStateStruct.getSub0() >> 1 & 0x1) == 1 ? "关闭位置到位" : "不到位")).append("-");
                         }
 
                         if (moduleStateStruct.getState() > 0) {
@@ -579,13 +579,8 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         result = mTempResult == 0x11;
                         break;
                     case 4:
-                        desc.append("\n").append("电机").append("-").append(moduleStateStruct.getState() == 1 ? "正常" : "异常").append("\n")
-                                .append("霍尔").append("：").append((moduleStateStruct.getSub0() & 0x1) == 1 ? "初始位置到位" :
-                                ((moduleStateStruct.getSub0() >> 1 & 0x1) == 1 ? "排废位置到位" :
-                                        ((moduleStateStruct.getSub0() >> 2 & 0x1) == 1 ? "抚平位置到位" : "不到位")))
-                                .append("\n").append("码盘记步数").append("：").append(moduleStateStruct.getSub1())
-                                .append("\n").append("电流").append("：").append((moduleStateStruct.getSub2()) == 1 ? "正常" : "异常").append("\n-----");
-
+                        desc.append("\n").append("电机").append("-").append(moduleStateStruct.getState() == 1 ? "正常" : "异常")
+                                .append("，电流").append("：").append((moduleStateStruct.getSub2()) == 1 ? "正常" : "异常").append("\n");
 
                         if (moduleStateStruct.getState() > 0) {
                             if ((moduleStateStruct.getSub0() & 0x1) == 1) {
@@ -597,6 +592,9 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                             if ((moduleStateStruct.getSub0() >> 2 & 0x1) == 1) {
                                 mTempResult = (mTempResult | 0x100);
                             }
+                            desc.append("初始位置霍尔: ").append((mTempResult & 0x1) == 1 ? "正常" : "测试中").append("\n")
+                                    .append("排废位置霍尔: ").append((mTempResult & 0x10) == 0x10 ? "正常" : "测试中").append("\n")
+                                    .append("抚平位置霍尔: ").append((mTempResult & 0x100) == 0x100 ? "正常" : "测试中").append("\n");
                         }
                         result = mTempResult == 0x111;
                         break;
