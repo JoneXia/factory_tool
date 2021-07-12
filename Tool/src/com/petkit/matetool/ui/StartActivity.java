@@ -26,6 +26,7 @@ import com.petkit.matetool.ui.D4.D4TestPrepareActivity;
 import com.petkit.matetool.ui.K2.K2TestPrepareActivity;
 import com.petkit.matetool.ui.P3.P3TestPrepareActivity;
 import com.petkit.matetool.ui.W5.W5TestPrepareActivity;
+import com.petkit.matetool.ui.W5.utils.W5Utils;
 import com.petkit.matetool.ui.aq.AQTestMainActivity;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.cozy.CozyTestPrepareActivity;
@@ -37,6 +38,7 @@ import com.petkit.matetool.ui.permission.PermissionDialogActivity;
 import com.petkit.matetool.ui.permission.mode.PermissionBean;
 import com.petkit.matetool.ui.t3.T3TestPrepareActivity;
 import com.petkit.matetool.ui.t4.T4TestPrepareActivity;
+import com.petkit.matetool.ui.t4.utils.T4Utils;
 import com.petkit.matetool.ui.utils.PrintUtils;
 import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.Utils;
@@ -44,6 +46,7 @@ import com.petkit.matetool.widget.LoadDialog;
 
 import java.util.ArrayList;
 
+import static com.petkit.matetool.utils.Versions.TOOL_AQR_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_AQ_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_COZY;
 import static com.petkit.matetool.utils.Versions.TOOL_D3_VERSION;
@@ -52,6 +55,7 @@ import static com.petkit.matetool.utils.Versions.TOOL_FEEDER_MINI_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_FEEDER_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_GO_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_K2_VERSION;
+import static com.petkit.matetool.utils.Versions.TOOL_K3_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_MATE_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_P3_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_T3_VERSION;
@@ -181,10 +185,16 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
                         startActivity(P3TestPrepareActivity.class);
                         break;
                     case Globals.W5:
-                        startActivity(W5TestPrepareActivity.class);
+                    case Globals.W5C:
+                        bundle = new Bundle();
+                        bundle.putInt(W5Utils.EXTRA_W5_TYPE, testStyle == Globals.W5C ? W5Utils.W5_TYPE_MINI : W5Utils.W5_TYPE_NORMAL);
+                        startActivityWithData(W5TestPrepareActivity.class, bundle, false);
                         break;
                     case Globals.T4:
-                        startActivity(T4TestPrepareActivity.class);
+                    case Globals.T4_p:
+                        bundle = new Bundle();
+                        bundle.putInt(T4Utils.EXTRA_WITH_K3, testStyle == Globals.T4 ? 0 : 1);
+                        startActivityWithData(T4TestPrepareActivity.class, bundle, false);
                         break;
                 }
                 collapseSoftInputMethod(fixtureNumberEditText);
@@ -234,8 +244,20 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
             case R.id.w5:
                 testStyle = Globals.W5;
                 break;
+            case R.id.w5c:
+                testStyle = Globals.W5C;
+                break;
             case R.id.t4:
                 testStyle = Globals.T4;
+                break;
+            case R.id.t4_p:
+                testStyle = Globals.T4_p;
+                break;
+            case R.id.k3:
+                testStyle = Globals.K3;
+                break;
+            case R.id.aqr:
+                testStyle = Globals.AQR;
                 break;
             default:
                 break;
@@ -282,10 +304,22 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
         tempRadioButton.setText("智能猫狗牌（P3）" + " v" + TOOL_P3_VERSION);
 
         tempRadioButton = (RadioButton) findViewById(R.id.w5);
-        tempRadioButton.setText("智能饮水机（W5/W5C）" + " v" + TOOL_W5_VERSION);
+        tempRadioButton.setText("智能饮水机（W5）" + " v" + TOOL_W5_VERSION);
+
+        tempRadioButton = (RadioButton) findViewById(R.id.w5c);
+        tempRadioButton.setText("智能饮水机MINI（W5C）" + " v" + TOOL_W5_VERSION);
 
         tempRadioButton = (RadioButton) findViewById(R.id.t4);
         tempRadioButton.setText("智能猫厕所SOLO（T4）" + " v" + TOOL_T4_VERSION);
+
+        tempRadioButton = (RadioButton) findViewById(R.id.t4_p);
+        tempRadioButton.setText("智能猫厕所SOLO（T4）标配K3" + " v" + TOOL_T4_VERSION);
+
+        tempRadioButton = (RadioButton) findViewById(R.id.k3);
+        tempRadioButton.setText("智能净味器（K3）" + " v" + TOOL_K3_VERSION);
+
+        tempRadioButton = (RadioButton) findViewById(R.id.aqr);
+        tempRadioButton.setText("智能鱼缸（AQR）" + " v" + TOOL_AQR_VERSION);
     }
 
     private boolean checkPermissions() {

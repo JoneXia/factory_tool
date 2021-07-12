@@ -220,4 +220,20 @@ public class Versions {
 	public static final String TOOL_T4_VERSION	= "0.1";
 
 
+	/**
+	 *
+	 * 1.0说明:
+	 * 1. 支持智能净味器（K3）产测全流程
+	 *
+	 */
+	public static final String TOOL_K3_VERSION	= "0.1";
+
+
+	/**
+	 *
+	 * 1.0说明:
+	 * 1. 支持智能鱼缸（AQR）产测全流程
+	 *
+	 */
+	public static final String TOOL_AQR_VERSION	= "0.1";
 }

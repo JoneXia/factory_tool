@@ -36,6 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dip"
+                android:visibility="gone"
                 android:text="Go抽检-G1"/>
 
             <RadioButton
@@ -43,7 +44,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dip"
+                android:visibility="gone"
                 android:text="喂食器-D1"/>
+
+            <RadioButton
+                android:id="@+id/w5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip"
+                android:text="智能饮水机-W5"/>
+
+            <RadioButton
+                android:id="@+id/t4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip"
+                android:text="智能喂食器solo-T4"/>
 
             <RadioButton
                 android:id="@+id/cozy"
@@ -102,18 +118,32 @@
                 android:text="智能猫狗牌-P3"/>
 
             <RadioButton
-                android:id="@+id/w5"
+                android:id="@+id/w5c"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dip"
-                android:text="智能饮水机-W5"/>
+                android:text="智能饮水机MINI-W5C"/>
 
             <RadioButton
-                android:id="@+id/t4"
+                android:id="@+id/t4_p"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dip"
                 android:text="智能喂食器solo-T4"/>
+
+            <RadioButton
+                android:id="@+id/k3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip"
+                android:text="智能净味器-K3"/>
+
+            <RadioButton
+                android:id="@+id/aqr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip"
+                android:text="智能鱼缸-AQR"/>
 
         </RadioGroup>
     </ScrollView>

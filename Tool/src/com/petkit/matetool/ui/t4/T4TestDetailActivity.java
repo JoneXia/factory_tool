@@ -79,6 +79,7 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
     private ArrayList<T4TestUnit> mT4AutoTestUnits;
     private boolean isInAutoUnits = false;
     private int mAutoUnitStep; //有些测试项中会细分成几步
+    private int mWithK3;
 
 
     @Override
@@ -92,6 +93,7 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
             isAutoTest = savedInstanceState.getBoolean("AutoTest");
             mTester = (Tester) savedInstanceState.getSerializable(T4Utils.EXTRA_T4_TESTER);
             mErrorDevice = (Device) savedInstanceState.getSerializable(T4Utils.EXTRA_ERROR_T4);
+            mWithK3 = savedInstanceState.getInt(T4Utils.EXTRA_WITH_K3);
         } else {
             mT4TestUnits = (ArrayList<T4TestUnit>) getIntent().getSerializableExtra("TestUnits");
             mCurTestStep = getIntent().getIntExtra("CurrentTestStep", 0);
@@ -99,6 +101,7 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
             isAutoTest = getIntent().getBooleanExtra("AutoTest", true);
             mTester = (Tester) getIntent().getSerializableExtra(T4Utils.EXTRA_T4_TESTER);
             mErrorDevice = (Device) getIntent().getSerializableExtra(T4Utils.EXTRA_ERROR_T4);
+            mWithK3 = getIntent().getIntExtra(T4Utils.EXTRA_WITH_K3, 0);
         }
 
         setContentView(R.layout.activity_feeder_test_detail);
@@ -127,6 +130,7 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
         outState.putBoolean("AutoTest", isAutoTest);
         outState.putSerializable(T4Utils.EXTRA_T4_TESTER, mTester);
         outState.putSerializable(T4Utils.EXTRA_ERROR_T4, mErrorDevice);
+        outState.putInt(T4Utils.EXTRA_WITH_K3, mWithK3);
     }
 
     @Override
@@ -771,8 +775,7 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                     if (mDevice.getMac() != null && mDevice.getMac().equalsIgnoreCase(mac) &&
                             mDevice.getSn() != null && mDevice.getSn().equalsIgnoreCase(sn)) {
                         mDescTextView.append("\n写入SN成功");
-//                        T4Utils.removeTempDeviceInfo(mDevice);
-                        T4Utils.storeSucceedDeviceInfo(mDevice, mAgeingResult);
+                        T4Utils.storeSucceedDeviceInfo(mDevice, mAgeingResult, mWithK3);
 
                         mT4TestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         refershBtnView();

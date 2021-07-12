@@ -49,7 +49,11 @@ public class Globals {
 	public static final int D4 = 11;
 	public static final int P3 = 12;
 	public static final int W5 = 13;
-	public static final int T4 = 14;
+	public static final int W5C = 14;
+	public static final int T4 = 15;
+	public static final int T4_p = 16;   //T4标配K3
+	public static final int K3 = 17;
+	public static final int AQR = 18;
 
 //	public static int g_testStyle = 0;
 
@@ -68,6 +72,8 @@ public class Globals {
 	public static final String DEVICE_TYPE_CODE_W5 = "I";
 	public static final String DEVICE_TYPE_CODE_W5C = "J";
 	public static final String DEVICE_TYPE_CODE_T4 = "L";
+	public static final String DEVICE_TYPE_CODE_K3 = "M";
+	public static final String DEVICE_TYPE_CODE_AQR = "N";
 
 	public static ArrayList<String> mTestItem = new ArrayList<String>();
 	public static int[] mTestResult = null;

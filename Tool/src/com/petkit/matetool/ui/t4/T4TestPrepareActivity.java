@@ -53,14 +53,28 @@ public class T4TestPrepareActivity extends BaseActivity {
 
     private DevicesError mDevicesError;
     private boolean isLogining;
+    private int mWithK3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if(savedInstanceState != null) {
+            mWithK3 = savedInstanceState.getInt(T4Utils.EXTRA_WITH_K3);
+        } else {
+            mWithK3 = getIntent().getIntExtra(T4Utils.EXTRA_WITH_K3, 0);
+        }
+
         setContentView(R.layout.activity_feeder_prepare);
 
         ApiTools.setApiBaseUrl();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt(T4Utils.EXTRA_WITH_K3, mWithK3);
     }
 
     @Override
@@ -194,6 +208,7 @@ public class T4TestPrepareActivity extends BaseActivity {
     private void startTest() {
         Bundle bundle = new Bundle();
         bundle.putSerializable(T4Utils.EXTRA_T4_TESTER, mTester);
+        bundle.putInt(T4Utils.EXTRA_WITH_K3, mWithK3);
         startActivityWithData(T4StartActivity.class, bundle, false);
     }
 

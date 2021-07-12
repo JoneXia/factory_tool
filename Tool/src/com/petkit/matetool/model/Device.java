@@ -88,6 +88,10 @@ public class Device implements Serializable {
         return String.format("{\"sn\":\"%s\",\"mac\":\"%s\",\"chipId\":\"%s\",\"creation\":%d,\"ageingResult\":%s}", sn, mac, chipid, creation, ageingResult);
     }
 
+    public String generateMainJson(String ageingResult, int withK3) {
+        return String.format("{\"sn\":\"%s\",\"mac\":\"%s\",\"chipId\":\"%s\",\"with_k3\":%d,\"creation\":%d,\"ageingResult\":%s}", sn, mac, chipid, withK3, creation, ageingResult);
+    }
+
     @Override
     public String toString() {
         return "Device{" +

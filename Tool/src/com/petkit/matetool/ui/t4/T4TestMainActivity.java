@@ -59,7 +59,9 @@ public class T4TestMainActivity extends BaseActivity implements PetkitSocketInst
     private TestItemAdapter mAdapter;
 
     private TextView mInfoTestTextView;
+    private int mWithK3;
     private boolean testComplete = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,10 +70,12 @@ public class T4TestMainActivity extends BaseActivity implements PetkitSocketInst
             mTester = (Tester) savedInstanceState.getSerializable(T4Utils.EXTRA_T4_TESTER);
             mTestType = savedInstanceState.getInt("TestType");
             mErrorDevice = (Device) savedInstanceState.getSerializable(T4Utils.EXTRA_T4);
+            mWithK3 = savedInstanceState.getInt(T4Utils.EXTRA_WITH_K3);
         } else {
             mTester = (Tester) getIntent().getSerializableExtra(T4Utils.EXTRA_T4_TESTER);
             mTestType = getIntent().getIntExtra("TestType", T4Utils.TYPE_TEST);
             mErrorDevice = (Device) getIntent().getSerializableExtra(T4Utils.EXTRA_T4);
+            mWithK3 = getIntent().getIntExtra(T4Utils.EXTRA_WITH_K3, 0);
         }
 
         setContentView(R.layout.activity_feeder_main_test);
@@ -85,6 +89,7 @@ public class T4TestMainActivity extends BaseActivity implements PetkitSocketInst
 
         outState.putSerializable(T4Utils.EXTRA_T4_TESTER, mTester);
         outState.putInt("TestType", mTestType);
+        outState.putInt(T4Utils.EXTRA_WITH_K3, mWithK3);
         outState.putSerializable(T4Utils.EXTRA_T4, mErrorDevice);
     }
 
@@ -279,6 +284,7 @@ public class T4TestMainActivity extends BaseActivity implements PetkitSocketInst
             intent.putExtra("AutoTest", isAuto);
             intent.putExtra(T4Utils.EXTRA_T4_TESTER, mTester);
             intent.putExtra(T4Utils.EXTRA_ERROR_T4, mErrorDevice);
+            intent.putExtra(T4Utils.EXTRA_WITH_K3, mWithK3);
             startActivityForResult(intent, 0x12);
         } else {
             showShortToast(mInfoTestTextView.getText().toString());

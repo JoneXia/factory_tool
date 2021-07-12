@@ -52,6 +52,8 @@ public class W5TestPrepareActivity extends BaseActivity {
     private TextView promptText, testerInfoTextView;
     private Button actionBtn, uploadBtn;
 
+    private int mW5Type;
+
     private DevicesError mDevicesError;
     private boolean isLogining;
 
@@ -59,9 +61,22 @@ public class W5TestPrepareActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if(savedInstanceState != null) {
+            mW5Type = savedInstanceState.getInt(W5Utils.EXTRA_W5_TYPE);
+        } else {
+            mW5Type = getIntent().getIntExtra(W5Utils.EXTRA_W5_TYPE, W5Utils.W5_TYPE_NORMAL);
+        }
+
         setContentView(R.layout.activity_feeder_prepare);
 
         ApiTools.setApiBaseUrl();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt(W5Utils.EXTRA_W5_TYPE, mW5Type);
     }
 
     @Override
@@ -193,7 +208,8 @@ public class W5TestPrepareActivity extends BaseActivity {
     private void startTest() {
         Bundle bundle = new Bundle();
         bundle.putSerializable(W5Utils.EXTRA_W5_TESTER, mTester);
-        startActivityWithData(W5TypeSelecttActivity.class, bundle, false);
+        bundle.putInt(W5Utils.EXTRA_W5_TYPE, mW5Type);
+        startActivityWithData(W5StartActivity.class, bundle, false);
     }
 
 

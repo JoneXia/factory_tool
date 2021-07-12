@@ -37,6 +37,7 @@ public class T4Utils {
     public static final String EXTRA_T4_TESTER   = "EXTRA_T4_TESTER";
     public static final String EXTRA_T4   = "EXTRA_T4";
     public static final String EXTRA_ERROR_T4   = "EXTRA_ERROR_T4";
+    public static final String EXTRA_WITH_K3   = "EXTRA_WITH_K3";
 
     private static final int MAX_SN_NUMBER_SESSION = 200;
 
@@ -267,15 +268,18 @@ public class T4Utils {
 
     /**
      * 存储测试完成的设备信息
-     * @param device 猫厕所
+     *
+     * @param device
+     * @param ageingResult
+     * @param withK3
      */
-    public static void storeSucceedDeviceInfo(Device device, String ageingResult) {
+    public static void storeSucceedDeviceInfo(Device device, String ageingResult, int withK3) {
         if(device == null || !device.checkValid()) {
             throw  new RuntimeException("store T4 failed, " + (device == null ? "T4 is null !" : device.toString()));
         }
 
-        PetkitLog.d("store T4 info: " + device.generateMainJson(ageingResult));
-        FileUtils.writeStringToFile(getStoreDeviceInfoFilePath(), device.generateMainJson(ageingResult) + ",", true);
+        PetkitLog.d("store T4 info: " + device.generateMainJson(ageingResult, withK3));
+        FileUtils.writeStringToFile(getStoreDeviceInfoFilePath(), device.generateMainJson(ageingResult, withK3) + ",", true);
     }
 
     /**
