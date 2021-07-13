@@ -5,9 +5,11 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.petkit.android.utils.CommonUtils;
 import com.petkit.matetool.model.Tester;
+import com.petkit.matetool.ui.AQR.utils.AQRUtils;
 import com.petkit.matetool.ui.D3.utils.D3Utils;
 import com.petkit.matetool.ui.D4.utils.D4Utils;
 import com.petkit.matetool.ui.K2.utils.K2Utils;
+import com.petkit.matetool.ui.K3.utils.K3Utils;
 import com.petkit.matetool.ui.P3.utils.P3Utils;
 import com.petkit.matetool.ui.W5.utils.W5Utils;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
@@ -40,6 +42,8 @@ public class TesterManagerUtils {
         getCurrentTesterForType(Globals.P3);
         getCurrentTesterForType(Globals.W5);
         getCurrentTesterForType(Globals.T4);
+        getCurrentTesterForType(Globals.K3);
+        getCurrentTesterForType(Globals.AQR);
     }
 
 
@@ -79,6 +83,12 @@ public class TesterManagerUtils {
                     break;
                 case Globals.T4:
                     testerString = CommonUtils.getSysMap(T4Utils.SHARED_T4_TESTER);
+                    break;
+                case Globals.K3:
+                    testerString = CommonUtils.getSysMap(K3Utils.SHARED_K3_TESTER);
+                    break;
+                case Globals.AQR:
+                    testerString = CommonUtils.getSysMap(AQRUtils.SHARED_AQR_TESTER);
                     break;
             }
             if(!TextUtils.isEmpty(testerString)) {
@@ -124,6 +134,12 @@ public class TesterManagerUtils {
                 break;
             case Globals.T4:
                 CommonUtils.addSysMap(T4Utils.SHARED_T4_TESTER, testerString);
+                break;
+            case Globals.K3:
+                CommonUtils.addSysMap(K3Utils.SHARED_K3_TESTER, testerString);
+                break;
+            case Globals.AQR:
+                CommonUtils.addSysMap(AQRUtils.SHARED_AQR_TESTER, testerString);
                 break;
         }
 
@@ -180,6 +196,12 @@ public class TesterManagerUtils {
                         break;
                     case Globals.T4:
                         CommonUtils.addSysMap(T4Utils.SHARED_T4_TESTER, "");
+                        break;
+                    case Globals.K3:
+                        CommonUtils.addSysMap(K3Utils.SHARED_K3_TESTER, "");
+                        break;
+                    case Globals.AQR:
+                        CommonUtils.addSysMap(AQRUtils.SHARED_AQR_TESTER, "");
                         break;
                 }
                 iterator.remove();

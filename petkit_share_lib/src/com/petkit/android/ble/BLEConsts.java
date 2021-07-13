@@ -19,6 +19,28 @@ public class BLEConsts {
 
     public final static int WRITE_M_CMD_TIMES = 1;
 
+	public static final String PET_HOME = "pethome";
+	public static final String PET_MATE = "petmate";
+	public static final String PET_FIT = "PETKIT";
+	public static final String PET_FIT2 = "PETKIT2";
+	public static final String PET_FIT_DISPLAY_NAME = "Fit P1";
+	public static final String PET_FIT2_DISPLAY_NAME = "Fit P2";
+	public static final String GO_DISPLAY_NAME = "petGO";
+	public static final String K2_DISPLAY_NAME = "Petkit_K2";
+	public static final String T3_DISPLAY_NAME = "Petkit_T3";
+	public static final String D3_DISPLAY_NAME = "Petkit_D3";
+	public static final String D4_DISPLAY_NAME = "Petkit_D4";
+	public static final String AQ_DISPLAY_NAME = "Petkit_AQ";
+	public static final String P3_DISPLAY_NAME = "Petkit_P3";
+	public static final String W5_DISPLAY_NAME = "Petkit_W5C";
+	public static final String T4_DISPLAY_NAME = "Petkit_T4";
+	public static final String K3_DISPLAY_NAME = "Petkit_K3";
+	public static final String AQR_DISPLAY_NAME = "Petkit_AQR";
+
+	public static final String[] DeviceFilter = new String[]{"PETKIT", "PETKIT2", PET_FIT_DISPLAY_NAME, PET_FIT2_DISPLAY_NAME,
+			PET_HOME, PET_MATE, GO_DISPLAY_NAME, K2_DISPLAY_NAME, T3_DISPLAY_NAME, D3_DISPLAY_NAME, D4_DISPLAY_NAME,
+			AQ_DISPLAY_NAME, P3_DISPLAY_NAME, W5_DISPLAY_NAME, T4_DISPLAY_NAME, K3_DISPLAY_NAME, AQR_DISPLAY_NAME};
+
 	public static final int BLE_ACTION_SYNC				= 0x1;
 	public static final int BLE_ACTION_CHECK			= 0x2;
 	public static final int BLE_ACTION_OTA				= 0x3;
@@ -38,6 +60,8 @@ public class BLEConsts {
 	public static final int BLE_ACTION_AQ_TEST			= 0x11;
 	public static final int BLE_ACTION_P3_TEST			= 0x12;
 	public static final int BLE_ACTION_W5_TEST			= 0x13;
+	public static final int BLE_ACTION_K3_TEST			= 0x14;
+	public static final int BLE_ACTION_AQR_TEST			= 0x15;
 
 
 	public static final int ACTION_PAUSE = 0;
@@ -265,7 +289,7 @@ public class BLEConsts {
 	public static final String EXTRA_INIT_FILE_RES_ID = "no.nordicsemi.android.dfu.extra.EXTRA_INIT_FILE_RES_ID";
 	/**
 	 * This property must contain a boolean value.
-	 * <p>The {@link DfuBaseService}, when connected to a DFU target will check whether it is in application or in DFU bootloader mode. For DFU implementations from SDK 7.0 or newer
+	 * <p>The {@link }, when connected to a DFU target will check whether it is in application or in DFU bootloader mode. For DFU implementations from SDK 7.0 or newer
 	 * this is done by reading the value of DFU Version characteristic. If the returned value is equal to 0x0100 (major = 0, minor = 1) it means that we are in the application mode and
 	 * jump to the bootloader mode is required.
 	 * <p>However, for DFU implementations from older SDKs, where there was no DFU Version characteristic, the service must guess. If this option is set to false (default) it will count
@@ -487,25 +511,7 @@ public class BLEConsts {
 	public final static String BASE_TIMELINE_NEW = "2000-01-01T00:00:00.000+0000";
 	
 	
-	public static final String PET_HOME = "pethome";
-	public static final String PET_MATE = "petmate";
-	public static final String PET_FIT = "PETKIT";
-	public static final String PET_FIT2 = "PETKIT2";
-	public static final String PET_FIT_DISPLAY_NAME = "Fit P1";
-	public static final String PET_FIT2_DISPLAY_NAME = "Fit P2";
-	public static final String GO_DISPLAY_NAME = "petGO";
-	public static final String K2_DISPLAY_NAME = "Petkit_K2";
-	public static final String T3_DISPLAY_NAME = "Petkit_T3";
-	public static final String D3_DISPLAY_NAME = "Petkit_D3";
-	public static final String D4_DISPLAY_NAME = "Petkit_D4";
-	public static final String AQ_DISPLAY_NAME = "Petkit_AQ";
-	public static final String P3_DISPLAY_NAME = "Petkit_P3";
-	public static final String W5_DISPLAY_NAME = "Petkit_W5C";
-	public static final String T4_DISPLAY_NAME = "Petkit_T4";
 
-	public static final String[] DeviceFilter = new String[]{"PETKIT", "PETKIT2", PET_FIT_DISPLAY_NAME, PET_FIT2_DISPLAY_NAME,
-			PET_HOME, PET_MATE, GO_DISPLAY_NAME, K2_DISPLAY_NAME, T3_DISPLAY_NAME, D3_DISPLAY_NAME, D4_DISPLAY_NAME,
-			AQ_DISPLAY_NAME, P3_DISPLAY_NAME, W5_DISPLAY_NAME, T4_DISPLAY_NAME};
 	
 	public static final UUID ACC_SERVICE_UUID = UUID.fromString("0000aaa0-0000-1000-8000-00805f9b34fb");
 	public static final UUID ACC_DATA_UUID = UUID.fromString("0000aaa1-0000-1000-8000-00805f9b34fb");
@@ -542,11 +548,24 @@ public class BLEConsts {
 	public static final int OP_CODE_P3_RING							= 220;
 
 	/** W5 cmd **/
-	public static final int OP_CODE_W5_TEST_STARRT					= 240;
+	public static final int OP_CODE_W5_TEST_START 					= 240;
 	public static final int OP_CODE_W5_PUMP_DATA					= 241;
 	public static final int OP_CODE_W5_TEST_STEP					= 242;
 	public static final int OP_CODE_W5_TEST_RESULT					= 243;
 	public static final int OP_CODE_W5_WRITE_SN						= 244;
+
+	/** K3 cmd **/
+	public static final int OP_CODE_K3_TEST_START					= 240;
+	public static final int OP_CODE_K3_TEST_STEP					= 242;
+	public static final int OP_CODE_K3_TEST_RESULT					= 243;
+	public static final int OP_CODE_K3_WRITE_SN						= 244;
+
+	/** AQR cmd **/
+	public static final int OP_CODE_AQR_TEST_START					= 240;
+	public static final int OP_CODE_AQR_TEST_STEP					= 242;
+	public static final int OP_CODE_AQR_TEST_RESULT					= 243;
+	public static final int OP_CODE_AQR_WRITE_SN						= 244;
+
 
 	public static final int ERROR_SYNC_MASK = 0x8000;
 	public static final int ERROR_SYNC_INIT_FAIL	= ERROR_SYNC_MASK | 0x01;

@@ -20,7 +20,7 @@ public class Globals {
 
 	public static final String BROADCAST_PERMISSION_FINISHED = "com.petkit.android.BROADCAST_PERMISSION_FINISHED";
 
-	public static final boolean PERMISSION_ERASE = false;
+	public static final boolean PERMISSION_ERASE = true;
 	//test date
 	public static String g_date;
 	//worker station

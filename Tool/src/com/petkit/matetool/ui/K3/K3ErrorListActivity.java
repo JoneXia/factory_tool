@@ -1,4 +1,4 @@
-package com.petkit.matetool.ui.W5;
+package com.petkit.matetool.ui.K3;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -23,12 +23,11 @@ import com.petkit.android.utils.Consts;
 import com.petkit.android.utils.ConvertDipPx;
 import com.petkit.android.utils.DateUtil;
 import com.petkit.android.utils.PetkitLog;
-import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.DevicesError;
 import com.petkit.matetool.model.Tester;
-import com.petkit.matetool.ui.W5.utils.W5Utils;
+import com.petkit.matetool.ui.K3.utils.K3Utils;
 import com.petkit.matetool.ui.base.BaseListActivity;
 import com.petkit.matetool.widget.pulltorefresh.PullToRefreshBase;
 
@@ -37,7 +36,7 @@ import java.util.Date;
 /**
  * Created by Jone on 17/5/16.
  */
-public class W5ErrorListActivity extends BaseListActivity {
+public class K3ErrorListActivity extends BaseListActivity {
 
     private Tester mTester;
 
@@ -52,9 +51,9 @@ public class W5ErrorListActivity extends BaseListActivity {
         super.onCreate(savedInstanceState);
 
         if(savedInstanceState != null) {
-            mTester = (Tester) savedInstanceState.getSerializable(W5Utils.EXTRA_W5_TESTER);
+            mTester = (Tester) savedInstanceState.getSerializable(K3Utils.EXTRA_K3_TESTER);
         } else {
-            mTester = (Tester) getIntent().getSerializableExtra(W5Utils.EXTRA_W5_TESTER);
+            mTester = (Tester) getIntent().getSerializableExtra(K3Utils.EXTRA_K3_TESTER);
         }
 
         registerBoradcastReceiver();
@@ -64,7 +63,7 @@ public class W5ErrorListActivity extends BaseListActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putSerializable(W5Utils.EXTRA_W5_TESTER, mTester);
+        outState.putSerializable(K3Utils.EXTRA_K3_TESTER, mTester);
     }
 
     @Override
@@ -74,7 +73,7 @@ public class W5ErrorListActivity extends BaseListActivity {
 
         mListView.setMode(PullToRefreshBase.Mode.DISABLED);
 
-        mDevicesError = W5Utils.getDevicesErrorMsg();
+        mDevicesError = K3Utils.getDevicesErrorMsg();
 
         mAdapter = new DevicesListAdapter();
         mListView.setAdapter(mAdapter);
@@ -118,7 +117,7 @@ public class W5ErrorListActivity extends BaseListActivity {
                 } else {
                     mDevicesError.getSn().remove(mSelectPosition - mDevicesError.getMac().size());
                 }
-                W5Utils.storeDuplicatedInfo(mDevicesError);
+                K3Utils.storeDuplicatedInfo(mDevicesError);
 
                 if(mAdapter.getCount() == 0) {
                     showShortToast("异常已经处理完成！");
@@ -164,19 +163,19 @@ public class W5ErrorListActivity extends BaseListActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
-            DevicesListAdapter.ViewHolder viewHolder;
+            ViewHolder viewHolder;
             Device item = getItem(position);
 
             if(convertView == null) {
-                convertView = LayoutInflater.from(W5ErrorListActivity.this).inflate(R.layout.adapter_feeder_list, parent, false);
-                viewHolder = new DevicesListAdapter.ViewHolder();
+                convertView = LayoutInflater.from(K3ErrorListActivity.this).inflate(R.layout.adapter_feeder_list, parent, false);
+                viewHolder = new ViewHolder();
                 viewHolder.name = (TextView) convertView.findViewById(R.id.name);
                 viewHolder.date = (TextView) convertView.findViewById(R.id.date);
                 viewHolder.state = (TextView) convertView.findViewById(R.id.state);
 
                 convertView.setTag(viewHolder);
             } else {
-                viewHolder = (DevicesListAdapter.ViewHolder) convertView.getTag();
+                viewHolder = (ViewHolder) convertView.getTag();
             }
 
             viewHolder.name.setText("MAC: " + item.getMac() + "\nSN: " + item.getSn());
@@ -221,10 +220,10 @@ public class W5ErrorListActivity extends BaseListActivity {
     private void entryDetailTestActivity() {
         scanFinish();
 
-        Intent intent = new Intent(this, W5TestMainActivity.class);
-        intent.putExtra(W5Utils.EXTRA_W5_TESTER, mTester);
-        intent.putExtra("TestType", mSelectPosition < mDevicesError.getMac().size() ? W5Utils.TYPE_DUPLICATE_MAC : W5Utils.TYPE_DUPLICATE_SN);
-        intent.putExtra(W5Utils.EXTRA_W5, mAdapter.getItem(mSelectPosition));
+        Intent intent = new Intent(this, K3TestMainActivity.class);
+        intent.putExtra(K3Utils.EXTRA_K3_TESTER, mTester);
+        intent.putExtra("TestType", mSelectPosition < mDevicesError.getMac().size() ? K3Utils.TYPE_DUPLICATE_MAC : K3Utils.TYPE_DUPLICATE_SN);
+        intent.putExtra(K3Utils.EXTRA_K3, mAdapter.getItem(mSelectPosition));
         startActivityForResult(intent, 0x11);
     }
 
@@ -251,7 +250,7 @@ public class W5ErrorListActivity extends BaseListActivity {
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
         Bundle bundle = new Bundle();
-        bundle.putInt(BLEConsts.EXTRA_ACTION, BLEConsts.BLE_ACTION_W5_TEST);
+        bundle.putInt(BLEConsts.EXTRA_ACTION, BLEConsts.BLE_ACTION_K3_TEST);
         bundle.putSerializable(BLEConsts.EXTRA_DEVICE_INFO, deviceInfo);
         startBLEAction(bundle);
     }
@@ -300,8 +299,8 @@ public class W5ErrorListActivity extends BaseListActivity {
                             case BLEConsts.ERROR_INVALID_RESPONSE:
                             case BLEConsts.ERROR_SYNC_TIMEOUT:
                             default:
-                                LoadDialog.dismissDialog();
-                                CommonUtils.showShortToast(W5ErrorListActivity.this, "设备已断开");
+                                scanFinish();
+                                CommonUtils.showShortToast(K3ErrorListActivity.this, "设备已断开");
                                 break;
                         }
                         break;
@@ -331,4 +330,6 @@ public class W5ErrorListActivity extends BaseListActivity {
     private void unregisterBroadcastReceiver() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);
     }
+
+
 }

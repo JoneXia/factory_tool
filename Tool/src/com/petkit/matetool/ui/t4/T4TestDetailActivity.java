@@ -567,16 +567,16 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                     case 3:
                         if ((moduleStateStruct.getSub0() & 0x1) == 1
                                         || (moduleStateStruct.getSub0() >> 1 & 0x1) == 1) {
-                            desc.append("\n").append("集便盒电机").append("-").append(moduleStateStruct.getState() == 0 ? "异常" : "正常")
-                                    .append("霍尔").append("：").append((moduleStateStruct.getSub0() & 0x1) == 1 ? "打开位置到位" :
-                                    ((moduleStateStruct.getSub0() >> 1 & 0x1) == 1 ? "关闭位置到位" : "不到位")).append("-");
+                            desc.append("\n").append("电机").append("-").append(moduleStateStruct.getState() == 0 ? "异常" : "正常")
+                                    .append((moduleStateStruct.getSub0() & 0x1) == 1 ? "，打开到位" : "，打开不到位")
+                                    .append((moduleStateStruct.getSub0() >> 1 & 0x1) == 1 ? "，关闭到位" : "，关闭不到位");
                         }
 
                         if (moduleStateStruct.getState() > 0) {
-                            if ((moduleStateStruct.getSub0() & 0x1) == 1) {
+                            if ((moduleStateStruct.getSub0() & 0x3) == 1) {
                                 mTempResult = (mTempResult | 0x1);
                             }
-                            if ((moduleStateStruct.getSub0() >> 1 & 0x1) == 1) {
+                            if ((moduleStateStruct.getSub0() & 0x2) == 2) {
                                 mTempResult = (mTempResult | 0x10);
                             }
                         }
@@ -819,6 +819,9 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 HashMap<String, Object> payload = new HashMap<>();
                 payload.put("mac", mDevice.getMac());
                 payload.put("sn", sn);
+                if (mWithK3 > 0) {
+                    payload.put("withK3", mWithK3);
+                }
                 if (mT4TestUnits.get(mCurTestStep).getState() == 2) {
                     payload.put("force", 100);
                 }
@@ -920,6 +923,9 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 payload.put("sn", sn);
                 payload.put("opt", 0);
                 payload.put("force", 100);
+                if (mWithK3 > 0) {
+                    payload.put("withK3", mWithK3);
+                }
                 PetkitSocketInstance.getInstance().sendString(T4Utils.getRequestForKeyAndPayload(161, payload));
             }
         });

@@ -1,4 +1,4 @@
-package com.petkit.matetool.ui.W5;
+package com.petkit.matetool.ui.K3;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -19,18 +19,17 @@ import android.widget.TextView;
 import com.dothantech.printer.IDzPrinter;
 import com.google.gson.Gson;
 import com.petkit.android.ble.BLEConsts;
+import com.petkit.android.ble.data.K3DataUtils;
 import com.petkit.android.ble.data.PetkitBleMsg;
-import com.petkit.android.ble.data.W5DataUtils;
-import com.petkit.android.utils.ByteUtil;
 import com.petkit.android.utils.LogcatStorageHelper;
 import com.petkit.android.utils.PetkitLog;
 import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.Tester;
+import com.petkit.matetool.ui.K3.mode.K3TestUnit;
+import com.petkit.matetool.ui.K3.utils.K3Utils;
 import com.petkit.matetool.ui.P3.mode.GsensorData;
-import com.petkit.matetool.ui.W5.mode.W5TestUnit;
-import com.petkit.matetool.ui.W5.utils.W5Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.print.PrintActivity;
 import com.petkit.matetool.ui.utils.PrintResultCallback;
@@ -40,20 +39,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.petkit.matetool.ui.utils.PrintUtils.isPrinterConnected;
-import static com.petkit.matetool.utils.Globals.PERMISSION_ERASE;
 import static com.petkit.matetool.utils.Globals.TEST_FAILED;
 import static com.petkit.matetool.utils.Globals.TEST_PASS;
 
 /**
  * Created by Jone on 17/4/24.
  */
-public class W5TestDetailActivity extends BaseActivity implements PrintResultCallback {
+public class K3TestDetailActivity extends BaseActivity implements PrintResultCallback {
 
     private Tester mTester;
-    private int mW5Type;
     private int mTestType;
     private int mCurTestStep;
-    private ArrayList<W5TestUnit> mW5TestUnits;
+    private ArrayList<K3TestUnit> mK3TestUnits;
     private int mTempResult;
     private Device mDevice, mErrorDevice;
     private boolean isWriteEndCmd = false;
@@ -64,7 +61,7 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
     private Button mBtn1, mBtn2, mBtn3;
     private ScrollView mDescScrollView;
 
-    private ArrayList<W5TestUnit> mW5AutoTestUnits;
+    private ArrayList<K3TestUnit> mK3AutoTestUnits;
     private boolean isInAutoUnits = false;
     private int mAutoUnitStep; //有些测试项中会细分成几步
 
@@ -74,26 +71,24 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState != null) {
-            mW5TestUnits = (ArrayList<W5TestUnit>) savedInstanceState.getSerializable("TestUnits");
+            mK3TestUnits = (ArrayList<K3TestUnit>) savedInstanceState.getSerializable("TestUnits");
             mCurTestStep = savedInstanceState.getInt("CurrentTestStep");
-            mDevice = (Device) savedInstanceState.getSerializable(W5Utils.EXTRA_W5);
+            mDevice = (Device) savedInstanceState.getSerializable(K3Utils.EXTRA_K3);
             isAutoTest = savedInstanceState.getBoolean("AutoTest");
             mTestType = savedInstanceState.getInt("TestType");
-            mTester = (Tester) savedInstanceState.getSerializable(W5Utils.EXTRA_W5_TESTER);
-            mW5Type = savedInstanceState.getInt(W5Utils.EXTRA_W5_TYPE);
-            if (savedInstanceState.getSerializable(W5Utils.EXTRA_ERROR_W5) != null) {
-                mErrorDevice = (Device) savedInstanceState.getSerializable(W5Utils.EXTRA_ERROR_W5);
+            mTester = (Tester) savedInstanceState.getSerializable(K3Utils.EXTRA_K3_TESTER);
+            if (savedInstanceState.getSerializable(K3Utils.EXTRA_ERROR_K3) != null) {
+                mErrorDevice = (Device) savedInstanceState.getSerializable(K3Utils.EXTRA_ERROR_K3);
             }
         } else {
-            mW5TestUnits = (ArrayList<W5TestUnit>) getIntent().getSerializableExtra("TestUnits");
+            mK3TestUnits = (ArrayList<K3TestUnit>) getIntent().getSerializableExtra("TestUnits");
             mCurTestStep = getIntent().getIntExtra("CurrentTestStep", 0);
-            mTestType = getIntent().getIntExtra("TestType", W5Utils.TYPE_TEST);
-            mDevice = (Device) getIntent().getSerializableExtra(W5Utils.EXTRA_W5);
+            mTestType = getIntent().getIntExtra("TestType", K3Utils.TYPE_TEST);
+            mDevice = (Device) getIntent().getSerializableExtra(K3Utils.EXTRA_K3);
             isAutoTest = getIntent().getBooleanExtra("AutoTest", true);
-            mTester = (Tester) getIntent().getSerializableExtra(W5Utils.EXTRA_W5_TESTER);
-            mW5Type = getIntent().getIntExtra(W5Utils.EXTRA_W5_TYPE, W5Utils.W5_TYPE_NORMAL);
-            if (getIntent().getSerializableExtra(W5Utils.EXTRA_ERROR_W5) != null) {
-                mErrorDevice = (Device) getIntent().getSerializableExtra(W5Utils.EXTRA_ERROR_W5);
+            mTester = (Tester) getIntent().getSerializableExtra(K3Utils.EXTRA_K3_TESTER);
+            if (getIntent().getSerializableExtra(K3Utils.EXTRA_ERROR_K3) != null) {
+                mErrorDevice = (Device) getIntent().getSerializableExtra(K3Utils.EXTRA_ERROR_K3);
             }
         }
 
@@ -101,10 +96,10 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
 
         registerBoradcastReceiver();
 
-        if (mW5TestUnits.get(mCurTestStep).getType() != W5Utils.W5TestModes.TEST_MODE_SN &&
-                mW5TestUnits.get(mCurTestStep).getType() != W5Utils.W5TestModes.TEST_MODE_PRINT &&
-                mW5TestUnits.get(mCurTestStep).getType() != W5Utils.W5TestModes.TEST_MODE_RESET_SN &&
-                mW5TestUnits.get(mCurTestStep).getType() != W5Utils.W5TestModes.TEST_MODE_RESET_ID) {
+        if (mK3TestUnits.get(mCurTestStep).getType() != K3Utils.K3TestModes.TEST_MODE_SN &&
+                mK3TestUnits.get(mCurTestStep).getType() != K3Utils.K3TestModes.TEST_MODE_PRINT &&
+                mK3TestUnits.get(mCurTestStep).getType() != K3Utils.K3TestModes.TEST_MODE_RESET_SN &&
+                mK3TestUnits.get(mCurTestStep).getType() != K3Utils.K3TestModes.TEST_MODE_RESET_ID) {
             startTestModule();
         }
     }
@@ -122,14 +117,13 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
         super.onSaveInstanceState(outState);
 
         outState.putInt("CurrentTestStep", mCurTestStep);
-        outState.putSerializable("TestUnits", mW5TestUnits);
-        outState.putSerializable(W5Utils.EXTRA_W5, mDevice);
+        outState.putSerializable("TestUnits", mK3TestUnits);
+        outState.putSerializable(K3Utils.EXTRA_K3, mDevice);
         outState.putBoolean("AutoTest", isAutoTest);
         outState.putInt("TestType", mTestType);
-        outState.putSerializable(W5Utils.EXTRA_W5_TESTER, mTester);
-        outState.putInt(W5Utils.EXTRA_W5_TYPE, mW5Type);
+        outState.putSerializable(K3Utils.EXTRA_K3_TESTER, mTester);
         if (mErrorDevice != null) {
-            outState.putSerializable(W5Utils.EXTRA_ERROR_W5, mErrorDevice);
+            outState.putSerializable(K3Utils.EXTRA_ERROR_K3, mErrorDevice);
         }
     }
 
@@ -151,36 +145,23 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
 
 
     private void refreshView() {
-        setTitle(mW5TestUnits.get(mCurTestStep).getName());
+        setTitle(mK3TestUnits.get(mCurTestStep).getName());
 
         mDescTextView.setText("");
         mPromptTextView.setText("");
-        switch (mW5TestUnits.get(mCurTestStep).getType()) {
+        switch (mK3TestUnits.get(mCurTestStep).getType()) {
             case TEST_MODE_PRINT:
                 mDescTextView.setText("mac:" + mDevice.getMac() + "\n" + "sn:" + mDevice.getSn());
                 break;
             case TEST_MODE_SN:
                 if (!isEmpty(mDevice.getSn())) {
-                    if (mW5TestUnits.get(mCurTestStep).getState() != 2 || (mErrorDevice != null && !mDevice.getSn().equals(mErrorDevice.getSn()))) {
-                        mW5TestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                    if (mK3TestUnits.get(mCurTestStep).getState() != 2 || (mErrorDevice != null && !mDevice.getSn().equals(mErrorDevice.getSn()))) {
+                        mK3TestUnits.get(mCurTestStep).setResult(TEST_PASS);
                     }
                     mDescTextView.setText("mac:" + mDevice.getMac() + "\n" + "sn:" + mDevice.getSn());
                 } else {
                     mDescTextView.setText("mac:" + mDevice.getMac());
                 }
-                break;
-            case TEST_MODE_DC:
-                if (mTestType == W5Utils.TYPE_TEST_PARTIALLY) {
-                    mPromptTextView.setText("正常电压范围（单位mV）：[4500, 5500]");
-                } else {
-                    mPromptTextView.setText("正常电压范围（单位mV）：[4500, 5500]");
-                }
-                break;
-            case TEST_MODE_LED:
-                mPromptTextView.setText("测试指示灯蓝绿交替闪烁，观察是否正常！");
-                break;
-            case TEST_MODE_PUMP:
-                mPromptTextView.setText("测试水泵，先测试有水/没水状态，再判定水泵转动是否正常！");
                 break;
             default:
                 break;
@@ -190,22 +171,13 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
     }
 
     private void refershBtnView() {
-        switch (mW5TestUnits.get(mCurTestStep).getType()) {
-            case TEST_MODE_LED:
-            case TEST_MODE_PUMP:
-                mBtn1.setText(R.string.Start);
-                mBtn2.setText(R.string.Failure);
-                mBtn2.setBackgroundResource(R.drawable.selector_red);
-                mBtn2.setVisibility(View.VISIBLE);
-                mBtn3.setText(R.string.Succeed);
-                mBtn3.setBackgroundResource(R.drawable.selector_blue);
-                break;
+        switch (mK3TestUnits.get(mCurTestStep).getType()) {
             case TEST_MODE_PRINT:
                 mBtn1.setText(R.string.Print);
                 mBtn2.setText(R.string.Set_print);
                 mBtn2.setVisibility(View.VISIBLE);
                 mBtn2.setBackgroundResource(R.drawable.selector_gray);
-                if (mW5TestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
+                if (mK3TestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
                     mBtn3.setText(R.string.Succeed);
                     mBtn3.setBackgroundResource(R.drawable.selector_blue);
                 } else {
@@ -216,7 +188,7 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
             case TEST_MODE_SN:
                 mBtn1.setText(R.string.Write);
                 mBtn2.setVisibility(View.INVISIBLE);
-                if (mW5TestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
+                if (mK3TestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
                     mBtn3.setText(R.string.Succeed);
                     mBtn3.setBackgroundResource(R.drawable.selector_blue);
                 } else {
@@ -227,7 +199,7 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
             default:
                 mBtn1.setText(R.string.Start);
                 mBtn2.setVisibility(View.INVISIBLE);
-                if (mW5TestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
+                if (mK3TestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
                     mBtn3.setText(R.string.Succeed);
                     mBtn3.setBackgroundResource(R.drawable.selector_blue);
                 } else {
@@ -243,7 +215,7 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.test_btn_1:
-                switch (mW5TestUnits.get(mCurTestStep).getType()) {
+                switch (mK3TestUnits.get(mCurTestStep).getType()) {
                     case TEST_MODE_PRINT:
                         if (isPrinterConnected()) {
                             if (isEmpty(mDevice.getSn())) {
@@ -271,7 +243,7 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
                         //TODO:
                         break;
                     case TEST_MODE_MAC:
-                        mW5TestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                        mK3TestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         refershBtnView();
                         setResult(RESULT_OK);
                         gotoNextTestModule();
@@ -282,43 +254,23 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
                 }
                 break;
             case R.id.test_btn_2:
-                switch (mW5TestUnits.get(mCurTestStep).getType()) {
-                    case TEST_MODE_LED:
-                    case TEST_MODE_PUMP:
-                        isWriteEndCmd = true;
-                        mW5TestUnits.get(mCurTestStep).setResult(TEST_FAILED);
-
-                        refershBtnView();
-                        gotoNextTestModule();
-                        break;
+                switch (mK3TestUnits.get(mCurTestStep).getType()) {
                     case TEST_MODE_PRINT:
                         startActivity(PrintActivity.class);
                         break;
                 }
                 break;
             case R.id.test_btn_3:
-                switch (mW5TestUnits.get(mCurTestStep).getType()) {
+                switch (mK3TestUnits.get(mCurTestStep).getType()) {
                     case TEST_MODE_SN:
                     case TEST_MODE_PRINT:
                     case TEST_MODE_RESET_SN:
                         gotoNextTestModule();
                         break;
-                    case TEST_MODE_LED:
-                        mW5TestUnits.get(mCurTestStep).setResult(TEST_PASS);
-                        gotoNextTestModule();
-                        break;
-                    case TEST_MODE_PUMP:
-                        if (mTempResult != 0x11) {
-                            showShortToast("请先测试有水和没水状态，再观察水泵是否正常转动！");
-                            return;
-                        }
-                        mW5TestUnits.get(mCurTestStep).setResult(TEST_PASS);
-                        gotoNextTestModule();
-                        break;
                     default:
                         isWriteEndCmd = true;
-                        if (mW5TestUnits.get(mCurTestStep).getResult() != TEST_PASS) {
-                            mW5TestUnits.get(mCurTestStep).setResult(TEST_FAILED);
+                        if (mK3TestUnits.get(mCurTestStep).getResult() != TEST_PASS) {
+                            mK3TestUnits.get(mCurTestStep).setResult(TEST_FAILED);
                         }
 
                         gotoNextTestModule();
@@ -329,17 +281,17 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
     }
 
     private void startTestModule() {
-        switch (mW5TestUnits.get(mCurTestStep).getType()) {
+        switch (mK3TestUnits.get(mCurTestStep).getType()) {
             case TEST_MODE_AUTO:
                 startAutoUnitsTest();
                 break;
             default:
-                sendBleData(W5DataUtils.buildOpCodeBuffer(mW5TestUnits.get(mCurTestStep).getModule(), mW5TestUnits.get(mCurTestStep).getState()));
+                sendBleData(K3DataUtils.buildOpCodeBuffer(mK3TestUnits.get(mCurTestStep).getModule(), mK3TestUnits.get(mCurTestStep).getState()));
                 break;
         }
 
-        if (mW5TestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
-            mW5TestUnits.get(mCurTestStep).setResult(TEST_FAILED);
+        if (mK3TestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
+            mK3TestUnits.get(mCurTestStep).setResult(TEST_FAILED);
             refershBtnView();
         }
     }
@@ -349,7 +301,7 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
             return;
         }
 
-        mW5AutoTestUnits = W5Utils.generateW5AutoTestUnits();
+        mK3AutoTestUnits = null;//K3Utils.generateK3AutoTestUnits();
         isInAutoUnits = true;
         mAutoUnitStep = -1;
 
@@ -360,26 +312,26 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
     private void gotoNextAutoUnit() {
         mAutoUnitStep++;
 
-        if (mW5AutoTestUnits.size() > 0 && mAutoUnitStep < mW5AutoTestUnits.size()) {
+        if (mK3AutoTestUnits.size() > 0 && mAutoUnitStep < mK3AutoTestUnits.size()) {
             mDescTextView.append("\n------");
-            mDescTextView.append("\n开始进行：" + mW5AutoTestUnits.get(mAutoUnitStep).getName());
+            mDescTextView.append("\n开始进行：" + mK3AutoTestUnits.get(mAutoUnitStep).getName());
 
             HashMap<String, Object> params = new HashMap<>();
-            params.put("module", mW5AutoTestUnits.get(mAutoUnitStep).getModule());
-            params.put("state", mW5AutoTestUnits.get(mAutoUnitStep).getState());
+            params.put("module", mK3AutoTestUnits.get(mAutoUnitStep).getModule());
+            params.put("state", mK3AutoTestUnits.get(mAutoUnitStep).getState());
             byte[] data = null;
-            switch (mW5AutoTestUnits.get(mAutoUnitStep).getType()) {
+            switch (mK3AutoTestUnits.get(mAutoUnitStep).getType()) {
                 //if cmd need data, add it
             }
 
-            sendBleData(W5DataUtils.buildOpCodeBuffer(mW5AutoTestUnits.get(mAutoUnitStep).getModule(), data));
+            sendBleData(K3DataUtils.buildOpCodeBuffer(mK3AutoTestUnits.get(mAutoUnitStep).getModule(), data));
         } else {
             isInAutoUnits = false;
 
             boolean result = true;
-            for (W5TestUnit unit : mW5AutoTestUnits) {
-                if (unit.getType() != W5Utils.W5TestModes.TEST_MODE_SN &&
-                        unit.getType() != W5Utils.W5TestModes.TEST_MODE_PRINT
+            for (K3TestUnit unit : mK3AutoTestUnits) {
+                if (unit.getType() != K3Utils.K3TestModes.TEST_MODE_SN &&
+                        unit.getType() != K3Utils.K3TestModes.TEST_MODE_PRINT
                         && unit.getResult() != TEST_PASS) {
                     result = false;
                     break;
@@ -388,23 +340,23 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
             mDescTextView.append("\n------");
             mDescTextView.append("\n自动项测试已完成，结果：" + (result ? "成功" : "失败"));
 
-            mW5TestUnits.get(mCurTestStep).setResult(result ? TEST_PASS : TEST_FAILED);
+            mK3TestUnits.get(mCurTestStep).setResult(result ? TEST_PASS : TEST_FAILED);
             refershBtnView();
         }
     }
 
     private void gotoNextTestModule() {
-        if (mCurTestStep == mW5TestUnits.size() - 1 || !isAutoTest) {
+        if (mCurTestStep == mK3TestUnits.size() - 1 || !isAutoTest) {
             finish();
         } else {
             mTempResult = 0;
             mCurTestStep++;
             refreshView();
 
-            if (mW5TestUnits.get(mCurTestStep).getType() != W5Utils.W5TestModes.TEST_MODE_SN
-                && mW5TestUnits.get(mCurTestStep).getType() != W5Utils.W5TestModes.TEST_MODE_RESET_SN
-                    && mW5TestUnits.get(mCurTestStep).getType() != W5Utils.W5TestModes.TEST_MODE_RESET_ID
-                    && mW5TestUnits.get(mCurTestStep).getType() != W5Utils.W5TestModes.TEST_MODE_PRINT) {
+            if (mK3TestUnits.get(mCurTestStep).getType() != K3Utils.K3TestModes.TEST_MODE_SN
+                && mK3TestUnits.get(mCurTestStep).getType() != K3Utils.K3TestModes.TEST_MODE_RESET_SN
+                    && mK3TestUnits.get(mCurTestStep).getType() != K3Utils.K3TestModes.TEST_MODE_RESET_ID
+                    && mK3TestUnits.get(mCurTestStep).getType() != K3Utils.K3TestModes.TEST_MODE_PRINT) {
                 startTestModule();
             }
         }
@@ -413,8 +365,8 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
     @Override
     public void finish() {
         Intent intent = new Intent();
-        intent.putExtra("TestUnits", mW5TestUnits);
-        intent.putExtra(W5Utils.EXTRA_W5, mDevice);
+        intent.putExtra("TestUnits", mK3TestUnits);
+        intent.putExtra(K3Utils.EXTRA_K3, mDevice);
         setResult(RESULT_OK, intent);
         super.finish();
     }
@@ -434,49 +386,7 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
         StringBuilder desc = new StringBuilder();
 
         switch (key) {
-            case BLEConsts.OP_CODE_BATTERY_KEY:
-                if (mW5TestUnits.get(mCurTestStep).getType() != W5Utils.W5TestModes.TEST_MODE_DC) {
-                    return;
-                }
-
-                if (data.length < 3) {
-                    mDescTextView.append("\n数据错误");
-                } else {
-                    byte[] voltageByte = new byte[2];
-                    System.arraycopy(data, 0, voltageByte, 0, 2);
-                    short voltage = ByteUtil.bytes2Short(voltageByte);
-//                    int battery = ByteUtil.toInt(data[2]);
-                    mDescTextView.append("\n电压：" + voltage);
-//                    mDescTextView.append("，电量：" + battery);
-
-                    if (mTestType == W5Utils.TYPE_TEST_PARTIALLY) {
-//                        result = voltage >= 2800 && voltage <= 3200;
-                        result = voltage >= 4500 && voltage <= 5500;
-                    } else {
-                        result = voltage >= 4500 && voltage <= 5500;
-                    }
-
-                    if (PERMISSION_ERASE) {
-                        result = true;
-                    }
-                }
-                break;
-            case BLEConsts.OP_CODE_W5_PUMP_DATA:
-                if (mW5TestUnits.get(mCurTestStep).getType() != W5Utils.W5TestModes.TEST_MODE_PUMP) {
-                    return;
-                }
-
-                if (data.length < 1) {
-                    mDescTextView.append("\n数据错误");
-                } else if (data[0] == 0){
-                    mDescTextView.append("\n没水");
-                    mTempResult = mTempResult | 0x1;
-                } else {
-                    mDescTextView.append("\n有水");
-                    mTempResult = mTempResult | 0x10;
-                }
-                break;
-            case BLEConsts.OP_CODE_W5_TEST_STEP:
+            case BLEConsts.OP_CODE_K3_TEST_STEP:
 //                if (data.length < 1) {
 //                    mDescTextView.append("\n数据错误");
 //                } else if (data[0] == 0){
@@ -485,7 +395,7 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
 //                    mDescTextView.append("\n写入成功");
 //                }
                 break;
-            case BLEConsts.OP_CODE_W5_TEST_RESULT:
+            case BLEConsts.OP_CODE_K3_TEST_RESULT:
 //                if (data.length != 1) {
 //                    mDescTextView.append("\n数据错误，处理失败");
 //                } else if (data[0] != 1){
@@ -495,9 +405,9 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
 //                    result = true;
 //                }
                 break;
-            case BLEConsts.OP_CODE_W5_WRITE_SN:
-                if (mW5TestUnits.get(mCurTestStep).getType() != W5Utils.W5TestModes.TEST_MODE_SN &&
-                        mW5TestUnits.get(mCurTestStep).getType() != W5Utils.W5TestModes.TEST_MODE_RESET_SN) {
+            case BLEConsts.OP_CODE_K3_WRITE_SN:
+                if (mK3TestUnits.get(mCurTestStep).getType() != K3Utils.K3TestModes.TEST_MODE_SN &&
+                        mK3TestUnits.get(mCurTestStep).getType() != K3Utils.K3TestModes.TEST_MODE_RESET_SN) {
                     return;
                 }
                 if (data.length != 1) {
@@ -508,7 +418,7 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
                     mDescTextView.append("\nSN写入成功");
                     result = true;
                 }
-                W5Utils.storeSucceedDeviceInfo(mDevice, null);
+                K3Utils.storeSucceedDeviceInfo(mDevice, null);
                 break;
         }
         mDescTextView.append(desc.toString());
@@ -522,28 +432,21 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
         if (isInAutoUnits) {
             if (result) {
                 mDescTextView.append("\n测试结果正常");
-                mW5AutoTestUnits.get(mAutoUnitStep).setResult(TEST_PASS);
+                mK3AutoTestUnits.get(mAutoUnitStep).setResult(TEST_PASS);
                 gotoNextAutoUnit();
             } else {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        sendBleData(W5DataUtils.buildOpCodeBuffer(mW5AutoTestUnits.get(mAutoUnitStep).getModule()), false);
+                        sendBleData(K3DataUtils.buildOpCodeBuffer(mK3AutoTestUnits.get(mAutoUnitStep).getModule()), false);
                     }
                 }, 10);
             }
         } else {
             if (result) {
-                mW5TestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                mK3TestUnits.get(mCurTestStep).setResult(TEST_PASS);
             } else {
-                new Handler().postDelayed(new Runnable() {
-                      @Override
-                      public void run() {
-                          if (mW5TestUnits.get(mCurTestStep).getType() == W5Utils.W5TestModes.TEST_MODE_PUMP) {
-                              sendBleData(W5DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_W5_PUMP_DATA), false);
-                          }
-                      }
-                  }, 1000);
+                //TODO:
             }
             refershBtnView();
         }
@@ -551,12 +454,12 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
 
 
     private void startSetSn() {
-        if (isEmpty(mDevice.getSn()) || (mW5TestUnits.get(mCurTestStep).getState() == 2
+        if (isEmpty(mDevice.getSn()) || (mK3TestUnits.get(mCurTestStep).getState() == 2
                 && mErrorDevice != null && mDevice.getSn().equals(mErrorDevice.getSn()))) {
             boolean result = true;
-            for (W5TestUnit unit : mW5TestUnits) {
-                if (unit.getType() != W5Utils.W5TestModes.TEST_MODE_SN &&
-                        unit.getType() != W5Utils.W5TestModes.TEST_MODE_PRINT
+            for (K3TestUnit unit : mK3TestUnits) {
+                if (unit.getType() != K3Utils.K3TestModes.TEST_MODE_SN &&
+                        unit.getType() != K3Utils.K3TestModes.TEST_MODE_PRINT
                         && unit.getResult() != TEST_PASS) {
                     result = false;
                     break;
@@ -566,7 +469,7 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-                String sn = W5Utils.generateSNForTester(mTester, mW5Type);
+                String sn = K3Utils.generateSNForTester(mTester);
                 if (sn == null) {
                     showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
                     return;
@@ -574,10 +477,10 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
                 mDevice.setSn(sn);
                 mDevice.setCreation(System.currentTimeMillis());
 
-                sendBleData(W5DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_W5_WRITE_SN, sn.getBytes()));
+                sendBleData(K3DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_K3_WRITE_SN, sn.getBytes()));
             }
         } else {
-            sendBleData(W5DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_W5_WRITE_SN, mDevice.getSn().getBytes()));
+            sendBleData(K3DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_K3_WRITE_SN, mDevice.getSn().getBytes()));
         }
     }
 
@@ -593,7 +496,7 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
     }
 
     private boolean printBarcode(String onedBarcde, String twodBarcde) {
-        return PrintUtils.printText(onedBarcde, twodBarcde, mW5TestUnits.get(mCurTestStep).getState());
+        return PrintUtils.printText(onedBarcde, twodBarcde, mK3TestUnits.get(mCurTestStep).getState());
     }
 
 
@@ -628,7 +531,7 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
                 }
                 mDevice.setSn(sn);
 
-                sendBleData(W5DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_W5_WRITE_SN, sn.getBytes()));
+                sendBleData(K3DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_K3_WRITE_SN, sn.getBytes()));
             }
         });
         builder.setNegativeButton(R.string.Cancel, null);
@@ -661,7 +564,7 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
             public void run() {
                 LoadDialog.dismissDialog();
                 mDescTextView.append("\n" + getString(R.string.printsuccess));
-                mW5TestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                mK3TestUnits.get(mCurTestStep).setResult(TEST_PASS);
                 refershBtnView();
             }
         });
@@ -681,7 +584,7 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
     protected void onDestroy() {
         super.onDestroy();
 
-//        W5Utils.stopBle(this);
+//        K3Utils.stopBle(this);
         unregisterBroadcastReceiver();
     }
 

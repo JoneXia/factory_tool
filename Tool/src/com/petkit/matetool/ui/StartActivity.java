@@ -21,9 +21,11 @@ import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.service.DatagramConsts;
 import com.petkit.matetool.service.DatagramProcessService;
+import com.petkit.matetool.ui.AQR.AQRTestPrepareActivity;
 import com.petkit.matetool.ui.D3.D3TestPrepareActivity;
 import com.petkit.matetool.ui.D4.D4TestPrepareActivity;
 import com.petkit.matetool.ui.K2.K2TestPrepareActivity;
+import com.petkit.matetool.ui.K3.K3TestPrepareActivity;
 import com.petkit.matetool.ui.P3.P3TestPrepareActivity;
 import com.petkit.matetool.ui.W5.W5TestPrepareActivity;
 import com.petkit.matetool.ui.W5.utils.W5Utils;
@@ -41,6 +43,7 @@ import com.petkit.matetool.ui.t4.T4TestPrepareActivity;
 import com.petkit.matetool.ui.t4.utils.T4Utils;
 import com.petkit.matetool.ui.utils.PrintUtils;
 import com.petkit.matetool.utils.Globals;
+import com.petkit.matetool.utils.TesterManagerUtils;
 import com.petkit.matetool.utils.Utils;
 import com.petkit.matetool.widget.LoadDialog;
 
@@ -80,6 +83,8 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_start);
+        TesterManagerUtils.initTesterTempList();
+
         if(!checkSelfPermissionComplete(this)) {
             startActivity(PermissionDialogActivity.class);
         } else {
@@ -195,6 +200,12 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
                         bundle = new Bundle();
                         bundle.putInt(T4Utils.EXTRA_WITH_K3, testStyle == Globals.T4 ? 0 : 1);
                         startActivityWithData(T4TestPrepareActivity.class, bundle, false);
+                        break;
+                    case Globals.K3:
+                        startActivity(K3TestPrepareActivity.class);
+                        break;
+                    case Globals.AQR:
+                        startActivity(AQRTestPrepareActivity.class);
                         break;
                 }
                 collapseSoftInputMethod(fixtureNumberEditText);

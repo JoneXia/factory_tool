@@ -563,6 +563,22 @@ public abstract class BLEActionService extends IntentService {
 			}
 			startW5Test(intent);
 			break;
+		case BLEConsts.BLE_ACTION_K3_TEST:
+			mBleDevice = (DeviceInfo) intent.getSerializableExtra(BLEConsts.EXTRA_DEVICE_INFO);
+			if(mBleDevice == null || mBleDevice.getAddress() == null){
+				updateProgressNotification(BLEConsts.ERROR_DEVICE_ID_NULL);
+				return;
+			}
+			startK3Test(intent);
+			break;
+		case BLEConsts.BLE_ACTION_AQR_TEST:
+			mBleDevice = (DeviceInfo) intent.getSerializableExtra(BLEConsts.EXTRA_DEVICE_INFO);
+			if(mBleDevice == null || mBleDevice.getAddress() == null){
+				updateProgressNotification(BLEConsts.ERROR_DEVICE_ID_NULL);
+				return;
+			}
+			startAQRTest(intent);
+			break;
 		default:
 			break;
 		}
@@ -2106,6 +2122,8 @@ public abstract class BLEActionService extends IntentService {
 	protected abstract void startAQTest(final Intent intent);
 	protected abstract void startP3Test(final Intent intent);
 	protected abstract void startW5Test(final Intent intent);
+	protected abstract void startK3Test(final Intent intent);
+	protected abstract void startAQRTest(final Intent intent);
 
 	protected abstract void onBlockTimer();
 	
