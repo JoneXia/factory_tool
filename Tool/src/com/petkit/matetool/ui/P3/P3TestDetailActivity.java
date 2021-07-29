@@ -32,9 +32,11 @@ import com.petkit.matetool.ui.P3.mode.GsensorData;
 import com.petkit.matetool.ui.P3.mode.P3TestUnit;
 import com.petkit.matetool.ui.P3.utils.P3Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.common.DeviceCommonUtils;
 import com.petkit.matetool.ui.print.PrintActivity;
 import com.petkit.matetool.ui.utils.PrintResultCallback;
 import com.petkit.matetool.ui.utils.PrintUtils;
+import com.petkit.matetool.utils.Globals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -497,7 +499,7 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
                     mDescTextView.append("\nSN写入成功");
                     result = true;
                 }
-                P3Utils.storeSucceedDeviceInfo(mDevice, null);
+                DeviceCommonUtils.storeSucceedDeviceInfo(Globals.P3, mDevice, null);
                 break;
             case BLEConsts.OP_CODE_P3_TEST_RESULT:
             case BLEConsts.OP_CODE_P3_RING:
@@ -564,7 +566,7 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-                String sn = P3Utils.generateSNForTester(mTester);
+                String sn = DeviceCommonUtils.generateSNForTester(Globals.P3, mTester);
                 if (sn == null) {
                     showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
                     return;

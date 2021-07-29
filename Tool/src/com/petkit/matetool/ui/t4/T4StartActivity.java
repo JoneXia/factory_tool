@@ -8,7 +8,9 @@ import android.widget.TextView;
 import com.petkit.matetool.R;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.common.DeviceCommonUtils;
 import com.petkit.matetool.ui.t4.utils.T4Utils;
+import com.petkit.matetool.utils.Globals;
 
 /**
  * 猫厕所测试，选择工站
@@ -29,7 +31,8 @@ public class T4StartActivity extends BaseActivity {
             mWithK3 = savedInstanceState.getInt(T4Utils.EXTRA_WITH_K3);
         } else {
             mTester = (Tester) getIntent().getSerializableExtra(T4Utils.EXTRA_T4_TESTER);
-            mWithK3 = getIntent().getIntExtra(T4Utils.EXTRA_WITH_K3, 0);
+            int deviceType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, 0);
+            mWithK3 = deviceType == Globals.T4_p ? 1 : 0;
         }
 
         setContentView(R.layout.activity_feeder_start);

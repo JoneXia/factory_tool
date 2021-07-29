@@ -210,4 +210,19 @@ public class TesterManagerUtils {
     }
 
 
+    /**
+     * 判断测试账号是否已在本机登录，如已登录则限制不能重复登录
+     * @param username
+     * @return
+     */
+    public static boolean checkTesterIsLogined(String username) {
+        for(Integer key : mTesterTempList.keySet()) {
+            if (mTesterTempList.get(key).getName().equals(username)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 }

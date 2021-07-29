@@ -54,6 +54,8 @@ public class DeviceInfo implements Serializable {
 	public static final int DEVICE_TYPE_AQ = 10;
 	public static final int DEVICE_TYPE_P3 = 11;
 	public static final int DEVICE_TYPE_W5 = 12;
+	public static final int DEVICE_TYPE_K3 = 13;
+	public static final int DEVICE_TYPE_AQR = 14;
 	
 	private String address;
 	private String name;
@@ -143,8 +145,7 @@ public class DeviceInfo implements Serializable {
 			count += (len + 1);
 		}
 
-		if (DEVICE_TYPE_T3 != deviceType && DEVICE_TYPE_K2 != deviceType && DEVICE_TYPE_AQ != deviceType
-				&& DEVICE_TYPE_P3 != deviceType  && DEVICE_TYPE_W5 != deviceType) {
+		if (DEVICE_TYPE_T3 > deviceType) {
 			int i = 0;
 			while (i < scanRecord.length - 1) {
 				int length = scanRecord[i];
@@ -249,6 +250,19 @@ public class DeviceInfo implements Serializable {
 			case 0xCA:
 				deviceType = DEVICE_TYPE_AQ;
 				return BLEConsts.AQ_DISPLAY_NAME;
+			case 0xCC:
+				deviceType = DEVICE_TYPE_P3;
+				return BLEConsts.P3_DISPLAY_NAME;
+			case 0xCD:
+			case 0xCE:
+				deviceType = DEVICE_TYPE_W5;
+				return BLEConsts.W5_DISPLAY_NAME;
+			case 0xD0:
+				deviceType = DEVICE_TYPE_K3;
+				return BLEConsts.K3_DISPLAY_NAME;
+			case 0xD1:
+				deviceType = DEVICE_TYPE_AQR;
+				return BLEConsts.AQR_DISPLAY_NAME;
 			default:
 				return null;
 		}
@@ -283,6 +297,12 @@ public class DeviceInfo implements Serializable {
 				break;
 			case BLEConsts.W5_DISPLAY_NAME:
 				deviceType = DEVICE_TYPE_W5;
+				break;
+			case BLEConsts.K3_DISPLAY_NAME:
+				deviceType = DEVICE_TYPE_K3;
+				break;
+			case BLEConsts.AQR_DISPLAY_NAME:
+				deviceType = DEVICE_TYPE_AQR;
 				break;
 		}
 	}

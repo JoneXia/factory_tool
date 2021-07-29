@@ -138,7 +138,9 @@
         <item>s_smth_ovr</item>
 
         <item>s_light</item>
-        <item>s_light_o</item>
+        <item>s_ligh_o</item>
+        <item>s_light_c</item>
+        <item>s_light_off</item>
         <item>s_i_cnt</item>
         <item>s_sing</item>
         <item>s_spr_fl</item>

@@ -31,6 +31,7 @@ import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.P3.mode.P3TestUnit;
 import com.petkit.matetool.ui.P3.utils.P3Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.common.DeviceCommonUtils;
 import com.petkit.matetool.ui.utils.WifiAdminSimple;
 import com.petkit.matetool.utils.Globals;
 
@@ -386,10 +387,10 @@ public class P3TestMainActivity extends BaseActivity {
 
         if(position >= mP3TestUnits.size() - 1) {       //维修和抽检，最后一项打印标签可以不执行，其他项都完成了就算成功
             if (mTestType == P3Utils.TYPE_MAINTAIN) {
-                P3Utils.storeMainTainInfo(mCurDevice);
+                DeviceCommonUtils.storeMainTainInfo(Globals.P3, mCurDevice);
                 testComplete = position >= mP3TestUnits.size();
             } else if (mTestType == P3Utils.TYPE_CHECK) {
-                P3Utils.storeCheckInfo(mCurDevice);
+                DeviceCommonUtils.storeCheckInfo(Globals.P3, mCurDevice);
                 testComplete = position >= mP3TestUnits.size();
             } else if (mTestType == P3Utils.TYPE_TEST_PARTIALLY) {
                 testComplete = position >= mP3TestUnits.size();

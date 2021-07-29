@@ -309,9 +309,6 @@
         <activity android:name=".ui.P3.P3TestDetailActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".ui.P3.P3TestPrepareActivity"
-            android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
         <activity android:name=".ui.P3.P3ErrorListActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
@@ -417,6 +414,15 @@
         <activity android:name=".ui.AQR.AQRStorageFileActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"/>
+
+        <!-- Common -->
+        <activity android:name=".ui.common.TestPrepareActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".ui.common.ErrorListActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"/>
+
 
         <meta-data
             android:name="UMENG_APPKEY"

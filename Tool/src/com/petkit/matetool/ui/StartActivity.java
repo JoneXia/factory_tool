@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.content.PermissionChecker;
+import android.text.SpannableStringBuilder;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -21,16 +22,14 @@ import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.service.DatagramConsts;
 import com.petkit.matetool.service.DatagramProcessService;
-import com.petkit.matetool.ui.AQR.AQRTestPrepareActivity;
 import com.petkit.matetool.ui.D3.D3TestPrepareActivity;
 import com.petkit.matetool.ui.D4.D4TestPrepareActivity;
 import com.petkit.matetool.ui.K2.K2TestPrepareActivity;
-import com.petkit.matetool.ui.K3.K3TestPrepareActivity;
-import com.petkit.matetool.ui.P3.P3TestPrepareActivity;
 import com.petkit.matetool.ui.W5.W5TestPrepareActivity;
 import com.petkit.matetool.ui.W5.utils.W5Utils;
 import com.petkit.matetool.ui.aq.AQTestMainActivity;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.common.TestPrepareActivity;
 import com.petkit.matetool.ui.cozy.CozyTestPrepareActivity;
 import com.petkit.matetool.ui.feeder.FeederTestPrepareActivity;
 import com.petkit.matetool.ui.feederMini.FeederMiniTestPrepareActivity;
@@ -39,10 +38,10 @@ import com.petkit.matetool.ui.mate.SelectActivity;
 import com.petkit.matetool.ui.permission.PermissionDialogActivity;
 import com.petkit.matetool.ui.permission.mode.PermissionBean;
 import com.petkit.matetool.ui.t3.T3TestPrepareActivity;
-import com.petkit.matetool.ui.t4.T4TestPrepareActivity;
-import com.petkit.matetool.ui.t4.utils.T4Utils;
 import com.petkit.matetool.ui.utils.PrintUtils;
+import com.petkit.matetool.ui.common.DeviceCommonUtils;
 import com.petkit.matetool.utils.Globals;
+import com.petkit.matetool.utils.SpannableStringUtils;
 import com.petkit.matetool.utils.TesterManagerUtils;
 import com.petkit.matetool.utils.Utils;
 import com.petkit.matetool.widget.LoadDialog;
@@ -97,6 +96,7 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
     protected void onStart() {
         super.onStart();
 
+        setDeviceToolVersion();
         registerBoradcastReceiver();
     }
 
@@ -124,8 +124,6 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
         RadioGroup radioGroup = (RadioGroup) findViewById(R.id.mate_test_style);
         ((RadioButton)radioGroup.findViewById(R.id.mate_style)).setChecked(true);
         testStyle = Globals.MATE_STYLE;
-
-        setDeviceToolVersion();
 
         radioGroup.setOnCheckedChangeListener(this);
     }
@@ -186,26 +184,31 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
                     case Globals.D4:
                         startActivity(D4TestPrepareActivity.class);
                         break;
-                    case Globals.P3:
-                        startActivity(P3TestPrepareActivity.class);
-                        break;
+//                    case Globals.P3:
+//                        startActivity(P3TestPrepareActivity.class);
+//                        break;
                     case Globals.W5:
                     case Globals.W5C:
                         bundle = new Bundle();
                         bundle.putInt(W5Utils.EXTRA_W5_TYPE, testStyle == Globals.W5C ? W5Utils.W5_TYPE_MINI : W5Utils.W5_TYPE_NORMAL);
                         startActivityWithData(W5TestPrepareActivity.class, bundle, false);
                         break;
-                    case Globals.T4:
-                    case Globals.T4_p:
+//                    case Globals.T4:
+//                    case Globals.T4_p:
+//                        bundle = new Bundle();
+//                        bundle.putInt(T4Utils.EXTRA_WITH_K3, testStyle == Globals.T4 ? 0 : 1);
+//                        startActivityWithData(T4TestPrepareActivity.class, bundle, false);
+//                        break;
+//                    case Globals.K3:
+//                        startActivity(K3TestPrepareActivity.class);
+//                        break;
+//                    case Globals.AQR:
+//                        startActivity(AQRTestPrepareActivity.class);
+//                        break;
+                    default:
                         bundle = new Bundle();
-                        bundle.putInt(T4Utils.EXTRA_WITH_K3, testStyle == Globals.T4 ? 0 : 1);
-                        startActivityWithData(T4TestPrepareActivity.class, bundle, false);
-                        break;
-                    case Globals.K3:
-                        startActivity(K3TestPrepareActivity.class);
-                        break;
-                    case Globals.AQR:
-                        startActivity(AQRTestPrepareActivity.class);
+                        bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, testStyle);
+                        startActivityWithData(TestPrepareActivity.class, bundle, false);
                         break;
                 }
                 collapseSoftInputMethod(fixtureNumberEditText);
@@ -279,58 +282,69 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
         RadioButton tempRadioButton;
 
         tempRadioButton = (RadioButton) findViewById(R.id.mate_style);
-        tempRadioButton.setText("Mate Style" + " v" + TOOL_MATE_VERSION);
+        tempRadioButton.setText(getTextDetail(Globals.MATE_STYLE, "Mate Style" + " v" + TOOL_MATE_VERSION));
 
         tempRadioButton = (RadioButton) findViewById(R.id.mate_pro);
-        tempRadioButton.setText("Mate Pro" + " v" + TOOL_MATE_VERSION);
+        tempRadioButton.setText(getTextDetail(Globals.MATE_PRO, "Mate Pro" + " v" + TOOL_MATE_VERSION));
 
         tempRadioButton = (RadioButton) findViewById(R.id.go);
-        tempRadioButton.setText("Go抽检" + " v" + TOOL_GO_VERSION);
+        tempRadioButton.setText(getTextDetail(Globals.GO, "Go抽检" + " v" + TOOL_GO_VERSION));
 
         tempRadioButton = (RadioButton) findViewById(R.id.feeder);
-        tempRadioButton.setText("喂食器（D1）" + " v" + TOOL_FEEDER_VERSION);
+        tempRadioButton.setText(getTextDetail(Globals.FEEDER, "喂食器（D1）" + " v" + TOOL_FEEDER_VERSION));
 
         tempRadioButton = (RadioButton) findViewById(R.id.cozy);
-        tempRadioButton.setText("宠物窝new（Z1s）" + " v" + TOOL_COZY);
+        tempRadioButton.setText(getTextDetail(Globals.COZY, "宠物窝new（Z1s）" + " v" + TOOL_COZY));
 
         tempRadioButton = (RadioButton) findViewById(R.id.feeder_mini);
-        tempRadioButton.setText("喂食器Mini（D2）" + " v" + TOOL_FEEDER_MINI_VERSION);
+        tempRadioButton.setText(getTextDetail(Globals.FEEDER_MINI, "喂食器Mini（D2）" + " v" + TOOL_FEEDER_MINI_VERSION));
 
         tempRadioButton = (RadioButton) findViewById(R.id.k2);
-        tempRadioButton.setText("净味器（K2）" + " v" + TOOL_K2_VERSION);
+        tempRadioButton.setText(getTextDetail(Globals.K2, "净味器（K2）" + " v" + TOOL_K2_VERSION));
 
         tempRadioButton = (RadioButton) findViewById(R.id.toilet);
-        tempRadioButton.setText("自动猫厕所（T3）" + " v" + TOOL_T3_VERSION);
+        tempRadioButton.setText(getTextDetail(Globals.T3, "自动猫厕所（T3）" + " v" + TOOL_T3_VERSION));
 
         tempRadioButton = (RadioButton) findViewById(R.id.aq);
-        tempRadioButton.setText("智能鱼缸（AQ）" + " v" + TOOL_AQ_VERSION);
+        tempRadioButton.setText(getTextDetail(Globals.AQ, "智能鱼缸（AQ）" + " v" + TOOL_AQ_VERSION));
 
         tempRadioButton = (RadioButton) findViewById(R.id.d3);
-        tempRadioButton.setText("行星喂食器（D3）" + " v" + TOOL_D3_VERSION);
+        tempRadioButton.setText(getTextDetail(Globals.D3, "行星喂食器（D3）" + " v" + TOOL_D3_VERSION));
 
         tempRadioButton = (RadioButton) findViewById(R.id.d4);
-        tempRadioButton.setText("喂食器SOLO（D4）" + " v" + TOOL_D4_VERSION);
+        tempRadioButton.setText(getTextDetail(Globals.D4, "喂食器SOLO（D4）" + " v" + TOOL_D4_VERSION));
 
         tempRadioButton = (RadioButton) findViewById(R.id.p3);
-        tempRadioButton.setText("智能猫狗牌（P3）" + " v" + TOOL_P3_VERSION);
+        tempRadioButton.setText(getTextDetail(Globals.P3, "智能猫狗牌（P3）" + " v" + TOOL_P3_VERSION));
 
         tempRadioButton = (RadioButton) findViewById(R.id.w5);
-        tempRadioButton.setText("智能饮水机（W5）" + " v" + TOOL_W5_VERSION);
+        tempRadioButton.setText(getTextDetail(Globals.W5, "智能饮水机（W5）" + " v" + TOOL_W5_VERSION));
 
         tempRadioButton = (RadioButton) findViewById(R.id.w5c);
-        tempRadioButton.setText("智能饮水机MINI（W5C）" + " v" + TOOL_W5_VERSION);
+        tempRadioButton.setText(getTextDetail(Globals.W5C, "智能饮水机MINI（W5C）" + " v" + TOOL_W5_VERSION));
 
         tempRadioButton = (RadioButton) findViewById(R.id.t4);
-        tempRadioButton.setText("智能猫厕所SOLO（T4）" + " v" + TOOL_T4_VERSION);
+        tempRadioButton.setText(getTextDetail(Globals.T4, "智能猫厕所SOLO（T4）" + " v" + TOOL_T4_VERSION));
 
         tempRadioButton = (RadioButton) findViewById(R.id.t4_p);
-        tempRadioButton.setText("智能猫厕所SOLO（T4）标配K3" + " v" + TOOL_T4_VERSION);
+        tempRadioButton.setText(getTextDetail(Globals.T4_p, "智能猫厕所SOLO（T4）标配K3" + " v" + TOOL_T4_VERSION));
 
         tempRadioButton = (RadioButton) findViewById(R.id.k3);
-        tempRadioButton.setText("智能净味器（K3）" + " v" + TOOL_K3_VERSION);
+        tempRadioButton.setText(getTextDetail(Globals.K3, "智能净味器（K3）" + " v" + TOOL_K3_VERSION));
 
         tempRadioButton = (RadioButton) findViewById(R.id.aqr);
-        tempRadioButton.setText("智能鱼缸（AQR）" + " v" + TOOL_AQR_VERSION);
+        tempRadioButton.setText(getTextDetail(Globals.AQR, "智能鱼缸（AQR）" + " v" + TOOL_AQR_VERSION));
+    }
+
+    private SpannableStringBuilder getTextDetail(int type, String text) {
+        SpannableStringUtils.SpanText text1 = new SpannableStringUtils.SpanText(text, CommonUtils.getColorById(R.color.black), 1.0f);
+
+        if (TesterManagerUtils.getCurrentTesterForType(type) != null) {
+            SpannableStringUtils.SpanText text2 = new SpannableStringUtils.SpanText(" 已登录", CommonUtils.getColorById(R.color.yellow), 0.8f);
+            return SpannableStringUtils.makeSpannableString(text1, text2);
+        } else {
+            return SpannableStringUtils.makeSpannableString(text1);
+        }
     }
 
     private boolean checkPermissions() {

@@ -55,7 +55,7 @@ public class T3StartActivity extends BaseActivity {
         findViewById(R.id.test_case5).setOnClickListener(this);
 
         ((Button) findViewById(R.id.test_case5)).setText("位图生成");
-        ((Button) findViewById(R.id.test_case5)).setVisibility(View.GONE);
+        ((Button) findViewById(R.id.test_case5)).setVisibility(View.VISIBLE);
     }
 
     @Override

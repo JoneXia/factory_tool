@@ -1,4 +1,4 @@
-package com.petkit.matetool.ui.P3;
+package com.petkit.matetool.ui.common;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
@@ -19,10 +19,8 @@ import com.petkit.matetool.http.ApiTools;
 import com.petkit.matetool.http.AsyncHttpRespHandler;
 import com.petkit.matetool.model.DevicesError;
 import com.petkit.matetool.model.Tester;
-import com.petkit.matetool.ui.P3.utils.P3Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.utils.FileUtils;
-import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.JSONUtils;
 import com.petkit.matetool.utils.TesterManagerUtils;
 
@@ -36,21 +34,20 @@ import java.util.HashMap;
 
 import cz.msebera.android.httpclient.Header;
 
-import static com.petkit.matetool.ui.P3.utils.P3Utils.FILE_CHECK_INFO_NAME;
-import static com.petkit.matetool.ui.P3.utils.P3Utils.FILE_MAINTAIN_INFO_NAME;
-
 
 /**
- * P3测试，测试准备，需要登录，已经缓存数据处理
+ * 测试准备，需要登录，缓存数据处理
  *
  * Created by Jone on 17/4/19.
  */
-public class P3TestPrepareActivity extends BaseActivity {
+public class TestPrepareActivity extends BaseActivity {
 
     private Tester mTester;
     private EditText nameEdit, pwEdit;
     private TextView promptText, testerInfoTextView;
     private Button actionBtn, uploadBtn;
+
+    private int mDeviceType;
 
     private DevicesError mDevicesError;
     private boolean isLogining;
@@ -59,9 +56,22 @@ public class P3TestPrepareActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if(savedInstanceState != null) {
+            mDeviceType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE);
+        } else {
+            mDeviceType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, 0);
+        }
+
         setContentView(R.layout.activity_feeder_prepare);
 
         ApiTools.setApiBaseUrl();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
     }
 
     @Override
@@ -79,7 +89,7 @@ public class P3TestPrepareActivity extends BaseActivity {
 
         findViewById(R.id.logout).setOnClickListener(this);
 
-        mTester = TesterManagerUtils.getCurrentTesterForType(Globals.P3);
+        mTester = TesterManagerUtils.getCurrentTesterForType(mDeviceType);
 //        mTester = new Tester();
 //        mTester.setCode("00");
 //        mTester.setName("写死的账号");
@@ -91,7 +101,7 @@ public class P3TestPrepareActivity extends BaseActivity {
             AsyncHttpUtil.addHttpHeader("F-Session", mTester.getSession());
         }
 
-        mDevicesError = P3Utils.getDevicesErrorMsg();
+        mDevicesError = DeviceCommonUtils.getDevicesErrorMsg(mDeviceType);
     }
 
     @Override
@@ -106,7 +116,7 @@ public class P3TestPrepareActivity extends BaseActivity {
         switch (v.getId()) {
             case R.id.login:
                 if(mTester != null) {
-                    if (P3Utils.checkHasSnCache()) {
+                    if (DeviceCommonUtils.checkHasSnCache(mDeviceType)) {
                         LoadDialog.show(this);
                         startUploadSn();
                     } else {
@@ -123,13 +133,18 @@ public class P3TestPrepareActivity extends BaseActivity {
                         showShortToast("请输入密码");
                         return;
                     }
+
+                    if (TesterManagerUtils.checkTesterIsLogined(name)) {
+                        showShortToast("该账号已在本机登录，已在测试其他设备，请退出后重试");
+                        return;
+                    }
                     login(name, pw);
                 }
                 break;
             case R.id.logout:
                 if(mDevicesError != null) {
                     showShortToast("还有异常数据需要处理，完成后才能登出！");
-                } else if(P3Utils.checkHasSnCache()) {
+                } else if(DeviceCommonUtils.checkHasSnCache(mDeviceType)) {
                     showShortToast("还有未上传的测试数据，需要先上传完成才能登出！");
                 } else {
                     logout();
@@ -138,8 +153,8 @@ public class P3TestPrepareActivity extends BaseActivity {
             case R.id.upload:
                 if(mDevicesError != null) {
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable(P3Utils.EXTRA_P3_TESTER, mTester);
-                    startActivityWithData(P3ErrorListActivity.class, bundle, false);
+                    bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
+//                    startActivityWithData(ErrorListActivity.class, bundle, false);
                 } else {
                     LoadDialog.show(this);
                     startUploadSn();
@@ -150,13 +165,13 @@ public class P3TestPrepareActivity extends BaseActivity {
 
     private void updateView () {
         if(mTester != null) {
-            mDevicesError = P3Utils.getDevicesErrorMsg();
+            mDevicesError = DeviceCommonUtils.getDevicesErrorMsg(mDeviceType);
             if(mDevicesError != null) {
                 promptText.setText("检测到异常数据，需要先处理，才能开始测试！");
                 actionBtn.setVisibility(View.GONE);
                 uploadBtn.setVisibility(View.VISIBLE);
                 uploadBtn.setText("处理异常");
-            } else if(P3Utils.checkHasSnCache()) {
+            } else if(DeviceCommonUtils.checkHasSnCache(mDeviceType)) {
                 promptText.setText("还有未上传的测试数据，需要先上传完成才能开始测试！");
                 actionBtn.setVisibility(View.GONE);
                 uploadBtn.setVisibility(View.VISIBLE);
@@ -166,7 +181,7 @@ public class P3TestPrepareActivity extends BaseActivity {
                 actionBtn.setText("进入测试");
                 actionBtn.setVisibility(View.VISIBLE);
 
-                File dir = new File(P3Utils.getP3StoryDir());
+                File dir = new File(DeviceCommonUtils.getStorageDirForDevice(mDeviceType));
                 String[] files = dir.list();
                 if(files != null && files.length > 0) {
                     uploadBtn.setVisibility(View.VISIBLE);
@@ -192,8 +207,9 @@ public class P3TestPrepareActivity extends BaseActivity {
 
     private void startTest() {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(P3Utils.EXTRA_P3_TESTER, mTester);
-        startActivityWithData(P3StartActivity.class, bundle, false);
+        bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
+        bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
+        startActivityWithData(DeviceCommonUtils.getStartActivityByType(mDeviceType), bundle, false);
     }
 
 
@@ -225,12 +241,12 @@ public class P3TestPrepareActivity extends BaseActivity {
                             mTester.setStation(station);
                             mTester.setName(name);
                             mTester.setSession(token);
-                            TesterManagerUtils.addTesterForType(Globals.P3, mTester);
+                            TesterManagerUtils.addTesterForType(mDeviceType, mTester);
 
                             AsyncHttpUtil.addHttpHeader("F-Session", token);
                             testerInfoTextView.setText("当前用户名：" + mTester.getName());
 
-                            if(P3Utils.checkHasSnCache()) {
+                            if(DeviceCommonUtils.checkHasSnCache(mDeviceType)) {
                                 isLogining = true;
                                 startUploadSn();
                             } else {
@@ -314,7 +330,7 @@ public class P3TestPrepareActivity extends BaseActivity {
     }
 
     private void getLastSN() {
-        AsyncHttpUtil.get("/api/p3/latest", new AsyncHttpRespHandler(this) {
+        AsyncHttpUtil.get(DeviceCommonUtils.getUrlByTypeForDevice(mDeviceType, DeviceCommonUtils.URL_TYPE_LAST_SN), new AsyncHttpRespHandler(this) {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -327,7 +343,7 @@ public class P3TestPrepareActivity extends BaseActivity {
                 try {
                     if(jsonObject.getInt("code") == 0 && dataObj != null && !dataObj.isNull("sn")) {
                         String sn = dataObj.getString("sn");
-                        P3Utils.initSnSerializableNumber(sn);
+                        DeviceCommonUtils.initSnSerializableNumber(mDeviceType, sn);
                     }
                     LoadDialog.dismissDialog();
                     updateView();
@@ -350,13 +366,13 @@ public class P3TestPrepareActivity extends BaseActivity {
         LoadDialog.dismissDialog();
         AsyncHttpUtil.addHttpHeader("F-Session", "");
 
-        TesterManagerUtils.removeTesterForType(Globals.P3);
+        TesterManagerUtils.removeTesterForType(mDeviceType);
         mTester = null;
         updateView();
     }
 
     private void startUploadSn() {
-        File dir = new File(P3Utils.getP3StoryDir());
+        File dir = new File(DeviceCommonUtils.getStorageDirForDevice(mDeviceType));
         String[] files = dir.list();
 
         if(files != null && files.length > 0) {
@@ -383,14 +399,7 @@ public class P3TestPrepareActivity extends BaseActivity {
             return;
         }
 
-        String api;
-        if(FILE_MAINTAIN_INFO_NAME.equals(file.getName())) {
-            api = "/api/p3/maintain/repair";
-        } else if(FILE_CHECK_INFO_NAME.equals(file.getName())) {
-            api = "/api/p3/maintain/inspect";
-        } else {
-            api = "/api/p3/batch";
-        }
+        String api = DeviceCommonUtils.getUrlByTypeForDevice(mDeviceType, file.getName());
 
         HashMap<String, String> params = new HashMap<>();
         params.put("snList", "{\"snList\":[" + content.substring(0, content.length() - 1) + "]}");
@@ -414,7 +423,7 @@ public class P3TestPrepareActivity extends BaseActivity {
                                 default:
                                     if(!result.isNull("data")) {
                                         mDevicesError = gson.fromJson(result.getString("data"), DevicesError.class);
-                                        P3Utils.storeDuplicatedInfo(mDevicesError);
+                                        DeviceCommonUtils.storeDuplicatedInfo(mDeviceType, mDevicesError);
                                         file.delete();
                                         if (isLogining) {
                                             getLastSN();
