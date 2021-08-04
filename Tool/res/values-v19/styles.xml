@@ -1,0 +1,11 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <!-- MainActivity theme. -->
+    <style name="MainTheme" parent="Theme.AppCompat">
+        <item name="android:windowTranslucentNavigation">false</item>
+    </style>
+
+
+
+</resources>

@@ -1,0 +1,2412 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name">PETKIT</string>
+    <string name="NSLocationAlwaysUsageDescription">我们在App使用时需要使用定位功能来为你推荐身边的朋友</string>
+    <string name="NSLocationAlwaysAndWhenInUseUsageDescription">我们在App使用时需要使用定位功能来为你推荐身边的朋友</string>
+    <string name="NSLocationWhenInUseUsageDescription">我们在App使用时需要使用定位功能来为你推荐身边的朋友</string>
+
+    <!-- Global word -->
+    <string name="Warning">警告</string>
+    <string name="Cancel">取消</string>
+    <string name="OK">确定</string>
+    <string name="Okay">好的</string>
+    <string name="Done">完成</string>
+    <string name="Save">保存</string>
+    <string name="Edit">编辑</string>
+    <string name="Remark">备注</string>
+    <string name="Add">新增</string>
+    <string name="Delete">删除</string>
+    <string name="Deleting">删除中</string>
+    <string name="Clear">清空</string>
+    <string name="Close">关闭</string>
+    <string name="Send">发送</string>
+    <string name="Sending">发送中…</string>
+    <string name="Sent">已发送</string>
+    <string name="Resend">重新发送</string>
+    <string name="Upgrade">升级</string>
+    <string name="Camera">照相机</string>
+    <string name="Album">相册</string>
+    <string name="Connect">链接</string>
+    <string name="Connecting">正在连接</string>
+    <string name="Reply">回复</string>
+    <string name="Next">下一步</string>
+    <string name="Login">登录</string>
+    <string name="Logining">登录中</string>
+    <string name="Logout">登出</string>
+    <string name="Register">注册</string>
+    <string name="Skip">跳过</string>
+    <string name="Bind">绑定</string>
+    <string name="Unbind">解绑</string>
+    <string name="Binding">绑定中</string>
+    <string name="Male">男</string>
+    <string name="Female">女</string>
+    <string name="Male2">公</string>
+    <string name="Female2">母</string>
+    <string name="Success">成功</string>
+    <string name="Succeed">成功</string>
+    <string name="Failure">失败</string>
+    <string name="Name">姓名</string>
+    <string name="Nickname">昵称</string>
+    <string name="Category">品种</string>
+    <string name="Age">年龄</string>
+    <string name="Gender">性别</string>
+    <string name="Weight">体重</string>
+    <string name="Comment">评论</string>
+    <string name="Comments">评论</string>
+    <string name="Comment_verb">评论</string>
+    <string name="Report">举报</string>
+    <string name="Post">发布</string>
+    <string name="Posting">发布中</string>
+    <string name="Posted">已发布</string>
+    <string name="Website">官方网站</string>
+    <string name="Official_weibo">官方微博</string>
+    <string name="Evaluation">评价</string>
+    <string name="Avatar">头像</string>
+    <string name="OTA">固件升级</string>
+    <string name="Start">开始</string>
+    <string name="Restart">重新开始</string>
+    <string name="Stop">停止</string>
+    <string name="Favor">赞</string>
+    <string name="Call">呼叫</string>
+    <string name="Collect">收藏</string>
+    <string name="Collected">已收藏</string>
+    <string name="Uncollect">取消收藏</string>
+    <string name="Uncollected">已取消收藏</string>
+    <string name="Settings">设置</string>
+    <string name="Image">图片</string>
+    <string name="Birth">出生日期</string>
+    <string name="Time">时间</string>
+    <string name="Date">日期</string>
+    <string name="Share">分享</string>
+    <string name="Loading">加载中</string>
+    <string name="Star">星</string>
+    <string name="Synchronize">同步</string>
+    <string name="Synchronizing">同步中</string>
+    <string name="Synchronized">同步完成</string>
+    <string name="Latest">最新</string>
+    <string name="Hottest">最热</string>
+    <string name="History">历史</string>
+    <string name="Battery">电量</string>
+    <string name="Prompt">温馨提示</string>
+    <string name="Circle">●</string>
+    <string name="Sleep">睡眠</string>
+    <string name="Rest">休息</string>
+    <string name="Activity">活动</string>
+    <string name="Consumption">消耗</string>
+    <string name="Mood">心情</string>
+    <string name="Health">健康</string>
+    <string name="Reference">参考</string>
+    <string name="Downloading">下载中</string>
+    <string name="Downloaded">已下载</string>
+    <string name="Installing">安装中</string>
+    <string name="Retry">重试</string>
+    <string name="Search">搜索</string>
+    <string name="More">更多</string>
+    <string name="Optional">可选</string>
+    <string name="Empty">空</string>
+    <string name="Processing">处理中</string>
+    <string name="Today">今天</string>
+    <string name="Yesterday">昨天</string>
+    <string name="Days_before_format"><xliff:g id="prefix">%s</xliff:g>天前</string>
+    <string name="Or">或</string>
+    <string name="Device">设备</string>
+    <string name="All">全部</string>
+    <string name="Preview">预览</string>
+    <string name="None">无</string>
+    <string name="Dog">狗</string>
+    <string name="Cat">猫</string>
+    <string name="Account">账号</string>
+    <string name="Others">他人</string>
+    <string name="Password">密码</string>
+    <string name="Detail">详情</string>
+    <string name="Continue">继续</string>
+    <string name="Copy">复制</string>
+    <string name="Exit">退出</string>
+    <string name="Submit">提交</string>
+    <string name="Change">修改</string>
+    <string name="Birthday">生日</string>
+    <string name="Community_mine">我的</string>
+    <string name="Me">我</string>
+    <string name="Reselect">重新选择</string>
+    <string name="Append">添加</string>
+
+    <!-- Global phrase -->
+    <string name="Comprehensive_score">综合评分</string>
+    <string name="Hardware_model">型号</string>
+    <string name="Download_failed">下载失败</string>
+    <string name="No_result">无结果</string>
+    <string name="Buy_PETKIT">获取</string>
+    <string name="Bind_PETKIT">立即绑定</string>
+    <string name="Sleep_all">全部睡眠</string>
+    <string name="Sleep_deep">深度睡眠</string>
+    <string name="Sleep_light">浅度睡眠</string>
+    <string name="State_Walk">普通活动</string>
+    <string name="State_Run">剧烈运动</string>
+    <string name="Basic_Consumption">基础消耗</string>
+    <string name="Activity_Consumption">活动消耗</string>
+    <string name="No_detail">无详细描述</string>
+    <string name="Version_skip">忽略此版本</string>
+    <string name="Version_remind">稍后提醒</string>
+    <string name="Verify_failed">验证失败</string>
+    <string name="Input_lenth_format">长度应为<xliff:g id="prefix">%s</xliff:g>~<xliff:g id="prefix">%s</xliff:g>个字符</string>
+    <string name="No_content_tap_to_reload">暂无内容</string>
+    <string name="Tap_to_load_more">点击加载更多</string>
+    <string name="No_more_data">无更多数据</string>
+    <string name="Confirm_app_quit">再按一次退出程序</string>
+    <string name="Confirm_delete_chat">确定删除该聊天吗?</string>
+    <string name="Hint_network_failed">网络连接异常</string>
+    <string name="Hint_no_update">已是最新版本</string>
+    <string name="Hint_new_update">有新版本可以升级</string>
+    <string name="System_settings">系统设置</string>
+    <string name="Hint_unknown_message">当前版本暂不支持查看此消息，请升级新版本查看</string>
+    <string name="Hint_error_text_network_lost">网络连接已断开</string>
+    <string name="Hint_error_detail_network_lost">请检查网络连接，然后点击重试</string>
+    <string name="Something_s_something_format"><xliff:g id="prefix">%s</xliff:g>的<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Confirm_stop_operation">确认取消操作</string>
+    <string name="Time_clock_format"><xliff:g id="prefix">%s</xliff:g>时</string>
+    <string name="In_recent_two_days_activity">最近两天活动对比</string>
+    <string name="Trends_format"><xliff:g id="prefix">%s</xliff:g>趋势</string>
+    <string name="Hint_no_access_to_the_camera">无法访问相机</string>
+    <string name="Hint_camera_permission_forbid">摄像头无法启动，请到系统权限管理中开启相机权限!</string>
+    <string name="Hint_open_setting_camera">请前往\“设置 > 隐私 > 相机\”，找到小佩宠物并打开开关</string>
+    <string name="Hint_i_see_and_continue">我明白，继续</string>
+    <string name="Hint_no_and_wait">不， 等等</string>
+    <string name="Select_photo">选择照片</string>
+    <string name="Selected_already">选好啦</string>
+    <string name="Error_invalid_time">无效的时间</string>
+    <string name="Unit_time_format"><xliff:g id="prefix">%s</xliff:g>小时<xliff:g id="prefix">%s</xliff:g>分钟</string>
+    <string name="Hint_analyse_data_failed">无法从云端获取分析数据</string>
+    <string name="Nearly_Time_format">近<xliff:g id="prefix">%s</xliff:g><xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Activity_rank">狗狗活动排行</string>
+    <string name="Lazy_cat_rank">懒猫排行</string>
+    <string name="My_pet_rank">我的宠物排行</string>
+    <string name="Up_to">截至</string>
+    <string name="Whole_day">全天</string>
+    <string name="Activity_duration">活动时长</string>
+    <string name="Photo_albums_loading">相册加载中…</string>
+    <string name="Exit_edit_confirm">退出此次编辑?</string>
+    <string name="Button_send_text">文字</string>
+    <string name="Button_take_photo">拍照</string>
+    <string name="Button_send_picture">相册</string>
+    <string name="Button_send_video">小视频</string>
+    <string name="Video_duration_not_enough">对不起，视频长度不能小于3秒钟</string>
+    <string name="Video_progress">视频处理中…<xliff:g id="prefix">%s</xliff:g><xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Video_record_clear">你录制的视屏将被清空</string>
+    <string name="Video_record_not_memory">系统空间不足</string>
+    <string name="Video_editor_path_fail">视频路径有误</string>
+    <string name="Video_record_touch_to_start">按住拍</string>
+    <string name="Video_record_limit_tips">录到这里才行哦</string>
+    <string name="Video_save_fail">视频处理失败，请重试!</string>
+    <string name="Video_record_retake">重拍</string>
+    <string name="Video_record_take_loacal">导入</string>
+    <string name="Video_trim_alert">最多支持10秒的长度，请剪切视频</string>
+    <string name="No_data">无数据</string>
+    <string name="Submit_success">提交成功</string>
+    <string name="Know_more">了解更多</string>
+    <string name="Weight_unit">单位切换</string>
+    <string name="Weight_unit_metric">公制 (kg/g)</string>
+    <string name="Weight_unit_english">英制 (磅/lb)</string>
+    <string name="Weight_unit_table_section_title">应用中所有重量将按所选单位制度显示</string>
+    <string name="Open_in_Safari">在Safari中打开</string>
+    <string name="Copy_URL">复制链接</string>
+    <string name="Local_image_Author">请打开设置/隐私/照片权限</string>
+    <string name="Load_more_message">下拉加载更多</string>
+    <string name="Not_send_empty_message">不能发送空白消息</string>
+    <string name="To_view_more">查看更多</string>
+    <string name="Birth_user_prompt_format">亲爱的<xliff:g id="prefix">%s</xliff:g>，\n祝你生日快乐</string>
+    <string name="Birth_pet_prompt_format"><xliff:g id="prefix">%s</xliff:g>，今天是我的生日\n你给我准备好礼物了吗？</string>
+    <string name="Not_set">未设置</string>
+    <string name="Text_input_only_number">请输入数字</string>
+    <string name="Text_input_need_format">请输入<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Ruthless_refuse">无情拒绝</string>
+    <string name="Next_remind">下次提醒</string>
+    <string name="Must_encourage">必须鼓励</string>
+    <string name="Give_me_love">快给我们一个爱的鼓励吧</string>
+
+    <!-- Unit -->
+    <string name="Unit_g">g</string>
+    <string name="Unit_kg">Kg</string>
+    <string name="Unit_lb">Lb</string>
+    <string name="Unit_kilogram_short">千克</string>
+    <string name="Unit_pound_short">磅</string>
+    <string name="Unit_kilogram">千克</string>
+    <string name="Unit_pound">磅</string>
+    <string name="Unit_year">年</string>
+    <string name="Unit_years">年</string>
+    <string name="Unit_age">岁</string>
+    <string name="Unit_ages">岁</string>
+    <string name="Unit_age_short">岁</string>
+    <string name="Unit_month">个月</string>
+    <string name="Unit_months">个月</string>
+    <string name="Unit_month_short">个月</string>
+    <string name="Unit_week">周</string>
+    <string name="Unit_weeks">周</string>
+    <string name="Unit_week_short">周</string>
+    <string name="Unit_day">天</string>
+    <string name="Unit_days">天</string>
+    <string name="Unit_day_short">天</string>
+    <string name="Unit_hour">小时</string>
+    <string name="Unit_hours">小时</string>
+    <string name="Unit_minute">分钟</string>
+    <string name="Unit_minutes">分钟</string>
+    <string name="Unit_gram">克</string>
+    <string name="Unit_meter">米</string>
+    <string name="Unit_kilometer">千米</string>
+    <string name="Unit_time_just_now">刚刚</string>
+    <string name="Unit_time_ago"><xliff:g id="prefix">%s</xliff:g>前</string>
+    <string name="Unit_score">分</string>
+    <string name="Unit_time">次</string>
+    <string name="Unit_times">次</string>
+    <string name="Week_monday">一</string>
+    <string name="Week_tuesday">二</string>
+    <string name="Week_wednesday">三</string>
+    <string name="Week_thursday">四</string>
+    <string name="Week_friday">五</string>
+    <string name="Week_saturday">六</string>
+    <string name="Week_sunday">日</string>
+
+    <!-- Main -->
+    <string name="Homepage_discover">发现</string>
+    <string name="Homepage_manager">首页</string>
+    <string name="Homepage_message">消息</string>
+    <string name="Homepage_me">我</string>
+    <string name="Homepage_petkit">小佩</string>
+    <string name="Homepage_pet_community">宠物圈</string>
+    <string name="Homepage_petkit_series">FIT 智能猫牌|狗牌</string>
+    <string name="Homepage_no_pet_title">距健康养宠仅一步之遥…</string>
+    <string name="Homepage_no_pet_detail">立即添加宠物来使用小佩提供的健康喂养等精彩功能。</string>
+    <string name="Homepage_feed_hint">今日建议喂食量</string>
+    <string name="Homepage_add_device">添加小佩智能宠物装备</string>
+    <string name="Pet_doctor">健康顾问</string>
+    <string name="Device_petkit">智能猫牌|狗牌</string>
+    <string name="Intro_page1_text1">科技养宠新生活</string>
+    <string name="Intro_page1_text2">我们的软硬件完美协作\n使你更了解、更贴近宠物</string>
+    <string name="Intro_page2_text1">宠物圈</string>
+    <string name="Intro_page2_text2">汇聚你和宠物的好玩新鲜事</string>
+    <string name="Intro_page3_text1">实用工具</string>
+    <string name="Intro_page3_text2">宠物的生活从此井井有条</string>
+    <string name="Guide_page_button">开启新版本</string>
+    <string name="Guide_me_pet_profile_edit">直接在这里查看或编辑宠物资料</string>
+    <string name="Guide_user_birth_hint">我们现在需要知道你的生日，请完善一下吧。</string>
+    <string name="Guide_user_birth_add_owner"><xliff:g id="prefix">%s</xliff:g>的主人</string>
+    <string name="Guide_manage_pet_state">及时更新宠物的状态，\n获取精准喂食量</string>
+    <string name="Guide_page_text1">宠物圈重新布局，\n提供更多玩法。</string>
+    <string name="Guide_page_text2">“会动”的小佩页面，\n硬件体验更进一步。</string>
+    <string name="Guide_page_text3">健康喂养新增\“喂食方案\”，\n一天喂几次你说了算。</string>
+
+    <!-- Share -->
+    <string name="Share_to">分享到…</string>
+    <string name="Share_succeed">分享成功</string>
+    <string name="Share_failed">分享失败</string>
+    <string name="Share_facebook">Facebook</string>
+    <string name="Share_twitter">Twitter</string>
+    <string name="Share_vk">VK</string>
+    <string name="Share_alert_error_title_facebook">Facebook错误</string>
+    <string name="Share_alert_error_message_facebook">无法获取Facebook账户或者Facebook账户不可用</string>
+    <string name="Share_alert_error_title_twitter">Twitter 错误</string>
+    <string name="Share_alert_error_message_twitter">无法获取 Twitter账户或者 Twitter账户不可用</string>
+    <string name="Activity_share_text_format">小佩宠物让我比以前更懂我们家<xliff:g id="prefix">%s</xliff:g>了～我的科技养宠新生活。</string>
+    <string name="Activity_calorie_share_text">我们家的<xliff:g id="prefix">%s</xliff:g>在小佩宠物里排到了前<xliff:g id="prefix">%s</xliff:g>~和我比比吧~</string>
+    <string name="Share_activity_rank">活动排名</string>
+    <string name="Share_processing">正在处理…</string>
+    <string name="Share_activity_watch_baby_state_format">快来看看我家宝贝<xliff:g id="prefix">%s</xliff:g>的状态</string>
+    <string name="Share_activity_love_pet">自从用了小佩之后我感觉我更了解我家<xliff:g id="prefix">%s</xliff:g>了。</string>
+    <string name="Hint_not_installed_app">抱歉，您还没有安装该应用</string>
+
+    <!-- User -->
+    <string name="Hint_user_shield_no_user_now">暂时没有添加任何用户</string>
+    <string name="Confirm_to_abandon_changes">确认放弃修改？</string>
+    <string name="User_shield_changed">已修改</string>
+    <string name="User_selection_title">联系人</string>
+    <string name="User_selection_hint_empty_text">没有联系人</string>
+    <string name="User_selection_section_title_local">我的好友</string>
+    <string name="User_selection_section_title_service">其他用户</string>
+
+    <!-- Account -->
+    <string name="Fetch_verify_code">获取验证码</string>
+    <string name="Fetch_dynamic_password">获取临时密码</string>
+    <string name="Hint_input_dynamic_password">输入临时密码</string>
+    <string name="Hint_no_input_old_password">温馨提示：没有旧密码时可不输入旧密码</string>
+    <string name="Hint_input_email">请输入邮箱</string>
+    <string name="Hint_input_phonenumber">请输入手机号, 其他用户不可见</string>
+    <string name="Hint_input_new_phonenumber">请输入新手机号</string>
+    <string name="Hint_input_account">请输入手机号/邮箱</string>
+    <string name="Hint_input_password">6-14位密码</string>
+    <string name="Forget_my_password">忘记密码</string>
+    <string name="Password_illegal">新密码不能包含中文字符</string>
+    <string name="Hint_forgot_password">温馨提示：请在成功登录后立即修改密码</string>
+    <string name="Old_password">旧密码</string>
+    <string name="New_password">新密码</string>
+    <string name="Repeat_password">重复新密码</string>
+    <string name="Password_error">密码错误</string>
+    <string name="Change_password">修改密码</string>
+    <string name="Logout_current_accout">退出当前账号</string>
+    <string name="Confirm_logout">确认登出？</string>
+    <string name="Register_phone">手机号注册</string>
+    <string name="Register_email">邮箱注册</string>
+    <string name="Title_required_infomation">必填信息</string>
+    <string name="I_wish_to_use_format">我想要<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Title_region">国家或者地区</string>
+    <string name="Recommended_regions">推荐地区</string>
+    <string name="All_regions">所有地区</string>
+    <string name="Final_step">最后一步</string>
+    <string name="Hint_input_nick">请输入昵称</string>
+    <string name="Hint_select_time">请选择时间</string>
+    <string name="Hint_select_gender">请选择性别</string>
+    <string name="Hint_select_category">选择品种</string>
+    <string name="Hint_input_verify_code">请输入验证码</string>
+    <string name="Error_select_region">请选择你的国家或者地区</string>
+    <string name="Error_wrong_phonenumber">请输入正确的手机号</string>
+    <string name="Error_wrong_email">请输入正确的邮箱</string>
+    <string name="Error_wrong_verifycode">请输入正确的验证码</string>
+    <string name="Error_verify_code">验证码错误</string>
+    <string name="Error_wrong_password">密码必须大于6位</string>
+    <string name="Error_new_password_same_with_old">新密码不能与旧密码相同</string>
+    <string name="Error_new_nickname_same_with_old">新昵称与原昵称不能相同</string>
+    <string name="Error_repeat_new_password">两次输入的新密码不一致</string>
+    <string name="Error_dynamic_password_has_already_been_sent">上一次动态密码已发送，请使用之前的动态码！</string>
+    <string name="My_rank">我的等级</string>
+    <string name="My_level_rank">LV<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="My_level_growth"><xliff:g id="prefix">%s</xliff:g>成长值</string>
+    <string name="My_level_growth_need">还需<xliff:g id="prefix">%s</xliff:g>成长值升级</string>
+    <string name="My_level_point_get">如何获得成长值</string>
+    <string name="Level_upgrade_alert_text">恭喜你，升级啦</string>
+    <string name="Level_upgrade_alert_detail_text">获得\“<xliff:g id="prefix">%s</xliff:g>\”头衔</string>
+    <string name="Sign_in">签到</string>
+    <string name="Signed_in">已签到</string>
+    <string name="Sign_in_success">签到成功</string>
+    <string name="Point">积分</string>
+    <string name="Point_get_grow_up_value">获取成长值</string>
+
+    <!-- Community -->
+    <string name="Video_mode_adjust">视频模式调整</string>
+    <string name="Video_fluent_mode">流畅模式</string>
+    <string name="Video_HD_mode">高清模式</string>
+    <string name="Senior_setting">高级设置</string>
+    <string name="Video_mode1">模式一</string>
+    <string name="Video_mode2">模式二</string>
+    <string name="Video_mode3">模式三</string>
+    <string name="Video_mode4">模式四</string>
+    <string name="Reset_default">恢复默认</string>
+    <string name="Video_mode">模式</string>
+    <string name="Auto_bandwidth">自动带宽</string>
+    <string name="Frame_rate">帧率</string>
+    <string name="Bit_rate">码率</string>
+    <string name="Select_Frame_rate">选择帧率</string>
+    <string name="Select_mode">选择模式</string>
+    <string name="Select_Bit_rate">选择码率</string>
+
+    <!-- Social -->
+    <string name="NotifyCenter_liked_your_post">赞了你的帖子</string>
+    <string name="NotifyCenter_replyed_you">回复了你</string>
+    <string name="NotifyCenter_replyed_your_post">评论了你的帖子</string>
+    <string name="ImagePicker_add_limited_format">最多添加<xliff:g id="prefix">%s</xliff:g>张图片</string>
+    <string name="Pet_post">宠星文</string>
+    <string name="Ta_pet_posts">Ta的宠星文</string>
+    <string name="My_pet_posts">我的宠星文</string>
+    <string name="My_collects">我的收藏</string>
+    <string name="Topic">话题</string>
+    <string name="My_topics">我的话题</string>
+    <string name="Ta_topics">Ta的话题</string>
+    <string name="Topic_more">更多话题</string>
+    <string name="Topic_mine">我的</string>
+    <string name="Hint_open_too_many_topic_page">你已经同时打开了<xliff:g id="prefix">%s</xliff:g>个话题了，无法继续打开更多，请返回。</string>
+    <string name="Hint_open_too_many_personal_page">你已经同时打开了<xliff:g id="prefix">%s</xliff:g>个好友主页了，无法继续打开更多，请返回。</string>
+    <string name="Send_failed">发送失败</string>
+    <string name="Latest_comment">最新评论</string>
+    <string name="Private_chat">私信</string>
+    <string name="Clear_cache">清除缓存</string>
+    <string name="Topic_detail">话题详情</string>
+    <string name="Confirm_resend_message">确认重新发送？</string>
+    <string name="Confirm_report">确认举报？</string>
+    <string name="Confirm_delete_post">确认删除帖子吗？</string>
+    <string name="Hint_input_post_content">编辑内容</string>
+    <string name="Hint_edit_post_content">请编辑帖子内容或者图片</string>
+    <string name="Hint_input_comment">发表你的评论</string>
+    <string name="Hint_input_content">请输入内容</string>
+    <string name="Hint_click_to_clear_all_new_message_flag">再点一次可清除所有未读消息提醒</string>
+    <string name="Title_new_post">撰写宠星文</string>
+    <string name="Title_nearby_users">附近的人</string>
+    <string name="Title_hot_activities">热门活动</string>
+    <string name="Title_post_favor_users">喜欢帖子的人</string>
+    <string name="Error_location_error">定位失败</string>
+    <string name="Error_location_detail">请尝试打开“设置 > 隐私 > 定位服务 > 小佩宠物”开启定位</string>
+    <string name="Location_search_around">搜索附近的位置</string>
+    <string name="Location_no_display">不显示位置</string>
+    <string name="Location_permission_denied">您尚未开启定位</string>
+    <string name="Location_immediately_configuration">立即配置</string>
+    <string name="Error_image_picker_null">至少选择一张图片</string>
+    <string name="Hint_empty_text_my_collected_post">您还没有收藏任何宠星文</string>
+    <string name="Hint_empty_text_user_collected_post">该用户还没有收藏任何宠星文</string>
+    <string name="Hint_empty_text_my_posted_post">你还没有发布任何宠星文</string>
+    <string name="Hint_empty_text_user_posted_post">该用户还没有发布任何宠星文</string>
+    <string name="Hint_empty_action_posted_post">快去宠物星球来一发</string>
+    <string name="Hint_empty_text_post_comment_list">快来抢沙发吧~</string>
+    <string name="Share_pet_news">分享新鲜事…</string>
+    <string name="Pet_blog_detail">宠星文详情</string>
+    <string name="Dynamic">动态</string>
+    <string name="Follower">粉丝</string>
+    <string name="Follow">关注</string>
+    <string name="My_follows">我的关注</string>
+    <string name="My_followers">我的粉丝</string>
+    <string name="His_follows">Ta的关注</string>
+    <string name="His_followers">Ta的粉丝</string>
+    <string name="Recommend_follow">推荐关注</string>
+    <string name="Recommend_topic">推荐话题</string>
+    <string name="Recommend_pet_blog">推荐宠文</string>
+    <string name="Unfollow">取消关注</string>
+    <string name="Followed">已关注</string>
+    <string name="Hint_empty_text_post_focus">您还没有关注任何人</string>
+    <string name="Hint_empty_text_friends">寻找小伙伴</string>
+    <string name="Hint_empty_text_my_fans">您还没有粉丝</string>
+    <string name="Hint_empty_text_Ta_fans">Ta还没有粉丝</string>
+    <string name="Hint_empty_text_Ta_follow">Ta还没有关注</string>
+    <string name="Publish_post_failed">发送失败!</string>
+    <string name="Publish_post_success">发送成功!</string>
+    <string name="Publish_post_doing">你有个宠星文正在发送，请稍候</string>
+    <string name="Topic_add">创建新话题</string>
+    <string name="Topic_all">全部话题</string>
+    <string name="Topic_hot">热门话题</string>
+    <string name="My_publish">我发布的</string>
+    <string name="Ta_publish">Ta发布的</string>
+    <string name="Participant_topic">参与话题</string>
+    <string name="My_joined">我参与的</string>
+    <string name="Participate_in_topics">参加话题</string>
+    <string name="Find_users">找人</string>
+    <string name="User_you_interested">你可能感兴趣的人</string>
+    <string name="One_key_concern">一键关注</string>
+    <string name="Create_search_topic">创建,搜索话题</string>
+    <string name="Post_no_add">尚未发表任何宠星文</string>
+    <string name="Topic_no_add">尚未参与任何话题</string>
+    <string name="Topic_recent_join">最近参与的</string>
+    <string name="Follow_no_choose_anyone">您还没有选择任何人</string>
+    <string name="Participate_user_count">已有<xliff:g id="prefix">%s</xliff:g>人参与</string>
+    <string name="At_me">\@我</string>
+    <string name="At_you">\@了你</string>
+    <string name="Post_add_at_someone">提醒谁看</string>
+    <string name="Post_video_no_network">当前设备无网络，请打开网络连接!</string>
+    <string name="Post_add_privacy_public">公开</string>
+    <string name="Post_add_privacy_only_fans">仅粉丝</string>
+    <string name="Post_current_comment">当前评论</string>
+    <string name="Post_all_comment">所有评论</string>
+    <string name="Post_add_location">所在位置</string>
+    <string name="Post_filter_title">选择滤镜</string>
+    <string name="Post_setting">宠星文设置</string>
+    <string name="Title_add_friend">添加好友</string>
+
+    <!-- Message -->
+    <string name="Message_empty_comtent">这里好空虚好寂寞</string>
+    <string name="Message_empty_remind">有通知了再叫醒我~</string>
+    <string name="Message_empty_favor">主人，快去集赞</string>
+    <string name="Message_empty_at">你们都不带我玩</string>
+    <string name="Message_remind">通知</string>
+    <string name="Message_click_know">点击了解</string>
+    <string name="Message_click_upgrade">点击升级</string>
+    <string name="Message_click_modify">点击修改</string>
+    <string name="Notify_reminder">提醒消息</string>
+    <string name="Notify_updateweight">体重修改</string>
+    <string name="Notify_web_url">推荐链接</string>
+    <string name="Notify_lowbattery">电量过低</string>
+    <string name="Error_send_message">无法连接到服务器，请尝试重连</string>
+
+    <!-- PETKIT -->
+    <string name="Fit_name">FIT</string>
+    <string name="PETKIT_smart_accessory">FIT 智能猫牌|狗牌</string>
+    <string name="PETKIT_report">Fit报告</string>
+    <string name="Need_sync">我要同步</string>
+    <string name="Add_dog_to_bind_device">创建宠物并绑定设备</string>
+    <string name="Add_petkit_device">添加小佩设备</string>
+    <string name="Fit_activity_data">活动数据</string>
+    <string name="Firmware_version">固件版本</string>
+    <string name="Battery_remaining">剩余电量</string>
+    <string name="Error_ble_is_using">同步数据中，请完成同步后再进行操作</string>
+    <string name="Title_scan_PETKIT">搜索Fit P1/Fit P2</string>
+    <string name="Title_PETKIT_store">小佩商城</string>
+    <string name="Device_management">设备管理</string>
+    <string name="Device_examination">自检</string>
+    <string name="Device_examination_warning">设备自检是用来检测小佩设备是否运行正常的一个流程。用户可以完全自主操作不具有危险性。</string>
+    <string name="Device_add">添加设备</string>
+    <string name="Device_delete">删除设备</string>
+    <string name="Device_Bind">绑定设备</string>
+    <string name="Device_RSSI_signal_strength">信号强度</string>
+    <string name="Device_exam_running">设备自检中⋯</string>
+    <string name="Device_exam_done">设备自检完成</string>
+    <string name="Device_exam_poweron">蓝牙模块启动</string>
+    <string name="Device_exam_scan">搜索设备</string>
+    <string name="Device_exam_connect">与设备建立连接</string>
+    <string name="Device_exam_read_services">读取设备服务</string>
+    <string name="Device_exam_verify">身份验证</string>
+    <string name="Device_exam_proof_time">与设备同步时间</string>
+    <string name="Device_exam_get_battery">获取设备电量</string>
+    <string name="Device_exam_pull_data">读取设备数据</string>
+    <string name="Device_exam_complete_sync_data">同步数据完成</string>
+    <string name="Device_exam_reason_poweron">请尝试如下操作：\n1.设置-蓝牙-打开蓝牙功能\n2.再次进入App进行尝试\n3.若仍然失败则确认你的设备是否是iPhone4S及以上的型号\n4.都确认OK扔失败时，请重启你的手机</string>
+    <string name="Device_exam_reason_scan">1.确认设备是否在你附近\n2.检查设备是否正常开机(开机的同时正面灯会闪烁3次)</string>
+    <string name="Device_exam_reason_connect">1.观察信号值，一般在大于-80较好\n2.设备是否离开手机较远</string>
+    <string name="Device_exam_reason_verify">请尝试退出账户再重新登录</string>
+    <string name="Device_disconnect_unexpectedly">设备异常中断</string>
+    <string name="BLEUI_synchronizing">同步中⋯</string>
+    <string name="BLEUI_scanning">正在搜索设备⋯</string>
+    <string name="BLEUI_scan_timeout">未找到设备</string>
+    <string name="BLEUI_connecting">连接中⋯</string>
+    <string name="BLEUI_connect_failed">设备连接失败</string>
+    <string name="BLEUI_disconnected">设备连接断开</string>
+    <string name="BLEUI_synchronization_finished">同步完成</string>
+    <string name="BLEUI_synchronization_uploaded_data">已上传数据到云端</string>
+    <string name="BLEUI_synchronization_uploading_data_failed">上传数据到云端失败</string>
+    <string name="BLEUI_synchronization_analyze_data_cloud">正在云端分析数据…</string>
+    <string name="BLEUI_synchronization_analyze_data_failed">云端分析数据失败</string>
+    <string name="BLEUI_searching_PETKIT_nearby">正在搜寻附近的设备⋯</string>
+    <string name="BLEUI_no_PETKIT_nearby">附近找不到设备，请确认设备在附近\n点击雷达重新搜索</string>
+    <string name="BLEUI_tap_radar_to_research">点击雷达重新搜索</string>
+    <string name="BLEUI_found_PETKITs">搜索到的设备</string>
+    <string name="BLEUI_connected_to_PETKIT">已链接设备</string>
+    <string name="BLEUI_connected_to_PETKIT_notice">请确认Fit正面闪烁灯正在闪烁！\n“绑定”>进行设备绑定\n“取消”>重新确认\n（请谨慎操作）</string>
+    <string name="BLEUI_Bind_invalid_device_format">已被<xliff:g id="prefix">%s</xliff:g>绑定</string>
+    <string name="BLEUI_bind_PETKIT_failed">绑定设备失败</string>
+    <string name="BLEUI_not_supported">你的手机不支持使用Fit功能</string>
+    <string name="BLEUI_last_sync_format">上次同步: <xliff:g id="prefix">%s</xliff:g></string>
+    <string name="BLEUI_last_sync_never">尚未同步过</string>
+    <string name="BLEUI_last_detect_never">尚未检测</string>
+    <string name="BLEUI_device_battery_low">设备电量低</string>
+    <string name="BLEUI_device_battery_normal">设备电量正常</string>
+    <string name="BLEUI_OTA_checking">检查中⋯</string>
+    <string name="BLEUI_OTA_dowloading_from_server">正在从云端下载固件⋯</string>
+    <string name="BLEUI_OTA_dowloading">固件升级中⋯</string>
+    <string name="BLEUI_OTA_completed">固件升级成功</string>
+    <string name="BLEUI_OTA_confirming">固件升级校验中⋯</string>
+    <string name="BLEUI_OTA_error">固件升级失败</string>
+    <string name="BLEUI_OTA_notice_1">请将设备置于图案处\n\n然后点击“开始”</string>
+    <string name="BLEUI_OTA_notice_2">固件升级失败，请务必手动重启设备！</string>
+    <string name="BLEUI_OTA_notice_3">设备记录的数据在每次同步后都会上传到云端。\n\n如果固件升级过程中出现错误，不会导致设备出现任何异常，仍可继续使用。\n\n您确定要固件升级吗？</string>
+    <string name="Device_exam_scaning">开始搜索设备</string>
+    <string name="Device_exam_start">开始自检</string>
+    <string name="Device_exam_find_device">找到设备：</string>
+    <string name="Device_exam_start_connect">找到设备，开始建立链接</string>
+    <string name="Device_exam_start_read_battery">开始读取设备电量</string>
+    <string name="Device_exam_complete_read_battery">读取设备电量完成</string>
+    <string name="Device_exam_start_sync_time">开始与设备同步时间</string>
+    <string name="Device_exam_complete_sync_time">同步时间完成</string>
+    <string name="Device_exam_start_verify">开始身份验证</string>
+    <string name="Device_exam_complete_verify">身份验证完成</string>
+    <string name="Device_exam_start_sync_data">开始与设备同步数据</string>
+    <string name="Device_exam_connect_state_success">设备链接成功</string>
+    <string name="Device_exam_sync_data_fail">同步数据失败</string>
+    <string name="Device_exam_sync_data_timeout">同步数据超时</string>
+    <string name="Device_exam_connect_fail">1.观察信号值，一般在大于-80较好\n2.设备是否离开手机较远\n3.重启应用和蓝牙再重试\n4.重启设备再重试\n5.尝试固件升级</string>
+    <string name="Device_exam_verify_fail">1.请确认当前宠物和设备是否对应\n2.请尝试退出账户再重新登录</string>
+    <string name="Device_exam_connect_disconnect">1.观察信号值，一般在大于-80较好\n2.设备是否离开手机较远</string>
+    <string name="Device_exam_complete">链接关闭，自检完成</string>
+    <string name="BLEUI_ble_system_time_error">手机系统时间不准确\n为保护数据，无法进行同步操作</string>
+    <string name="BLEUI_sync_timeout">同步超时</string>
+    <string name="BT_powering">蓝牙模块启动中</string>
+    <string name="BT_power_failed">蓝牙模块启动失败</string>
+    <string name="BT_power_state_off">蓝牙模块已关闭</string>
+    <string name="BT_power_failed_possible_reason">请尝试如下操作：\n1.设置-蓝牙-打开蓝牙功能\n2.再次进入App进行尝试\n3.若仍然失败则确认你的设备是否是iPhone4S及以上的型号\n4.都确认OK扔失败时，请重启你的手机</string>
+    <string name="BT_scanning">搜索设备中</string>
+    <string name="BT_scan_failed">未找到设备</string>
+    <string name="BT_scan_failed_possible_reason">1.确认设备是否在你附近\n2.检查设备是否正常开机(开机的同时正面灯会闪烁3次)</string>
+    <string name="BT_connecting">连接中</string>
+    <string name="BT_connect_failed">连接失败</string>
+    <string name="BT_connect_timeout">链接超时</string>
+    <string name="BT_connect_failed_possible_reason">1.确认设备是否在你附近\n2.检查设备是否正常开机(开机的同时正面灯会闪烁3次)</string>
+    <string name="BT_connection_missing">连接断开</string>
+    <string name="BT_disconnected">连接断开</string>
+    <string name="BT_disconnected_possible_reason">1.观察信号值，一般在大于-80较好\n2.设备是否离开手机较远\n3.重启应用和蓝牙再重试\n4.重启设备再重试\n5.尝试固件升级</string>
+    <string name="BT_discovering_service">读取服务</string>
+    <string name="BT_discover_service_failed">读取服务失败</string>
+    <string name="BT_discovering_common_characteristic">读取服务</string>
+    <string name="BT_discover_common_characteristic_failed">读取服务失败</string>
+    <string name="BT_discover_common_read_characteristic_failed">读取服务失败</string>
+    <string name="BT_characteristic_setting_notify">读取服务</string>
+    <string name="BT_characteristic_set_notify_failed">读取服务失败</string>
+    <string name="BT_discovering_battery_characteristic">读取服务</string>
+    <string name="BT_discover_battery_characteristic_failed">读取服务失败</string>
+    <string name="BT_discover_service_failed_possible_reason">1.观察信号值，一般在大于-80较好\n2.设备是否离开手机较远\n3.重启应用和蓝牙再重试\n4.重启设备再重试\n5.尝试固件升级</string>
+    <string name="BT_initing">正在初始化</string>
+    <string name="BT_init_timeout">初始化超时</string>
+    <string name="BT_init_failed">初始化失败</string>
+    <string name="BT_verifying">正在验证中</string>
+    <string name="BT_verify_timeout">验证超时</string>
+    <string name="BT_verify_failed">验证失败</string>
+    <string name="BT_verify_failed_possible_reason">1.观察信号值，一般在大于-80较好\n2.设备是否离开手机较远\n3.重启应用和蓝牙再重试\n4.重启设备再重试\n5.尝试固件升级</string>
+    <string name="BT_proofing_time">同步时间</string>
+    <string name="BT_prooftime_timeout">同步时间失败</string>
+    <string name="BT_prooftime_failed">同步时间超时</string>
+    <string name="BT_proof_time_failed_possible_reason">1.观察信号值，一般在大于-80较好\n2.设备是否离开手机较远\n3.重启应用和蓝牙再重试\n4.重启设备再重试\n5.尝试固件升级</string>
+    <string name="BT_reading_battery">读取电量</string>
+    <string name="BT_read_battery_timeout">读取电量超时</string>
+    <string name="BT_read_battery_failed">读取电量失败</string>
+    <string name="BT_read_battery_failed_possible_reason">1.观察信号值，一般在大于-80较好\n2.设备是否离开手机较远\n3.重启应用和蓝牙再重试\n4.重启设备再重试\n5.尝试固件升级</string>
+    <string name="BT_reading_log">读取日志数据</string>
+    <string name="BT_read_log_timeout">读取日志数据超时</string>
+    <string name="BT_reading_log_failed">读取日志数据失败</string>
+    <string name="BT_reading_log_failed_possible_reason">1.观察信号值，一般在大于-80较好\n2.设备是否离开手机较远\n3.重启应用和蓝牙再重试\n4.重启设备再重试\n5.尝试固件升级</string>
+    <string name="BT_reading_data">数据读取中</string>
+    <string name="BT_read_data_timeout">数据读取超时</string>
+    <string name="BT_read_data_failed">数据读取失败</string>
+    <string name="BT_read_data_failed_possible_reason">1.观察信号值，一般在大于-80较好\n2.设备是否离开手机较远\n3.重启应用和蓝牙再重试\n4.重启设备再重试\n5.尝试固件升级</string>
+    <string name="BT_read_data_complete">数据读取完成</string>
+    <string name="BT_erase_log_failed">日志数据擦除失败</string>
+    <string name="BT_erase_log_timeout">日志数据擦除超时</string>
+    <string name="BT_enter_download_mode_failed">进入下载模式失败</string>
+    <string name="BT_enter_download_mode_timeout">进入下载模式超时</string>
+    <string name="BT_close_sensor_failed">关闭传感器失败</string>
+    <string name="BT_close_sensor_timeout">关闭传感器超时</string>
+    <string name="BT_firmware_download_failed">固件升失败</string>
+    <string name="BT_action_locked">蓝牙功能正在使用中</string>
+    <string name="BT_add_break_synchronization">继续添加新设备将中断正在进行的同步</string>
+    <string name="Today_not_sync">今天还没有同步过哦~</string>
+    <string name="Hint_analyse_data_not_newest">你还有新的分析数据未获取</string>
+    <string name="Data_day_average">上述数据中的“推荐值”是根据您宠物的年龄，品种，性格，习惯等，计算出来的今日总量值，请尽量保证设备的连续佩带，以让我们的大数据中心更加科学和智能地计算出这个“推荐值”。</string>
+    <string name="Recommended_target">推荐目标</string>
+    <string name="Today_none_data">今天没有数据</string>
+    <string name="Device_low_battery">我们检测到当前设备电量低，请准备新电池以备用。</string>
+    <string name="Device_detect">检测</string>
+    <string name="Bind_later">保存，但暂不绑定 FIT</string>
+    <string name="Petkit_continue_bind">保存并继续绑定 FIT</string>
+
+    <!-- Setting -->
+    <string name="Settings_user_aggreement">用户协议</string>
+    <string name="Settings_vote_for_us">打分支持</string>
+    <string name="Confirm_vote_our_app">非常感谢你能百忙之中给予我们的App评价，我们将跳转到App store撰写评论</string>
+    <string name="Title_about_us">关于我们</string>
+    <string name="Title_user_profile">用户资料</string>
+    <string name="Title_dog_profile">宠物资料</string>
+    <string name="Title_version_upgrade">版本升级</string>
+    <string name="Ignore_this_version">忽略此版本</string>
+    <string name="Frequently_asked_questions">常见问题</string>
+    <string name="User_setting_privacy">隐私</string>
+    <string name="User_shield_he_see_I">不让他/她看我的宠星文</string>
+    <string name="User_shield_I_see_he">不看他/她的宠星文</string>
+
+    <!-- Pet -->
+    <string name="Pet">宠物</string>
+    <string name="Pet_farther">粑粑</string>
+    <string name="Pet_mother">麻麻</string>
+    <string name="Dog_has_no_device_notice_2">绑定Fit后就可以详细了解宠物的活动状况、能量消耗、宠物粮消耗、心情和健康指数等。</string>
+    <string name="Dog_not_exist">宠物不存在</string>
+    <string name="Dog_has_no_device">宠物无可用设备</string>
+    <string name="Confirm_add_new_dog">您还没有添加宠物哦！</string>
+    <string name="Confirm_delete_dog">删除会导致该宠物在小佩生成的记录丢失！\n请谨慎操作！</string>
+    <string name="Confirm_unbind_device">确定删除该宠物的设备吗?\n删除后该设备可以再次被绑定！</string>
+    <string name="Confirm_dog_food_change">根据用户实际反馈，部分宠物，突然更换宠物粮后出现了不同程度胃肠道问题，建议更换宠物粮时采用新旧粮混合并逐渐过渡的方法。</string>
+    <string name="Hint_select_dog_category">请先选择种类</string>
+    <string name="Hint_select_dog_food">请先选择宠物粮再保存</string>
+    <string name="Title_pet_add">添加宠物</string>
+    <string name="Title_modify_dog_weight">体重(千克)</string>
+    <string name="Title_add_new_dog">这里冷冷清清~ \n点击右上角\“+\”来添加宠物</string>
+    <string name="Pet_add_select_type">选择你要添加的宠物类型</string>
+    <string name="Pet_add_select_gender">选择宠物的性别</string>
+    <string name="Pet_add_select_activity_degree">选择宠物的好动程度</string>
+    <string name="Pet_add_not_now">暂不添加宠物</string>
+    <string name="Pet_add_success">宠物添加成功</string>
+    <string name="Pet_perfect_details">完善详细资料</string>
+    <string name="My_pets">我的宠物</string>
+    <string name="His_pets">Ta的宠物</string>
+    <string name="Understand_pet_sleep">了解宠物的睡眠</string>
+    <string name="Consumption_definition">什么是基础消耗和活动消耗？</string>
+    <string name="Pet_no_add">尚未添加任何宠物</string>
+    <string name="Pet_bind_device">已绑定设备的宠物</string>
+    <string name="Pet_no_bind_device">未绑定设备的宠物</string>
+    <string name="Pet_species_dog">汪星人</string>
+    <string name="Pet_species_cat">喵星人</string>
+    <string name="Pet_name">宠物名字</string>
+    <string name="Pet_weight">宠物体重</string>
+    <string name="Pet_weight_limit_hint_format"><xliff:g id="prefix">%s</xliff:g>的正常体重范围是：\n<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Pet_weight_over_limit_hint">你的宠物已经严重超出正常体重范围</string>
+    <string name="Pet_food">宠物粮</string>
+    <string name="Avatar_set">设置头像</string>
+    <string name="Pet_birth">宠物生日</string>
+    <string name="Pet_age_format">今年<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Pet_age_under_one">不满一岁</string>
+    <string name="Pet_sterilization">已绝育</string>
+    <string name="Pet_no_sterilization">未绝育</string>
+    <string name="Pet_gender_GG">GG</string>
+    <string name="Pet_sterile_GG">绝育GG</string>
+    <string name="Pet_gender_MM">MM</string>
+    <string name="Pet_sterile_MM">绝育MM</string>
+    <string name="Pet_female_pregnant_period_format">怀孕<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Pet_female_lactation_period_format">哺乳<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Pet_female_pregnant">怀孕</string>
+    <string name="Pet_female_lactation">哺乳</string>
+    <string name="Pet_physiological_status">生理状态</string>
+    <string name="Pet_state_sick">生病中</string>
+    <string name="Pet_state_oestrus">发情中</string>
+    <string name="Pet_state_pregnancy">怀孕中</string>
+    <string name="Pet_state_lactation">哺乳中</string>
+    <string name="Pet_pregnancy_status">怀孕状态</string>
+    <string name="Pet_lactation_status">哺乳状态</string>
+    <string name="Pet_current_lactation_weeks_format"><xliff:g id="prefix">%s</xliff:g>当前处于哺乳期 <xliff:g id="prefix">%s</xliff:g> <xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Pet_current_pregnant_weeks_format"><xliff:g id="prefix">%s</xliff:g>当前处于怀孕期 <xliff:g id="prefix">%s</xliff:g> <xliff:g id="prefix">%s</xliff:g></string>
+    <string name="No_choice_for_the_moment">暂不选择</string>
+    <string name="Search_pet_food_empty">搜索不到你要的宠物粮</string>
+    <string name="Hint_input_pet_name">请输入宠物的名字</string>
+    <string name="Health_feed">健康喂养</string>
+    <string name="Health_feed_title">每日建议喂食</string>
+    <string name="Health_feed_weight_compare">同类对比</string>
+    <string name="Health_feed_no_equal_age_pet">暂无年龄相仿的宠物</string>
+    <string name="Health_feed_weight_changed_alert">修改体重后，健康喂养的喂食量也会改变哦，快去查看吧</string>
+    <string name="Health_feed_add_immediately">立即添加</string>
+    <string name="Food_no_config_now">暂无配置</string>
+    <string name="Pet_activity_status">好动程度</string>
+    <string name="Pet_activity_dog_lazy">懒狗狗</string>
+    <string name="Pet_activity_dog_normal">正常狗狗</string>
+    <string name="Pet_activity_dog_active">运动狗狗</string>
+    <string name="Pet_activity_set_alert">设置一下您的狗狗好动程度，更方便我们建议喂食。</string>
+    <string name="Pet_emotion_experience">情场经历</string>
+    <string name="Pet_emotion_boy">小屁孩</string>
+    <string name="Pet_emotion_awakening_love">情窦初开</string>
+    <string name="Pet_emotion_pro_lover">情场老手</string>
+    <string name="Pet_emotion_professional_father">专业爸爸</string>
+    <string name="Pet_emotion_professional_mother">专业妈妈</string>
+    <string name="Myself_fragment_no_pet_add">暂无宠物，点击右上角 + 来添加。</string>
+    <string name="Pet_size_hint">您所选择的种类需要完善体型信息</string>
+    <string name="Pet_info_perfect">请完善</string>
+    <string name="Pet_add_medical">添加病例</string>
+    <string name="Pet_ill_condication">病情</string>
+    <string name="Pet_weight_control">控制</string>
+    <string name="Pet_weight_gain">增肥</string>
+    <string name="Pet_weight_lose">减肥</string>
+    <string name="Pet_weight_keep">保持</string>
+    <string name="Petkit_network_bad_retry">网络不通畅，请重试</string>
+    <string name="Pet_perfect_info_tip_format">完善<xliff:g id="prefix">%s</xliff:g>的信息可以得到更精准的推荐值</string>
+
+    <!-- Food -->
+    <string name="Pet_feed_food">宠粮</string>
+    <string name="Pet_food_I_add">#</string>
+    <string name="Pet_food_add">添加宠粮</string>
+    <string name="Pet_food_add_mine">添加我使用的宠粮</string>
+    <string name="Pet_food_add_brandname">请填写宠粮品牌和产品名称</string>
+    <string name="Pet_food_ingredient_list">成分表</string>
+    <string name="Pet_food_ingredient_intro">请在包装上找到营养成分表并将其填入下方（仅限干粮）</string>
+    <string name="Pet_food_ingredient_optional">选填项</string>
+    <string name="Pet_food_ingredient_required">必填项</string>
+    <string name="Pet_food_ingredient_protein">粗蛋白</string>
+    <string name="Pet_food_ingredient_fat">粗脂肪</string>
+    <string name="Pet_food_ingredient_fibre">粗纤维</string>
+    <string name="Pet_food_ingredient_water">水分</string>
+    <string name="Pet_food_ingredient_heat">热能/代谢能</string>
+    <string name="Pet_food_ingredient_ash">灰份</string>
+    <string name="Pet_food_ingredient_calcium">钙</string>
+    <string name="Pet_food_ingredient_phosphorus">磷</string>
+    <string name="Pet_food_ingredient_Omega_6">Omega-6</string>
+    <string name="Pet_food_ingredient_Omega_3">Omega-3</string>
+    <string name="Pet_food_ingredient_salt">食盐</string>
+    <string name="Pet_food_photo_certification">拍照认证</string>
+    <string name="Pet_food_photo_hint">给我们拍个照片，我们可以会帮你认证你所上传宠粮的准确性，通过认证的宠粮将进入小佩粮食库。</string>
+    <string name="Pet_food_skip_photo_submit">跳过拍照并提交</string>
+    <string name="Pet_food_no_photo_submit_hint">您尚未添加照片，是否继续提交？</string>
+    <string name="Health_feed_about">关于健康喂养</string>
+    <string name="Pet_my_feed_plan">我的喂食方案</string>
+    <string name="Feed_times_everyday_format">每日<xliff:g id="prefix">%s</xliff:g><xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Feed_move_banner_tip">移动滑块来调整每次喂食量</string>
+    <string name="Pet_food_not_configure">未配置</string>
+
+    <!-- Reminder -->
+    <string name="Add_reminder">添加提醒</string>
+    <string name="Edit_reminder">编辑提醒</string>
+    <string name="Delete_reminder">删除提醒</string>
+    <string name="Smart_reminder">提醒</string>
+    <string name="History_reminder">历史提醒</string>
+    <string name="Add_first_reminder">创建第一个提醒</string>
+    <string name="Remain">还剩</string>
+    <string name="Somedays_overdue_format">已逾期<xliff:g id="prefix">%s</xliff:g><xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Hint_empty_text_history_reminder">你还没有历史提醒</string>
+    <string name="Basic_info">基本信息</string>
+    <string name="Schedule_time">计划时间</string>
+    <string name="Remind_in_advance">提前提醒</string>
+    <string name="Repetition_period">重复周期</string>
+    <string name="Associated_pets">关联宠物</string>
+    <string name="Not_assigned_pets">不指定宠物</string>
+    <string name="Not_advance">不提前</string>
+    <string name="Advance_someday_format">提前<xliff:g id="prefix">%s</xliff:g><xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Hint_select_schedule_time">请选择计划时间</string>
+    <string name="Hint_input_schedule_time">请输入提醒时间</string>
+    <string name="Complete_task">完成任务</string>
+    <string name="Reminder_detail">提醒详情</string>
+    <string name="Reminder_title_format">给<xliff:g id="prefix">%s</xliff:g><xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Reminder_completed">此提醒已完成</string>
+    <string name="Select_pet">选择宠物</string>
+    <string name="Reminder_desc">让提醒来管理宠物的日常计划吧，如购买宠物粮、洗澡清洁、注射疫苗等等。我们将按时提醒你执行这些计划。</string>
+    <string name="Reminder_have_new">你有一个提醒</string>
+
+    <!-- Mate -->
+    <string name="Mate">MATE 智能宠物伴侣</string>
+    <string name="Mate_name">MATE</string>
+    <string name="Mate_device_search">搜索设备</string>
+    <string name="Mate_device_searching">正在搜索附近的设备…</string>
+    <string name="Mate_device_search_result">搜索到的设备</string>
+    <string name="Mate_quality_hd">清晰</string>
+    <string name="Mate_quality_sd">流畅</string>
+    <string name="Mate_using">使用中</string>
+    <string name="Mate_get">获取中</string>
+    <string name="Mate_ota">升级中</string>
+    <string name="Mate_usage">设备使用</string>
+    <string name="Mate_disconnect">强制断开</string>
+    <string name="Mate_wifi_psd_input_format">请输入 <xliff:g id="prefix">%s</xliff:g> 网络密码</string>
+    <string name="Mate_share_time_format"><xliff:g id="prefix">%s</xliff:g>分钟</string>
+    <string name="Mate_share_device_name_format"><xliff:g id="prefix">%s</xliff:g>-<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Mate_select_network">选取网络</string>
+    <string name="Mate_select_networking">选取网络…</string>
+    <string name="Mate_config_success">配置成功</string>
+    <string name="Mate_wifi_connect_error">WI-FI配置出错</string>
+    <string name="Mate_wifi_current">当前网络</string>
+    <string name="Mate_connect_offline">当前设备离线</string>
+    <string name="Mate_connect_offline2">当前设备离线,无法连接</string>
+    <string name="Mate_connect_busy">当前设备忙碌</string>
+    <string name="Mate_connect_ota">设备正在升级,请成功后连接设备</string>
+    <string name="Mate_capture">截屏</string>
+    <string name="Mate_record">录像</string>
+    <string name="Mate_microphone">麦克风</string>
+    <string name="Mate_move_screen">移动画面</string>
+    <string name="Mate_save_capture_imaging">正在保存图片..</string>
+    <string name="Mate_capture_saved">图片已存至系统相册</string>
+    <string name="Mate_capture_failed">图片保存失败</string>
+    <string name="Mate_record_progress">视频处理中…</string>
+    <string name="Mate_record_saved">视频已存至系统相册</string>
+    <string name="Mate_record_failed">视频处理失败</string>
+    <string name="Mate_remote_control_tips">点击箭头来移动画面视野</string>
+    <string name="Mate_play">逗宠</string>
+    <string name="Mate_bind_confirm">确认绑定</string>
+    <string name="Mate_bind_yes">好的，绑定</string>
+    <string name="Mate_owner_device">我的设备</string>
+    <string name="Mate_device_friend_share">共享的设备</string>
+    <string name="Mate_friend_device_share_time_format"><xliff:g id="prefix">%s</xliff:g>\n<xliff:g id="prefix">%s</xliff:g>--<xliff:g id="prefix">%s</xliff:g>\n允许观看<xliff:g id="prefix">%s</xliff:g>分钟</string>
+    <string name="Mate_cancel_share">取消共享</string>
+    <string name="Mate_normal_setting">通用</string>
+    <string name="Mate_sync_device_setting">远程助手</string>
+    <string name="Mate_wifi_setting">Wi-Fi配置</string>
+    <string name="Mate_share_setting">共享</string>
+    <string name="Mate_play_setting">逗宠音效</string>
+    <string name="Mate_sync_setting">同步小佩</string>
+    <string name="Mate_setting_wait">正在等待网络请求数据,请稍候</string>
+    <string name="Mate_sharing">正在共享</string>
+    <string name="Mate_ota_publish_format"><xliff:g id="prefix">%s</xliff:g> 发布</string>
+    <string name="Mate_ota_version_format">固件版本 <xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Mate_light_show">请确认设备指示灯正在闪烁</string>
+    <string name="Mate_settings_tips1_format">您有<xliff:g id="prefix">%s</xliff:g>个好友共享给你的Mate，点击观看</string>
+    <string name="Mate_settings_tips_share_empty">还没有用户给你共享设备</string>
+    <string name="Mate_introduce_message">当你在公司工作，外出游玩时，你能通过设备和爱宠打个招呼，观察它的一举一动。</string>
+    <string name="Mate_bluetooth_not_open">蓝牙未开启</string>
+    <string name="Mate_bluetooth_opened">好的，我打开了</string>
+    <string name="Mate_bluetooth_help_message">请打开手机的蓝牙开关\n并将手机靠近设备</string>
+    <string name="Mate_bluetooth_sn_error">获取产品序列号出错</string>
+    <string name="Mate_bluetooth_veryfiy_error">蓝牙较准参数失败</string>
+    <string name="Mate_bluetooth_net_error">网络连接失败，绑定失败未成功，请重新绑定</string>
+    <string name="Mate_bind_error_title">遇到了问题</string>
+    <string name="Mate_bind_wait">请稍候</string>
+    <string name="Mate_bind_error_all">我依旧无法解决问题</string>
+    <string name="Mate_bind_connect_bluetooth">正在连接蓝牙…</string>
+    <string name="Mate_connect_error">连接设备失败，请确认：</string>
+    <string name="Mate_connect_error_message">连接设备失败，请确认：\n<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Mate_not_found_device">找不到设备</string>
+    <string name="Mate_search_connect_device_error">手机是否距离Mate太远</string>
+    <string name="Mate_ota_start">立即更新</string>
+    <string name="Mate_ota_updating">设备正在更新中,请勿切断电源</string>
+    <string name="Mate_ota_fail">设备更新失败</string>
+    <string name="Mate_ota_tips">固件更新由设备独立完成，你可以在这里查看进度，也可以退出或最小化 APP 进行其它操作</string>
+    <string name="Mate_ota_now">去升级</string>
+    <string name="Mate_other_using">他人正在使用这台设备</string>
+    <string name="Mate_default_name">我的Mate</string>
+    <string name="Mate_out_use_time">不在设备的开放时间</string>
+    <string name="Mate_share_friend_format">将<xliff:g id="prefix">%s</xliff:g>与以下用户进行共享</string>
+    <string name="Mate_share_open">共享开关</string>
+    <string name="Mate_share_time">开放时间</string>
+    <string name="Mate_share_limit">观看时长限制</string>
+    <string name="Mate_share_not_limit">不限时间</string>
+    <string name="Mate_video_square">小佩视界</string>
+    <string name="Mate_configuring">WI-FI配置成功,正在获取设备状态…</string>
+    <string name="Mate_configure_success">智能宠物伴侣已准备就绪</string>
+    <string name="Mate_input_password">请输入密码</string>
+    <string name="Mate_resgier_failed">认证失败</string>
+    <string name="Mate_connect_over">视频结束</string>
+    <string name="Mate_connect_failed">连接视频失败，请重试</string>
+    <string name="Mate_network_connect_success">Wi-Fi连接成功</string>
+    <string name="Mate_network_connect_timeout">Wi-Fi连接超时</string>
+    <string name="Mate_network_ip_error">Wi-Fi获取网络地址失败</string>
+    <string name="Mate_wifi_connect_failed">Wi-Fi连接失败</string>
+    <string name="Mate_connecting_wifi">正在连接网络…</string>
+    <string name="Mate_connecting">正在连接…</string>
+    <string name="Mate_login_other_network">登入其它网络</string>
+    <string name="Mate_network_login">登入</string>
+    <string name="Mate_network_name">网络名称</string>
+    <string name="Mate_ota_no_upgrade">你已经安装了最新版本</string>
+    <string name="Mate_device_model">型号:<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Mate_connect_network_quality_low">当前网络延迟较高</string>
+    <string name="Mate_setting_ok">配置完成</string>
+    <string name="Mate_input_cannot_empty">输入不能为空</string>
+    <string name="Mate_share_opened">已开启</string>
+    <string name="Mate_share_closed">未开启</string>
+    <string name="Mate_Request_Timeout">设备连接超时</string>
+    <string name="Mate_setting_failed_title">Wi-Fi设置失败</string>
+    <string name="Mate_setting_start">开始使用</string>
+    <string name="Mate_bt_setting_err_info">您的Wi-Fi网络是否通畅\n\n\n为Mate配置网络失败</string>
+    <string name="Mate_bt_connecting_ready">绑定成功\n智能宠物伴侣正在搜索网络…</string>
+    <string name="Mate_bt_searching">正在连接蓝牙,请稍候…</string>
+    <string name="Mate_bt_connect_last">正在进行配置…</string>
+    <string name="Mate_recording">录像中</string>
+    <string name="Mate_share_see_now">立即观看</string>
+    <string name="Mate_share_message_format"><xliff:g id="prefix">%s</xliff:g>的Mate</string>
+    <string name="Mate_share_latmessage">共享一个设备给你</string>
+    <string name="Mate_share_add_friend_error">请打开共享开关</string>
+    <string name="Mate_rotate_end_of_top">↑上边镜头到底了</string>
+    <string name="Mate_rotate_end_of_bottom">↓下边镜头到底了</string>
+    <string name="Mate_rotate_end_of_left">←左边镜头到底了</string>
+    <string name="Mate_rotate_end_of_right">→右边镜头到底了</string>
+    <string name="Mate_otaing_format">升级中…<xliff:g id="prefix">%s</xliff:g>, 请勿切断设备电源</string>
+    <string name="Mate_write_service_error">服务器地址写入失败,请重新连接!</string>
+    <string name="Mate_ota_left_time_mintus_format">预计剩余时间: <xliff:g id="prefix">%s</xliff:g>秒</string>
+    <string name="Mate_4g_message">2G/3G/4G,将会产生流量…</string>
+    <string name="Mate_BLEUI_not_supported">你的手机不支持使用Mate功能</string>
+    <string name="Mate_quality_switch_failed">画质切换失败，请重试!</string>
+    <string name="Mate_disconnect_failed">断开连接失败，请重试</string>
+    <string name="Mate_confirm_unbind_device">确定删除智能宠物伴侣吗？删除后可以再次被绑定！</string>
+    <string name="Mate_confirm_cancel_share_device">确定取消共享Mate吗?</string>
+    <string name="Mate_device_deleted_unable">该设备已删除,无法使用该功能</string>
+    <string name="Mate_edit_set_cover">设置封面</string>
+    <string name="Mate_edit_set_name">设置名称</string>
+    <string name="Mate_need_help">我需要帮助</string>
+    <string name="Mate_share_kind">有2种方式共享你的设备</string>
+    <string name="Mate_share_family">家庭</string>
+    <string name="Mate_share_friend">朋友</string>
+    <string name="Mate_public_note">每次共享最多30分钟,逾期自动关闭。共享时只共享视频画面,其它功能如截图,逗宠都不可用。</string>
+    <string name="Mate_public_share_start">开始共享</string>
+    <string name="Mate_connect_loading">正在缓冲</string>
+    <string name="Mate_authority">权限设置</string>
+    <string name="Mate_share_friend_list">朋友列表</string>
+    <string name="Mate_share_look_time_limit">单次观看时长限制</string>
+    <string name="Mate_rotate">云台</string>
+    <string name="Mate_speaker_long_message">请按住说话</string>
+    <string name="Mate_speaker_use">请说话</string>
+    <string name="Mate_share_family_list">家庭列表</string>
+    <string name="Mate_bind_new_device">绑定新设备</string>
+    <string name="Mate_share_other_device_error">无法共享别人共享的设备</string>
+    <string name="Mate_share_state_setting">共享设置</string>
+    <string name="Mate_ota_must">请升级固件版本</string>
+    <string name="Mate_ota_must_sharing">请设备主人升级固件版本</string>
+    <string name="Mate_not_ota_now">暂不升级, 先播放</string>
+    <string name="Mate_check_not_online">获取设备状态失败，请插拔设备或继续等待设备上线</string>
+    <string name="Mate_screencapture_start">截图中…</string>
+    <string name="Mate_watch_none">暂未观看</string>
+    <string name="The_latest_watch_mate_format">最近一次观看\n<xliff:g id="prefix">%s</xliff:g>在<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Hint_mate_need_upgrade">有新的固件版本可供升级,升级后可以获得更好的用户体验</string>
+    <string name="Hint_mate_upgrade_owner">设备主人升级固件成功后，才可正常连接</string>
+    <string name="Hint_download_origin_image_failed">下载原图失败</string>
+    <string name="Hint_wait_for_upgrade">稍等一下，马上就好</string>
+    <string name="Setting_video_autoplay">自动播放小视频</string>
+    <string name="Setting_video_wifi">仅Wi-Fi</string>
+    <string name="Setting_video_wifi_data">3G / 4G 以及 Wi-Fi</string>
+    <string name="Mate_wifi_mac_address_format">Mate Mac地址: <xliff:g id="prefix">%s</xliff:g></string>
+
+    <!-- Emoji -->
+    <string name="Emoji_smile">[微笑]</string>
+    <string name="Emoji_sex">[色]</string>
+    <string name="Emoji_daze">[发呆]</string>
+    <string name="Emoji_awkward">[尴尬]</string>
+    <string name="Emoji_bared">[呲牙]</string>
+    <string name="Emoji_meme">[么么]</string>
+    <string name="Emoji_easy">[没问题]</string>
+    <string name="Emoji_surprise">[惊讶]</string>
+    <string name="Emoji_complain">[抱怨]</string>
+    <string name="Emoji_sweat">[冷汗]</string>
+    <string name="Emoji_sob">[大哭]</string>
+    <string name="Emoji_tongue">[吐舌]</string>
+    <string name="Emoji_angry">[愤怒]</string>
+    <string name="Emoji_helpless">[无奈]</string>
+    <string name="Emoji_wave">[再见]</string>
+    <string name="Emoji_scowl">[惊吓]</string>
+    <string name="Emoji_dizzy">[晕]</string>
+    <string name="Emoji_wry">[苦笑]</string>
+    <string name="Emoji_whimper">[可怜]</string>
+    <string name="Emoji_joyful">[高兴]</string>
+    <string name="Emoji_coolguy">[酷]</string>
+    <string name="Emoji_sleep">[睡觉]</string>
+    <string name="Emoji_grin">[咧嘴]</string>
+    <string name="Emoji_shocked">[疑问]</string>
+    <string name="Emoji_badluck">[倒霉]</string>
+    <string name="Emoji_shrunken">[委屈]</string>
+    <string name="Emoji_kiss">[亲亲]</string>
+    <string name="Emoji_oh">[哎呦]</string>
+    <string name="Emoji_hum">[哼]</string>
+    <string name="Emoji_shy">[脸红]</string>
+    <string name="Emoji_heart">[爱心]</string>
+    <string name="Emoji_brokenheart">[心碎]</string>
+    <string name="Emoji_rose">[玫瑰]</string>
+    <string name="Emoji_hug">[抱抱]</string>
+    <string name="Emoji_ok">[OK]</string>
+    <string name="Emoji_shake">[握手]</string>
+    <string name="Emoji_bless">[拜托]</string>
+
+    <!-- v6.1 -->
+    <string name="PCSearch_user_same_pet">与我宠味相投</string>
+    <string name="PCSearch_user_different_gender">异性</string>
+    <string name="PCSearch_user_same_city">同城</string>
+    <string name="PCSearch_more_friend">查看更多宠友搜索结果</string>
+    <string name="PCSearch_more_pet">查看更多宠物搜索结果</string>
+    <string name="PCSearch_more_post">查看更多宠星文搜索结果</string>
+    <string name="PCSearch_more_topic">查看更多话题搜索结果</string>
+    <string name="Black_list">黑名单</string>
+    <string name="Black_list_add">加入黑名单</string>
+    <string name="Followed_each_other">互相关注</string>
+    <string name="Change_region">修改region</string>
+    <string name="Change_region_prompt">当您修改所在地区以后，需要重新登录，是否继续？</string>
+    <string name="Change_region_need_prompt">Your current region is United States, need to change?</string>
+    <string name="Title_find_doctor">寻找医生</string>
+    <string name="Pet_friend">宠友</string>
+    <string name="Search_topic">搜索话题</string>
+    <string name="Search_pet_blog">搜索宠星文</string>
+    <string name="Search_pet_friend">搜索宠友</string>
+    <string name="Search_pet">搜索宠物</string>
+
+    <!-- v6.2 -->
+    <string name="Message_click_post_block">我要申诉</string>
+    <string name="Hint_input_season_of_block">请写下申诉理由</string>
+    <string name="Mate_call_timeout_limit">本次通话时间已到</string>
+
+    <!-- v6.3 -->
+    <string name="January">一月</string>
+    <string name="February">二月</string>
+    <string name="March">三月</string>
+    <string name="April">四月</string>
+    <string name="May">五月</string>
+    <string name="June">六月</string>
+    <string name="July">七月</string>
+    <string name="August">八月</string>
+    <string name="September">九月</string>
+    <string name="October">十月</string>
+    <string name="November">十一月</string>
+    <string name="December">十二月</string>
+    <string name="See_all_comment">查看所有评论</string>
+    <string name="Title_pets_list">宠物列表</string>
+    <string name="Pet_feed_value_format">建议喂养量：<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Whose_fit_format"><xliff:g id="prefix">%s</xliff:g>的Fit</string>
+    <string name="Title_fit_list">FIT设备列表</string>
+    <string name="Title_mate_list">MATE设备列表</string>
+    <string name="Hint_empty_text_post_comment_list_new">暂时没有评论哦</string>
+    <string name="Registe_agree_user_agreement_prompt">注册即代表同意</string>
+
+    <!-- v6.4 -->
+    <string name="Same_city">同城</string>
+
+    <!-- v6.5 -->
+    <string name="Go_start">GO</string>
+    <string name="Go_binding">绑定GO</string>
+    <string name="Go_binding_indictor_prompt">请确认指示灯停止闪烁，保持长亮。</string>
+    <string name="Go_binding_start_prompt">长按 5 秒直到指示灯快闪，\n此时GO进入绑定模式。</string>
+    <string name="Go_binding_complete_prompt">绑定成功。</string>
+    <string name="Go_binding_success">开启我的GO生涯</string>
+    <string name="Go_binding_failed">配置失败</string>
+    <string name="Go_binding_too_much">绑定GO失败，最多只能绑定3个GO</string>
+    <string name="Title_go_list">GO设备列表</string>
+    <string name="Go_target">遛狗目标</string>
+    <string name="Mode_of_light_circle">灯环模式</string>
+    <string name="Mode_of_light_time">亮灯时间</string>
+    <string name="Mode_of_light_night">夜间灯环</string>
+    <string name="Mode_of_light_night_desc">遛狗模式下亮起灯环</string>
+    <string name="Mode_of_light_on_charge">充电灯环</string>
+    <string name="Mode_of_light_on_charge_desc">充电时亮起灯环</string>
+    <string name="Mode_of_coming_call">来电提醒</string>
+    <string name="Frequency_of_vibration">震动模式</string>
+    <string name="Number_of_vibration">震动次数</string>
+    <string name="Mac_address_format">Mac地址: <xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Disconnect">未连接</string>
+    <string name="Connected">已连接</string>
+    <string name="Setting_need_connect_device">设备未连接</string>
+    <string name="Number_of_vibration_prompt">来电提醒时震动的次数</string>
+    <string name="Go_delete_prompt">确定删除GO吗？</string>
+    <string name="Go_target_set_prompt">请设定一个你每日的遛狗时间</string>
+    <string name="Default">默认</string>
+    <string name="Mode_of_light_circle_gradient">渐变</string>
+    <string name="Mode_of_light_circle_long">长亮</string>
+    <string name="Mode_of_light_circle_twinkle">闪烁</string>
+    <string name="Mode_of_vibration_remind">提醒</string>
+    <string name="Mode_of_vibration_quick">S.O.S.</string>
+    <string name="Mode_of_vibration_heart">心跳</string>
+    <string name="Number_of_vibration_one">一次</string>
+    <string name="Number_of_vibration_two">二次</string>
+    <string name="Number_of_vibration_three">三次</string>
+    <string name="Number_of_vibration_four">四次</string>
+    <string name="Number_of_vibration_more">持续</string>
+    <string name="Time_hour_and_minute_format"><xliff:g id="prefix">%s</xliff:g><xliff:g id="prefix">%s</xliff:g><xliff:g id="prefix">%s</xliff:g><xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Distance">距离</string>
+    <string name="Location">位置</string>
+    <string name="Total_time">总时间</string>
+    <string name="Total_distance">总距离</string>
+    <string name="Go_walk_record">遛狗记录</string>
+    <string name="Go_walk_complete">遛狗完成</string>
+    <string name="Complete">已完成</string>
+    <string name="Target_completed">目标达成</string>
+    <string name="Normal_time_to_time_format"><xliff:g id="prefix">%s</xliff:g> - <xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Go_complete_task_less_format">距离完成还剩\n<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Go_walk_list_emty">今天还没有遛狗信息</string>
+    <string name="Go_walking">正在遛狗</string>
+    <string name="Go_walking_cancel_prompt">确认停止这次遛狗吗？</string>
+    <string name="Go_walking_duration_short_prompt">本次遛狗时间太短，将无法保存，你确认停止吗？</string>
+    <string name="Go_walking_with_no_gps_prompt">未获取到路径图\n*遛狗时带上手机，获取遛狗路径</string>
+    <string name="Go_walking_with_no_gps_faq">我已带上手机></string>
+    <string name="Go_walking_low_power_prompt">检测到你的GO电量过低，可能会自动关机。是否关闭灯环以节省电量？</string>
+    <string name="Go_walking_open_gps_prompt">只有开启了GPS定位，才可以使用GO来绘制路径哦，快去开启GPS吧</string>
+    <string name="Go_walking_record_prompt_format">检测到你有<xliff:g id="prefix">%s</xliff:g>条遛狗记录，快去查看吧</string>
+    <string name="Go_walking_doing">当前正在遛狗中…</string>
+    <string name="Go_walking_doing_short">遛狗中</string>
+    <string name="Go_walking_complete">遛狗结束啦</string>
+    <string name="Go_walking_low_power_notice">当前电量较低，建议关闭灯环节省电量。</string>
+    <string name="Go_walk_share_time_and_distance_format">遛狗时间：<xliff:g id="prefix">%s</xliff:g>，距离：<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Go_walk_share_location_format">我在<xliff:g id="prefix">%s</xliff:g>附近，</string>
+    <string name="Go_ble_not_supported">你的手机不支持使用GO功能</string>
+    <string name="Go_ota_notice_1">请把GO设备放在手机\n\n附近,点击开始。</string>
+    <string name="Go_ota_notice_2">升级过程中\n\n请不要移动GO设备。</string>
+    <string name="Go_ota_notice_3">恭喜你,\n\n固件已升级至最新版本。</string>
+    <string name="Go_ota_failed_as_walking">请先结束当前的遛狗,再进行固件升级哦</string>
+    <string name="Square">广场</string>
+    <string name="Go_set_light_time">在该时间段开启遛狗模式, GO会启动灯环效果。</string>
+    <string name="Next_day">次日</string>
+    <string name="Go_intro_start">开启遛狗模式</string>
+    <string name="Go_intro_notice_1">1.长按两秒至指示灯亮起, 进入遛狗模式。</string>
+    <string name="Go_intro_notice_2">2.请保持手机蓝牙开启, APP正常运行。</string>
+    <string name="Go_intro_notice_3">3.手机APP会自动记录遛狗路径。</string>
+    <string name="Go_intro_notice_5">5.指示灯闪烁表示已与手机断开连接, 此时遛狗路径无法记录, 请查看手机。</string>
+    <string name="Go_intro_notice_6">6.来电时GO会震动提醒。</string>
+    <string name="Finish">结束</string>
+    <string name="Go_time_set_title">设定目标</string>
+    <string name="Go_incoming_call_model_show">来电提醒时震动的模式</string>
+    <string name="BT_write_wifi_data_timeout">设置失败，请重试</string>
+    <string name="Go_share_text">小佩智能牵引绳GO，爱上遛狗</string>
+    <string name="Hint_device_add_prompt">直接在这里添加小佩系列\n装备哦。</string>
+    <string name="Not_remind">不再提醒</string>
+    <string name="I_know">我知道了</string>
+    <string name="Go_walk_cancel_guide_prompt">你也可以长按GO按钮，结束遛狗哦。</string>
+    <string name="Standby">待机</string>
+    <string name="Go_compare_tips">如弹出蓝牙配对请求，\n请点击\“配对\”</string>
+    <string name="Authorization_failed">授权失败</string>
+    <string name="Login_third_count">使用第三方账号来登录</string>
+    <string name="NSCalendarsUsageDescription">APP需要用到你的日历</string>
+    <string name="NSCameraUsageDescription">App需要获取您的相机权限， 用于发帖等功能。
+</string>
+    <string name="NSContactsUsageDescription">APP需要用到你的通讯录</string>
+    <string name="NSMicrophoneUsageDescription">App需要获取您的麦克风权限，用于完成MATE的语音对讲功能。</string>
+    <string name="NSPhotoLibraryUsageDescription">App需要获取您的相册访问权限，用于发帖等功能。
+</string>
+    <string name="NSBluetoothPeripheralUsageDescription">App 需要获取您的蓝牙权限，用于链接硬件设备。</string>
+
+    <!-- v6.6 -->
+    <string name="My_marks">我的标记</string>
+    <string name="Device_list">设备列表</string>
+    <string name="Battery_left_format">电量：<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Last_sync_time_format">上次同步：<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Last_watch_time_format">上次观看：<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Last_walk_time_format">上次遛狗：<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Mate_share_owner_format">由<xliff:g id="prefix">%s</xliff:g>共享</string>
+    <string name="Marker">标记</string>
+    <string name="Hint_set_go_walk_location">请选择一个附近的位置</string>
+    <string name="Walk_history_desc_start_format"><xliff:g id="prefix">%s</xliff:g>开始遛狗</string>
+    <string name="Walk_history_desc_point_format"><xliff:g id="prefix">%s</xliff:g>标记</string>
+    <string name="Walk_history_desc_point_without_location_format"><xliff:g id="prefix">%s</xliff:g>标记(丢失地理位置)</string>
+    <string name="Walk_history_desc_end_format"><xliff:g id="prefix">%s</xliff:g>结束遛狗</string>
+    <string name="Title_pet_select">选择宠物</string>
+    <string name="Markers_number_format"><xliff:g id="prefix">%s</xliff:g>个标记点</string>
+    <string name="Click_to_see_marker">查看我的标记点</string>
+    <string name="Notice_add_pet_to_use_marker">必须添加宠物才能使用该功能</string>
+    <string name="Notice_markers_is_empty">还没有标记点</string>
+    <string name="Marker_intensity">标记强度</string>
+    <string name="Hint_see_marker_failed_as_pet_is_deleted">该宠物已删除，无法查看这个标记</string>
+    <string name="Hint_marker_is_disappeared_follow_time">这个标记点随着时间流逝，已经消失啦～</string>
+    <string name="Private_food">自定义宠粮</string>
+    <string name="Select">选择</string>
+    <string name="Click_add_icon_to_add_device">点击\"+\"添加设备</string>
+    <string name="How_to_use">如何获取》</string>
+    <string name="Go_intro_notice_4">4.宠物做标记时双击记录标记位置。</string>
+    <string name="Go_intro_position">以后可以在设置里查看使用说明哦</string>
+    <string name="We_are_using">大家都在使用</string>
+    <string name="Notice_community_with_pets">使用GO\n发现毛孩子们的交流</string>
+    <string name="What_is_go">了解GO》</string>
+    <string name="Mark_save_max">最多保存<xliff:g id="prefix">%s</xliff:g>个标记点</string>
+    <string name="Drop_update_info">松开更新设备状态</string>
+    <string name="Homepage_guide_description">长按拖动可调换位置</string>
+    <string name="Instructions">使用说明</string>
+    <string name="Hint_permission_is_need">为了你能够正常使用小佩宠物，需要以下信息</string>
+    <string name="Permission_storage">存储空间</string>
+    <string name="Permission_phone_state">设备信息</string>
+    <string name="Permission_location">位置信息</string>
+    <string name="Hint_permission_storage_must_request">我们需要获取存储空间，为你存储个人信息；否则，你将无法正常使用小佩宠物</string>
+
+    <!-- v6.8 -->
+    <string name="Not_complete">未完成</string>
+    <string name="Canceled">已取消</string>
+    <string name="Not_start">未开始</string>
+    <string name="Unknown">未知</string>
+    <string name="Breakfast">早餐</string>
+    <string name="Lunch">午餐</string>
+    <string name="Dinner">晚餐</string>
+    <string name="Timing">定时</string>
+    <string name="Online">在线</string>
+    <string name="Offline">离线</string>
+    <string name="Tag">标签</string>
+    <string name="Remove">移除</string>
+    <string name="Recovery">恢复</string>
+    <string name="Tomorrow">明天</string>
+    <string name="Repeat">重复</string>
+    <string name="Temporary_cancellation">临时取消</string>
+    <string name="Feeder_record_empty_prompt">暂无记录</string>
+    <string name="Feeder_plan_opened">计划已开启</string>
+    <string name="Feeder_plan_closed">计划已关闭</string>
+    <string name="Feeder_name_format"><xliff:g id="prefix">%s</xliff:g>的喂食器</string>
+    <string name="Feeder_plan">喂食计划</string>
+    <string name="Feeder_plan_item">喂食单</string>
+    <string name="Feeder_plan_item_add">添加喂食单</string>
+    <string name="Feeder_plan_number">喂食次数</string>
+    <string name="Feeder_plan_total_amount">喂食总量</string>
+    <string name="Feeder_amount">喂食量</string>
+    <string name="Feeder_plan_item_edit">修改食单</string>
+    <string name="Hint_set_feeder_plan_time_null">请先设置喂食时间</string>
+    <string name="Hint_set_feeder_plan_tag_null">请先设置喂食标签</string>
+    <string name="Hint_set_feeder_plan_amount_null">请先设置喂食量</string>
+    <string name="Hint_set_feeder_plan_time_invalid">不能设置重复的喂食时间</string>
+    <string name="Feeder_plan_has_edited_prompt">你修改的喂食单还未保存，确认退出吗？</string>
+    <string name="Content_and_state_with_brackets_format"><xliff:g id="prefix">%s</xliff:g>（<xliff:g id="prefix">%s</xliff:g>）</string>
+    <string name="Feeder_add_manual_online">加餐</string>
+    <string name="Feeder_add_manual_offline">手动</string>
+    <string name="Feeder_offline_prompt">设备离线，无法获取出粮结果。</string>
+    <string name="Plan_edit">修改计划</string>
+    <string name="Feeder_plan_name_format"><xliff:g id="prefix">%s</xliff:g>的喂食计划</string>
+    <string name="Feeder_unit">cup</string>
+    <string name="Feeders_unit">cup</string>
+    <string name="Feeder_unit_short">c</string>
+    <string name="Feeder_plan_edit">编辑喂食计划</string>
+    <string name="Feeder_now_title">立即出粮</string>
+    <string name="Feeder_device_error">错误</string>
+    <string name="Feeder_check_device">请检查设备</string>
+    <string name="Feeding">正在出粮</string>
+    <string name="Title_feeder_bind_start">开始</string>
+    <string name="Title_feeder_bind_start_ap">开启热点</string>
+    <string name="Title_feeder_bind_connect_ap">连接设备</string>
+    <string name="Title_feeder_bind_wifi_set">设置网络</string>
+    <string name="Feeder_bind_connect_ap_prompt">请将手机连接到“PETKIT_AP_”\n开头的Wi-Fi\n后返回小佩宠物</string>
+    <string name="Title_bind_complete">配置结束</string>
+    <string name="Feeder_bind_prompt">尽量使您的路由器、手机和设备互相靠近</string>
+    <string name="Set_current_wifi">设置当前Wi-Fi</string>
+    <string name="Wifi_change">更换Wi-Fi</string>
+    <string name="Wifi_5g_not_support_prompt">提示：不支持5G Wi-Fi</string>
+    <string name="Bind_successfully">配置成功</string>
+    <string name="Feeder_plan_generate">自动生成喂食计划</string>
+    <string name="Feeder_plan_manual">手动设置喂食计划</string>
+    <string name="Bind_failed">配置失败</string>
+    <string name="Device_bind_for_help">无法解决问题></string>
+    <string name="Wifi_set">去设置</string>
+    <string name="Title_bind_feeder">绑定FRESH E</string>
+    <string name="Title_bind_fit">绑定FIT</string>
+    <string name="Error_password_wrong">密码错误</string>
+    <string name="Error_ap_not_found">Wi-Fi不存在</string>
+    <string name="Feeder_wifi_setting">正在设置设备Wi-Fi…</string>
+    <string name="Feeder_desiccant_left_time_format">干燥剂剩余使用时间：<xliff:g id="prefix">%s</xliff:g><xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Reset">复位</string>
+    <string name="Feeder_remind_feeding">喂食提醒</string>
+    <string name="Feeder_remind_feeding_prompt">设备出粮时通知</string>
+    <string name="Feeder_remind_desiccant">更换干燥剂提醒</string>
+    <string name="Feeder_remind_desiccant_prompt">干燥剂到达使用期限时发出通知</string>
+    <string name="Feeder_remind_food">缺粮提醒</string>
+    <string name="Feeder_remind_food_prompt">缺粮时通知用户</string>
+    <string name="Error_wifi_setting_not_mine">设置Wi-Fi失败，请确认周围没有其他正在配置的设备</string>
+    <string name="Error_wifi_setting_failed">设置Wi-Fi失败，请确认网络是否正常</string>
+    <string name="Error_wifi_setting_empty">请确认手机已连接到Wi-Fi</string>
+    <string name="Click_to_see_feed">查看喂食情况</string>
+    <string name="Message_click_reset">点击复位</string>
+    <string name="About">约</string>
+    <string name="Hint_feeding_stop">你确定终止出粮吗？</string>
+    <string name="Mate_select">选择MATE</string>
+    <string name="Feeder_item_unknown_prompt">出粮时设备离线，未能获取这条喂食记录的完成度。</string>
+    <string name="Feeder_item_not_start_prompt">已为过去的时间，这一餐将从明天开始执行。</string>
+    <string name="Feeder_net_null">请先连接Wi-Fi</string>
+    <string name="Feeder_ap_wrong">网络不存在，请确认网络非5G网络并且名称输入是否正确</string>
+    <string name="Go_open_gps">为保证app在后台继续绘制路径图，请把您的定位服务改为\“始终\”</string>
+    <string name="Hint_delete_feeder">确认删除喂食器吗？</string>
+    <string name="Hint_delete_feeder_plan_item">确认删除喂食单吗？</string>
+    <string name="Hint_reset_desiccant">开始使用新的干燥剂，确认复位么？</string>
+    <string name="Hint_you_must_select_one">重复周期不能全部清除哦</string>
+    <string name="Feeder_ota_tips">固件更新由设备独立完成，你可以在这里查看进度，也可以退出或最小化 APP 进行其它操作\n注意：升级过程中，喂食器的功能将被禁用！</string>
+    <string name="Message_click_buy">点击购买</string>
+    <string name="Hint_feeder_has_been_removed">该喂食器已被删除！</string>
+    <string name="Hint_device_bind_error">设备绑定失败，请重启设备再重新绑定！</string>
+    <string name="Hint_change_wifi">请到\"\"设置-\"\" Wi-Fi中\n连接你希望设置的工作Wi-Fi,\n返回“小佩宠物”即可</string>
+    <string name="Feeder_click_back">点击返回小佩宠物</string>
+    <string name="Feeder_connect_success">连接 <xliff:g id="prefix">%s</xliff:g> 成功</string>
+    <string name="Feeder_bind_prompt_2">请确保当前使用的不是5G网络，并输入正确的网络密码</string>
+    <string name="Bind_successfully_prompt">请合上桶盖</string>
+    <string name="Feeder_state_wait">待出粮</string>
+    <string name="Hint_set_feeder_time">选择出粮时间</string>
+    <string name="Hint_set_feeder_tag">设置餐名</string>
+    <string name="Hint_set_feeder_amount">设置出粮份数</string>
+    <string name="Hint_suspend_feeder_plan">关闭计划后，喂食器将不再执行当前设定的出粮计划。</string>
+    <string name="Feeder_bind_start_prompt_format">长按RESET按钮\“<xliff:g id="prefix">%s</xliff:g>秒\”，\n直到听到滴滴响声</string>
+    <string name="Feeder_bind_start_ap_prompt_format">“<xliff:g id="prefix">%s</xliff:g>”RESET按钮，\n至三排指示灯全亮</string>
+    <string name="Double_click">双击</string>
+    <string name="Wifi">Wi-Fi</string>
+    <string name="Hint_password_not_contains_special_chat">请确认输入的密码是否存在不必要的空格、或者全角半角符号问题。</string>
+    <string name="Feeder_add_today">加餐（今天）</string>
+    <string name="Feeder_add_tomorow">加餐（明天）</string>
+    <string name="Feeder_add_set_time">明天</string>
+    <string name="Feeder_amount_feeded">已出粮</string>
+    <string name="Feeder_amount_plan_format">计划<xliff:g id="prefix">%s</xliff:g><xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Feeder_error_prompt">提醒</string>
+    <string name="Hint_empty_password">你未输入Wi-Fi密码，请确认这是没有密码的Wi-Fi</string>
+    <string name="Feeder_food_left_format">余粮<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Feeder_food_empty">缺粮</string>
+    <string name="Feeder_ota_start_offline_prompt">当前设备离线，在线后会立即更新</string>
+    <string name="Message_click_more">点击查看</string>
+    <string name="Feeder_setting_manual">手动喂粮</string>
+    <string name="Feeder_setting_manual_open_prompt">打开将开启手动按钮的使用，请确认。</string>
+    <string name="Feeder_setting_manual_close_prompt">关闭手动按钮可以防止宠物误触，请确认。</string>
+    <string name="Hint_open_bluettoth">你的设备\“<xliff:g id="prefix">%s</xliff:g>\”需要打开系统蓝牙才能正常使用</string>
+
+    <!-- v6.10 -->
+    <string name="Feeder_setting_light">指示灯</string>
+    <string name="Feeder_setting_light_time_prompt">在该时间段喂食器状态灯亮起</string>
+    <string name="Repair">修复</string>
+    <string name="Repairing">修复中…</string>
+    <string name="Repair_success">修复成功</string>
+    <string name="Repair_failed">修复失败，请查看出粮门</string>
+    <string name="Feeder_bind_start_next_prompt">我已长按</string>
+    <string name="Feeder_bind_start_ap_next_prompt">指示灯已全亮</string>
+    <string name="Feeder_bind_ap_not_found">没有找到这个Wi-Fi ></string>
+    <string name="For_more_help">更多帮助 ></string>
+
+    <!-- v6.11 -->
+    <string name="Feeder_setting_manual_prompt">关闭防止宠物误触</string>
+    <string name="Feeder_setting_light_prompt">打开之后设置指示灯亮灯时间</string>
+    <string name="Feeder_adjust">余粮校准</string>
+    <string name="Feeder_adjust_subtitle">拆装电池后需要进行余粮校准</string>
+    <string name="Feeder_adjust_prompt_1_format">1.卸下螺丝，打开电池盖。\n2.请将4节1号干电池按照正负极装入电池仓。（安装/更换电池时请确保储粮桶内无粮，否则校准时将<xliff:g id="prefix">%s</xliff:g>）\n3.电池安装完毕后，请进行余粮校准，否则可能导致余粮显示不正确\n4.每次装入、取出或更换电池都需要操作以一次校准。</string>
+    <string name="Feeder_adjust_prompt_warning_1">全部吐出</string>
+    <string name="Feeder_adjust_prompt_2_format">校准时设备会<xliff:g id="prefix">%s</xliff:g>，为了防止误操作，请确保清空喂食器内主粮后再校准。</string>
+    <string name="Feeder_adjust_prompt_warning_2">吐出喂食器内全部主粮</string>
+    <string name="Feeder_adjust_start">已清空存储桶，开始校准</string>
+    <string name="Feeder_adjust_start_prompt">校准时设备会吐出喂食器内全部主粮，请慎重！确认是否继续？</string>
+    <string name="Feeder_adjust_doing">校准中</string>
+    <string name="Feeder_adjust_success">校准完成，点击关闭</string>
+    <string name="Feeder_adjust_failed">校准失败，点击重试</string>
+
+    <!-- v6.11.2 -->
+    <string name="Feeder_manual_feed_upgrade_title">手动出粮升级</string>
+    <string name="Feeder_manual_feed_upgrade_detail_formal">喂食器手动出粮由短按出粮更改\n为<xliff:g id="prefix">%s</xliff:g>，松开结束出粮。</string>
+    <string name="Feeder_manual_feed_pressed">按住出粮</string>
+
+    <!-- v6.12 -->
+    <string name="Device_share">设备共享</string>
+    <string name="Hint_cancel_feeder_share">确认取消喂食器共享吗？</string>
+    <string name="Feeder_share_see_now">立即查看</string>
+    <string name="Feeder_share_message_format"><xliff:g id="prefix">%s</xliff:g>的FreshE</string>
+    <string name="Pet_feed_food_setting">设置主粮</string>
+
+    <!-- v6.13 -->
+    <string name="Cozy_name_format"><xliff:g id="prefix">%s</xliff:g>的窝</string>
+    <string name="Mode_balance">室温</string>
+    <string name="Mode_cool">制冷</string>
+    <string name="Mode_hot">制热</string>
+    <string name="Indoor_temp_format">室内温度：<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Indoor_humidity_format">室内湿度：<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Rest_record">休息记录</string>
+    <string name="Entry">进入</string>
+    <string name="Cozy_cat_stay_time">逗留时间</string>
+    <string name="Cozy_cat_state_out">• 宠物不在窝里</string>
+    <string name="Cozy_temp_loading">正在获取数据</string>
+    <string name="Title_bind_cozy">绑定宠物窝</string>
+    <string name="Cozy_bind_successfully_prompt">按下开机键开始使用</string>
+    <string name="Power">开机键</string>
+    <string name="Cozy_setting_light">指示灯</string>
+    <string name="Cozy_setting_light_prompt">打开之后可设置提示灯亮起时间</string>
+    <string name="Hint_delete_cozy">确认删除宠物窝吗？</string>
+    <string name="Cozy_setting_light_range_prompt">在该时间段宠物窝状态灯亮起</string>
+    <string name="Cozy_setting_power">开关</string>
+    <string name="Cozy_setting_cat">记录</string>
+    <string name="Cozy_work_temp">当前温度</string>
+    <string name="Power_off">已关机</string>
+    <string name="Cooling">降温中</string>
+    <string name="Heating">升温中</string>
+    <string name="Cozy_offline_prompt">设备已离线，请检查网络</string>
+    <string name="Cozy_bind_ap_light_show">Wi-Fi指示灯正在快速闪烁</string>
+    <string name="Cozy_bind_start_prompt_format">长按上图所示按钮“<xliff:g id="prefix">%s</xliff:g>秒”，\n直到指示灯快速闪烁后，开启成功</string>
+    <string name="Cozy_bind_connect_ap_prompt">请将手机连接到“PETKIT_COZY_”\n开头的Wi-Fi\n后返回小佩宠物</string>
+    <string name="Cozy_cat_in">• 宠物正在窝里休息</string>
+
+    <!-- v6.13-2 -->
+    <string name="Wifi_without_password">无密码</string>
+    <string name="Wifi_protect_format">通过<xliff:g id="prefix">%s</xliff:g>保护</string>
+    <string name="Wifi_state_able">可连接网络</string>
+    <string name="Wifi_state_disable">不可连接网络</string>
+    <string name="Wifi_not_support">智能设备暂不支持该网络类型，请使用家庭路由器连接</string>
+
+    <!-- v6.16 -->
+    <string name="Wifi_password_hint">请输入Wi-Fi密码</string>
+    <string name="Device_connect_process">尝试与设备建立连接</string>
+    <string name="Cozy_wifi_mention">设备连接中…</string>
+    <string name="Cozy_wifi_mention_detail">手机将暂时断开路由器并连接设备,请尽量使您的手机和设备相互靠近</string>
+    <string name="Cozy_wifi_mention_update">正在更新连接状态，请稍候</string>
+    <string name="Cozy_wifi_mention_detail_update">请尽量使您的设备靠近路由器，并确保网络环境良好</string>
+    <string name="Check_light_status">请检查设备指示灯状态</string>
+    <string name="Select_follow_status">选择下列状态</string>
+    <string name="Fast_shining">快速闪烁</string>
+    <string name="Common_shining">匀速闪烁（两秒一次）</string>
+    <string name="Other_status">其他情况</string>
+    <string name="Select_device_wifi">选择设备工作WiFi</string>
+    <string name="Cozy_Cannot_connect_to_wifi">该状态说明设备未能连接到工作的WI-FI, 请检查:</string>
+    <string name="Cozy_Cannot_find_wifi">该状态说明设备没有接收到工作WI-FI的信息,可能是你的路由器对当前模式支持不佳, 你可以选择:</string>
+    <string name="Cozy_Cannot_access_wifi">该状态说明设备已经连接到工作的WI-FI, 请确保你的路由器网络是否畅通, 你可以选择:</string>
+    <string name="Cozy_Fast_shining_status_check">1.工作的WI-FI是2.4G网络,并采用 wpa/wpa2进行保护.\n2.工作WI-FI的密码输入正确\n3.工作WI-FI的信号稳定,网络畅通.</string>
+    <string name="Refresh_status">刷新状态</string>
+    <string name="Cozy_Other_status_check"><xliff:g id="prefix">%s</xliff:g>后重新连接设备， 并对工作WI-FI重新设置</string>
+    <string name="Cozy_Other_status_solve2">2.若确认WIFI正常,你可尝试<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Your_can_select">您可以选择:</string>
+    <string name="Reconnect_device"><xliff:g id="prefix">%s</xliff:g>，重新连接设备</string>
+    <string name="Reset_working_wifi">重设工作WIFI</string>
+    <string name="Reset_device">重置设备</string>
+    <string name="Current_wifi">当前Wi-Fi:</string>
+    <string name="Cozy_bind_mention">连接电源，确认设备处于待连接状态</string>
+    <string name="Cozy_bind_ap_light_off">指示灯处于其它状态</string>
+    <string name="Cozy_cold">偏冷</string>
+    <string name="Cozy_hot">偏热</string>
+    <string name="Cozy_rest_duration">休息时段</string>
+    <string name="Cozy_before_dawn">凌晨 (00:00–06:00)</string>
+    <string name="Cozy_morning">上午 (06:00–12:00)</string>
+    <string name="Cozy_afternoon">下午 (12:00–18:00)</string>
+    <string name="Cozy_night">夜晚 (18:00–24:00)</string>
+    <string name="Cozy_total_rest">共休息</string>
+    <string name="Cozy_current_temp">当前温度</string>
+    <string name="Cozy_target_temp">目标温度</string>
+    <string name="Cozy_expect_time">预期时间</string>
+    <string name="Cozy_error">设备故障</string>
+    <string name="Cozy_title_add_cozy">添加宠物窝</string>
+    <string name="Cozy_select_wifi">选取网络</string>
+    <string name="Cozy_record_more">查看更多记录</string>
+    <string name="Temperature_message">您只需要按下开机键让设备开始工作，智能宠物窝会根据当前所处的环境温度会自动调节到宠物需要的适宜温度，不需要您手动调整。\n \n            如果您的宠物爱好偏热或者偏冷的环境，可针对推荐温度进行微调。</string>
+    <string name="About_temperature_message">关于推荐温度</string>
+    <string name="Cozy_temperature_colding">降温中</string>
+    <string name="Cozy_temperature_hoting">升温中</string>
+    <string name="Unit_second">秒</string>
+    <string name="Unit_seconds">秒</string>
+    <string name="Cozy_indoor_temp">室内温度</string>
+    <string name="Cozy_indoor_humidity">室内湿度</string>
+    <string name="Cozy_open_state">开启待连接状态</string>
+    <string name="Cozy_BLEUI_Bind_invalid_device_format">亲，您的设备已被<xliff:g id="prefix">%s</xliff:g>绑定了哦</string>
+    <string name="Cozy_cold_level_max">最冷</string>
+    <string name="Cozy_hot_level_max">最热</string>
+    <string name="Select_device_wifi_info">选择设备WiFi</string>
+    <string name="Wifi_open_first">请先打开手机Wi-Fi</string>
+
+    <!-- v6.17 -->
+    <string name="Cozy_auto">自动</string>
+    <string name="Cozy_not_auto">手动</string>
+    <string name="Cozy_manual_set">如何手动设置温度？</string>
+    <string name="Cozy_manual_set_message">• 点击一次进入手动模式，默认执行上一次设置温度 \n \n• 再次点击进入温度设置</string>
+    <string name="Cozy_choose_temp">选择温度:</string>
+    <string name="Cozy_temp_error">未到达设定温度？</string>
+    <string name="Cozy_temp_error_message">在制热时，设定温度与环境温度相差过大时会影响制热效果。\n在制冷时，宠物窝的降温效果会受到环境湿度和温度影响。环境湿度过高时，为避免结露而产生冷凝水，设备会进行自我保护，此时的目标温度不会低于结露的温度。</string>
+    <string name="State_working">工作中</string>
+    <string name="State_error">故障</string>
+    <string name="Hint_switch_network_for_iphonex">请将您手机的网络切换到家庭WiFi，再返回小佩宠物。</string>
+    <string name="Temp_unit_table_section_title">应用中所有温度将按所选单位制度显示</string>
+    <string name="Temp_unit_metric">摄氏度（℃）</string>
+    <string name="Temp_unit">温度单位</string>
+    <string name="Temp_unit_fahrenheit">华氏度（℉）</string>
+
+    <!-- v6.19 -->
+    <string name="Cozy_dew_point_mention">该温度处于结露范围，长时间工作垫子可能会潮。</string>
+    <string name="Cozy_dew_point_mention_detail">当前环境湿度过高，您选择的温度处于结露范围，长时间工作可能会导致垫子有些潮湿，但是能够达到降温的效果，是否继续？</string>
+    <string name="Cozy_temp_dew_error">当前温度处于结露范围</string>
+    <string name="Cozy_temp_dew_mention_title">结露提醒</string>
+    <string name="Cozy_temp_dew_error_message">宠物窝当前工作处于结露范围，窝内温度下降会使得空气中的水分凝结在垫子上，导致垫子会有些潮，请及时观察垫子的情况。</string>
+    <string name="Cozy_record_data_unnormal">数据异常</string>
+    <string name="Cozy_record_data_unnormal_mention">数据异常提醒</string>
+    <string name="Cozy_record_data_unnormal_check">您当前数据出现异常，请按上图所示进行排查：</string>
+    <string name="Cozy_record_data_unnormal_detail">1. 窝内是否有外物遮挡;\n2. 红外两端的对射口是否有毛发等异物遮挡；\n如果以上都正常，请联系小佩客服处理。</string>
+
+    <!-- v6.20 -->
+    <string name="Create">创建</string>
+    <string name="Create_pet_mention">没有可选择的宠物，快添加一个吧</string>
+    <string name="Timezone_mention_for_cozy_record">休息记录以设备时间为准</string>
+    <string name="Timezone_mention_for_feeder_plan">喂食计划以设备时间为准</string>
+    <string name="Device_time">设备时间</string>
+    <string name="About_device_time">关于时间显示</string>
+    <string name="Hint_cancel_cozy_share">您即将取消这个宠物窝，取消后将无法使用，确认吗？</string>
+    <string name="About_device_time_introduce">您当前所处时区与设备不同，所以您的手机时间与设备时间是不一致的。\n在这种情况下，App中设备相关的所有时间都是以设备时间为准。</string>
+    <string name="Cozy_share_message_format"><xliff:g id="prefix">%s</xliff:g>的Cozy</string>
+    <string name="No_authority_for_device">你没有对此设备的权限</string>
+    <string name="Privacy_policy">隐私政策</string>
+    <string name="Privacy_policy_content">我们的隐私政策将于2018年7月1日生效。我们对隐私政策进行了详细修订，从该日期开始，这一隐私政策能够提供有关我们如何管理您在使用所有小佩产品和服务时透露的个人信息的隐私详情。\n请花一些时间熟悉我们的隐私政策，如果您有任何问题，请告诉我们。</string>
+    <string name="Understand_privacy_policy">了解小佩宠物隐私政策</string>
+    <string name="Confirm">确认</string>
+
+    <!-- v6.22 -->
+    <string name="Title_bind_d2">绑定喂食器Mini</string>
+    <string name="D2_name_format"><xliff:g id="prefix">%s</xliff:g>的喂食器Mini</string>
+    <string name="D2_bind_connect_ap_prompt">请将手机连接到‘PETKIT_FEEDER_HW2_’开头的Wi-Fi后返回小佩宠物</string>
+    <string name="D2_bind_successfully_prompt">开启智能喂食新体验</string>
+    <string name="D2_plan_edit_prompt">- 实际结果与主粮颗粒大小及密度相关 -</string>
+    <string name="D2_plan_edit_prompt_star">* 实际结果与主粮颗粒大小及密度相关</string>
+    <string name="D2_plan_number">喂食次数 (times)</string>
+    <string name="D2_plan_total_amount">喂食总量 (cup)</string>
+    <string name="D2_remind_battery_prompt">电池模式下电量不足通知</string>
+    <string name="D2_remind_battery">电池低电量提醒</string>
+    <string name="Battery_mode_introduce">电池模式说明</string>
+    <string name="Food_lack_warn">缺粮预警</string>
+    <string name="Food_lack_warn_detail">桶内余粮不足，请及时添粮。</string>
+    <string name="Feed_plan_delay">图标表示保存成功，设备退出休眠时立即生效</string>
+    <string name="Feed_wait_execute">保存成功，设备退出休眠时立即生效</string>
+    <string name="D2_battery_mode">电池模式</string>
+    <string name="D2_setting_light_range_prompt">在该时间段设备状态灯亮起</string>
+    <string name="Feeder_food_lack">不足</string>
+    <string name="Feed_status_adequate">充足</string>
+    <string name="Food_change">更换主粮</string>
+    <string name="D2_Feeder_error_prompt">提醒</string>
+    <string name="Battery_mode_introduce_detail_1">喂食器当前处于电池模式，正在使用电池，为了延长电池的使用时间，设备会间歇性进入休眠，指示灯一直保持关闭。\n</string>
+    <string name="Battery_mode_introduce_detail_2">若您在休眠期间修改了喂食计划，在App端保存即可，当设备退出休眠时会立即生效。</string>
+    <string name="D2_offline_mention">设备当前离线，若供电正常则喂食器正常运行，但是App端无法获取喂食机的喂食情况，请检查网络。</string>
+    <string name="Device_offline">设备离线</string>
+    <string name="D2_ota_start_offline_prompt">当前设备离线或者处于电池模式，在线后会立即更新</string>
+    <string name="Week_Monday_2">一</string>
+    <string name="Week_tuesday_2">二</string>
+    <string name="Week_wednesday_2">三</string>
+    <string name="Week_thursday_2">四</string>
+    <string name="Week_friday_2">五</string>
+    <string name="Week_saturday_2">六</string>
+    <string name="Week_sunday_2">日</string>
+
+    <!-- v6.23 -->
+    <string name="Title_upgrade_app">升级应用</string>
+    <string name="Need_permission_upgrade">需要允许来自此来源的应用的权限，请去设置中开启此权限</string>
+
+    <!-- v6.24 -->
+    <string name="Hint_set_d2_plan_time_break">喂食计划的时间间隔不能小于五分钟</string>
+
+    <!-- v6.24 -->
+    <string name="Hint_reset_password">您的账号当前已绑定邮箱，可通过邮箱验证码重置密码，即将发送验证码到</string>
+    <string name="Hint_code_sent">已发送验证码至</string>
+    <string name="Title_fill_code">输入验证码</string>
+
+    <!-- v7.0 -->
+    <string name="Pet_state">状态</string>
+    <string name="Pet_state_physiology">生理状态</string>
+    <string name="Pet_state_weight">体重控制</string>
+    <string name="Pet_state_null">无</string>
+    <string name="Pet_state_lazy">有点懒</string>
+    <string name="Pet_state_active">好动</string>
+    <string name="Pet_state_normal">正常</string>
+    <string name="Whole">全部</string>
+    <string name="My_tools">我的工具</string>
+    <string name="All_devices">全部设备</string>
+    <string name="Binded_devices">关联设备</string>
+    <string name="Pet_manage">宠物管理</string>
+    <string name="Pet_gain_weight">增肥中</string>
+    <string name="Pet_lose_weight">减肥中</string>
+    <string name="Look_up_health_feed">查看健康喂养数据</string>
+    <string name="No_remind">暂无提醒</string>
+    <string name="Add_device">为爱宠添加一个设备吧，别再让这里空空如也</string>
+    <string name="Add_pet">点击添加宠物</string>
+    <string name="Click_add_device">点击添加设备</string>
+
+    <!-- v7.2 -->
+    <string name="Permission_access_failed">权限请求失败</string>
+    <string name="Permission_access_set">权限被禁止，请到设置中打开应用的相关权限</string>
+
+    <!-- v7.3 -->
+    <string name="Message_contain_sensitive_words">消息中不能包含敏感词</string>
+
+    <!-- v7.4 -->
+    <string name="Agreement_known">好的，我知道了</string>
+    <string name="Donot_check_agreement_tip">请先认真阅读设备使用须知哦</string>
+
+    <!-- v7.5 -->
+    <string name="Language_change">语言切换</string>
+    <string name="Language_set">设置语言</string>
+    <string name="Language_set_promot">应用中所有默认文案将按所选语言显示</string>
+
+    <!-- v7.6 -->
+    <string name="Who_can_chat_me">谁可以发送消息给我</string>
+    <string name="Receive_follow_message">接收新关注消息</string>
+    <string name="Choose_user_can_chat_me">仅选定的人可以发送消息给我</string>
+    <string name="Receive_push_notifications">接收推送通知</string>
+    <string name="Give_favor">点赞</string>
+    <string name="Log">日志</string>
+    <string name="Followed_people">我关注的人</string>
+    <string name="All_people">所有人</string>
+    <string name="Push_closed">已关闭</string>
+    <string name="Send_message_error">对方开启了隐私设置，消息发送失败</string>
+    <string name="In_black_list">对方开启了隐私设置，消息发送失败</string>
+
+    <!-- v7.7 -->
+    <string name="Walkdog">遛宠</string>
+    <string name="Start_walkdog">开始遛宠</string>
+    <string name="End_walkdog">结束遛宠</string>
+    <string name="Add_marker">添加标记</string>
+    <string name="Walk_add_pet">请添加宠物后使用此功能</string>
+    <string name="Walk_choose_pet">请至少选择一只宠物</string>
+    <string name="Walk_no_gps">定位失败，请在空旷区域使用此功能。</string>
+    <string name="Sure_finishPetWalk">主人，确认不遛了吗?</string>
+    <string name="Walk_continue">继续遛</string>
+    <string name="Donot_continue">不遛了</string>
+    <string name="Walkdog_complete">遛宠完成</string>
+    <string name="Walk_intro_notice_1">首先要有一个目标，设置您的每天遛宠时间吧！</string>
+    <string name="Walk_intro_notice_2">统计遛宠情况，每天完成目标的宝贝更开心！</string>
+    <string name="Walk_intro_notice_3">遛宠轨迹自动记录，还可随时发帖记录有趣的瞬间！</string>
+    <string name="Walk_intro_notice_4">宝贝圈地盘时别忘了打上标记哦，从此这就是宝贝的领地！</string>
+    <string name="Marker_too_much">添加失败，最多保存30个标记哦</string>
+    <string name="Locate_failed">添加失败，尚未获得定位信息</string>
+    <string name="Walking_dog">遛宠中</string>
+    <string name="Walkdog_desc">暂无遛宠记录</string>
+    <string name="Start_time">开始时间：</string>
+    <string name="Left_walk_time_format">剩余 <xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Walkdog_complete_for_long_interval">您有一条遛宠记录未处理，去看看吧</string>
+    <string name="Walkdog_continue">您有一条未结束的遛宠，要继续遛吗？</string>
+    <string name="Give_up_walkingpet">本次遛宠时间太短，将无法保存，你确认停止吗？</string>
+    <string name="Walk_share_text">小佩遛宠，爱上遛宠</string>
+    <string name="Walk_share_time_and_distance_format">遛宠时间：<xliff:g id="prefix">%s</xliff:g>，距离：<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Walk_last_time_format">上次遛宠：<xliff:g id="prefix">%s</xliff:g></string>
+
+    <!-- v7.8 -->
+    <string name="Remind_define_name">自定义名称</string>
+    <string name="Please_add_remind_name">请添加提醒名称</string>
+    <string name="Fixed_time">定时</string>
+    <string name="Add_time">添加定时</string>
+    <string name="Edit_time">编辑定时</string>
+    <string name="Smart_setting">智能设置</string>
+    <string name="Execute">执行</string>
+    <string name="Smart">智能</string>
+    <string name="Choose_work_time">选择工作时间</string>
+    <string name="Turn_on">开机</string>
+    <string name="Turn_off">关机</string>
+    <string name="Every_work_day">工作日</string>
+    <string name="Every_weekend">周末</string>
+    <string name="Everyday">每天</string>
+    <string name="Customize">自定义</string>
+    <string name="Add_requirement">添加智能</string>
+    <string name="Edit_requirement">编辑智能</string>
+    <string name="Requirement">条件</string>
+    <string name="Requirement_temp">指定温度</string>
+    <string name="Work_time">工作时长</string>
+    <string name="Work_mode">工作模式</string>
+    <string name="Pet_enter">宠物进窝</string>
+    <string name="Temp_high">室温高于指定温度</string>
+    <string name="Temp_low">室温低于指定温度</string>
+    <string name="Temp_high_format">室温高于<xliff:g id="prefix">%s</xliff:g><xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Temp_low_format">室温低于<xliff:g id="prefix">%s</xliff:g><xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Need_add_smart_rule">智能设置无待执行任务，请添加</string>
+    <string name="Smart_rule_enabled">智能设置已启用</string>
+    <string name="Find_new_version">发现新版本</string>
+    <string name="If_want_use_smart_setting">如果您想启用智能设置：</string>
+    <string name="Cozy_smart_click_first">• 点击一次启用智能设置</string>
+    <string name="Cozy_smart_click_again">• 再次点击编辑智能设置</string>
+    <string name="Cozy_version_too_low">当前设备版本过低，无法启用智能设置</string>
+    <string name="Update_device">去升级</string>
+    <string name="Complete_remind">完成本次提醒</string>
+    <string name="Remind_expired">已逾期</string>
+    <string name="Still_left">还有</string>
+    <string name="Choose_repeat">请选择重复时间</string>
+    <string name="Remind_not_save">当前页面内容未保存，确认退出吗？</string>
+    <string name="Temp_higher_tip">*当室温高于您设置的指定温度，宠物窝将按照预设的模式开始工作，直到室温低于该指定温度时，宠物窝将自动停止工作。</string>
+    <string name="Temp_lower_tip">*当室温低于您设置的指定温度，宠物窝将按照预设的模式开始工作，直到室温高于该指定温度时，宠物窝将自动停止工作。</string>
+    <string name="Cozy_await">待机中</string>
+
+    <!-- v7.9 -->
+    <string name="Hint_open_gps">无法获取WiFi信息，Android系统要求打开GPS定位服务才能获取到WiFi信息，请开启。</string>
+    <string name="Cannot_get_wifi_info">无法获取WIFI信息</string>
+    <string name="Swipe_unlock">滑动解锁</string>
+    <string name="Watch_bind_video">观看绑定视频</string>
+
+    <!-- v7.10 -->
+    <string name="Cozy_model_remind">* 若示意图与实物有区别，请以实物为准。
+</string>
+
+    <!-- v7.10.2 -->
+    <string name="Wifi_name_hint">请输入Wi-Fi名称</string>
+    <string name="Open_cllocation_Wifi">我们需要使用位置权限，用来获取手机的WiFi名称，请允许我们访问您的位置信息。</string>
+
+    <!-- v7.10.3 -->
+    <string name="Download_mate_app">为了兼容Google Play的最新政策，更好的服务于用户，我们将MATE的全功能移植到一个新的App《PETKIT-MATE》中，该App由PETKIT官方授权，请放心下载使用。</string>
+    <string name="Click_download">点击下载</string>
+    <string name="Click_install">点击安装</string>
+    <string name="Install_petkit_tip">需先安装PETKIT App才能正常使用MATE功能，立即下载？</string>
+
+    <!-- v7.11 -->
+    <string name="Device_name">设备名称</string>
+    <string name="Device_d1_name">智能喂食器</string>
+    <string name="Device_mini_name">智能喂食器Mini</string>
+    <string name="Device_z1_name">智能冷暖宠物窝</string>
+    <string name="Bind_pet_for_feeder_notice">喂食器根据所选宠物进行出粮（最多可选择3只）</string>
+    <string name="Bind_pet_for_feeder_conflict_notice">当前宠物已绑定智能喂食器\n请确定您需要：</string>
+    <string name="Change_to_new_feeder">更换为新的喂食器</string>
+    <string name="Use_two_feeder">同时使用两个喂食器</string>
+    <string name="Bind_pet">绑定宠物</string>
+    <string name="State_on">已启用</string>
+    <string name="State_off">已关闭</string>
+    <string name="More_feed_plan_merge">* 来自宠物<xliff:g id="prefix">%s</xliff:g>的喂食单</string>
+    <string name="Merging_rules">合并规则</string>
+    <string name="Hint_pet_bind_feeder_number_limit">一只宠物最多绑定两台喂食器</string>
+    <string name="Feed_rules_notice">* 本饲喂量只作为参考，根据季节变化和每只宠物的运动消耗、吸收等具体情况，饲喂量可做相应调整。</string>
+    <string name="Out_feed_device">出粮设备</string>
+    <string name="Choose_out_feed_Device">选择出粮设备</string>
+    <string name="Change_pet">关联宠物</string>
+    <string name="Feed_plan_merge">喂食单合并规则</string>
+    <string name="Health_rules_top">结合宠物的品种、年龄、体重和状态等因素，推荐日所需的能量为：<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Health_rules_second">当前使用的主粮为：<xliff:g id="prefix">%s</xliff:g>，推荐日所需喂养量为：<xliff:g id="prefix">%s</xliff:g>g</string>
+    <string name="The_current_pet">当前宠物</string>
+    <string name="Recommended_feeding_list">使用推荐喂食单</string>
+    <string name="Pet_feed_plan"><xliff:g id="prefix">%s</xliff:g>的喂食单</string>
+    <string name="Pet_feed_total">共<xliff:g id="prefix">%s</xliff:g>cup</string>
+    <string name="Dim_sum">点心</string>
+    <string name="Food_night">夜宵</string>
+    <string name="Device_bind_pet_number_limit_tip">每个喂食器最多关联三只宠物</string>
+    <string name="Pet_feed_plan_out_feeders_format">该喂食单由<xliff:g id="prefix">%s</xliff:g>和<xliff:g id="prefix">%s</xliff:g>执行出粮</string>
+    <string name="Pet_feed_plan_out_feeder_format">该喂食单由<xliff:g id="prefix">%s</xliff:g>执行出粮</string>
+    <string name="Hint_battery_mode_save_success">保存成功，电池模式下唤醒设备后自动生效</string>
+    <string name="Hint_no_action_for_shared_feeder">分享的设备无法编辑喂食单</string>
+    <string name="Choose_pet_to_edit_feed_plan">请选择需要编辑的喂食单</string>
+    <string name="Edit_feed_plan">编辑喂食单</string>
+    <string name="Unspecified_device">未使用设备</string>
+    <string name="No_out_feed_device">不使用设备</string>
+    <string name="Edit_repeat_day">编辑周期</string>
+    <string name="Feed_plan_merge_one">1.多个宠物在同一时间出粮时，喂食量之和小于设备单次出粮上限<xliff:g id="prefix">%s</xliff:g>cup，则合并为一餐，设备仅出粮一次。</string>
+    <string name="Feed_plan_merge_two">2.多个宠物在同一时间计划出粮，喂食量之和大于设备单次出粮上限<xliff:g id="prefix">%s</xliff:g>cup，则分别出粮，第二次出粮将在第一次出粮完成后两分钟进行。</string>
+    <string name="Change_pet_auto_modify_feed_plan_tip">关联宠物修改后，喂食器的喂食计划会跟随所选宠物的喂食单自动调整，请确认。</string>
+    <string name="Save_feed_plan_auto_modify_device_plan_tip">保存成功，喂食器的喂食计划跟随宠物的喂食单自动修改，请注意查看。</string>
+    <string name="Feeder_new_function_notice_one">喂食器支持多只宠物共同使用，多宠物家庭使用更简单啦</string>
+    <string name="Feeder_new_function_notice_two">在关联宠物页面选择多只宠物，点击确定。关联关系可随时调整哦</string>
+    <string name="Feeder_new_function_notice_three">喂食计划会根据关联宠物的喂食单，按照规则自动生成哦</string>
+    <string name="Feeder_new_function_notice_four">健康喂养中就可以修改喂食单啦</string>
+    <string name="Feeder_new_function_notice_five">首页进入健康喂养，根据推荐喂食量调整喂食单，修改完成后喂食器也会同步使用哦</string>
+
+    <!-- v7.11.2 -->
+    <string name="Set_device_wifi_notice">请设置设备的工作WiFi，也就是您的家庭WiFi，设备将会连接并使用这个WiFi。 </string>
+    <string name="Set_password_space_notice">您输入的内容中包含空格，是否自动删除？</string>
+
+    <!-- v7.12.2 -->
+    <string name="Account_management">账号管理</string>
+    <string name="Logoff">注销账号</string>
+    <string name="Logoff_prompt">注销账号将会清除所有数据且不可恢复，注销前请删除已绑定的所有设备，您确认注销吗？</string>
+    <string name="Logoff_content_prompt">您正在注销账户，请谨慎操作。\n若你坚持注销，我们需要验证您的账号，即将发送验证码到</string>
+    <string name="Stick_logoff">坚持注销</string>
+    <string name="Logoff_fail_prompt">当前帐号下还有未解绑设备</string>
+    <string name="Use_account_login">你可以使用任意已有的账号来登录</string>
+    <string name="Email">邮箱</string>
+    <string name="Change_email">更换邮箱</string>
+    <string name="Current_email">当前邮箱</string>
+    <string name="Logoff_account_prompt">您正在注销账号，请谨慎操作，注销后将会清除所有数据，且不可恢复，请再次确认！</string>
+    <string name="Bind_email">绑定邮箱</string>
+    <string name="Email_subscribe">邮箱订阅</string>
+    <string name="Set_new_passworld">请设置新的密码</string>
+    <string name="Email_subscribe_notice">&#160;&#160;&#160;&#160;开启邮箱订阅后，我们会将最新的产品资讯及时推送到您的邮箱，让您能第一时间了解我们的动态。\n &#160;&#160;&#160;&#160;您可在“设置-隐私”中修改订阅状态。</string>
+    <string name="Agree_email_subscribe">我同意接收邮箱订阅</string>
+    <string name="Accept_email_subscribe">接收邮箱订阅</string>
+    <string name="Permission_phone_camera">相机权限</string>
+    <string name="Permission_phone_audio">录音权限</string>
+    <string name="Permission_storage_desc">存储空间：保存用户头像、宠物头像、社区图片、视频等信息</string>
+    <string name="Permission_phone_location_desc">位置信息：获取周边宠友信息，设备设置时获取WiFi信息等</string>
+    <string name="Permission_phone_camera_desc">相机：我们需要访问您的相机进行拍摄。</string>
+    <string name="Permission_phone_audio_desc">录音：我们需要使用录音功能。</string>
+    <string name="Permission_phone_state_desc">设备信息：使用设备标识码进行统计、账号安全风控和服务推送等</string>
+    <string name="Hint_permission_title">权限申请</string>
+    <string name="Already_bind">已绑定</string>
+
+    <!-- v7.12.5 -->
+    <string name="Contact_petkit_service">联系客服</string>
+
+    <string name="Understand_user_service">了解小佩宠物用户协议</string>
+
+
+    <!-- v7.13 -->
+    <string name="Title_bind_k2">绑定净味器</string>
+    <string name="Deodorant_allowance">小佩浓缩净化液余量</string>
+    <string name="Timing_switch">定时开关</string>
+    <string name="Prompt_switch">提示音开关</string>
+    <string name="Light_switch">灯光开关</string>
+    <string name="Temperature_unit_switch">温度单位切换</string>
+    <string name="Timing_not_set">暂无内容</string>
+    <string name="Mute">静音</string>
+    <string name="Standard">标准</string>
+    <string name="Powerful">强力</string>
+    <string name="Purify_prompt">已为您净化空气</string>
+    <string name="Cubic_metres">立方米</string>
+    <string name="Temperature">温度</string>
+    <string name="Humidity">湿度(%)</string>
+    <string name="K2_deodorization">净化液</string>
+    <string name="K2_light_time">灯光亮起时间</string>
+    <string name="Timing_setting">定时设置</string>
+    <string name="Set_notification">通知设置</string>
+    <string name="Timing_error">时间重复，保存失败</string>
+    <string name="Work_log">工作日志</string>
+    <string name="Set_work_log">定时任务执行时通知</string>
+    <string name="Lack_liquid_notice">缺液提醒</string>
+    <string name="Lack_liquid_insufficient">净化液不足时通知</string>
+    <string name="K2_bind_successfully_prompt">开启智能净味新体验</string>
+    <string name="Hint_device_set_name">请输入名称</string>
+    <string name="K2_offline_title">设备已离线，请检查：</string>
+    <string name="K2_offline_prompt">1.设备供电是否正常\n2.设备连接的路由器是否工作正常，网络是否正常\n3.是否修改了路由器名称或密码，可尝试<xliff:g id="prefix">%s</xliff:g>\n4.是否与路由器距离过远，隔墙，或有其他阻挡物</string>
+    <string name="Reset_wifi">重置Wi-Fi</string>
+    <string name="Lack_liquid_alert">净化液预警</string>
+    <string name="Lack_liquid_notice_detail">净化液已用完，净味器停止工作，请尽快补充。</string>
+    <string name="Device_k2_bind_pet_number_limit_tip">每个设备最多绑定五只宠物</string>
+    <string name="Deodorant_enough">余量充足</string>
+    <string name="Deodorant_not_enough">余量不足</string>
+    <string name="Offline_prompt">离线提醒</string>
+    <string name="Signal_weak">信号弱</string>
+    <string name="K2_bind_start_prompt_format">同时长按上图所示按钮和童锁键“5秒”，直到指示灯开始闪烁，开启成功</string>
+    <string name="Bind_pet_for_k2_notice">最多可选择5只</string>
+    <string name="Set_wifi_fail">配网失败</string>
+    <string name="Device_off_line_tip">设备离线，请检查网络</string>
+    <string name="Hint_delete_timing_setting_item">确认删除这个定时任务吗？</string>
+    <string name="Hint_cancel_k2_share">确认取消设备共享吗?</string>
+    <string name="Hint_delete_k2">确认删除设备吗?</string>
+    <string name="See_details">查看详情</string>
+    <string name="K2_name_default">智能净味器</string>
+    <string name="Wifi_state_disconnect">网络已断开</string>
+    <string name="Wifi_state_poor">网络信号不佳</string>
+    <string name="Wifi_state_weak">网络信号较弱</string>
+    <string name="Wifi_state_good">网络情况良好</string>
+    <string name="Wifi_state_full">网络情况极佳</string>
+    <string name="Failure_remind">故障提醒</string>
+    <string name="Wifi_name">Wi-Fi名称</string>
+    <string name="Wifi_power">Wi-Fi强度</string>
+    <string name="Device_bind_server_error">MAC地址</string>
+    <string name="Device_bind_mention">接通电源，确认控制面板上的Wfi指示灯正在闪烁</string>
+    <string name="Device_bind_wifi_light_off">Wi-Fi指示灯常亮</string>
+    <string name="Device_bind_wifi_light_show">Wi-Fi指示灯正在闪烁吗？</string>
+    <string name="Open_bluetooth">请打开蓝牙完成设备连接</string>
+    <string name="Device_reconnection">重新连接</string>
+    <string name="Device_not_found">未找到设备，请检查：</string>
+    <string name="Device_set_wifi">设置工作Wi-Fi</string>
+    <string name="Device_bind_router_error">路由器连接失败，请检查路由器设置</string>
+    <string name="Router_connection_failed_title">路由器连接失败，请检查：</string>
+    <string name="Router_connection_failed_content_one">1.请检查路由器设置，黑白名单或更换Wi-Fi</string>
+    <string name="Router_connection_failed_content_two">2.Wi-Fi距离远，信号弱，可尝试<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Not_found_wifi_title">找不到Wi-Fi</string>
+    <string name="Not_found_wifi_content_one">1.Wi-Fi信号可能为5G</string>
+    <string name="Connect_server_fail_title">服务器连接失败，请检查：</string>
+    <string name="Connect_server_fail_one">1.路由器网络正常</string>
+    <string name="Connect_server_fail_two">2.请检查路由器设置，黑白名单或更换Wi-Fi</string>
+    <string name="Device_bind_scan_tip">正在搜索附近的设备，请尽量让您的手机和设备相互靠近</string>
+    <string name="Device_bind_send_msg_tip">正在和设备通信，请尽量使您的手机和设备相互靠近</string>
+    <string name="Device_bind_get_wifi_status_tip">请尽量使您的手机、设备和路由器相互靠近，并确保网络环境良好</string>
+    <string name="Lack_liquid">缺液</string>
+    <string name="K2_not_add_timing_notice">时间段功能未启用，设备将全天运行</string>
+    <string name="K2_add_timing_notice">启用工作时间段可以节省净化液消耗，延长使用时间</string>
+    <string name="K2_work_time_title">时间段开关</string>
+    <string name="K2_work_time">今日工作时间</string>
+    <string name="K2_work_time_empty_tip">暂未设置时间段，设备将全天运行</string>
+    <string name="K2_reset_work_time">恢复默认时间段</string>
+    <string name="K2_close_work_time_tip">关闭时间段设置后，设备将会24小时运行，净化液消耗可能较快，确认要关闭吗？</string>
+    <string name="K2_delete_work_time_tip">删除后时间段内容全部清空，设备将24小时运行，确认要删除吗？</string>
+    <string name="K2_time_count_prompt">时间段数量已达上限</string>
+    <string name="K2_time_select_prompt">起始时间必须小于结束时间</string>
+    <string name="Hint_choose_work_time">请选择工作时间段</string>
+    <string name="K2_new_function_notice_title_one">欢迎使用</string>
+    <string name="K2_new_function_notice_title_two">四种模式</string>
+    <string name="K2_new_function_notice_title_three">工作时间设置</string>
+    <string name="K2_new_function_notice_title_four">缺液提醒</string>
+    <string name="K2_new_function_notice_one">开启智能净味新体验，畅享整屋清新感受</string>
+    <string name="K2_new_function_notice_two">支持自动、静音、标准、强力四种模式，自动模式根据环境自动调节风扇转速，夜间也会静音工作哦</string>
+    <string name="K2_new_function_notice_three">设置工作时间段以后，设备将根据设定模式自动运行，非工作时间段设备处于待机状态哦</string>
+    <string name="K2_new_function_notice_four">缺液后设备将停止运行，请及时补充</string>
+    <string name="Hint_set_k2_time_break">工作时长不能小于五分钟</string>
+    <string name="K2_work_time_back_tip"><xliff:g id="prefix">%s</xliff:g>未设置工作时间，设备将全天待机，确认退出吗？</string>
+
+
+    <string name="Manual_work_prompt">手动控制运行中，下个工作时间段将自动切换，可<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Immediately_switch">立即切换</string>
+    <string name="Standby_msg">非工作时间，待机中</string>
+    <string name="Standby_detail">当前处于非工作时间，设备处于待机状态，下个工作时间将会自动运行。</string>
+
+    <!-- v7.17 -->
+    <string name="Title_bind_t3">绑定猫厕所</string>
+    <string name="Bentonite">膨润土</string>
+    <string name="Tofu_cat_litter">豆腐砂</string>
+    <string name="Mixed_litter">混合砂</string>
+    <string name="Today_into">今日如厕统计</string>
+    <string name="Device_reset">复位</string>
+    <string name="Pause">暂停</string>
+    <string name="Cat_litter_type">猫砂种类</string>
+    <string name="Screen_light_time">亮屏时间</string>
+    <string name="Set_child_lock">童锁开关</string>
+    <string name="Set_screen">显示屏开关</string>
+    <string name="T3_setting_light_range_prompt">在选择的时间段内显示屏亮起，其他时间段屏幕熄灭</string>
+    <string name="Set_screen_tip">关闭后设备待机时显示屏会自动熄灭</string>
+    <string name="Network_tip_one">1.按任意键进入菜单，再短按菜单键切换到“配置网络”</string>
+    <string name="Network_tip_two">2.短按OK键进入配网功能，屏幕显示“正在配网”</string>
+    <string name="T3_bind_successfully_prompt">开启智能铲屎新体验</string>
+    <string name="Set_cat_litter_type_tip">请选择猫砂种类</string>
+    <string name="Auto_clean">自动清理</string>
+    <string name="Regular_clean">定时清理</string>
+    <string name="Clean_up">立即清理</string>
+    <string name="Deodorize_immediately">立即除臭</string>
+    <string name="Set_regular_clean">定时清理设置</string>
+    <string name="Hint_cancel_t3_share">确认取消猫厕所共享吗？</string>
+    <string name="Hint_delete_t3">确认删除智能猫厕所吗？</string>
+    <string name="Set_cat_litter_type">设置猫砂种类</string>
+    <string name="Cat_litter">猫砂余量</string>
+    <string name="Deodorization_allowance_warning">净化液提醒</string>
+    <string name="Cat_litter_warning">猫砂提醒</string>
+    <string name="Deodorization_allowance_warning_detail">净化液已用完，除臭模组停止工作，请及时补充。</string>
+    <string name="Cat_litter_warning_detail">剩余猫砂较少，猫咪如厕容易粘底，请及时补充。</string>
+    <string name="Clean_litter_prompt">确认要开始清理猫砂吗？</string>
+    <string name="Pet_go_into_device">猫咪正在如厕，设备已暂停运行</string>
+    <string name="Hint_history_des">近24小时记录</string>
+    <string name="T3_record_empty_prompt">一条记录也没有喵～</string>
+    <string name="T3_child_lock_prompt">打开童锁后待机时设备上的按键不可用</string>
+    <string name="Scales_calibration">秤校准</string>
+    <string name="Weight_unit_switch">重量单位切换</string>
+    <string name="Device_language_switch">设备语言切换</string>
+    <string name="T3_notification_box">集便盒通知</string>
+    <string name="T3_notification_cat_litter">猫砂通知</string>
+    <string name="T3_notification_clean">清理日志</string>
+    <string name="T3_notification_cat_into">如厕日志</string>
+    <string name="T3_notification_lack_liquid">净化液通知</string>
+    <string name="T3_notification_box_prompt">集便盒已满时通知</string>
+    <string name="T3_notification_cat_litter_prompt">猫砂不足时通知</string>
+    <string name="T3_notification_clean_prompt">设备清理时通知</string>
+    <string name="T3_notification_cat_into_prompt">宠物进出设备时通知</string>
+    <string name="T3_notification_lack_liquid_prompt">净化液不足时通知</string>
+    <string name="T3_notification_prompt">关闭后将无法接收系统推送通知</string>
+    <string name="Scales_calibration_button_prompt">我已准备就绪，开始校准</string>
+    <string name="Scales_calibration_title">当猫砂余量出现偏差时，可对秤进行去皮校准</string>
+    <string name="Scales_calibration_content">请按照顺序完成以下操作，并勾选对应步骤</string>
+    <string name="Scales_calibration_tip_title_one">1.倾空桶内猫砂</string>
+    <string name="Scales_calibration_tip_content_one">在设备菜单中选择“倾空猫砂”并短按OK键执行，等待设备运行完成，倾倒出全部猫砂。</string>
+    <string name="Scales_calibration_tip_title_two">2.拆除滚筒，检查异物</string>
+    <string name="Scales_calibration_tip_content_two">移除顶盖，解锁主机背面的滚筒锁定旋钮，提出滚筒，检查并清理主机内的异物，完成后请勾选此项。</string>
+    <string name="Scales_calibration_tip_title_three">3.装入滚筒和上盖</string>
+    <string name="Scales_calibration_tip_content_three">把滚筒放入主机内，逆时针旋转滚筒锁定旋钮，确保滚筒固定好，然后盖上主机上盖，完成后勾选此项。</string>
+    <string name="Scales_calibration_tip_bottom_one">*请按顺序完成以上操作后，点击开始校准，<xliff:g id="prefix">%s</xliff:g>校准过程大概需要60秒，请在设备旁边守候，防止宠物进入，耐心等待。</string>
+    <string name="Scales_calibration_tip_bottom_two">校准时设备会再次滚动。</string>
+    <string name="Calibration_success">校准成功</string>
+    <string name="Calibration_fail">校准失败</string>
+    <string name="Calibration_content">1.校准过程中，请将设备放在光滑硬质的地面。\n2.校准过程中，请不要晃动设备，以免影响数据的准确性。</string>
+    <string name="Smart_setting_prompt">清理过程中，宠物靠近或如厕时会暂停，离开后自动继续。</string>
+    <string name="Smart_setting_auto_prompt">宠物如厕后设备将会自动清理。</string>
+    <string name="Wait_time">等待时间</string>
+    <string name="Wait_time_prompt">自动清理时宠物离厕后的等待时间</string>
+    <string name="Interval_time">间隔时间</string>
+    <string name="Interval_time_prompt">自动清理的间隔时间，小于间隔时间时设备不会清理</string>
+    <string name="Regular_action_count">共<xliff:g id="prefix">%s</xliff:g>条</string>
+    <string name="Regular_deodorization">定时除臭</string>
+    <string name="Regular_clean_prompt">设备将根据所设时间进行清理</string>
+    <string name="Regular_deodorization_prompt">设备将根据所设时间进行除臭</string>
+    <string name="Safety_inspection_prompt">请按照以下步骤对设备的一些传感器进行清理与维护，以便设备能够更稳定的完成清理。</string>
+    <string name="Safety_inspection_image_one">1.入口安全传感器示意图</string>
+    <string name="Safety_inspection_image_two">2.集便盒传感器示意图</string>
+    <string name="Safety_inspection_image_three">3.防夹传感器示意图</string>
+    <string name="Not_enabled">未启用</string>
+    <string name="Do_not_limit">不限制</string>
+    <string name="T3_time_interval_prompt">最小时间间隔为30分钟</string>
+    <string name="Set_regular_deodorant">定时除臭设置</string>
+    <string name="Today_record_time">共<xliff:g id="prefix">%s</xliff:g>次</string>
+    <string name="Device_language_prompt">设备显示屏将按所选语种显示</string>
+    <string name="Follow_system_language">跟随App语言</string>
+    <string name="Cleaning_cat_litter">正在清理猫砂，请稍候</string>
+    <string name="Device_pause_prompt">设备已暂停，为了保证猫咪能够正常使用，<xliff:g id="prefix">%s</xliff:g>分钟无操作设备将继续运行</string>
+    <string name="Device_calibration_prompt">设备正在校准，请稍候</string>
+    <string name="Device_reset_prompt">设备正在复位，请稍候</string>
+    <string name="Smoothing_cat_litter">正在平整猫砂，请稍候</string>
+    <string name="Dumping_cat_litter">正在倾空全部猫砂，请稍候</string>
+    <string name="Pet_into_prompt">猫咪正在如厕~</string>
+    <string name="Smart_set_disable">未启用智能</string>
+    <string name="T3_safety_inspection_prompt_one">1.断开设备的电源，备好湿纸巾来擦拭；\n2.擦拭图1所示位置的传感器；</string>
+    <string name="T3_safety_inspection_prompt_two">3.取出集便盒，移除主机顶盖；\n4.解锁主机背面的滚筒锁定旋钮，取出内桶；\n5.取出雾化器；\n6.倾倒设备，按照图2所示的位置的传感器；</string>
+    <string name="T3_safety_inspection_prompt_three">7.擦拭图3所示位置的防夹安全传感器，注意4个位置都要擦拭；</string>
+    <string name="T3_safety_inspection_prompt_four">8.清理完成后将设备立起，依次安装除臭模组，放入滚筒，锁定主机背面的滚筒锁定旋钮，装上主机上盖，装回集便盒；\n9.连接电源，等待设备连上网络</string>
+    <string name="T3_safety_inspection_prompt_bottom">*按照顺序完成以上操作后，如仍然不能恢复正常，请联系小佩客服。</string>
+    <string name="Clean_and_maintenance">清理维护</string>
+    <string name="T3_history_record_auto_clean_complete_prompt">自动清理已完成，耗时<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="T3_history_record_manual_clean_complete_prompt">手动清理已完成，耗时<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="T3_history_record_timing_clean_complete_prompt">定时清理已完成，耗时<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="T3_history_record_clean_complete_box_full_prompt">，集便盒已满</string>
+    <string name="T3_history_record_clean_complete_cat_litter_prompt">，猫砂余量不足</string>
+    <string name="T3_history_record_auto_clean_terminate_prompt">自动清理已被终止</string>
+    <string name="T3_history_record_manual_clean_terminate_prompt">手动清理已被终止</string>
+    <string name="T3_history_record_timing_clean_terminate_prompt">定时清理已被终止</string>
+    <string name="T3_history_record_timing_deodorant_complete_prompt">定时除臭已完成</string>
+    <string name="T3_history_record_manual_deodorant_complete_prompt">手动除臭已完成</string>
+    <string name="T3_history_record_timing_deodorant_error_prompt">定时除臭失败，除臭模组故障</string>
+    <string name="T3_history_record_manual_deodorant_error_prompt">手动除臭失败，除臭模组故障</string>
+    <string name="T3_history_record_deodorant_complete_liquid_prompt">，净化液已用完</string>
+    <string name="T3_history_record_dumping_complete_prompt">倾空猫砂已完成</string>
+    <string name="T3_history_record_dumping_terminate_prompt">倾空猫砂已被终止</string>
+    <string name="T3_history_record_reset_complete_prompt">设备复位已完成</string>
+    <string name="T3_history_record_reset_terminate_prompt">设备复位已被终止</string>
+    <string name="T3_history_record_pet_into_prompt">宠物已如厕，停留了<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="T3_history_record_pet_into_interval_prompt">，间隔时间内不自动清理</string>
+    <string name="T3_history_record_pet_into_with_weight_prompt">，体重<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="T3_working_prompt">设备工作中，请稍候</string>
+    <string name="T3_calibration_prompt">请按顺序依次确认哦</string>
+    <string name="Associated_pets_tip">请选择宠物</string>
+    <string name="Device_deodorizing_prompt">正在除臭，请稍候</string>
+    <string name="Device_safety_testing">猫咪靠近，设备已暂停运行</string>
+    <string name="Device_not_found_tip">1.确认控制面板上的wifi指示灯正在闪烁\n2.确认没有其他手机蓝牙和设备进行配对\n3.确认使用App进行操作，不在手机系统蓝牙进行配对\n4.可尝试重启手机蓝牙</string>
+    <string name="Today_pet_into_time">共计</string>
+    <string name="T3_name_default">全自动猫厕所</string>
+    <string name="T3_new_function_notice_title_one">六级防护，安全可靠</string>
+    <string name="T3_new_function_notice_title_two">除臭除菌，净化空气</string>
+    <string name="T3_new_function_notice_title_three">智能设置，解放双手</string>
+    <string name="T3_new_function_notice_title_four">一键倾空，轻松换砂</string>
+    <string name="T3_new_function_notice_title_five">推送提醒，尽在掌握</string>
+    <string name="T3_new_function_notice_one">安全围栏检测猫咪靠近，守门红外监控猫咪进入\n称重模组确认猫咪进入，防夹模组确保运行安全\n异常情况立即通知主人，意外发生自动停止运行</string>
+    <string name="T3_new_function_notice_two">每次清理过程中除臭模组自动进行除臭除菌，也可根据需要进行立即除臭和定时除臭哦</string>
+    <string name="T3_new_function_notice_three">支持自动清理、定时清理、定时除臭，如厕立即清理，时刻保持空气清晰</string>
+    <string name="T3_new_function_notice_four">一次性倾空砂桶内所有猫砂，换砂一键轻松搞定</string>
+    <string name="T3_new_function_notice_five">猫咪进入通知，运行时提醒，异常发生时报警，集便盒、猫砂、净化液等用完及时通知，设备情况了然于胸</string>
+    <string name="T3_history_record_auto_clean_cancel_prompt">自动清理已取消，设备正在运行中。</string>
+    <string name="T3_history_record_manual_clean_cancel_prompt">手动清理已取消，设备正在运行中。</string>
+    <string name="T3_history_record_timing_clean_cancel_prompt">定时清理已取消，设备正在运行中。</string>
+    <string name="T3_device_bind_mention">接通电源，确认设备显示屏中的Wi-Fi图标处于闪烁状态</string>
+    <string name="T3_device_bind_wifi_light_off">显示屏中的Wi-Fi图标常亮</string>
+    <string name="T3_device_bind_wifi_light_show">Wi-Fi图标正在闪烁</string>
+    <string name="Device_ota_prompt">设备正在升级，请稍候</string>
+    <string name="Safe_warn_general">设备状态异常，运行已暂停</string>
+    <string name="Safe_warn_atp">安全传感器报警，机器已停止工作，可能是宠物进入，也可能是猫砂遮挡，请火速前往检查！</string>
+
+    <!-- v7.18 -->
+    <string name="T3_history_record_auto_clean_hallt_error_prompt">自动清理失败，设备上盖未安装，请检查</string>
+    <string name="T3_history_record_auto_clean_halll_error_prompt">自动清理失败，设备滚筒锁定旋钮未锁定，请检查</string>
+    <string name="T3_history_record_auto_clean_fall_down_error_prompt">自动清理失败，设备已倾倒，请检查</string>
+    <string name="T3_history_record_auto_clean_error_prompt">自动清理失败，设备发生故障，请检查</string>
+    <string name="T3_history_record_manual_clean_hallt_error_prompt">手动清理失败，设备上盖未安装，请检查</string>
+    <string name="T3_history_record_manual_clean_halll_error_prompt">手动清理失败，设备滚筒锁定旋钮未锁定，请检查</string>
+    <string name="T3_history_record_manual_clean_fall_down_error_prompt">手动清理失败，设备已倾倒，请检查</string>
+    <string name="T3_history_record_manual_clean_error_prompt">手动清理失败，设备发生故障，请检查</string>
+    <string name="T3_history_record_timing_clean_hallt_error_prompt">定时清理失败，设备上盖未安装，请检查</string>
+    <string name="T3_history_record_timing_clean_halll_error_prompt">定时清理失败，设备滚筒锁定旋钮未锁定，请检查</string>
+    <string name="T3_history_record_timing_clean_fall_down_error_prompt">定时清理失败，设备已倾倒，请检查</string>
+    <string name="T3_history_record_timing_clean_error_prompt">定时清理失败，设备发生故障，请检查</string>
+    <string name="T3_history_record_dumping_hallt_error_prompt">倾空猫砂失败，设备上盖未安装，请检查</string>
+    <string name="T3_history_record_dumping_halll_error_prompt">倾空猫砂失败，设备滚筒锁定旋钮未锁定，请检查</string>
+    <string name="T3_history_record_dumping_fall_down_error_prompt">倾空猫砂失败，设备已倾倒，请检查</string>
+    <string name="T3_history_record_dumping_error_prompt">倾空猫砂失败，设备发生故障，请检查</string>
+    <string name="T3_history_record_reset_hallt_error_prompt">设备复位失败，设备上盖未安装，请检查</string>
+    <string name="T3_history_record_reset_halll_error_prompt">设备复位失败，设备滚筒锁定旋钮未锁定，请检查</string>
+    <string name="T3_history_record_reset_fall_down_error_prompt">设备复位失败，设备已倾倒，请检查</string>
+    <string name="T3_history_record_reset_error_prompt">设备复位失败，设备发生故障，请检查</string>
+    <string name="Close_to_device">请将手机靠近设备</string>
+    <string name="Device_add_scan">正在扫描附近的智能设备…</string>
+    <string name="Manually_add">手动添加</string>
+    <string name="Device_scan_fail_prompt_one">持续扫描不到建议手动添加，</string>
+    <string name="Device_scan_fail_prompt_two">扫描不到的几种情况>></string>
+    <string name="Discover_new_device">发现新设备</string>
+    <string name="Discover_new_device_prompt">发现一个新设备“<xliff:g id="prefix">%s</xliff:g>”，是否立刻前往绑定？</string>
+    <string name="Device_bind_tip">已确认上述操作</string>
+    <string name="Title_device_scan">扫描设备</string>
+    <string name="Continue_to_scan">继续扫描</string>
+    <string name="How_to_reset">如何重置</string>
+    <string name="Device_scan_fail_prompt">未扫描到附近设备，请确认设备已经重置，重新尝试扫描</string>
+    <string name="Choose_wifi">选择工作Wi-Fi</string>
+    <string name="Current_connection_wifi">当前手机连接</string>
+    <string name="Click_input_password">点击输入密码</string>
+    <string name="Connect_other_router">选择其它WiFi</string>
+    <string name="The_saved">已保存</string>
+    <string name="Edit_router">编辑路由器</string>
+    <string name="Wifi_info_delete">删除网络</string>
+    <string name="Wifi_info_delete_prompt">确认要删除此Wi-Fi吗？</string>
+    <string name="Nearby_router">附近的路由器</string>
+    <string name="Device_not_support_5G">此设备不支持5G Wi-Fi</string>
+    <string name="Device_connecting">连接设备中…</string>
+    <string name="Device_connect_success">(连接设备成功)</string>
+    <string name="Device_connect_fail">连接设备失败</string>
+    <string name="Device_send_msg">向设备传输信息中…</string>
+    <string name="Device_send_msg_success">(向设备传输信息成功)</string>
+    <string name="Device_send_msg_fail">向设备传输信息失败</string>
+    <string name="Device_connect_network">设备连接网络中…</string>
+    <string name="Device_connect_network_success">(设备连接网络成功)</string>
+    <string name="Device_connect_network_fail">设备连接网络失败</string>
+    <string name="Device_online_state">获取设备状态中…</string>
+    <string name="Device_online_state_success">(获取设备状态成功)</string>
+    <string name="Device_online_state_fail">获取设备状态失败</string>
+    <string name="Title_device_reset">设备重置</string>
+    <string name="Open">开启</string>
+    <string name="Open_bluetooth_prompt">当前手机蓝牙关闭，是否打开扫描附近的蓝牙设备？</string>
+    <string name="Scan_device_fail_prompt">一直搜索不到？可尝试手动连接</string>
+    <string name="Scan_device_fail_title">扫描不到要添加的设备要怎么办?</string>
+    <string name="Scan_device_fail_content">1.请确认手机足够接近设备，并且周围网络环境没有强干扰。\n\n2.确认当前应用的定位权限已打开，若手动关闭了应用的定位权限可能会导致无法自动发现设备。\n\n3.始终无法发现设备，可能已被他人绑定。如有需要可根据说明书进行设备重置，或手动添加对应设备，根据引导操作。\n\n4.确认蓝牙设备是否正常通电，手机蓝牙是否已经打开。\n\n5.以下产品暂不支持自动扫描：小佩智能猫狗牌、小佩智能宠物伴侣、小佩智能牵引绳、小佩智能喂食器，请选择“手动添加”设备，根据引导操作。</string>
+    <string name="Device_scan_help">扫描设备帮助</string>
+    <string name="Allow_view_my_location">允许他人查看我的定位</string>
+    <string name="View_other_notification_settings">查看其它通知设置</string>
+    <string name="Open_system_notification_prompt">请前往系统【通知】打开接收推送通知，否则无法正常接收设备通知。</string>
+    <string name="Click_to">点击前往></string>
+    <string name="Do_not_disturb">夜间勿扰</string>
+    <string name="Do_not_disturb_time">勿扰时段</string>
+    <string name="Open_system_notification_title">开启系统通知</string>
+    <string name="Open_system_notification_prompt_one">我们强烈建议您打开系统推送通知以便及时了解毛孩子的状态～</string>
+    <string name="Open_system_notification_prompt_two">同时系统推送新增了更多的设置选项，您可以根据自己需要进行配置。</string>
+    <string name="To_open_it">去开启</string>
+    <string name="No_log_prompt">只能查看近30天的内容哦</string>
+    <string name="Cozy_work_log_prompt">设备智能任务的工作通知</string>
+    <string name="T3_history_record_auto_clean_full_error_prompt">自动清理失败，集便盒已满，请检查</string>
+    <string name="T3_history_record_manual_clean_full_error_prompt">手动清理失败，集便盒已满，请检查</string>
+    <string name="T3_history_record_timing_clean_full_error_prompt">定时清理失败，集便盒已满，请检查</string>
+    <string name="T3_history_record_dumping_full_error_prompt">倾空猫砂失败，集便盒已满，请检查</string>
+    <string name="T3_history_record_reset_full_error_prompt">设备复位失败，集便盒已满，请检查</string>
+
+
+    <!-- v7.20 -->
+    <string name="Device_aq_name">起源纪智能鱼缸</string>
+    <string name="Aq_name_default">智能鱼缸</string>
+    <string name="Ble_device_connecting">正在连接设备…</string>
+    <string name="Ble_device_scan_fail_prompt">未扫描到附近设备，请确认设备供电正常，并在有效范围内，重新尝试扫描</string>
+    <string name="Aq_bind_successfully_prompt">智能调光，艺术鱼缸</string>
+    <string name="Aq_bind_fail_title">配对超时，请检查：</string>
+    <string name="Aq_bind_fail_content">1.手机蓝牙是否正常开启\n\n2.设备供电正常\n\n3.手机和设备尽量靠近</string>
+    <string name="Aq_white_light">白光</string>
+    <string name="Aq_color_light">彩光</string>
+    <string name="Aq_stream_light">流光</string>
+    <string name="Aq_timing_tip">设置定时工作时间</string>
+    <string name="Aq_light_timing_title">灯光定时</string>
+    <string name="Aq_light_timing_content">灯光按所设时间自动开关</string>
+    <string name="Aq_turn_on_light_time">开灯时间</string>
+    <string name="Aq_turn_off_light_time">关灯时间</string>
+    <string name="Aq_pump_timing_title">水泵定时</string>
+    <string name="Aq_pump_timing_content">水泵按所设时间自动开关</string>
+    <string name="Aq_pump_turn_on_light_time">打开时间</string>
+    <string name="Aq_pump_turn_off_light_time">停止时间</string>
+    <string name="Aq_spotlight_mode">追光模式</string>
+    <string name="Ble_device_scan">正在扫描设备…</string>
+    <string name="Ble_device_connect_success">连接成功</string>
+    <string name="Ble_device_connect_fail">连接失败，点击重试</string>
+    <string name="Ble_device_disconnected">连接已断开，点击重试</string>
+    <string name="Ble_device_not_found">未找到设备，点击重试</string>
+    <string name="Ble_device_not_open">蓝牙未打开</string>
+    <string name="Brightness_value">亮度<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Color_temperature_value">色温<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Device_location_set">设备位置</string>
+    <string name="Pump_switch">水泵开关</string>
+    <string name="Device_location">设备所处地区</string>
+    <string name="Device_location_prompt">追光模式下，设备将以所处地区的四季变化为基础，根据时间自动调节灯光效果，模拟大自然的环境变化过程，简化用户操作；若设备没有位置信息，则无法使用此功能。\n\n*位置信息仅用于此功能，我们将严格保护您的隐私信息，删除设备时将会自动清除。</string>
+    <string name="Aq_spotlight_mode_des">追光模式下，设备将以所处地区的四季变化为基础，根据时间自动调节灯光效果，模拟大自然的环境变化过程。\n通过设备上的滚轮按键再次调节灯光，设备将自动退出追光模式。</string>
+    <string name="Location_permission_prompt">位置权限未打开</string>
+    <string name="Gps_permission_prompt">Gps定位服务未打开</string>
+    <string name="Ble_connect_tip">蓝牙未连接，请先连接设备</string>
+    <string name="Aq_power_error_prompt">电源故障，设备无法正常使用\n请联系客服处理</string>
+    <string name="Aq_key_error_prompt">触控按键故障，请联系客服处理</string>
+    <string name="Aq_pump_error_prompt">水泵故障，请联系客服处理</string>
+    <string name="Aq_power_error">电源故障，请检查 ></string>
+    <string name="Aq_key_error">触控按键故障，请检查 ></string>
+    <string name="Aq_pump_error">水泵故障，请检查 ></string>
+    <string name="Hint_delete_aq">确认删除起源纪智能鱼缸吗？</string>
+    <string name="Aq_touch_tip_hor">左右滑动调节灯光效果</string>
+    <string name="Aq_touch_tip_ver">上下滑动调节灯光亮度</string>
+    <string name="Aq_timing_prompt">保存失败，结束时间不能与开始时间相同</string>
+    <string name="Aq_child_lock_content">打开童锁后设备滚轮和触控按键不可用</string>
+    <string name="Aq_ota_notice_one">请将手机靠近设备,\n点击开始</string>
+    <string name="Aq_ota_notice_two">正在搜索设备</string>
+    <string name="Aq_ota_notice_three">设备升级过程中\n请不要移动设备</string>
+    <string name="Aq_ota_notice_four">恭喜你\n固件已升级至最新版本</string>
+
+    <!-- v7.21 -->
+    <string name="Device_d3_name">小佩智能行星喂食器</string>
+    <string name="D3_name_default">行星喂食器</string>
+    <string name="D3_bind_start_prompt_format">开机状态下，长按上图所示按钮\"5秒\"，直到指示灯快速闪烁</string>
+    <string name="Create_pet">创建宠物</string>
+    <string name="Hint_cancel_d3_share">确认取消设备共享吗?</string>
+    <string name="Hint_delete_d3">确认删除设备吗?</string>
+    <string name="D3_plan_total_amount">喂食总量(g)</string>
+    <string name="D3_bind_successfully_prompt">精准出粮，科学喂养</string>
+    <string name="D3_feed_plan_merge_one">1.多个宠物在同一时间出粮时，喂食量之和小于设备单次出粮上限<xliff:g id="prefix">%s</xliff:g>g，则合并为一餐，设备仅出粮一次。</string>
+    <string name="D3_feed_plan_merge_two">2.多个宠物在同一时间计划出粮，喂食量之和大于设备单次出粮上限<xliff:g id="prefix">%s</xliff:g>g，则分别出粮，第二次出粮将在第一次出粮完成后两分钟进行。</string>
+    <string name="Wifi_signal_weak">Wi-Fi信号弱</string>
+    <string name="Wifi_signal_weak_detail">当前设备网络信号不佳，请将设备与路由器相互靠近，可点击<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Call_pet">呼唤宠物</string>
+    <string name="Speech_settings">语音设置</string>
+    <string name="Stop_feed">停止出粮</string>
+    <string name="Today_food">今日进食</string>
+    <string name="Eating">进食</string>
+    <string name="Out_of_food">出粮</string>
+    <string name="Month_short">月</string>
+    <string name="Date_short">日</string>
+    <string name="Eating_amount">进食量</string>；
+    <string name="Amount_of_food">出粮量</string>
+    <string name="Speech_setting_prompt">此功_能正在努力开发中，请耐心等待哦</string>
+    <string name="Total_food_amount">共<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="D3_notification_eat_title_prompt">宠物进食通知</string>
+    <string name="D3_notification_eat_content_prompt">宠物进食完成后发送通知</string>
+    <string name="D3_pet_eating_prompt">宠物正在进食…</string>
+    <string name="D3_low_power_prompt">电量过低，请尽快连接电源</string>
+    <string name="This_week">本周</string>
+    <string name="Last_week">上周</string>
+    <string name="Feed_max_tip">喂食单不能超过10条</string>
+    <string name="Speech_settings_tip">每次出粮后将播放语音呼唤宠物过来进食</string>
+    <string name="Use_system_voice">使用默认语音</string>
+    <string name="Add_voice">添加录音</string>
+    <string name="Feed_min_prompt">单次出粮最小量为5g</string>
+    <string name="D3_record_feeding_prompt">正在出粮</string>
+    <string name="D3_record_cancel_passed_prompt"><xliff:g id="prefix">%s</xliff:g>已取消</string>
+    <string name="D3_record_unknown_prompt"><xliff:g id="prefix">%s</xliff:g>出粮结果未知，出粮期间设备离线，无法获取喂食结果</string>
+    <string name="D3_record_manual_terminal_prompt">出粮被人为终止</string>
+    <string name="D3_record_food_lack_prompt">桶内余量不足，请及时添加</string>
+    <string name="D3_record_food_lack_fail_prompt"><xliff:g id="prefix">%s</xliff:g>出粮失败，桶内余量不足，请及时添加</string>
+    <string name="D3_record_full_error_prompt"><xliff:g id="prefix">%s</xliff:g>出粮已取消，食盘已满，无法装入更多主粮，请清理</string>
+    <string name="D3_record_ota_cancel_prompt"><xliff:g id="prefix">%s</xliff:g>出粮已取消，设备正在OTA升级</string>
+    <string name="D3_record_feeding_cancel_prompt"><xliff:g id="prefix">%s</xliff:g>出粮已取消，设备正在出粮</string>
+    <string name="D3_record_dc_error_prompt"><xliff:g id="prefix">%s</xliff:g>出粮失败，设备电源故障，请检查</string>
+    <string name="D3_record_impeller_error_prompt"><xliff:g id="prefix">%s</xliff:g>出粮失败，设备叶轮故障，请检查</string>
+    <string name="D3_record_system_error_prompt"><xliff:g id="prefix">%s</xliff:g>出粮失败，设备系统故障，请检查</string>
+    <string name="D3_record_bucket_error_prompt"><xliff:g id="prefix">%s</xliff:g>出粮失败，粮桶未安装，请检查</string>
+    <string name="D3_record_fall_down_error_prompt"><xliff:g id="prefix">%s</xliff:g>出粮失败，设备倾倒，请检查</string>
+    <string name="D3_record_bowl_error_prompt"><xliff:g id="prefix">%s</xliff:g>出粮失败，食盆未安装，请检查</string>
+    <string name="D3_record_eat_prompt">宠物进食<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="D3_record_month_prompt">出粮<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="D3_record_feed_prompt"><xliff:g id="prefix">%s</xliff:g>已出粮</string>
+    <string name="D3_record_amount_prompt">共<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="D3_record_time_prompt">用时<xliff:g id="prefix">%s</xliff:g></string>
+
+    <string name="Aq_lamp_error">灯板已合上，请打开 ></string>
+    <string name="Aq_lamp_error_prompt">灯板合上时，灯光无法正常打开，请将设备灯板抬起</string>
+
+    <string name="D3_record_jammed_food_error_prompt"><xliff:g id="prefix">%s</xliff:g>出粮失败，设备发生卡粮，请检查</string>
+    <string name="D3_record_plan_prompt"><xliff:g id="prefix">%s</xliff:g>计划出粮</string>
+
+
+    <string name="Unit_upper_week_short">周</string>
+    <string name="Unit_upper_month_short">月</string>
+    <string name="Unit_upper_day_short">日</string>
+    <!-- v7.22.2 -->
+    <string name="D3_left_amount">当前碗内余量(g)</string>
+    <string name="D3_plan_amount">今日喂食总量(g)</string>
+    <string name="Extra_feeding">立即加餐</string>
+
+    <!-- v7.23 -->
+    <string name="Unit_meal">餐</string>
+    <string name="Unit_meals">餐</string>
+    <string name="D3_delete_voice_prompt">确认删除这条录音吗？</string>
+    <string name="D3_play_voice_prompt">确认在设备上播放这个声音吗？</string>
+    <string name="Record_time_prompt">录音时长过短</string>
+    <string name="Save_fail_prompt">保存失败</string>
+    <string name="Save_success_prompt">保存成功</string>
+    <string name="Uploading">上传中…</string>
+    <string name="D3_record_max_prompt">录音数量已达上限，请删除后再试</string>
+    <string name="D3_record_prompt">按下说话</string>
+    <string name="D3_default_voice_name">呼唤语音</string>
+    <string name="D3_new_function_notice_title_one">均匀出粮</string>
+    <string name="D3_new_function_notice_title_two">呼唤宠物</string>
+    <string name="D3_new_function_notice_title_three">进食监控</string>
+    <string name="D3_new_function_notice_title_four">充电电池</string>
+    <string name="D3_new_function_notice_one">旋转食盘让粮食均匀分布</string>
+    <string name="D3_new_function_notice_two">每餐都能听到主人的声音</string>
+    <string name="D3_new_function_notice_three">开始掌握宠物的进食习惯</string>
+    <string name="D3_new_function_notice_four">内置充电电池更环保可靠</string>
+
+
+    <!-- v7.24 -->
+    <string name="Device_d4_name">小佩智能喂食器SOLO</string>
+    <string name="D4_name_default">喂食器SOLO</string>
+    <string name="D4_bind_start_prompt_format">开机状态下，长按上图所示按钮\"5秒\"，直到指示灯快速闪烁</string>
+    <string name="D4_bind_successfully_prompt">定时出粮，科学喂养</string>
+    <string name="D4_plan_prompt">计划出粮(cup)</string>
+    <string name="D4_today_extra_prompt">今日加餐(cup)</string>
+    <string name="D4_feed_amount_prompt">出粮总量</string>
+    <string name="D4_feed_meal_prompt">出粮餐数</string>
+    <string name="Today_feed_amount">今日出粮</string>
+    <string name="D4_record_door_error_prompt">出粮口粮食堆积，请及时清理。</string>
+    <string name="D4_record_low_voltage_error_prompt"><xliff:g id="prefix">%s</xliff:g>出粮失败，电池电量不足，请及时更换电池。</string>
+    <string name="Some_to_some"><xliff:g id="prefix">%s</xliff:g><xliff:g id="prefix">%s</xliff:g></string>
+
+
+    <string name="Many_meal"><xliff:g id="prefix">%s</xliff:g>餐</string>
+    <string name="Many_meals"><xliff:g id="prefix">%s</xliff:g>餐</string>
+    <string name="Many_feeder_unit"><xliff:g id="prefix">%s</xliff:g>份</string>
+    <string name="Many_feeders_unit"><xliff:g id="prefix">%s</xliff:g>份</string>
+
+
+
+    <!-- v7.25 -->
+    <string name="Unit_hour_short">时</string>
+    <string name="Unit_hours_short">时</string>
+    <string name="Unit_minute_short">分</string>
+    <string name="Unit_minutes_short">分</string>
+    <string name="Unit_second_short">秒</string>
+    <string name="Unit_seconds_short">秒</string>
+    <string name="Unit_m_short">米</string>
+    <string name="Unit_km_short">千米</string>
+    <string name="Unit_kcal">千卡</string>
+    <string name="Unit_kilocalorie">千卡</string>
+    <string name="Unit_calorie">卡</string>
+    <string name="Device_p3_name">小佩智能猫牌狗牌</string>
+    <string name="P3_name_default">猫牌狗牌</string>
+    <string name="P3_bind_successfully_prompt">一键寻宠，运动监测</string>
+    <string name="Find_pet_ring">铃声设置</string>
+    <string name="Find_pet_ring_prompt">请选择寻找宠物时设备发出的铃声，点击时设备将播放铃声</string>
+    <string name="Low_frequency">欢乐时光</string>
+    <string name="Mid_frequency">小步舞曲</string>
+    <string name="High_frequency">悉心期盼</string>
+    <string name="Sync_data">同步数据</string>
+    <string name="Sync_data_prompt">进入设备首页时自动同步（间隔需大于1小时）</string>
+    <string name="Last_update_time">检测于<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Today_trend">今日活动趋势</string>
+    <string name="Find_pet">寻找宠物</string>
+    <string name="Auto_sync">自动同步数据</string>
+    <string name="Last_sync_time">同步于<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="Unit_prompt">单位:<xliff:g id="prefix">%s</xliff:g></string>
+    <string name="P3_device_low_battery">我们检测到当前设备电量低，请准备新电池以备用。</string>
+    <string name="Pet_found">已找到宠物</string>
+    <string name="Pet_count">已找到宠物(<xliff:g id="prefix">%s</xliff:g>只)</string>
+    <string name="Looking_for_pets">正在寻找宠物…</string>
+    <string name="Click_to_research">点击雷达区域重新寻找宠物</string>
+    <string name="No_pet_found">暂未找到宠物</string>
+    <string name="D3_calibration_prompt">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;食盘底部装有称重传感器，当发现碗内余量不准、宠物进食量与实际有偏差时，可能是秤受到外部因素影响导致。\n请检查：\n● 食盘周围不要与其他物体接触； \n● 取出钢碗和碗托并检查底下是否有异物，有的话请清理干净；\n&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;检查完成后，请先清空碗内的主粮，并将钢碗和碗托摆放正确，再进行手动校准。可点击查看</string>
+    <string name="D3_calibration_video">完整的校准视频</string>
+    <string name="System_voice">系统提示音</string>
+    <string name="Open_voice">出粮自动呼唤宠物</string>
+    <string name="Volume">音量</string>
+    <string name="Recent_time">最近如厕</string>
+    <string name="Set_Volume">音量设置</string>
+    <string name="Volume_high">高</string>
+    <string name="Volume_low">低</string>
+    <string name="P3_connecting_prompt">将在连接后呼叫</string>
+    <string name="Immediately_call">立即呼叫</string>
+    <string name="Calling">正在呼叫...</string>
+
+
+
+
+
+
+    <!-- v7.27 -->
+    <string name="Report_success_prompt">举报已收到,感谢您的反馈</string>
+    <string name="Device_w5_name">小佩智能饮水机5 / 5 MINI</string>
+    <string name="W5_name_default">智能饮水机5</string>
+    <string name="W5c_name_default">智能饮水机5 MINI</string>
+    <string name="Bind_pet_for_device_notice">设备将与所选宠物相关联（最多可选择3只）</string>
+    <string name="Not_associated_device">不关联设备</string>
+    <string name="W5_bind_successfully_prompt">智能饮水，健康生活</string>
+    <string name="Pause_work">暂停涌泉</string>
+    <string name="Resume_work">恢复涌泉</string>
+    <string name="Normal_mode">常开模式</string>
+    <string name="Intelligent_mode">智能模式</string>
+    <string name="W5_water_lack_warn_tip">已停止工作，请及时添水</string>
+    <string name="Water_lack">缺水</string>
+    <string name="Dormant">休眠</string>
+    <string name="Water_flowing">涌泉</string>
+    <string name="Water_flowing_time_Dormant_time"><xliff:g id="prefix">%s</xliff:g>涌泉 <xliff:g id="prefix">%s</xliff:g>休眠</string>
+    <string name="Residual_filter_element">滤芯剩余</string>
+    <string name="Lamp_settings">灯环设置</string>
+    <string name="Brightness_setting">亮度设置</string>
+    <string name="Dont_disturb">夜间免打扰</string>
+    <string name="Dont_disturb_time">免打扰时间</string>
+    <string name="Volume_medium">中</string>
+    <string name="Light_on_for_24">灯环24小时亮起</string>
+    <string name="Light_on_during">在该时间段内灯环亮起</string>
+    <string name="Water_dispenser_stops_working_during">在该时间段饮水机停止工作</string>
+    <string name="Change_water_time_prompt">下次添水提醒</string>
+    <string name="State_pausing">暂停中</string>
+    <string name="Return_to_work_prompt">10分钟后自动恢复涌泉</string>
+    <string name="Work_all_day">不间断式涌泉</string>
+    <string name="W5_filter_element_warn_tip">请及时更换滤芯</string>
+    <string name="W5_work_time">涌泉时间</string>
+    <string name="W5_dormant_time">休眠时间</string>
+    <string name="Hint_reset_filter_element">请务必在更换完滤芯后进行复位操作！否则会影响过滤水质。且滤芯剩余寿命一旦复位，数据将无法恢复。</string>
+    <string name="Do_not_disturb_prompt">处于免打扰时间段，休眠中</string>
+    <string name="Filter_element">滤芯3.0</string>
+    <string name="Filter_element_introduce">1. 高密度微孔滤棉，滤除毛发、碎屑等杂质，净化水质\n2. 椰壳活性炭，吸附余氯，微生物及细小杂质，改善口感\n3. 离子交换树脂，去除诱发宠物结石的，金属离子（钙/镁离子），软化水质</string>
+    <string name="W5_bootpage_description_water">点击后饮水机将暂停涌泉，再次点击后恢复涌泉，可在添水前使用。</string>
+    <string name="W5_bootpage_description_normal_mode">常开模式开启后，饮水机将不间断式进行涌泉出水。</string>
+    <string name="W5_bootpage_description_smart_mode">智能模式开启后，饮水机将根据智能设置的参数间断式涌泉出水。</string>
+    <string name="W5_bootpage_description_water_set">可以在这里设置智能模式状态下，饮水机的涌泉和休眠时间。</string>
+    <string name="W5_bootpage_description_water_change">这里可以添加下次添水提醒，系统会推送消息，提醒您按时添水。</string>
+    <string name="Device_bind_pet_number_limit_prompt">每个设备最多绑定<xliff:g id="prefix">%s</xliff:g>只宠物</string>
+    <string name="Lamp_settings_alarm_information">灯环指示设备的工作状态，以及缺水告警、滤芯告警。关闭后将不再提示，确认关闭吗？</string>
+    <string name="State_dormancying">休眠中</string>
+
+
+</resources>

@@ -49,6 +49,7 @@ public class P3TestMainActivity extends BaseActivity {
 
     private Tester mTester;
     private int mTestType;
+    private int mDeviceType;
 
     private WifiAdminSimple mWifiAdminSimple;
     private int mTestState;
@@ -64,16 +65,18 @@ public class P3TestMainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
-            mTester = (Tester) savedInstanceState.getSerializable(P3Utils.EXTRA_P3_TESTER);
+            mTester = (Tester) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_TESTER);
             mTestType = savedInstanceState.getInt("TestType");
             mCurDevice = (Device) savedInstanceState.getSerializable(P3Utils.EXTRA_P3);
             if (savedInstanceState.getSerializable(P3Utils.EXTRA_ERROR_P3) != null) {
                 mErrorDevice = (Device) savedInstanceState.getSerializable(P3Utils.EXTRA_ERROR_P3);
             }
+            mDeviceType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE);
         } else {
-            mTester = (Tester) getIntent().getSerializableExtra(P3Utils.EXTRA_P3_TESTER);
+            mTester = (Tester) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
             mTestType = getIntent().getIntExtra("TestType", P3Utils.TYPE_TEST);
             mCurDevice = (Device) getIntent().getSerializableExtra(P3Utils.EXTRA_P3);
+            mDeviceType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, 0);
             if (getIntent().getSerializableExtra(P3Utils.EXTRA_ERROR_P3) != null) {
                 mErrorDevice = (Device) getIntent().getSerializableExtra(P3Utils.EXTRA_ERROR_P3);
             }
@@ -89,9 +92,10 @@ public class P3TestMainActivity extends BaseActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putSerializable(P3Utils.EXTRA_P3_TESTER, mTester);
+        outState.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
         outState.putInt("TestType", mTestType);
         outState.putSerializable(P3Utils.EXTRA_P3, mCurDevice);
+        outState.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
         if (mErrorDevice != null) {
             outState.putSerializable(P3Utils.EXTRA_ERROR_P3, mErrorDevice);
         }
@@ -99,7 +103,7 @@ public class P3TestMainActivity extends BaseActivity {
 
     @Override
     protected void setupViews() {
-        setTitle("P3-" + getTitleByType());
+        setTitle(getTitleByType());
 
         mWifiAdminSimple = new WifiAdminSimple(this);
 
@@ -131,14 +135,16 @@ public class P3TestMainActivity extends BaseActivity {
     }
 
     private String getTitleByType() {
+        String result = mDeviceType == Globals.P3C ? "P3C-" : "P3D-";
+
         if (mTestType == P3Utils.TYPE_TEST) {
-            return "成品测试";
+            return result + "成品测试";
         } else if (mTestType == P3Utils.TYPE_TEST_PARTIALLY) {
-            return "半成品测试";
+            return result + "半成品测试";
         } else if (mTestType == P3Utils.TYPE_CHECK) {
-            return "抽检";
+            return result + "抽检";
         } else {
-            return "维修";
+            return result + "维修";
         }
     }
 
@@ -213,9 +219,10 @@ public class P3TestMainActivity extends BaseActivity {
             intent.putExtra("CurrentTestStep", pos);
             intent.putExtra(P3Utils.EXTRA_P3, mCurDevice);
             intent.putExtra("AutoTest", isAuto);
-            intent.putExtra(P3Utils.EXTRA_P3_TESTER, mTester);
+            intent.putExtra(DeviceCommonUtils.EXTRA_TESTER, mTester);
             intent.putExtra(P3Utils.EXTRA_ERROR_P3, mErrorDevice);
             intent.putExtra("TestType", mTestType);
+            intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
             startActivityForResult(intent, 0x12);
         } else {
             showShortToast(mInfoTestTextView.getText().toString());
@@ -387,10 +394,10 @@ public class P3TestMainActivity extends BaseActivity {
 
         if(position >= mP3TestUnits.size() - 1) {       //维修和抽检，最后一项打印标签可以不执行，其他项都完成了就算成功
             if (mTestType == P3Utils.TYPE_MAINTAIN) {
-                DeviceCommonUtils.storeMainTainInfo(Globals.P3, mCurDevice);
+                DeviceCommonUtils.storeMainTainInfo(mDeviceType, mCurDevice);
                 testComplete = position >= mP3TestUnits.size();
             } else if (mTestType == P3Utils.TYPE_CHECK) {
-                DeviceCommonUtils.storeCheckInfo(Globals.P3, mCurDevice);
+                DeviceCommonUtils.storeCheckInfo(mDeviceType, mCurDevice);
                 testComplete = position >= mP3TestUnits.size();
             } else if (mTestType == P3Utils.TYPE_TEST_PARTIALLY) {
                 testComplete = position >= mP3TestUnits.size();

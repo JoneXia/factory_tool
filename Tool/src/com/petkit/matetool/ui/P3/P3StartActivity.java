@@ -8,6 +8,7 @@ import com.petkit.matetool.R;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.P3.utils.P3Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.common.DeviceCommonUtils;
 
 /**
  * P3测试，选择工站
@@ -17,15 +18,17 @@ import com.petkit.matetool.ui.base.BaseActivity;
 public class P3StartActivity extends BaseActivity {
 
     private Tester mTester;
-
+    private int mDeviceType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
-            mTester = (Tester) savedInstanceState.getSerializable(P3Utils.EXTRA_P3_TESTER);
+            mTester = (Tester) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_TESTER);
+            mDeviceType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE);
         } else {
-            mTester = (Tester) getIntent().getSerializableExtra(P3Utils.EXTRA_P3_TESTER);
+            mDeviceType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, 0);
+            mTester = (Tester) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
         }
 
         setContentView(R.layout.activity_feeder_start);
@@ -36,7 +39,8 @@ public class P3StartActivity extends BaseActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putSerializable(P3Utils.EXTRA_P3_TESTER, mTester);
+        outState.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
+        outState.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
     }
 
     @Override
@@ -57,34 +61,28 @@ public class P3StartActivity extends BaseActivity {
 
     @Override
     public void onClick(View v) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
+        bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
+
         switch (v.getId()) {
             case R.id.test_case1:
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(P3Utils.EXTRA_P3_TESTER, mTester);
                 bundle.putInt("TestType", P3Utils.TYPE_TEST_PARTIALLY);
                 startActivityWithData(P3ScanActivity.class, bundle, false);
                 break;
             case R.id.test_case2:
-                bundle = new Bundle();
-                bundle.putSerializable(P3Utils.EXTRA_P3_TESTER, mTester);
                 bundle.putInt("TestType", P3Utils.TYPE_TEST);
                 startActivityWithData(P3ScanActivity.class, bundle, false);
                 break;
             case R.id.test_case3:
-                bundle = new Bundle();
-                bundle.putSerializable(P3Utils.EXTRA_P3_TESTER, mTester);
                 bundle.putInt("TestType", P3Utils.TYPE_MAINTAIN);
                 startActivityWithData(P3ScanActivity.class, bundle, false);
                 break;
             case R.id.test_case4:
-                bundle = new Bundle();
-                bundle.putSerializable(P3Utils.EXTRA_P3_TESTER, mTester);
                 bundle.putInt("TestType", P3Utils.TYPE_CHECK);
                 startActivityWithData(P3ScanActivity.class, bundle, false);
                 break;
             case R.id.test_case5:
-                bundle = new Bundle();
-                bundle.putSerializable(P3Utils.EXTRA_P3_TESTER, mTester);
                 startActivityWithData(P3StorageFileActivity.class, bundle, false);
                 break;
         }

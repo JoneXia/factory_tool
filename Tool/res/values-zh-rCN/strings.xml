@@ -354,6 +354,8 @@
     <!-- T4 dev -->
     <string name="s_light">立即亮灯</string>
     <string name="s_light_o">灯光已开启</string>
+    <string name="s_light_c">关闭灯光</string>
+    <string name="s_light_off">灯光已关闭</string>
     <string name="s_i_cnt">今日如厕</string>
     <string name="s_sing">正在启动</string>
     <string name="s_spr_fl">请先在App内关联净味器</string>

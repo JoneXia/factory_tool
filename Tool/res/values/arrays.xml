@@ -136,9 +136,8 @@
         <item>s_smth</item>
         <item>s_smth_ing</item>
         <item>s_smth_ovr</item>
-
         <item>s_light</item>
-        <item>s_ligh_o</item>
+        <item>s_light_o</item>
         <item>s_light_c</item>
         <item>s_light_off</item>
         <item>s_i_cnt</item>
@@ -147,7 +146,6 @@
         <item>s_spr_fb</item>
         <item>s_spr_fn</item>
         <item>s_spr_bt</item>
-
         <item>s_bk2main</item>
         <item>s_ota_ing</item>
         <item>s_err_tip</item>

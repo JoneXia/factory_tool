@@ -31,11 +31,9 @@ public class P3Utils {
     public static final int P3_SENSOR_STANDARD_VALUE_MIN    = 10;
     public static final int P3_SENSOR_STANDARD_VALUE_MAX    = 1500;
 
-    public static final String EXTRA_P3_TESTER   = "EXTRA_P3_TESTER";
     public static final String EXTRA_P3   = "EXTRA_P3";
     public static final String EXTRA_ERROR_P3   = "EXTRA_ERROR_P3";
 
-    public static final String SHARED_P3_TESTER = "SHARED_P3_TESTER";
 
     public static ArrayList<Device> mTempDevices = new ArrayList<>();
 

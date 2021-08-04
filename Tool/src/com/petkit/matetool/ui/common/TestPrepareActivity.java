@@ -154,7 +154,8 @@ public class TestPrepareActivity extends BaseActivity {
                 if(mDevicesError != null) {
                     Bundle bundle = new Bundle();
                     bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
-//                    startActivityWithData(ErrorListActivity.class, bundle, false);
+                    bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
+                    startActivityWithData(BLEErrorListActivity.class, bundle, false);
                 } else {
                     LoadDialog.show(this);
                     startUploadSn();
@@ -399,7 +400,7 @@ public class TestPrepareActivity extends BaseActivity {
             return;
         }
 
-        String api = DeviceCommonUtils.getUrlByTypeForDevice(mDeviceType, file.getName());
+        String api = DeviceCommonUtils.getUrlByTypeForDevice(mDeviceType, DeviceCommonUtils.geturlTypeByFilename(file.getName()));
 
         HashMap<String, String> params = new HashMap<>();
         params.put("snList", "{\"snList\":[" + content.substring(0, content.length() - 1) + "]}");

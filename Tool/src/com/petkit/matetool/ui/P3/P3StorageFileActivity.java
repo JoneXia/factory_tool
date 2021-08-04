@@ -9,8 +9,8 @@ import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.http.AsyncHttpRespHandler;
 import com.petkit.matetool.model.Tester;
-import com.petkit.matetool.ui.P3.utils.P3Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.common.DeviceCommonUtils;
 import com.petkit.matetool.utils.JSONUtils;
 
 import org.json.JSONException;
@@ -39,9 +39,9 @@ public class P3StorageFileActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
-            mTester = (Tester) savedInstanceState.getSerializable(P3Utils.EXTRA_P3_TESTER);
+            mTester = (Tester) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_TESTER);
         } else {
-            mTester = (Tester) getIntent().getSerializableExtra(P3Utils.EXTRA_P3_TESTER);
+            mTester = (Tester) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
         }
 
         setContentView(R.layout.activity_feeder_storage_file);

@@ -36,7 +36,6 @@ import com.petkit.matetool.ui.common.DeviceCommonUtils;
 import com.petkit.matetool.ui.print.PrintActivity;
 import com.petkit.matetool.ui.utils.PrintResultCallback;
 import com.petkit.matetool.ui.utils.PrintUtils;
-import com.petkit.matetool.utils.Globals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,6 +54,7 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
 
     private Tester mTester;
     private int mTestType;
+    private int mDeviceType;
     private int mCurTestStep;
     private ArrayList<P3TestUnit> mP3TestUnits;
     private int mTempResult;
@@ -82,7 +82,8 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
             mDevice = (Device) savedInstanceState.getSerializable(P3Utils.EXTRA_P3);
             isAutoTest = savedInstanceState.getBoolean("AutoTest");
             mTestType = savedInstanceState.getInt("TestType");
-            mTester = (Tester) savedInstanceState.getSerializable(P3Utils.EXTRA_P3_TESTER);
+            mTester = (Tester) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_TESTER);
+            mDeviceType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE);
             if (savedInstanceState.getSerializable(P3Utils.EXTRA_ERROR_P3) != null) {
                 mErrorDevice = (Device) savedInstanceState.getSerializable(P3Utils.EXTRA_ERROR_P3);
             }
@@ -92,7 +93,8 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
             mTestType = getIntent().getIntExtra("TestType", P3Utils.TYPE_TEST);
             mDevice = (Device) getIntent().getSerializableExtra(P3Utils.EXTRA_P3);
             isAutoTest = getIntent().getBooleanExtra("AutoTest", true);
-            mTester = (Tester) getIntent().getSerializableExtra(P3Utils.EXTRA_P3_TESTER);
+            mTester = (Tester) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
+            mDeviceType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, 0);
             if (getIntent().getSerializableExtra(P3Utils.EXTRA_ERROR_P3) != null) {
                 mErrorDevice = (Device) getIntent().getSerializableExtra(P3Utils.EXTRA_ERROR_P3);
             }
@@ -127,7 +129,8 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
         outState.putSerializable(P3Utils.EXTRA_P3, mDevice);
         outState.putBoolean("AutoTest", isAutoTest);
         outState.putInt("TestType", mTestType);
-        outState.putSerializable(P3Utils.EXTRA_P3_TESTER, mTester);
+        outState.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
+        outState.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
         if (mErrorDevice != null) {
             outState.putSerializable(P3Utils.EXTRA_ERROR_P3, mErrorDevice);
         }
@@ -499,7 +502,7 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
                     mDescTextView.append("\nSN写入成功");
                     result = true;
                 }
-                DeviceCommonUtils.storeSucceedDeviceInfo(Globals.P3, mDevice, null);
+                DeviceCommonUtils.storeSucceedDeviceInfo(mDeviceType, mDevice, null);
                 break;
             case BLEConsts.OP_CODE_P3_TEST_RESULT:
             case BLEConsts.OP_CODE_P3_RING:
@@ -566,7 +569,7 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-                String sn = DeviceCommonUtils.generateSNForTester(Globals.P3, mTester);
+                String sn = DeviceCommonUtils.generateSNForTester(mDeviceType, mTester);
                 if (sn == null) {
                     showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
                     return;

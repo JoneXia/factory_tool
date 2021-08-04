@@ -11,9 +11,13 @@ import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.DevicesError;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.AQR.AQRStartActivity;
+import com.petkit.matetool.ui.AQR.AQRTestMainActivity;
 import com.petkit.matetool.ui.K3.K3StartActivity;
+import com.petkit.matetool.ui.K3.K3TestMainActivity;
 import com.petkit.matetool.ui.P3.P3StartActivity;
+import com.petkit.matetool.ui.P3.P3TestMainActivity;
 import com.petkit.matetool.ui.t4.T4StartActivity;
+import com.petkit.matetool.ui.t4.T4TestMainActivity;
 import com.petkit.matetool.utils.Globals;
 
 import java.io.File;
@@ -60,7 +64,8 @@ public class DeviceCommonUtils {
     public static String getDeviceKeyByType(int deviceType) {
         String key;
         switch (deviceType) {
-            case Globals.P3:
+            case Globals.P3C:
+            case Globals.P3D:
                 key = "P3";
                 break;
             case Globals.T4:
@@ -88,7 +93,8 @@ public class DeviceCommonUtils {
      */
     public static Class getStartActivityByType(int deviceType) {
         switch (deviceType) {
-            case Globals.P3:
+            case Globals.P3C:
+            case Globals.P3D:
                 return P3StartActivity.class;
             case Globals.T4:
             case Globals.T4_p:
@@ -108,10 +114,35 @@ public class DeviceCommonUtils {
      * @param deviceType
      * @return
      */
+    public static Class getMainActivityByType(int deviceType) {
+        switch (deviceType) {
+            case Globals.P3C:
+            case Globals.P3D:
+                return P3TestMainActivity.class;
+            case Globals.T4:
+            case Globals.T4_p:
+                return T4TestMainActivity.class;
+            case Globals.K3:
+                return K3TestMainActivity.class;
+            case Globals.AQR:
+                return AQRTestMainActivity.class;
+            default:
+                throw  new RuntimeException("getStartActivity deviceType not support!");
+        }
+    }
+
+    /**
+     *
+     *
+     * @param deviceType
+     * @return
+     */
     public static String getDeviceFlagByType(int deviceType) {
         switch (deviceType) {
-            case Globals.P3:
-                return Globals.DEVICE_TYPE_CODE_P3;
+            case Globals.P3C:
+                return Globals.DEVICE_TYPE_CODE_P3C;
+            case Globals.P3D:
+                return Globals.DEVICE_TYPE_CODE_P3D;
             case Globals.T4:
             case Globals.T4_p:
                 return Globals.DEVICE_TYPE_CODE_T4;

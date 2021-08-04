@@ -351,13 +351,16 @@
 	<string name="s_2min">Initiate cleaning in 2 minutes</string>
 
 	<!-- T4 dev -->
-	<string name="s_light">立即亮灯</string>
-	<string name="s_light_o">灯光已开启</string>
-	<string name="s_i_cnt">今日如厕</string>
-	<string name="s_sing">正在启动</string>
-	<string name="s_spr_fl">请先在App内关联净味器</string>
-	<string name="s_spr_fb">启动失败，请检查净味器电量</string>
-	<string name="s_spr_fn">启动失败，未找到净味器</string>
-	<string name="s_spr_bt">净味器电量不足，请更换电池</string>
+	<string name="s_light">Turn on the Light</string>
+	<string name="s_light_o">Light On</string>
+	<string name="s_light_c">Turn off the Light</string>
+	<string name="s_light_off">Light Off</string>
+	<string name="s_i_cnt">Toilet Times</string>
+	<string name="s_sing">Turning On</string>
+	<string name="s_spr_fl">Please bind the Odor Removal Device first in the App. </string>
+	<string name="s_spr_fb">Litter Box start failed. Please check the battery in Odor Removal Device. </string>
+	<string name="s_spr_fn">Litter Box start failed. Odor Removal Device undetected. </string>
+	<string name="s_spr_bt">Odor Removal Device battery low. Please replace the batteries. </string>
+
 
 </resources>

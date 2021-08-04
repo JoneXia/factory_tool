@@ -252,14 +252,17 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
             case R.id.aq:
                 testStyle = Globals.AQ;
                 break;
-            case R.id.p3:
-                testStyle = Globals.P3;
-                break;
             case R.id.w5:
                 testStyle = Globals.W5;
                 break;
             case R.id.w5c:
                 testStyle = Globals.W5C;
+                break;
+            case R.id.p3c:
+                testStyle = Globals.P3C;
+                break;
+            case R.id.p3d:
+                testStyle = Globals.P3D;
                 break;
             case R.id.t4:
                 testStyle = Globals.T4;
@@ -314,9 +317,6 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
         tempRadioButton = (RadioButton) findViewById(R.id.d4);
         tempRadioButton.setText(getTextDetail(Globals.D4, "喂食器SOLO（D4）" + " v" + TOOL_D4_VERSION));
 
-        tempRadioButton = (RadioButton) findViewById(R.id.p3);
-        tempRadioButton.setText(getTextDetail(Globals.P3, "智能猫狗牌（P3）" + " v" + TOOL_P3_VERSION));
-
         tempRadioButton = (RadioButton) findViewById(R.id.w5);
         tempRadioButton.setText(getTextDetail(Globals.W5, "智能饮水机（W5）" + " v" + TOOL_W5_VERSION));
 
@@ -327,7 +327,13 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
         tempRadioButton.setText(getTextDetail(Globals.T4, "智能猫厕所SOLO（T4）" + " v" + TOOL_T4_VERSION));
 
         tempRadioButton = (RadioButton) findViewById(R.id.t4_p);
-        tempRadioButton.setText(getTextDetail(Globals.T4_p, "智能猫厕所SOLO（T4）标配K3" + " v" + TOOL_T4_VERSION));
+        tempRadioButton.setText(getTextDetail(Globals.T4_p, "智能猫厕所SOLO（T4标配K3）" + " v" + TOOL_T4_VERSION));
+
+        tempRadioButton = (RadioButton) findViewById(R.id.p3c);
+        tempRadioButton.setText(getTextDetail(Globals.P3C, "智能猫牌（P3C）" + " v" + TOOL_P3_VERSION));
+
+        tempRadioButton = (RadioButton) findViewById(R.id.p3d);
+        tempRadioButton.setText(getTextDetail(Globals.P3D, "智能狗牌（P3D）" + " v" + TOOL_P3_VERSION));
 
         tempRadioButton = (RadioButton) findViewById(R.id.k3);
         tempRadioButton.setText(getTextDetail(Globals.K3, "智能净味器（K3）" + " v" + TOOL_K3_VERSION));
@@ -339,7 +345,7 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
     private SpannableStringBuilder getTextDetail(int type, String text) {
         SpannableStringUtils.SpanText text1 = new SpannableStringUtils.SpanText(text, CommonUtils.getColorById(R.color.black), 1.0f);
 
-        if (TesterManagerUtils.getCurrentTesterForType(type) != null) {
+        if (type >= Globals.P3C && TesterManagerUtils.getCurrentTesterForType(type) != null) {
             SpannableStringUtils.SpanText text2 = new SpannableStringUtils.SpanText(" 已登录", CommonUtils.getColorById(R.color.yellow), 0.8f);
             return SpannableStringUtils.makeSpannableString(text1, text2);
         } else {

@@ -5,18 +5,15 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.petkit.android.utils.CommonUtils;
 import com.petkit.matetool.model.Tester;
-import com.petkit.matetool.ui.AQR.utils.AQRUtils;
 import com.petkit.matetool.ui.D3.utils.D3Utils;
 import com.petkit.matetool.ui.D4.utils.D4Utils;
 import com.petkit.matetool.ui.K2.utils.K2Utils;
-import com.petkit.matetool.ui.K3.utils.K3Utils;
-import com.petkit.matetool.ui.P3.utils.P3Utils;
 import com.petkit.matetool.ui.W5.utils.W5Utils;
+import com.petkit.matetool.ui.common.DeviceCommonUtils;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.ui.feeder.utils.FeederUtils;
 import com.petkit.matetool.ui.feederMini.utils.FeederMiniUtils;
 import com.petkit.matetool.ui.t3.utils.T3Utils;
-import com.petkit.matetool.ui.t4.utils.T4Utils;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -29,6 +26,8 @@ import java.util.Set;
 
 public class TesterManagerUtils {
 
+    public static final String SHARED_TESTER = "SHARED_%s_TESTER";
+
     private static HashMap<Integer, Tester> mTesterTempList = new HashMap<>();
 
     public static void initTesterTempList() {
@@ -39,11 +38,11 @@ public class TesterManagerUtils {
         getCurrentTesterForType(Globals.K2);
         getCurrentTesterForType(Globals.D3);
         getCurrentTesterForType(Globals.D4);
-        getCurrentTesterForType(Globals.P3);
         getCurrentTesterForType(Globals.W5);
-        getCurrentTesterForType(Globals.T4);
-        getCurrentTesterForType(Globals.K3);
-        getCurrentTesterForType(Globals.AQR);
+
+        for (int i = Globals.P3C; i < Globals.MAX; i++) {
+            getCurrentTesterForType(i);
+        }
     }
 
 
@@ -51,8 +50,7 @@ public class TesterManagerUtils {
         Tester tester = mTesterTempList.get(type);
 
         if (tester == null) {
-
-            String testerString = null;
+            String testerString;
             switch (type) {
                 case Globals.FEEDER:
                     testerString = CommonUtils.getSysMap(FeederUtils.SHARED_FEEDER_TESTER);
@@ -75,20 +73,11 @@ public class TesterManagerUtils {
                 case Globals.D4:
                     testerString = CommonUtils.getSysMap(D4Utils.SHARED_D4_TESTER);
                     break;
-                case Globals.P3:
-                    testerString = CommonUtils.getSysMap(P3Utils.SHARED_P3_TESTER);
-                    break;
                 case Globals.W5:
                     testerString = CommonUtils.getSysMap(W5Utils.SHARED_W5_TESTER);
                     break;
-                case Globals.T4:
-                    testerString = CommonUtils.getSysMap(T4Utils.SHARED_T4_TESTER);
-                    break;
-                case Globals.K3:
-                    testerString = CommonUtils.getSysMap(K3Utils.SHARED_K3_TESTER);
-                    break;
-                case Globals.AQR:
-                    testerString = CommonUtils.getSysMap(AQRUtils.SHARED_AQR_TESTER);
+                default:
+                    testerString = CommonUtils.getSysMap(getShareTesterKey(type));
                     break;
             }
             if(!TextUtils.isEmpty(testerString)) {
@@ -126,20 +115,11 @@ public class TesterManagerUtils {
             case Globals.D4:
                 CommonUtils.addSysMap(D4Utils.SHARED_D4_TESTER, testerString);
                 break;
-            case Globals.P3:
-                CommonUtils.addSysMap(P3Utils.SHARED_P3_TESTER, testerString);
-                break;
             case Globals.W5:
                 CommonUtils.addSysMap(W5Utils.SHARED_W5_TESTER, testerString);
                 break;
-            case Globals.T4:
-                CommonUtils.addSysMap(T4Utils.SHARED_T4_TESTER, testerString);
-                break;
-            case Globals.K3:
-                CommonUtils.addSysMap(K3Utils.SHARED_K3_TESTER, testerString);
-                break;
-            case Globals.AQR:
-                CommonUtils.addSysMap(AQRUtils.SHARED_AQR_TESTER, testerString);
+            default:
+                CommonUtils.addSysMap(getShareTesterKey(type), testerString);
                 break;
         }
 
@@ -188,25 +168,20 @@ public class TesterManagerUtils {
                     case Globals.D4:
                         CommonUtils.addSysMap(D4Utils.SHARED_D4_TESTER, "");
                         break;
-                    case Globals.P3:
-                        CommonUtils.addSysMap(P3Utils.SHARED_P3_TESTER, "");
-                        break;
                     case Globals.W5:
                         CommonUtils.addSysMap(W5Utils.SHARED_W5_TESTER, "");
                         break;
-                    case Globals.T4:
-                        CommonUtils.addSysMap(T4Utils.SHARED_T4_TESTER, "");
-                        break;
-                    case Globals.K3:
-                        CommonUtils.addSysMap(K3Utils.SHARED_K3_TESTER, "");
-                        break;
-                    case Globals.AQR:
-                        CommonUtils.addSysMap(AQRUtils.SHARED_AQR_TESTER, "");
+                    default:
+                        CommonUtils.addSysMap(getShareTesterKey(entry.getKey()), "");
                         break;
                 }
                 iterator.remove();
             }
         }
+    }
+
+    private static String getShareTesterKey(int deviceType) {
+        return String.format(SHARED_TESTER, DeviceCommonUtils.getDeviceKeyByType(deviceType));
     }
 
 

@@ -11,6 +11,7 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -46,7 +47,7 @@ import static com.petkit.matetool.ui.t3.utils.BitmapFormat.BITMAP_8_BIT_COLOR;
  */
 public class T4LanguageActivity extends BaseActivity {
 
-    private String[] LocaleList = new String[]{"zh_CN", "en_US"}; //, "zh_TW", "es_ES", "ko_KR", "it_IT", "ja_JP", "pt_PT", "de_DE", "fr_FR", "ru_RU"
+    private String[] LocaleList = new String[]{"zh_CN", "en_US", "zh_TW", "es_ES", "ko_KR", "it_IT", "ja_JP", "pt_PT", "de_DE", "fr_FR", "ru_RU"}; //
 
 
     private Tester mTester;
@@ -202,6 +203,7 @@ public class T4LanguageActivity extends BaseActivity {
         for (int i = 0; i < strings.length; i++) {
             StringBitmapMode mode = new StringBitmapMode();
             mode.setName(strings[i]);
+            Log.d("string key: ", strings[i]);
             mode.setText(localeRes.getString(localeRes.getIdentifier(strings[i], "string", getPackageName())));
             stringBitmapModes.add(mode);
         }

@@ -62,6 +62,13 @@
                 android:text="智能喂食器solo-T4"/>
 
             <RadioButton
+                android:id="@+id/p3c"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip"
+                android:text="智能猫牌-P3C"/>
+
+            <RadioButton
                 android:id="@+id/cozy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -111,11 +118,11 @@
                 android:text="喂食器SOLO-D4"/>
 
             <RadioButton
-                android:id="@+id/p3"
+                android:id="@+id/p3d"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dip"
-                android:text="智能猫狗牌-P3"/>
+                android:text="智能狗牌-P3D"/>
 
             <RadioButton
                 android:id="@+id/w5c"
