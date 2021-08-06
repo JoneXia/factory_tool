@@ -34,6 +34,7 @@ import com.petkit.matetool.ui.P3.utils.P3Utils;
 import com.petkit.matetool.ui.aq.AQScanListAdapter;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.common.DeviceCommonUtils;
+import com.petkit.matetool.utils.Globals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,12 +71,12 @@ public class P3ScanActivity extends BaseActivity implements View.OnClickListener
             mTester = (Tester) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_TESTER);
             mTestType = savedInstanceState.getInt("TestType");
             mDeviceType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE);
-            mErrorDevice = (Device) savedInstanceState.getSerializable(P3Utils.EXTRA_P3);
+            mErrorDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE);
         } else {
             mTester = (Tester) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
-            mTestType = getIntent().getIntExtra("TestType", P3Utils.TYPE_TEST);
+            mTestType = getIntent().getIntExtra("TestType", Globals.TYPE_TEST);
             mDeviceType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, 0);
-            mErrorDevice = (Device) getIntent().getSerializableExtra(P3Utils.EXTRA_P3);
+            mErrorDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE);
         }
 
         setContentView(R.layout.activity_go_test);
@@ -91,13 +92,13 @@ public class P3ScanActivity extends BaseActivity implements View.OnClickListener
         outState.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
         outState.putInt("TestType", mTestType);
         outState.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
-        outState.putSerializable(P3Utils.EXTRA_P3, mErrorDevice);
+        outState.putSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
     }
 
 
     @Override
     protected void setupViews() {
-        setTitle("智能猫狗牌（P3）测试");
+        setTitle(mDeviceType == Globals.P3C ? "智能猫牌（P3C）测试" : "智能狗牌（P3D）测试");
 
         mP3TestUnits = P3Utils.generateP3TestUnitsForType(mTestType);
 
@@ -155,7 +156,7 @@ public class P3ScanActivity extends BaseActivity implements View.OnClickListener
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
         Bundle bundle = new Bundle();
-        bundle.putInt(BLEConsts.EXTRA_ACTION, BLEConsts.BLE_ACTION_P3_TEST);
+        bundle.putInt(BLEConsts.EXTRA_ACTION, BLEConsts.BLE_ACTION_DEVICE_TEST);
         bundle.putSerializable(BLEConsts.EXTRA_DEVICE_INFO, deviceInfo);
         startBLEAction(bundle);
     }
@@ -257,8 +258,8 @@ public class P3ScanActivity extends BaseActivity implements View.OnClickListener
 
         Intent intent = new Intent(this, P3TestMainActivity.class);
         intent.putExtra("TestUnits", mP3TestUnits);
-        intent.putExtra(P3Utils.EXTRA_P3, mCurDevice);
-        intent.putExtra(P3Utils.EXTRA_ERROR_P3, mErrorDevice);
+        intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mCurDevice);
+        intent.putExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
         intent.putExtra(DeviceCommonUtils.EXTRA_TESTER, mTester);
         intent.putExtra("TestType", mTestType);
         intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
@@ -316,7 +317,8 @@ public class P3ScanActivity extends BaseActivity implements View.OnClickListener
                             return;
                         }
 
-                        if (deviceInfo.getName().equalsIgnoreCase(BLEConsts.P3_DISPLAY_NAME)) {
+                        if (deviceInfo.getName().equalsIgnoreCase(BLEConsts.P3C_DISPLAY_NAME)
+                                || deviceInfo.getName().equalsIgnoreCase(BLEConsts.P3D_DISPLAY_NAME)) {
                             List<DeviceInfo> list = mListAdapter.getList();
                             for (DeviceInfo deviceInfos : list) {
                                 if (deviceInfo.getMac()!=null){

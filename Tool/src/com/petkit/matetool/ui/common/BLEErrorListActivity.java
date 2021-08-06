@@ -28,8 +28,8 @@ import com.petkit.matetool.R;
 import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.DevicesError;
 import com.petkit.matetool.model.Tester;
-import com.petkit.matetool.ui.W5.utils.W5Utils;
 import com.petkit.matetool.ui.base.BaseListActivity;
+import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.widget.pulltorefresh.PullToRefreshBase;
 
 import java.util.Date;
@@ -226,9 +226,9 @@ public class BLEErrorListActivity extends BaseListActivity {
         scanFinish();
 
         Intent intent = new Intent(this, DeviceCommonUtils.getMainActivityByType(mDeviceType));
-        intent.putExtra(W5Utils.EXTRA_W5_TESTER, mTester);
-        intent.putExtra("TestType", mSelectPosition < mDevicesError.getMac().size() ? W5Utils.TYPE_DUPLICATE_MAC : W5Utils.TYPE_DUPLICATE_SN);
-        intent.putExtra(W5Utils.EXTRA_W5, mAdapter.getItem(mSelectPosition));
+        intent.putExtra(DeviceCommonUtils.EXTRA_TESTER, mTester);
+        intent.putExtra("TestType", mSelectPosition < mDevicesError.getMac().size() ? Globals.TYPE_DUPLICATE_MAC : Globals.TYPE_DUPLICATE_SN);
+        intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mAdapter.getItem(mSelectPosition));
         startActivityForResult(intent, 0x11);
     }
 
@@ -255,7 +255,7 @@ public class BLEErrorListActivity extends BaseListActivity {
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
         Bundle bundle = new Bundle();
-        bundle.putInt(BLEConsts.EXTRA_ACTION, BLEConsts.BLE_ACTION_W5_TEST);
+        bundle.putInt(BLEConsts.EXTRA_ACTION, BLEConsts.BLE_ACTION_DEVICE_TEST);
         bundle.putSerializable(BLEConsts.EXTRA_DEVICE_INFO, deviceInfo);
         startBLEAction(bundle);
     }

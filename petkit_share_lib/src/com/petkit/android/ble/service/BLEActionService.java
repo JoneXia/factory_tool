@@ -547,14 +547,6 @@ public abstract class BLEActionService extends IntentService {
 			}
 			startAQTest(intent);
 			break;
-		case BLEConsts.BLE_ACTION_P3_TEST:
-			mBleDevice = (DeviceInfo) intent.getSerializableExtra(BLEConsts.EXTRA_DEVICE_INFO);
-			if(mBleDevice == null || mBleDevice.getAddress() == null){
-				updateProgressNotification(BLEConsts.ERROR_DEVICE_ID_NULL);
-				return;
-			}
-			startP3Test(intent);
-			break;
 		case BLEConsts.BLE_ACTION_W5_TEST:
 			mBleDevice = (DeviceInfo) intent.getSerializableExtra(BLEConsts.EXTRA_DEVICE_INFO);
 			if(mBleDevice == null || mBleDevice.getAddress() == null){
@@ -563,22 +555,30 @@ public abstract class BLEActionService extends IntentService {
 			}
 			startW5Test(intent);
 			break;
-		case BLEConsts.BLE_ACTION_K3_TEST:
+		case BLEConsts.BLE_ACTION_DEVICE_TEST:
 			mBleDevice = (DeviceInfo) intent.getSerializableExtra(BLEConsts.EXTRA_DEVICE_INFO);
 			if(mBleDevice == null || mBleDevice.getAddress() == null){
 				updateProgressNotification(BLEConsts.ERROR_DEVICE_ID_NULL);
 				return;
 			}
-			startK3Test(intent);
+			startBleDeviceTest(intent);
 			break;
-		case BLEConsts.BLE_ACTION_AQR_TEST:
-			mBleDevice = (DeviceInfo) intent.getSerializableExtra(BLEConsts.EXTRA_DEVICE_INFO);
-			if(mBleDevice == null || mBleDevice.getAddress() == null){
-				updateProgressNotification(BLEConsts.ERROR_DEVICE_ID_NULL);
-				return;
-			}
-			startAQRTest(intent);
-			break;
+//		case BLEConsts.BLE_ACTION_K3_TEST:
+//			mBleDevice = (DeviceInfo) intent.getSerializableExtra(BLEConsts.EXTRA_DEVICE_INFO);
+//			if(mBleDevice == null || mBleDevice.getAddress() == null){
+//				updateProgressNotification(BLEConsts.ERROR_DEVICE_ID_NULL);
+//				return;
+//			}
+//			startK3Test(intent);
+//			break;
+//		case BLEConsts.BLE_ACTION_AQR_TEST:
+//			mBleDevice = (DeviceInfo) intent.getSerializableExtra(BLEConsts.EXTRA_DEVICE_INFO);
+//			if(mBleDevice == null || mBleDevice.getAddress() == null){
+//				updateProgressNotification(BLEConsts.ERROR_DEVICE_ID_NULL);
+//				return;
+//			}
+//			startAQRTest(intent);
+//			break;
 		default:
 			break;
 		}
@@ -2120,10 +2120,10 @@ public abstract class BLEActionService extends IntentService {
 	protected abstract void startInitAndChangeGo(final Intent intent);
 	protected abstract void startGoSampling(final Intent intent);
 	protected abstract void startAQTest(final Intent intent);
-	protected abstract void startP3Test(final Intent intent);
 	protected abstract void startW5Test(final Intent intent);
-	protected abstract void startK3Test(final Intent intent);
-	protected abstract void startAQRTest(final Intent intent);
+	protected abstract void startBleDeviceTest(final Intent intent);
+//	protected abstract void startP3Test(final Intent intent);
+//	protected abstract void startAQRTest(final Intent intent);
 
 	protected abstract void onBlockTimer();
 	

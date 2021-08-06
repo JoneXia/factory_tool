@@ -150,7 +150,7 @@ public class K3ScanActivity extends BaseActivity implements View.OnClickListener
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
         Bundle bundle = new Bundle();
-        bundle.putInt(BLEConsts.EXTRA_ACTION, BLEConsts.BLE_ACTION_K3_TEST);
+        bundle.putInt(BLEConsts.EXTRA_ACTION, BLEConsts.BLE_ACTION_DEVICE_TEST);
         bundle.putSerializable(BLEConsts.EXTRA_DEVICE_INFO, deviceInfo);
         startBLEAction(bundle);
     }

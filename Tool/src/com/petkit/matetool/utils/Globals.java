@@ -13,27 +13,11 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Globals {
-	public static final String localUrl = Environment
-			.getExternalStorageDirectory().getAbsolutePath() + "/mate_test/";
 
 	public static final String EXTRA_PERMISSION_CONTENT      = "com.petkit.android.EXTRA_PERMISSION_CONTENT";
-
 	public static final String BROADCAST_PERMISSION_FINISHED = "com.petkit.android.BROADCAST_PERMISSION_FINISHED";
 
-	public static final boolean PERMISSION_ERASE = true;
-	//test date
-	public static String g_date;
-	//worker station
-//	public static String g_station;
-	
-	//00000-99999
-	public static String SHARED_FACTORY_NUMBER_PRO = "PRO";
-	public static String SHARED_FACTORY_NUMBER_STYLE = "STYLE";
-	
-	public static String SHARED_BLE_VALUE = "SHARED_BLE_VALUE";
-	public static String SHARED_BLE_VALUE2 = "SHARED_BLE_VALUE2";
-	public static String SHARED_VOLT_MAX = "SHARED_VOLT_MAX";
-	public static String SHARED_VOLT_MIN = "SHARED_VOLT_MIN";
+	public static final boolean PERMISSION_ERASE = false;
 	
 	//test style  1--mate style , 2---mate pro
 	public static final int MATE_STYLE = 1;
@@ -78,6 +62,46 @@ public class Globals {
 	public static final String DEVICE_TYPE_CODE_K3 = "M";
 	public static final String DEVICE_TYPE_CODE_AQR = "N";
 	public static final String DEVICE_TYPE_CODE_P3D = "K";
+
+
+
+	public static final int TYPE_TEST_PARTIALLY         = 1;
+	public static final int TYPE_TEST                   = 2;
+	public static final int TYPE_MAINTAIN               = 3;
+	public static final int TYPE_CHECK                  = 4;
+	public static final int TYPE_DUPLICATE_MAC          = 5;
+	public static final int TYPE_DUPLICATE_SN           = 6;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	public static final String localUrl = Environment
+			.getExternalStorageDirectory().getAbsolutePath() + "/mate_test/";
+	//test date
+	public static String g_date;
+	//worker station
+//	public static String g_station;
+
+	//00000-99999
+	public static String SHARED_FACTORY_NUMBER_PRO = "PRO";
+	public static String SHARED_FACTORY_NUMBER_STYLE = "STYLE";
+
+	public static String SHARED_BLE_VALUE = "SHARED_BLE_VALUE";
+	public static String SHARED_BLE_VALUE2 = "SHARED_BLE_VALUE2";
+	public static String SHARED_VOLT_MAX = "SHARED_VOLT_MAX";
+	public static String SHARED_VOLT_MIN = "SHARED_VOLT_MIN";
 
 	public static ArrayList<String> mTestItem = new ArrayList<String>();
 	public static int[] mTestResult = null;

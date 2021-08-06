@@ -36,6 +36,8 @@ public class DeviceCommonUtils {
     public static final String STORE_DIR = ".%s/";
     public static final String EXTRA_TESTER = "EXTRA_TESTER";
     public static final String EXTRA_DEVICE_TYPE   = "EXTRA_DEVICE_TYPE";
+    public static final String EXTRA_DEVICE   = "EXTRA_DEVICE";
+    public static final String EXTRA_ERROR_DEVICE   = "EXTRA_ERROR_DEVICE";
 
     private static final String SHARED_SERIALIZABLE_DAY     = "%s_SerializableDay";
     private static final String SHARED_SERIALIZABLE_NUMBER     = "%s_SerializableNumber";

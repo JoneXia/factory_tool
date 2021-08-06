@@ -191,25 +191,26 @@ public class Versions {
 	 */
 	public static final String TOOL_D4_VERSION	= "1.0";
 
-
+	/**
+	 *
+	 * 1.0说明:
+	 * 1. 支持智能饮水机（W5）产测全流程
+	 *
+	 * 2.0说明：
+	 * 1. W5和W5C拆分成两个入口
+	 * 2. 修复SN或MAC重复时无法重置的问题
+	 */
+	public static final String TOOL_W5_VERSION	= "2.0";
 
 	/**
 	 *
 	 * 1.0说明:
 	 * 1. 支持智能猫狗牌（P3）产测全流程
 	 *
+	 * 2.0说明：
+	 * 1. 拆分为P3C和P3D，区分猫牌和狗牌
 	 */
-	public static final String TOOL_P3_VERSION	= "1.0";
-
-
-	/**
-	 *
-	 * 1.0说明:
-	 * 1. 支持智能饮水机（W5）产测全流程
-	 *
-	 */
-	public static final String TOOL_W5_VERSION	= "1.0";
-
+	public static final String TOOL_P3_VERSION	= "2.0";
 
 	/**
 	 *

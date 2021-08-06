@@ -40,15 +40,7 @@
                 android:text="Go抽检-G1"/>
 
             <RadioButton
-                android:id="@+id/feeder"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dip"
-                android:visibility="gone"
-                android:text="喂食器-D1"/>
-
-            <RadioButton
-                android:id="@+id/w5"
+                android:id="@+id/w5c"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dip"
@@ -67,6 +59,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dip"
                 android:text="智能猫牌-P3C"/>
+
+            <RadioButton
+                android:id="@+id/feeder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip"
+                android:text="喂食器-D1"/>
 
             <RadioButton
                 android:id="@+id/cozy"
@@ -118,18 +117,18 @@
                 android:text="喂食器SOLO-D4"/>
 
             <RadioButton
+                android:id="@+id/w5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip"
+                android:text="智能饮水机MINI-W5C"/>
+
+            <RadioButton
                 android:id="@+id/p3d"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dip"
                 android:text="智能狗牌-P3D"/>
-
-            <RadioButton
-                android:id="@+id/w5c"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dip"
-                android:text="智能饮水机MINI-W5C"/>
 
             <RadioButton
                 android:id="@+id/t4_p"

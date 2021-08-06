@@ -36,6 +36,7 @@ import com.petkit.matetool.ui.common.DeviceCommonUtils;
 import com.petkit.matetool.ui.print.PrintActivity;
 import com.petkit.matetool.ui.utils.PrintResultCallback;
 import com.petkit.matetool.ui.utils.PrintUtils;
+import com.petkit.matetool.utils.Globals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -79,24 +80,24 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
         if (savedInstanceState != null) {
             mP3TestUnits = (ArrayList<P3TestUnit>) savedInstanceState.getSerializable("TestUnits");
             mCurTestStep = savedInstanceState.getInt("CurrentTestStep");
-            mDevice = (Device) savedInstanceState.getSerializable(P3Utils.EXTRA_P3);
+            mDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_DEVICE);
             isAutoTest = savedInstanceState.getBoolean("AutoTest");
             mTestType = savedInstanceState.getInt("TestType");
             mTester = (Tester) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_TESTER);
             mDeviceType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE);
-            if (savedInstanceState.getSerializable(P3Utils.EXTRA_ERROR_P3) != null) {
-                mErrorDevice = (Device) savedInstanceState.getSerializable(P3Utils.EXTRA_ERROR_P3);
+            if (savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE) != null) {
+                mErrorDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE);
             }
         } else {
             mP3TestUnits = (ArrayList<P3TestUnit>) getIntent().getSerializableExtra("TestUnits");
             mCurTestStep = getIntent().getIntExtra("CurrentTestStep", 0);
-            mTestType = getIntent().getIntExtra("TestType", P3Utils.TYPE_TEST);
-            mDevice = (Device) getIntent().getSerializableExtra(P3Utils.EXTRA_P3);
+            mTestType = getIntent().getIntExtra("TestType", Globals.TYPE_TEST);
+            mDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_DEVICE);
             isAutoTest = getIntent().getBooleanExtra("AutoTest", true);
             mTester = (Tester) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
             mDeviceType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, 0);
-            if (getIntent().getSerializableExtra(P3Utils.EXTRA_ERROR_P3) != null) {
-                mErrorDevice = (Device) getIntent().getSerializableExtra(P3Utils.EXTRA_ERROR_P3);
+            if (getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE) != null) {
+                mErrorDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE);
             }
         }
 
@@ -126,13 +127,13 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
 
         outState.putInt("CurrentTestStep", mCurTestStep);
         outState.putSerializable("TestUnits", mP3TestUnits);
-        outState.putSerializable(P3Utils.EXTRA_P3, mDevice);
+        outState.putSerializable(DeviceCommonUtils.EXTRA_DEVICE, mDevice);
         outState.putBoolean("AutoTest", isAutoTest);
         outState.putInt("TestType", mTestType);
         outState.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
         outState.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
         if (mErrorDevice != null) {
-            outState.putSerializable(P3Utils.EXTRA_ERROR_P3, mErrorDevice);
+            outState.putSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
         }
     }
 
@@ -173,7 +174,7 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
                 }
                 break;
             case TEST_MODE_DC:
-                if (mTestType == P3Utils.TYPE_TEST_PARTIALLY) {
+                if (mTestType == Globals.TYPE_TEST_PARTIALLY) {
 //                    mPromptTextView.setText("正常电压范围（单位mV）：[2800, 3200]");
                     mPromptTextView.setText("正常电压范围（单位mV）：[2500, 3300]");
                 } else {
@@ -184,7 +185,7 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
                 mPromptTextView.setText("测试蜂鸣器，观察声音是否正常！");
                 break;
             case TEST_MODE_AUTO:
-                if (mTestType == P3Utils.TYPE_TEST_PARTIALLY) {
+                if (mTestType == Globals.TYPE_TEST_PARTIALLY) {
 //                    mPromptTextView.setText("自动测试项包括：电压[2800, 3200]、G-sensor数据，点击开始后程序自动完成检测。");
                     mPromptTextView.setText("自动测试项包括：电压[2500, 3300]、G-sensor数据，点击开始后程序自动完成检测。");
                 } else {
@@ -406,7 +407,7 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
     public void finish() {
         Intent intent = new Intent();
         intent.putExtra("TestUnits", mP3TestUnits);
-        intent.putExtra(P3Utils.EXTRA_P3, mDevice);
+        intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mDevice);
         setResult(RESULT_OK, intent);
         super.finish();
     }
@@ -437,7 +438,7 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
                     mDescTextView.append("\n电压：" + voltage);
                     mDescTextView.append("，电量：" + battery);
 
-                    if (mTestType == P3Utils.TYPE_TEST_PARTIALLY) {
+                    if (mTestType == Globals.TYPE_TEST_PARTIALLY) {
 //                        result = voltage >= 2800 && voltage <= 3200;
                         result = voltage >= 2500 && voltage <= 3300;
                     } else {

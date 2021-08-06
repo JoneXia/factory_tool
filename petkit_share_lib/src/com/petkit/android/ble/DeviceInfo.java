@@ -252,11 +252,11 @@ public class DeviceInfo implements Serializable {
 				return BLEConsts.AQ_DISPLAY_NAME;
 			case 0xCC:
 				deviceType = DEVICE_TYPE_P3;
-				return BLEConsts.P3_DISPLAY_NAME;
+				return BLEConsts.P3C_DISPLAY_NAME;
 			case 0xCD:
 			case 0xCE:
 				deviceType = DEVICE_TYPE_W5;
-				return BLEConsts.W5_DISPLAY_NAME;
+				return BLEConsts.W5C_DISPLAY_NAME;
 			case 0xD0:
 				deviceType = DEVICE_TYPE_K3;
 				return BLEConsts.K3_DISPLAY_NAME;
@@ -292,10 +292,10 @@ public class DeviceInfo implements Serializable {
 			case BLEConsts.AQ_DISPLAY_NAME:
 				deviceType = DEVICE_TYPE_AQ;
 				break;
-			case BLEConsts.P3_DISPLAY_NAME:
+			case BLEConsts.P3C_DISPLAY_NAME:
 				deviceType = DEVICE_TYPE_P3;
 				break;
-			case BLEConsts.W5_DISPLAY_NAME:
+			case BLEConsts.W5C_DISPLAY_NAME:
 				deviceType = DEVICE_TYPE_W5;
 				break;
 			case BLEConsts.K3_DISPLAY_NAME:

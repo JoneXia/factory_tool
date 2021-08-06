@@ -67,18 +67,18 @@ public class P3TestMainActivity extends BaseActivity {
         if(savedInstanceState != null) {
             mTester = (Tester) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_TESTER);
             mTestType = savedInstanceState.getInt("TestType");
-            mCurDevice = (Device) savedInstanceState.getSerializable(P3Utils.EXTRA_P3);
-            if (savedInstanceState.getSerializable(P3Utils.EXTRA_ERROR_P3) != null) {
-                mErrorDevice = (Device) savedInstanceState.getSerializable(P3Utils.EXTRA_ERROR_P3);
+            mCurDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_DEVICE);
+            if (savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE) != null) {
+                mErrorDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE);
             }
             mDeviceType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE);
         } else {
             mTester = (Tester) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
-            mTestType = getIntent().getIntExtra("TestType", P3Utils.TYPE_TEST);
-            mCurDevice = (Device) getIntent().getSerializableExtra(P3Utils.EXTRA_P3);
+            mTestType = getIntent().getIntExtra("TestType", Globals.TYPE_TEST);
+            mCurDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_DEVICE);
             mDeviceType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, 0);
-            if (getIntent().getSerializableExtra(P3Utils.EXTRA_ERROR_P3) != null) {
-                mErrorDevice = (Device) getIntent().getSerializableExtra(P3Utils.EXTRA_ERROR_P3);
+            if (getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE) != null) {
+                mErrorDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE);
             }
         }
         mTestState = TEST_STATE_CONNECTED;
@@ -94,10 +94,10 @@ public class P3TestMainActivity extends BaseActivity {
 
         outState.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
         outState.putInt("TestType", mTestType);
-        outState.putSerializable(P3Utils.EXTRA_P3, mCurDevice);
+        outState.putSerializable(DeviceCommonUtils.EXTRA_DEVICE, mCurDevice);
         outState.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
         if (mErrorDevice != null) {
-            outState.putSerializable(P3Utils.EXTRA_ERROR_P3, mErrorDevice);
+            outState.putSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
         }
     }
 
@@ -137,11 +137,11 @@ public class P3TestMainActivity extends BaseActivity {
     private String getTitleByType() {
         String result = mDeviceType == Globals.P3C ? "P3C-" : "P3D-";
 
-        if (mTestType == P3Utils.TYPE_TEST) {
+        if (mTestType == Globals.TYPE_TEST) {
             return result + "成品测试";
-        } else if (mTestType == P3Utils.TYPE_TEST_PARTIALLY) {
+        } else if (mTestType == Globals.TYPE_TEST_PARTIALLY) {
             return result + "半成品测试";
-        } else if (mTestType == P3Utils.TYPE_CHECK) {
+        } else if (mTestType == Globals.TYPE_CHECK) {
             return result + "抽检";
         } else {
             return result + "维修";
@@ -182,7 +182,7 @@ public class P3TestMainActivity extends BaseActivity {
             switch (requestCode) {
                 case 0x12:
                     mP3TestUnits = (ArrayList<P3TestUnit>) data.getSerializableExtra("TestUnits");
-                    mCurDevice = (Device) data.getSerializableExtra(P3Utils.EXTRA_P3);
+                    mCurDevice = (Device) data.getSerializableExtra(DeviceCommonUtils.EXTRA_DEVICE);
                     mAdapter.notifyDataSetChanged();
                     checkTestComplete();
                     refreshBottomButton();
@@ -217,10 +217,10 @@ public class P3TestMainActivity extends BaseActivity {
             Intent intent = new Intent(P3TestMainActivity.this, P3TestDetailActivity.class);
             intent.putExtra("TestUnits", mP3TestUnits);
             intent.putExtra("CurrentTestStep", pos);
-            intent.putExtra(P3Utils.EXTRA_P3, mCurDevice);
+            intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mCurDevice);
             intent.putExtra("AutoTest", isAuto);
             intent.putExtra(DeviceCommonUtils.EXTRA_TESTER, mTester);
-            intent.putExtra(P3Utils.EXTRA_ERROR_P3, mErrorDevice);
+            intent.putExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
             intent.putExtra("TestType", mTestType);
             intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
             startActivityForResult(intent, 0x12);
@@ -393,15 +393,15 @@ public class P3TestMainActivity extends BaseActivity {
         }
 
         if(position >= mP3TestUnits.size() - 1) {       //维修和抽检，最后一项打印标签可以不执行，其他项都完成了就算成功
-            if (mTestType == P3Utils.TYPE_MAINTAIN) {
+            if (mTestType == Globals.TYPE_MAINTAIN) {
                 DeviceCommonUtils.storeMainTainInfo(mDeviceType, mCurDevice);
                 testComplete = position >= mP3TestUnits.size();
-            } else if (mTestType == P3Utils.TYPE_CHECK) {
+            } else if (mTestType == Globals.TYPE_CHECK) {
                 DeviceCommonUtils.storeCheckInfo(mDeviceType, mCurDevice);
                 testComplete = position >= mP3TestUnits.size();
-            } else if (mTestType == P3Utils.TYPE_TEST_PARTIALLY) {
+            } else if (mTestType == Globals.TYPE_TEST_PARTIALLY) {
                 testComplete = position >= mP3TestUnits.size();
-            } else if (mTestType == P3Utils.TYPE_TEST) {
+            } else if (mTestType == Globals.TYPE_TEST) {
                 testComplete = position >= mP3TestUnits.size();
             }
         }

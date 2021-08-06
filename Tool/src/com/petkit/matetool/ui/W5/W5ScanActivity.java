@@ -315,7 +315,8 @@ public class W5ScanActivity extends BaseActivity implements View.OnClickListener
                             return;
                         }
 
-                        if (deviceInfo.getName().equalsIgnoreCase(BLEConsts.W5_DISPLAY_NAME)) {
+                        if (deviceInfo.getName().equalsIgnoreCase(BLEConsts.W5C_DISPLAY_NAME)
+                            || deviceInfo.getName().equalsIgnoreCase(BLEConsts.W5_DISPLAY_NAME)) {
                             List<DeviceInfo> list = mListAdapter.getList();
                             for (DeviceInfo deviceInfos : list) {
                                 if (deviceInfo.getMac()!=null){

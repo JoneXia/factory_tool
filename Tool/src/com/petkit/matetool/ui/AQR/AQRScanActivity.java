@@ -154,7 +154,7 @@ public class AQRScanActivity extends BaseActivity implements View.OnClickListene
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
         Bundle bundle = new Bundle();
-        bundle.putInt(BLEConsts.EXTRA_ACTION, BLEConsts.BLE_ACTION_AQR_TEST);
+        bundle.putInt(BLEConsts.EXTRA_ACTION, BLEConsts.BLE_ACTION_DEVICE_TEST);
         bundle.putSerializable(BLEConsts.EXTRA_DEVICE_INFO, deviceInfo);
         startBLEAction(bundle);
     }

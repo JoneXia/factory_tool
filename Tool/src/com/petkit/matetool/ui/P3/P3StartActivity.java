@@ -6,9 +6,9 @@ import android.widget.TextView;
 
 import com.petkit.matetool.R;
 import com.petkit.matetool.model.Tester;
-import com.petkit.matetool.ui.P3.utils.P3Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.common.DeviceCommonUtils;
+import com.petkit.matetool.utils.Globals;
 
 /**
  * P3测试，选择工站
@@ -67,19 +67,19 @@ public class P3StartActivity extends BaseActivity {
 
         switch (v.getId()) {
             case R.id.test_case1:
-                bundle.putInt("TestType", P3Utils.TYPE_TEST_PARTIALLY);
+                bundle.putInt("TestType", Globals.TYPE_TEST_PARTIALLY);
                 startActivityWithData(P3ScanActivity.class, bundle, false);
                 break;
             case R.id.test_case2:
-                bundle.putInt("TestType", P3Utils.TYPE_TEST);
+                bundle.putInt("TestType", Globals.TYPE_TEST);
                 startActivityWithData(P3ScanActivity.class, bundle, false);
                 break;
             case R.id.test_case3:
-                bundle.putInt("TestType", P3Utils.TYPE_MAINTAIN);
+                bundle.putInt("TestType", Globals.TYPE_MAINTAIN);
                 startActivityWithData(P3ScanActivity.class, bundle, false);
                 break;
             case R.id.test_case4:
-                bundle.putInt("TestType", P3Utils.TYPE_CHECK);
+                bundle.putInt("TestType", Globals.TYPE_CHECK);
                 startActivityWithData(P3ScanActivity.class, bundle, false);
                 break;
             case R.id.test_case5:
