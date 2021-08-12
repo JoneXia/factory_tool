@@ -6,8 +6,9 @@ import android.widget.TextView;
 
 import com.petkit.matetool.R;
 import com.petkit.matetool.model.Tester;
-import com.petkit.matetool.ui.K3.utils.K3Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.common.DeviceCommonUtils;
+import com.petkit.matetool.utils.Globals;
 
 /**
  * K3测试，选择工站
@@ -23,9 +24,9 @@ public class K3StartActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
-            mTester = (Tester) savedInstanceState.getSerializable(K3Utils.EXTRA_K3_TESTER);
+            mTester = (Tester) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_TESTER);
         } else {
-            mTester = (Tester) getIntent().getSerializableExtra(K3Utils.EXTRA_K3_TESTER);
+            mTester = (Tester) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
         }
 
         setContentView(R.layout.activity_feeder_start);
@@ -36,7 +37,7 @@ public class K3StartActivity extends BaseActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putSerializable(K3Utils.EXTRA_K3_TESTER, mTester);
+        outState.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
     }
 
     @Override
@@ -61,31 +62,31 @@ public class K3StartActivity extends BaseActivity {
         switch (v.getId()) {
             case R.id.test_case1:
                 Bundle bundle = new Bundle();
-                bundle.putSerializable(K3Utils.EXTRA_K3_TESTER, mTester);
-                bundle.putInt("TestType", K3Utils.TYPE_TEST_PARTIALLY);
+                bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
+                bundle.putInt("TestType", Globals.TYPE_TEST_PARTIALLY);
                 startActivityWithData(K3ScanActivity.class, bundle, false);
                 break;
             case R.id.test_case2:
                 bundle = new Bundle();
-                bundle.putSerializable(K3Utils.EXTRA_K3_TESTER, mTester);
-                bundle.putInt("TestType", K3Utils.TYPE_TEST);
+                bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
+                bundle.putInt("TestType", Globals.TYPE_TEST);
                 startActivityWithData(K3ScanActivity.class, bundle, false);
                 break;
             case R.id.test_case3:
                 bundle = new Bundle();
-                bundle.putSerializable(K3Utils.EXTRA_K3_TESTER, mTester);
-                bundle.putInt("TestType", K3Utils.TYPE_MAINTAIN);
+                bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
+                bundle.putInt("TestType", Globals.TYPE_MAINTAIN);
                 startActivityWithData(K3ScanActivity.class, bundle, false);
                 break;
             case R.id.test_case4:
                 bundle = new Bundle();
-                bundle.putSerializable(K3Utils.EXTRA_K3_TESTER, mTester);
-                bundle.putInt("TestType", K3Utils.TYPE_CHECK);
+                bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
+                bundle.putInt("TestType", Globals.TYPE_CHECK);
                 startActivityWithData(K3ScanActivity.class, bundle, false);
                 break;
             case R.id.test_case5:
                 bundle = new Bundle();
-                bundle.putSerializable(K3Utils.EXTRA_K3_TESTER, mTester);
+                bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
                 startActivityWithData(K3StorageFileActivity.class, bundle, false);
                 break;
         }

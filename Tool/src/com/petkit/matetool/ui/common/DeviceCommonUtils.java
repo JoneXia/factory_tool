@@ -1,8 +1,12 @@
 package com.petkit.matetool.ui.common;
 
+import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.petkit.android.ble.BLEConsts;
 import com.petkit.android.utils.CommonUtils;
 import com.petkit.android.utils.FileUtils;
 import com.petkit.android.utils.LogcatStorageHelper;
@@ -448,5 +452,13 @@ public class DeviceCommonUtils {
             return getStorageDirForDevice(deviceType) + fileName;
         }
     }
+
+
+    public static void stopBle (Context context) {
+        Intent intent = new Intent(BLEConsts.BROADCAST_ACTION);
+        intent.putExtra(BLEConsts.EXTRA_ACTION, BLEConsts.ACTION_ABORT);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+
 
 }

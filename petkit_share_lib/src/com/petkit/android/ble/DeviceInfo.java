@@ -293,6 +293,7 @@ public class DeviceInfo implements Serializable {
 				deviceType = DEVICE_TYPE_AQ;
 				break;
 			case BLEConsts.P3C_DISPLAY_NAME:
+			case BLEConsts.P3D_DISPLAY_NAME:
 				deviceType = DEVICE_TYPE_P3;
 				break;
 			case BLEConsts.W5C_DISPLAY_NAME:

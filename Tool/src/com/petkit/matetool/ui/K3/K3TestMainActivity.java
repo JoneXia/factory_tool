@@ -20,8 +20,8 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import com.petkit.android.ble.BLEConsts;
-import com.petkit.android.ble.data.PetkitBleMsg;
 import com.petkit.android.ble.data.K3DataUtils;
+import com.petkit.android.ble.data.PetkitBleMsg;
 import com.petkit.android.utils.ByteUtil;
 import com.petkit.android.utils.PetkitLog;
 import com.petkit.android.widget.LoadDialog;
@@ -31,6 +31,7 @@ import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.K3.mode.K3TestUnit;
 import com.petkit.matetool.ui.K3.utils.K3Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.common.DeviceCommonUtils;
 import com.petkit.matetool.ui.utils.WifiAdminSimple;
 import com.petkit.matetool.utils.Globals;
 
@@ -63,18 +64,18 @@ public class K3TestMainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
-            mTester = (Tester) savedInstanceState.getSerializable(K3Utils.EXTRA_K3_TESTER);
+            mTester = (Tester) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_TESTER);
             mTestType = savedInstanceState.getInt("TestType");
-            mCurDevice = (Device) savedInstanceState.getSerializable(K3Utils.EXTRA_K3);
-            if (savedInstanceState.getSerializable(K3Utils.EXTRA_ERROR_K3) != null) {
-                mErrorDevice = (Device) savedInstanceState.getSerializable(K3Utils.EXTRA_ERROR_K3);
+            mCurDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_DEVICE);
+            if (savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE) != null) {
+                mErrorDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE);
             }
         } else {
-            mTester = (Tester) getIntent().getSerializableExtra(K3Utils.EXTRA_K3_TESTER);
-            mTestType = getIntent().getIntExtra("TestType", K3Utils.TYPE_TEST);
-            mCurDevice = (Device) getIntent().getSerializableExtra(K3Utils.EXTRA_K3);
-            if (getIntent().getSerializableExtra(K3Utils.EXTRA_ERROR_K3) != null) {
-                mErrorDevice = (Device) getIntent().getSerializableExtra(K3Utils.EXTRA_ERROR_K3);
+            mTester = (Tester) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
+            mTestType = getIntent().getIntExtra("TestType", Globals.TYPE_TEST);
+            mCurDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_DEVICE);
+            if (getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE) != null) {
+                mErrorDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE);
             }
         }
         mTestState = TEST_STATE_CONNECTED;
@@ -88,11 +89,11 @@ public class K3TestMainActivity extends BaseActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putSerializable(K3Utils.EXTRA_K3_TESTER, mTester);
+        outState.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
         outState.putInt("TestType", mTestType);
-        outState.putSerializable(K3Utils.EXTRA_K3, mCurDevice);
+        outState.putSerializable(DeviceCommonUtils.EXTRA_DEVICE, mCurDevice);
         if (mErrorDevice != null) {
-            outState.putSerializable(K3Utils.EXTRA_ERROR_K3, mErrorDevice);
+            outState.putSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
         }
     }
 
@@ -130,11 +131,11 @@ public class K3TestMainActivity extends BaseActivity {
     }
 
     private String getTitleByType() {
-        if (mTestType == K3Utils.TYPE_TEST) {
+        if (mTestType == Globals.TYPE_TEST) {
             return "成品测试";
-        } else if (mTestType == K3Utils.TYPE_TEST_PARTIALLY) {
+        } else if (mTestType == Globals.TYPE_TEST_PARTIALLY) {
             return "半成品测试";
-        } else if (mTestType == K3Utils.TYPE_CHECK) {
+        } else if (mTestType == Globals.TYPE_CHECK) {
             return "抽检";
         } else {
             return "维修";
@@ -146,7 +147,7 @@ public class K3TestMainActivity extends BaseActivity {
         super.onDestroy();
 
         LoadDialog.dismissDialog();
-        K3Utils.stopBle(this);
+        DeviceCommonUtils.stopBle(this);
         unregisterBroadcastReceiver();
     }
 
@@ -176,7 +177,7 @@ public class K3TestMainActivity extends BaseActivity {
             switch (requestCode) {
                 case 0x12:
                     mK3TestUnits = (ArrayList<K3TestUnit>) data.getSerializableExtra("TestUnits");
-                    mCurDevice = (Device) data.getSerializableExtra(K3Utils.EXTRA_K3);
+                    mCurDevice = (Device) data.getSerializableExtra(DeviceCommonUtils.EXTRA_DEVICE);
                     mAdapter.notifyDataSetChanged();
                     checkTestComplete();
                     refreshBottomButton();
@@ -213,10 +214,10 @@ public class K3TestMainActivity extends BaseActivity {
             Intent intent = new Intent(K3TestMainActivity.this, K3TestDetailActivity.class);
             intent.putExtra("TestUnits", mK3TestUnits);
             intent.putExtra("CurrentTestStep", pos);
-            intent.putExtra(K3Utils.EXTRA_K3, mCurDevice);
+            intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mCurDevice);
             intent.putExtra("AutoTest", isAuto);
-            intent.putExtra(K3Utils.EXTRA_K3_TESTER, mTester);
-            intent.putExtra(K3Utils.EXTRA_ERROR_K3, mErrorDevice);
+            intent.putExtra(DeviceCommonUtils.EXTRA_TESTER, mTester);
+            intent.putExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
             intent.putExtra("TestType", mTestType);
             startActivityForResult(intent, 0x12);
         } else {
@@ -388,15 +389,15 @@ public class K3TestMainActivity extends BaseActivity {
         }
 
         if(position >= mK3TestUnits.size() - 1) {       //维修和抽检，最后一项打印标签可以不执行，其他项都完成了就算成功
-            if (mTestType == K3Utils.TYPE_MAINTAIN) {
-                K3Utils.storeMainTainInfo(mCurDevice);
+            if (mTestType == Globals.TYPE_MAINTAIN) {
+                DeviceCommonUtils.storeMainTainInfo(Globals.K3, mCurDevice);
                 testComplete = position >= mK3TestUnits.size();
-            } else if (mTestType == K3Utils.TYPE_CHECK) {
-                K3Utils.storeCheckInfo(mCurDevice);
+            } else if (mTestType == Globals.TYPE_CHECK) {
+                DeviceCommonUtils.storeCheckInfo(Globals.K3, mCurDevice);
                 testComplete = position >= mK3TestUnits.size();
-            } else if (mTestType == K3Utils.TYPE_TEST_PARTIALLY) {
+            } else if (mTestType == Globals.TYPE_TEST_PARTIALLY) {
                 testComplete = position >= mK3TestUnits.size();
-            } else if (mTestType == K3Utils.TYPE_TEST) {
+            } else if (mTestType == Globals.TYPE_TEST) {
                 testComplete = position >= mK3TestUnits.size();
             } else {
                 testComplete = position >= mK3TestUnits.size();

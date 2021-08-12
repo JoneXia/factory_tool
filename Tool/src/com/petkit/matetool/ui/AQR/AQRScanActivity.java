@@ -33,6 +33,8 @@ import com.petkit.matetool.ui.AQR.mode.AQRTestUnit;
 import com.petkit.matetool.ui.AQR.utils.AQRUtils;
 import com.petkit.matetool.ui.aq.AQScanListAdapter;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.common.DeviceCommonUtils;
+import com.petkit.matetool.utils.Globals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +47,6 @@ public class AQRScanActivity extends BaseActivity implements View.OnClickListene
 
     private Tester mTester;
     private int mTestType;
-    private int mAQRType;
     private Device mCurDevice, mErrorDevice;
 
     private ArrayList<AQRTestUnit> mAQRTestUnits;
@@ -66,15 +67,13 @@ public class AQRScanActivity extends BaseActivity implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
-            mTester = (Tester) savedInstanceState.getSerializable(AQRUtils.EXTRA_AQR_TESTER);
+            mTester = (Tester) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_TESTER);
             mTestType = savedInstanceState.getInt("TestType");
-            mAQRType = savedInstanceState.getInt(AQRUtils.EXTRA_AQR_TYPE);
-            mErrorDevice = (Device) savedInstanceState.getSerializable(AQRUtils.EXTRA_AQR);
+            mErrorDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_TESTER);
         } else {
-            mTester = (Tester) getIntent().getSerializableExtra(AQRUtils.EXTRA_AQR_TESTER);
-            mTestType = getIntent().getIntExtra("TestType", AQRUtils.TYPE_TEST);
-            mErrorDevice = (Device) getIntent().getSerializableExtra(AQRUtils.EXTRA_AQR);
-            mAQRType = getIntent().getIntExtra(AQRUtils.EXTRA_AQR_TYPE, AQRUtils.AQR_TYPE_NORMAL);
+            mTester = (Tester) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
+            mTestType = getIntent().getIntExtra("TestType", Globals.TYPE_TEST);
+            mErrorDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
         }
 
         setContentView(R.layout.activity_go_test);
@@ -87,10 +86,9 @@ public class AQRScanActivity extends BaseActivity implements View.OnClickListene
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putSerializable(AQRUtils.EXTRA_AQR_TESTER, mTester);
+        outState.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
         outState.putInt("TestType", mTestType);
-        outState.putSerializable(AQRUtils.EXTRA_AQR, mErrorDevice);
-        outState.putInt(AQRUtils.EXTRA_AQR_TYPE, mAQRType);
+        outState.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mErrorDevice);
     }
 
 
@@ -256,10 +254,9 @@ public class AQRScanActivity extends BaseActivity implements View.OnClickListene
 
         Intent intent = new Intent(this, AQRTestMainActivity.class);
         intent.putExtra("TestUnits", mAQRTestUnits);
-        intent.putExtra(AQRUtils.EXTRA_AQR, mCurDevice);
-        intent.putExtra(AQRUtils.EXTRA_ERROR_AQR, mErrorDevice);
-        intent.putExtra(AQRUtils.EXTRA_AQR_TESTER, mTester);
-        intent.putExtra(AQRUtils.EXTRA_AQR_TYPE, mAQRType);
+        intent.putExtra(DeviceCommonUtils.EXTRA_TESTER, mCurDevice);
+        intent.putExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
+        intent.putExtra(DeviceCommonUtils.EXTRA_TESTER, mTester);
         intent.putExtra("TestType", mTestType);
         startActivityForResult(intent, 0x12);
     }

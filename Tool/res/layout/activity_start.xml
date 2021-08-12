@@ -7,13 +7,15 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         >
         <RadioGroup
             android:id="@+id/mate_test_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dip">
+            android:layout_marginTop="20dip"
+            android:layout_marginBottom="20dip">
 
             <RadioButton
                 android:id="@+id/mate_style"
@@ -142,6 +144,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dip"
+                android:layout_marginBottom="50dip"
                 android:text="智能净味器-K3"/>
 
             <RadioButton
@@ -166,10 +169,10 @@
         android:inputType="number"
         android:maxLength="1"/>
 
-    <View
-        android:layout_width="wrap_content"
-        android:layout_height="0dip"
-        android:layout_weight="1" />
+<!--    <View-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="0dip"-->
+<!--        android:layout_weight="1" />-->
 
     <Button
         android:id="@+id/start_test"

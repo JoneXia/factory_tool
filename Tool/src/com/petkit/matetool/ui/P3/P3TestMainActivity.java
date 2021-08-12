@@ -153,7 +153,7 @@ public class P3TestMainActivity extends BaseActivity {
         super.onDestroy();
 
         LoadDialog.dismissDialog();
-        P3Utils.stopBle(this);
+        DeviceCommonUtils.stopBle(this);
         unregisterBroadcastReceiver();
     }
 

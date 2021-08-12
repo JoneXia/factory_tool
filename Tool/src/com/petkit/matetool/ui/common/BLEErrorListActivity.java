@@ -228,6 +228,7 @@ public class BLEErrorListActivity extends BaseListActivity {
         Intent intent = new Intent(this, DeviceCommonUtils.getMainActivityByType(mDeviceType));
         intent.putExtra(DeviceCommonUtils.EXTRA_TESTER, mTester);
         intent.putExtra("TestType", mSelectPosition < mDevicesError.getMac().size() ? Globals.TYPE_DUPLICATE_MAC : Globals.TYPE_DUPLICATE_SN);
+        intent.putExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mAdapter.getItem(mSelectPosition));
         intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mAdapter.getItem(mSelectPosition));
         startActivityForResult(intent, 0x11);
     }

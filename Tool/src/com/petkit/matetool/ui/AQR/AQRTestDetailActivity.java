@@ -32,9 +32,11 @@ import com.petkit.matetool.ui.AQR.mode.AQRTestUnit;
 import com.petkit.matetool.ui.AQR.utils.AQRUtils;
 import com.petkit.matetool.ui.P3.mode.GsensorData;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.common.DeviceCommonUtils;
 import com.petkit.matetool.ui.print.PrintActivity;
 import com.petkit.matetool.ui.utils.PrintResultCallback;
 import com.petkit.matetool.ui.utils.PrintUtils;
+import com.petkit.matetool.utils.Globals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +52,6 @@ import static com.petkit.matetool.utils.Globals.TEST_PASS;
 public class AQRTestDetailActivity extends BaseActivity implements PrintResultCallback {
 
     private Tester mTester;
-    private int mAQRType;
     private int mTestType;
     private int mCurTestStep;
     private ArrayList<AQRTestUnit> mAQRTestUnits;
@@ -76,24 +77,22 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
         if (savedInstanceState != null) {
             mAQRTestUnits = (ArrayList<AQRTestUnit>) savedInstanceState.getSerializable("TestUnits");
             mCurTestStep = savedInstanceState.getInt("CurrentTestStep");
-            mDevice = (Device) savedInstanceState.getSerializable(AQRUtils.EXTRA_AQR);
+            mDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_DEVICE);
             isAutoTest = savedInstanceState.getBoolean("AutoTest");
             mTestType = savedInstanceState.getInt("TestType");
-            mTester = (Tester) savedInstanceState.getSerializable(AQRUtils.EXTRA_AQR_TESTER);
-            mAQRType = savedInstanceState.getInt(AQRUtils.EXTRA_AQR_TYPE);
-            if (savedInstanceState.getSerializable(AQRUtils.EXTRA_ERROR_AQR) != null) {
-                mErrorDevice = (Device) savedInstanceState.getSerializable(AQRUtils.EXTRA_ERROR_AQR);
+            mTester = (Tester) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_TESTER);
+            if (savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE) != null) {
+                mErrorDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE);
             }
         } else {
             mAQRTestUnits = (ArrayList<AQRTestUnit>) getIntent().getSerializableExtra("TestUnits");
             mCurTestStep = getIntent().getIntExtra("CurrentTestStep", 0);
-            mTestType = getIntent().getIntExtra("TestType", AQRUtils.TYPE_TEST);
-            mDevice = (Device) getIntent().getSerializableExtra(AQRUtils.EXTRA_AQR);
+            mTestType = getIntent().getIntExtra("TestType", Globals.TYPE_TEST);
+            mDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_DEVICE);
             isAutoTest = getIntent().getBooleanExtra("AutoTest", true);
-            mTester = (Tester) getIntent().getSerializableExtra(AQRUtils.EXTRA_AQR_TESTER);
-            mAQRType = getIntent().getIntExtra(AQRUtils.EXTRA_AQR_TYPE, AQRUtils.AQR_TYPE_NORMAL);
-            if (getIntent().getSerializableExtra(AQRUtils.EXTRA_ERROR_AQR) != null) {
-                mErrorDevice = (Device) getIntent().getSerializableExtra(AQRUtils.EXTRA_ERROR_AQR);
+            mTester = (Tester) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
+            if (getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE) != null) {
+                mErrorDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE);
             }
         }
 
@@ -123,13 +122,12 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
 
         outState.putInt("CurrentTestStep", mCurTestStep);
         outState.putSerializable("TestUnits", mAQRTestUnits);
-        outState.putSerializable(AQRUtils.EXTRA_AQR, mDevice);
+        outState.putSerializable(DeviceCommonUtils.EXTRA_DEVICE, mDevice);
         outState.putBoolean("AutoTest", isAutoTest);
         outState.putInt("TestType", mTestType);
-        outState.putSerializable(AQRUtils.EXTRA_AQR_TESTER, mTester);
-        outState.putInt(AQRUtils.EXTRA_AQR_TYPE, mAQRType);
+        outState.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
         if (mErrorDevice != null) {
-            outState.putSerializable(AQRUtils.EXTRA_ERROR_AQR, mErrorDevice);
+            outState.putSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
         }
     }
 
@@ -170,7 +168,7 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
                 }
                 break;
             case TEST_MODE_DC:
-                if (mTestType == AQRUtils.TYPE_TEST_PARTIALLY) {
+                if (mTestType == Globals.TYPE_TEST_PARTIALLY) {
                     mPromptTextView.setText("正常电压范围（单位mV）：[4500, 5500]");
                 } else {
                     mPromptTextView.setText("正常电压范围（单位mV）：[4500, 5500]");
@@ -408,7 +406,7 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
     public void finish() {
         Intent intent = new Intent();
         intent.putExtra("TestUnits", mAQRTestUnits);
-        intent.putExtra(AQRUtils.EXTRA_AQR, mDevice);
+        intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mDevice);
         setResult(RESULT_OK, intent);
         super.finish();
     }
@@ -443,7 +441,7 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
                     mDescTextView.append("\n电压：" + voltage);
 //                    mDescTextView.append("，电量：" + battery);
 
-                    if (mTestType == AQRUtils.TYPE_TEST_PARTIALLY) {
+                    if (mTestType == Globals.TYPE_TEST_PARTIALLY) {
 //                        result = voltage >= 2800 && voltage <= 3200;
                         result = voltage >= 4500 && voltage <= 5500;
                     } else {
@@ -502,7 +500,7 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
                     mDescTextView.append("\nSN写入成功");
                     result = true;
                 }
-                AQRUtils.storeSucceedDeviceInfo(mDevice, null);
+                DeviceCommonUtils.storeSucceedDeviceInfo(Globals.AQR, mDevice, null);
                 break;
         }
         mDescTextView.append(desc.toString());
@@ -560,7 +558,7 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-                String sn = AQRUtils.generateSNForTester(mTester);
+                String sn = DeviceCommonUtils.generateSNForTester(Globals.AQR, mTester);
                 if (sn == null) {
                     showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
                     return;

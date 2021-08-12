@@ -31,9 +31,11 @@ import com.petkit.matetool.ui.K3.mode.K3TestUnit;
 import com.petkit.matetool.ui.K3.utils.K3Utils;
 import com.petkit.matetool.ui.P3.mode.GsensorData;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.common.DeviceCommonUtils;
 import com.petkit.matetool.ui.print.PrintActivity;
 import com.petkit.matetool.ui.utils.PrintResultCallback;
 import com.petkit.matetool.ui.utils.PrintUtils;
+import com.petkit.matetool.utils.Globals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,22 +75,22 @@ public class K3TestDetailActivity extends BaseActivity implements PrintResultCal
         if (savedInstanceState != null) {
             mK3TestUnits = (ArrayList<K3TestUnit>) savedInstanceState.getSerializable("TestUnits");
             mCurTestStep = savedInstanceState.getInt("CurrentTestStep");
-            mDevice = (Device) savedInstanceState.getSerializable(K3Utils.EXTRA_K3);
+            mDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_DEVICE);
             isAutoTest = savedInstanceState.getBoolean("AutoTest");
             mTestType = savedInstanceState.getInt("TestType");
-            mTester = (Tester) savedInstanceState.getSerializable(K3Utils.EXTRA_K3_TESTER);
-            if (savedInstanceState.getSerializable(K3Utils.EXTRA_ERROR_K3) != null) {
-                mErrorDevice = (Device) savedInstanceState.getSerializable(K3Utils.EXTRA_ERROR_K3);
+            mTester = (Tester) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_TESTER);
+            if (savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE) != null) {
+                mErrorDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE);
             }
         } else {
             mK3TestUnits = (ArrayList<K3TestUnit>) getIntent().getSerializableExtra("TestUnits");
             mCurTestStep = getIntent().getIntExtra("CurrentTestStep", 0);
-            mTestType = getIntent().getIntExtra("TestType", K3Utils.TYPE_TEST);
-            mDevice = (Device) getIntent().getSerializableExtra(K3Utils.EXTRA_K3);
+            mTestType = getIntent().getIntExtra("TestType", Globals.TYPE_TEST);
+            mDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_DEVICE);
             isAutoTest = getIntent().getBooleanExtra("AutoTest", true);
-            mTester = (Tester) getIntent().getSerializableExtra(K3Utils.EXTRA_K3_TESTER);
-            if (getIntent().getSerializableExtra(K3Utils.EXTRA_ERROR_K3) != null) {
-                mErrorDevice = (Device) getIntent().getSerializableExtra(K3Utils.EXTRA_ERROR_K3);
+            mTester = (Tester) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
+            if (getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE) != null) {
+                mErrorDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE);
             }
         }
 
@@ -118,12 +120,12 @@ public class K3TestDetailActivity extends BaseActivity implements PrintResultCal
 
         outState.putInt("CurrentTestStep", mCurTestStep);
         outState.putSerializable("TestUnits", mK3TestUnits);
-        outState.putSerializable(K3Utils.EXTRA_K3, mDevice);
+        outState.putSerializable(DeviceCommonUtils.EXTRA_DEVICE, mDevice);
         outState.putBoolean("AutoTest", isAutoTest);
         outState.putInt("TestType", mTestType);
-        outState.putSerializable(K3Utils.EXTRA_K3_TESTER, mTester);
+        outState.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
         if (mErrorDevice != null) {
-            outState.putSerializable(K3Utils.EXTRA_ERROR_K3, mErrorDevice);
+            outState.putSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
         }
     }
 
@@ -366,7 +368,7 @@ public class K3TestDetailActivity extends BaseActivity implements PrintResultCal
     public void finish() {
         Intent intent = new Intent();
         intent.putExtra("TestUnits", mK3TestUnits);
-        intent.putExtra(K3Utils.EXTRA_K3, mDevice);
+        intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mDevice);
         setResult(RESULT_OK, intent);
         super.finish();
     }
@@ -418,7 +420,7 @@ public class K3TestDetailActivity extends BaseActivity implements PrintResultCal
                     mDescTextView.append("\nSN写入成功");
                     result = true;
                 }
-                K3Utils.storeSucceedDeviceInfo(mDevice, null);
+                DeviceCommonUtils.storeSucceedDeviceInfo(Globals.K3, mDevice, null);
                 break;
         }
         mDescTextView.append(desc.toString());
@@ -469,7 +471,7 @@ public class K3TestDetailActivity extends BaseActivity implements PrintResultCal
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-                String sn = K3Utils.generateSNForTester(mTester);
+                String sn = DeviceCommonUtils.generateSNForTester(Globals.K3, mTester);
                 if (sn == null) {
                     showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
                     return;

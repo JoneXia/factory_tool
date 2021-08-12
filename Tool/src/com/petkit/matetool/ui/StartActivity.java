@@ -29,6 +29,7 @@ import com.petkit.matetool.ui.W5.W5TestPrepareActivity;
 import com.petkit.matetool.ui.W5.utils.W5Utils;
 import com.petkit.matetool.ui.aq.AQTestMainActivity;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.common.DeviceCommonUtils;
 import com.petkit.matetool.ui.common.TestPrepareActivity;
 import com.petkit.matetool.ui.cozy.CozyTestPrepareActivity;
 import com.petkit.matetool.ui.feeder.FeederTestPrepareActivity;
@@ -39,7 +40,6 @@ import com.petkit.matetool.ui.permission.PermissionDialogActivity;
 import com.petkit.matetool.ui.permission.mode.PermissionBean;
 import com.petkit.matetool.ui.t3.T3TestPrepareActivity;
 import com.petkit.matetool.ui.utils.PrintUtils;
-import com.petkit.matetool.ui.common.DeviceCommonUtils;
 import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.SpannableStringUtils;
 import com.petkit.matetool.utils.TesterManagerUtils;
@@ -325,11 +325,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
 
         tempRadioButton = (RadioButton) findViewById(R.id.t4);
         tempRadioButton.setText(getTextDetail(Globals.T4, "智能猫厕所SOLO（T4）" + " v" + TOOL_T4_VERSION));
-        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.t4_p);
         tempRadioButton.setText(getTextDetail(Globals.T4_p, "智能猫厕所SOLO（T4标配K3）" + " v" + TOOL_T4_VERSION));
-        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.p3c);
         tempRadioButton.setText(getTextDetail(Globals.P3C, "智能猫牌（P3C）" + " v" + TOOL_P3_VERSION));
@@ -339,7 +337,6 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
 
         tempRadioButton = (RadioButton) findViewById(R.id.k3);
         tempRadioButton.setText(getTextDetail(Globals.K3, "智能净味器（K3）" + " v" + TOOL_K3_VERSION));
-        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.aqr);
         tempRadioButton.setText(getTextDetail(Globals.AQR, "智能鱼缸（AQR）" + " v" + TOOL_AQR_VERSION));

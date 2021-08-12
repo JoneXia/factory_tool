@@ -31,6 +31,7 @@ import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.AQR.mode.AQRTestUnit;
 import com.petkit.matetool.ui.AQR.utils.AQRUtils;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.common.DeviceCommonUtils;
 import com.petkit.matetool.ui.utils.WifiAdminSimple;
 import com.petkit.matetool.utils.Globals;
 
@@ -47,7 +48,6 @@ public class AQRTestMainActivity extends BaseActivity {
     private static final int TEST_STATE_CONNECTED      = 2;
 
     private Tester mTester;
-    private int mAQRType;
     private int mTestType;
 
     private WifiAdminSimple mWifiAdminSimple;
@@ -64,20 +64,18 @@ public class AQRTestMainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
-            mTester = (Tester) savedInstanceState.getSerializable(AQRUtils.EXTRA_AQR_TESTER);
+            mTester = (Tester) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_TESTER);
             mTestType = savedInstanceState.getInt("TestType");
-            mAQRType = savedInstanceState.getInt(AQRUtils.EXTRA_AQR_TYPE);
-            mCurDevice = (Device) savedInstanceState.getSerializable(AQRUtils.EXTRA_AQR);
-            if (savedInstanceState.getSerializable(AQRUtils.EXTRA_ERROR_AQR) != null) {
-                mErrorDevice = (Device) savedInstanceState.getSerializable(AQRUtils.EXTRA_ERROR_AQR);
+            mCurDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_DEVICE);
+            if (savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE) != null) {
+                mErrorDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE);
             }
         } else {
-            mTester = (Tester) getIntent().getSerializableExtra(AQRUtils.EXTRA_AQR_TESTER);
-            mTestType = getIntent().getIntExtra("TestType", AQRUtils.TYPE_TEST);
-            mCurDevice = (Device) getIntent().getSerializableExtra(AQRUtils.EXTRA_AQR);
-            mAQRType = getIntent().getIntExtra(AQRUtils.EXTRA_AQR_TYPE, AQRUtils.AQR_TYPE_NORMAL);
-            if (getIntent().getSerializableExtra(AQRUtils.EXTRA_ERROR_AQR) != null) {
-                mErrorDevice = (Device) getIntent().getSerializableExtra(AQRUtils.EXTRA_ERROR_AQR);
+            mTester = (Tester) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
+            mTestType = getIntent().getIntExtra("TestType", Globals.TYPE_TEST);
+            mCurDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_DEVICE);
+            if (getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE) != null) {
+                mErrorDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE);
             }
         }
         mTestState = TEST_STATE_CONNECTED;
@@ -91,12 +89,11 @@ public class AQRTestMainActivity extends BaseActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putSerializable(AQRUtils.EXTRA_AQR_TESTER, mTester);
+        outState.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
         outState.putInt("TestType", mTestType);
-        outState.putSerializable(AQRUtils.EXTRA_AQR, mCurDevice);
-        outState.putInt(AQRUtils.EXTRA_AQR_TYPE, mAQRType);
+        outState.putSerializable(DeviceCommonUtils.EXTRA_DEVICE, mCurDevice);
         if (mErrorDevice != null) {
-            outState.putSerializable(AQRUtils.EXTRA_ERROR_AQR, mErrorDevice);
+            outState.putSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
         }
     }
 
@@ -134,11 +131,11 @@ public class AQRTestMainActivity extends BaseActivity {
     }
 
     private String getTitleByType() {
-        if (mTestType == AQRUtils.TYPE_TEST) {
+        if (mTestType == Globals.TYPE_TEST) {
             return "成品测试";
-        } else if (mTestType == AQRUtils.TYPE_TEST_PARTIALLY) {
+        } else if (mTestType == Globals.TYPE_TEST_PARTIALLY) {
             return "半成品测试";
-        } else if (mTestType == AQRUtils.TYPE_CHECK) {
+        } else if (mTestType == Globals.TYPE_CHECK) {
             return "抽检";
         } else {
             return "维修";
@@ -150,7 +147,7 @@ public class AQRTestMainActivity extends BaseActivity {
         super.onDestroy();
 
         LoadDialog.dismissDialog();
-        AQRUtils.stopBle(this);
+        DeviceCommonUtils.stopBle(this);
         unregisterBroadcastReceiver();
     }
 
@@ -179,7 +176,7 @@ public class AQRTestMainActivity extends BaseActivity {
             switch (requestCode) {
                 case 0x12:
                     mAQRTestUnits = (ArrayList<AQRTestUnit>) data.getSerializableExtra("TestUnits");
-                    mCurDevice = (Device) data.getSerializableExtra(AQRUtils.EXTRA_AQR);
+                    mCurDevice = (Device) data.getSerializableExtra(DeviceCommonUtils.EXTRA_DEVICE);
                     mAdapter.notifyDataSetChanged();
                     checkTestComplete();
                     refreshBottomButton();
@@ -214,12 +211,11 @@ public class AQRTestMainActivity extends BaseActivity {
             Intent intent = new Intent(AQRTestMainActivity.this, AQRTestDetailActivity.class);
             intent.putExtra("TestUnits", mAQRTestUnits);
             intent.putExtra("CurrentTestStep", pos);
-            intent.putExtra(AQRUtils.EXTRA_AQR, mCurDevice);
+            intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mCurDevice);
             intent.putExtra("AutoTest", isAuto);
-            intent.putExtra(AQRUtils.EXTRA_AQR_TESTER, mTester);
-            intent.putExtra(AQRUtils.EXTRA_ERROR_AQR, mErrorDevice);
+            intent.putExtra(DeviceCommonUtils.EXTRA_TESTER, mTester);
+            intent.putExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
             intent.putExtra("TestType", mTestType);
-            intent.putExtra(AQRUtils.EXTRA_AQR_TYPE, mAQRType);
             startActivityForResult(intent, 0x12);
         } else {
             showShortToast(mInfoTestTextView.getText().toString());
@@ -390,15 +386,15 @@ public class AQRTestMainActivity extends BaseActivity {
         }
 
         if(position >= mAQRTestUnits.size() - 1) {       //维修和抽检，最后一项打印标签可以不执行，其他项都完成了就算成功
-            if (mTestType == AQRUtils.TYPE_MAINTAIN) {
-                AQRUtils.storeMainTainInfo(mCurDevice);
+            if (mTestType == Globals.TYPE_MAINTAIN) {
+                DeviceCommonUtils.storeMainTainInfo(Globals.AQR, mCurDevice);
                 testComplete = position >= mAQRTestUnits.size();
-            } else if (mTestType == AQRUtils.TYPE_CHECK) {
-                AQRUtils.storeCheckInfo(mCurDevice);
+            } else if (mTestType == Globals.TYPE_CHECK) {
+                DeviceCommonUtils.storeCheckInfo(Globals.AQR, mCurDevice);
                 testComplete = position >= mAQRTestUnits.size();
-            } else if (mTestType == AQRUtils.TYPE_TEST_PARTIALLY) {
+            } else if (mTestType == Globals.TYPE_TEST_PARTIALLY) {
                 testComplete = position >= mAQRTestUnits.size();
-            } else if (mTestType == AQRUtils.TYPE_TEST) {
+            } else if (mTestType == Globals.TYPE_TEST) {
                 testComplete = position >= mAQRTestUnits.size();
             }
         }

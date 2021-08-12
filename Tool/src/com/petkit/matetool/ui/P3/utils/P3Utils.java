@@ -1,17 +1,10 @@
 package com.petkit.matetool.ui.P3.utils;
 
-import android.content.Context;
-import android.content.Intent;
-import android.support.v4.content.LocalBroadcastManager;
-
-import com.google.gson.Gson;
 import com.petkit.android.ble.BLEConsts;
-import com.petkit.matetool.model.Device;
 import com.petkit.matetool.ui.P3.mode.P3TestUnit;
 import com.petkit.matetool.utils.Globals;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import static com.petkit.matetool.utils.Globals.PERMISSION_ERASE;
 
@@ -25,7 +18,6 @@ public class P3Utils {
     public static final int P3_SENSOR_STANDARD_VALUE_MIN    = 10;
     public static final int P3_SENSOR_STANDARD_VALUE_MAX    = 1500;
 
-    public static ArrayList<Device> mTempDevices = new ArrayList<>();
 
     public enum P3TestModes {
         TEST_MODE_DC,   //电压
@@ -38,40 +30,7 @@ public class P3Utils {
         TEST_MODE_PRINT     //打印标签
     }
 
-    public static String getDefaultResponseForKey(int key) {
-        HashMap<String, Object> payload = new HashMap<>();
-        payload.put("state", 1);
-        HashMap<String, Object> data = new HashMap<>();
-        data.put("key", key);
-        data.put("payload", payload);
-        return new Gson().toJson(data);
-    }
 
-    /**
-     * 获取Socket默认的数据格式
-     *
-     * @param key key
-     * @return String
-     */
-    public static String getDefaultRequestForKey(int key) {
-        HashMap<String, Object> data = new HashMap<>();
-        data.put("key", key);
-        return new Gson().toJson(data);
-    }
-
-    /**
-     * 获取Socket数据格式
-     *
-     * @param key key
-     * @param payload content
-     * @return json
-     */
-    public static String getRequestForKeyAndPayload(int key, HashMap<String, Object> payload) {
-        HashMap<String, Object> data = new HashMap<>();
-        data.put("key", key);
-        data.put("payload", payload);
-        return new Gson().toJson(data);
-    }
 
     /**
      *
@@ -128,11 +87,5 @@ public class P3Utils {
         return results;
     }
 
-
-    public static void stopBle (Context context) {
-        Intent intent = new Intent(BLEConsts.BROADCAST_ACTION);
-        intent.putExtra(BLEConsts.EXTRA_ACTION, BLEConsts.ACTION_ABORT);
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-    }
 
 }

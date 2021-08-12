@@ -436,7 +436,7 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
                     short voltage = ByteUtil.bytes2Short(voltageByte);
                     int battery = ByteUtil.toInt(data[2]);
                     mDescTextView.append("\n电压：" + voltage);
-                    mDescTextView.append("，电量：" + battery);
+//                    mDescTextView.append("，电量：" + battery);
 
                     if (mTestType == Globals.TYPE_TEST_PARTIALLY) {
 //                        result = voltage >= 2800 && voltage <= 3200;

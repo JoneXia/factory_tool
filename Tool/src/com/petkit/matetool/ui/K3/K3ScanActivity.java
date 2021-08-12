@@ -33,6 +33,8 @@ import com.petkit.matetool.ui.K3.mode.K3TestUnit;
 import com.petkit.matetool.ui.K3.utils.K3Utils;
 import com.petkit.matetool.ui.aq.AQScanListAdapter;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.common.DeviceCommonUtils;
+import com.petkit.matetool.utils.Globals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,13 +67,13 @@ public class K3ScanActivity extends BaseActivity implements View.OnClickListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
-            mTester = (Tester) savedInstanceState.getSerializable(K3Utils.EXTRA_K3_TESTER);
+            mTester = (Tester) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_TESTER);
             mTestType = savedInstanceState.getInt("TestType");
-            mErrorDevice = (Device) savedInstanceState.getSerializable(K3Utils.EXTRA_K3);
+            mErrorDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_DEVICE);
         } else {
-            mTester = (Tester) getIntent().getSerializableExtra(K3Utils.EXTRA_K3_TESTER);
-            mTestType = getIntent().getIntExtra("TestType", K3Utils.TYPE_TEST);
-            mErrorDevice = (Device) getIntent().getSerializableExtra(K3Utils.EXTRA_K3);
+            mTester = (Tester) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
+            mTestType = getIntent().getIntExtra("TestType", Globals.TYPE_TEST);
+            mErrorDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_DEVICE);
         }
 
         setContentView(R.layout.activity_go_test);
@@ -84,9 +86,9 @@ public class K3ScanActivity extends BaseActivity implements View.OnClickListener
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putSerializable(K3Utils.EXTRA_K3_TESTER, mTester);
+        outState.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
         outState.putInt("TestType", mTestType);
-        outState.putSerializable(K3Utils.EXTRA_K3, mErrorDevice);
+        outState.putSerializable(DeviceCommonUtils.EXTRA_DEVICE, mErrorDevice);
     }
 
 
@@ -252,9 +254,9 @@ public class K3ScanActivity extends BaseActivity implements View.OnClickListener
 
         Intent intent = new Intent(this, K3TestMainActivity.class);
         intent.putExtra("TestUnits", mK3TestUnits);
-        intent.putExtra(K3Utils.EXTRA_K3, mCurDevice);
-        intent.putExtra(K3Utils.EXTRA_ERROR_K3, mErrorDevice);
-        intent.putExtra(K3Utils.EXTRA_K3_TESTER, mTester);
+        intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mCurDevice);
+        intent.putExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
+        intent.putExtra(DeviceCommonUtils.EXTRA_TESTER, mTester);
         intent.putExtra("TestType", mTestType);
         startActivityForResult(intent, 0x12);
     }

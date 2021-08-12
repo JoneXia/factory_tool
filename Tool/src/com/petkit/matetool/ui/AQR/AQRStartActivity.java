@@ -6,8 +6,9 @@ import android.widget.TextView;
 
 import com.petkit.matetool.R;
 import com.petkit.matetool.model.Tester;
-import com.petkit.matetool.ui.AQR.utils.AQRUtils;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.common.DeviceCommonUtils;
+import com.petkit.matetool.utils.Globals;
 
 /**
  * AQR测试，选择工站
@@ -17,18 +18,15 @@ import com.petkit.matetool.ui.base.BaseActivity;
 public class AQRStartActivity extends BaseActivity {
 
     private Tester mTester;
-    private int mAQRType;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
-            mAQRType = savedInstanceState.getInt(AQRUtils.EXTRA_AQR_TYPE);
-            mTester = (Tester) savedInstanceState.getSerializable(AQRUtils.EXTRA_AQR_TESTER);
+            mTester = (Tester) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_TESTER);
         } else {
-            mAQRType = getIntent().getIntExtra(AQRUtils.EXTRA_AQR_TYPE, AQRUtils.AQR_TYPE_NORMAL);
-            mTester = (Tester) getIntent().getSerializableExtra(AQRUtils.EXTRA_AQR_TESTER);
+            mTester = (Tester) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
         }
 
         setContentView(R.layout.activity_feeder_start);
@@ -39,8 +37,7 @@ public class AQRStartActivity extends BaseActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putInt(AQRUtils.EXTRA_AQR_TYPE, mAQRType);
-        outState.putSerializable(AQRUtils.EXTRA_AQR_TESTER, mTester);
+        outState.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
     }
 
     @Override
@@ -63,35 +60,31 @@ public class AQRStartActivity extends BaseActivity {
         switch (v.getId()) {
             case R.id.test_case1:
                 Bundle bundle = new Bundle();
-                bundle.putSerializable(AQRUtils.EXTRA_AQR_TESTER, mTester);
-                bundle.putInt("TestType", AQRUtils.TYPE_TEST_PARTIALLY);
-                bundle.putInt(AQRUtils.EXTRA_AQR_TYPE, mAQRType);
+                bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
+                bundle.putInt("TestType", Globals.TYPE_TEST_PARTIALLY);
                 startActivityWithData(AQRScanActivity.class, bundle, false);
                 break;
             case R.id.test_case2:
                 bundle = new Bundle();
-                bundle.putSerializable(AQRUtils.EXTRA_AQR_TESTER, mTester);
-                bundle.putInt("TestType", AQRUtils.TYPE_TEST);
-                bundle.putInt(AQRUtils.EXTRA_AQR_TYPE, mAQRType);
+                bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
+                bundle.putInt("TestType", Globals.TYPE_TEST);
                 startActivityWithData(AQRScanActivity.class, bundle, false);
                 break;
             case R.id.test_case3:
                 bundle = new Bundle();
-                bundle.putSerializable(AQRUtils.EXTRA_AQR_TESTER, mTester);
-                bundle.putInt("TestType", AQRUtils.TYPE_MAINTAIN);
-                bundle.putInt(AQRUtils.EXTRA_AQR_TYPE, mAQRType);
+                bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
+                bundle.putInt("TestType", Globals.TYPE_MAINTAIN);
                 startActivityWithData(AQRScanActivity.class, bundle, false);
                 break;
             case R.id.test_case4:
                 bundle = new Bundle();
-                bundle.putSerializable(AQRUtils.EXTRA_AQR_TESTER, mTester);
-                bundle.putInt("TestType", AQRUtils.TYPE_CHECK);
-                bundle.putInt(AQRUtils.EXTRA_AQR_TYPE, mAQRType);
+                bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
+                bundle.putInt("TestType", Globals.TYPE_CHECK);
                 startActivityWithData(AQRScanActivity.class, bundle, false);
                 break;
             case R.id.test_case5:
                 bundle = new Bundle();
-                bundle.putSerializable(AQRUtils.EXTRA_AQR_TESTER, mTester);
+                bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
                 startActivityWithData(AQRStorageFileActivity.class, bundle, false);
                 break;
         }
