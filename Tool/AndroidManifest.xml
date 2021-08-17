@@ -309,9 +309,6 @@
         <activity android:name=".ui.P3.P3TestDetailActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".ui.P3.P3ErrorListActivity"
-            android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
         <activity android:name=".ui.P3.P3StorageFileActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"/>
@@ -381,12 +378,6 @@
         <activity android:name=".ui.K3.K3TestDetailActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".ui.K3.K3TestPrepareActivity"
-            android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".ui.K3.K3ErrorListActivity"
-            android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
         <activity android:name=".ui.K3.K3StorageFileActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"/>
@@ -405,12 +396,6 @@
         <activity android:name=".ui.AQR.AQRTestDetailActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".ui.AQR.AQRTestPrepareActivity"
-            android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".ui.AQR.AQRErrorListActivity"
-            android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
         <activity android:name=".ui.AQR.AQRStorageFileActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"/>
@@ -419,7 +404,10 @@
         <activity android:name=".ui.common.TestPrepareActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".ui.common.ErrorListActivity"
+        <activity android:name=".ui.common.BLEErrorListActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"/>
+        <activity android:name=".ui.common.WifiErrorListActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"/>
 

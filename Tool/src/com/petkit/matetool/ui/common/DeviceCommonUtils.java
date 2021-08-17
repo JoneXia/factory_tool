@@ -91,6 +91,46 @@ public class DeviceCommonUtils {
         return key;
     }
 
+
+    /**
+     *
+     * 部分产品软件功能一致，分多个SKU，不共用测试者，可用此方法来区分
+     *
+     * @param deviceType
+     * @return
+     */
+    public static String getDeviceTesterKeyByType(int deviceType) {
+        String key;
+        switch (deviceType) {
+            /**
+             * 旧版本不区分W5/W5C，使用了"W5"作为key存储了Tester信息
+             * 因为W5C先生产，为了兼容旧版本，新版本使用W5作为W5C的key，W5使用W5L作为key
+             */
+            case Globals.W5C:
+                key = "W5";
+                break;
+            case Globals.W5:
+                key = "W5L";
+                break;
+            case Globals.P3C:
+                key = "P3";
+                break;
+            case Globals.P3D:
+                key = "P3D";
+                break;
+            case Globals.T4:
+                key = "T4";
+                break;
+            case Globals.T4_p:
+                key = "T4P";
+                break;
+            default:
+                key = getDeviceKeyByType(deviceType);
+        }
+
+        return key;
+    }
+
     /**
      *
      *

@@ -94,7 +94,7 @@ public class W5TestPrepareActivity extends BaseActivity {
 
         findViewById(R.id.logout).setOnClickListener(this);
 
-        mTester = TesterManagerUtils.getCurrentTesterForType(Globals.W5);
+        mTester = TesterManagerUtils.getCurrentTesterForType(mW5Type == W5Utils.W5_TYPE_MINI ? Globals.W5C : Globals.W5);
 //        mTester = new Tester();
 //        mTester.setCode("00");
 //        mTester.setName("写死的账号");
@@ -241,7 +241,7 @@ public class W5TestPrepareActivity extends BaseActivity {
                             mTester.setStation(station);
                             mTester.setName(name);
                             mTester.setSession(token);
-                            TesterManagerUtils.addTesterForType(Globals.W5, mTester);
+                            TesterManagerUtils.addTesterForType(mW5Type == W5Utils.W5_TYPE_MINI ? Globals.W5C : Globals.W5, mTester);
 
                             AsyncHttpUtil.addHttpHeader("F-Session", token);
                             testerInfoTextView.setText("当前用户名：" + mTester.getName());
@@ -366,7 +366,7 @@ public class W5TestPrepareActivity extends BaseActivity {
         LoadDialog.dismissDialog();
         AsyncHttpUtil.addHttpHeader("F-Session", "");
 
-        TesterManagerUtils.removeTesterForType(Globals.W5);
+        TesterManagerUtils.removeTesterForType(mW5Type == W5Utils.W5_TYPE_MINI ? Globals.W5C : Globals.W5);
         mTester = null;
         updateView();
     }

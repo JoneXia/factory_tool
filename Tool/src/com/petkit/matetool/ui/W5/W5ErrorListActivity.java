@@ -283,7 +283,7 @@ public class W5ErrorListActivity extends BaseListActivity {
                             case BLEConsts.PROGRESS_DISCONNECTING:
                             case BLEConsts.ERROR_SYNC_INIT_FAIL:
                             case BLEConsts.ERROR_DEVICE_ID_NULL:
-//                                scanFinish();
+                                scanFinish();
                                 break;
                             default:
                                 break;

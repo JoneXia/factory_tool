@@ -184,27 +184,12 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
                     case Globals.D4:
                         startActivity(D4TestPrepareActivity.class);
                         break;
-//                    case Globals.P3:
-//                        startActivity(P3TestPrepareActivity.class);
-//                        break;
                     case Globals.W5:
                     case Globals.W5C:
                         bundle = new Bundle();
                         bundle.putInt(W5Utils.EXTRA_W5_TYPE, testStyle == Globals.W5C ? W5Utils.W5_TYPE_MINI : W5Utils.W5_TYPE_NORMAL);
                         startActivityWithData(W5TestPrepareActivity.class, bundle, false);
                         break;
-//                    case Globals.T4:
-//                    case Globals.T4_p:
-//                        bundle = new Bundle();
-//                        bundle.putInt(T4Utils.EXTRA_WITH_K3, testStyle == Globals.T4 ? 0 : 1);
-//                        startActivityWithData(T4TestPrepareActivity.class, bundle, false);
-//                        break;
-//                    case Globals.K3:
-//                        startActivity(K3TestPrepareActivity.class);
-//                        break;
-//                    case Globals.AQR:
-//                        startActivity(AQRTestPrepareActivity.class);
-//                        break;
                     default:
                         bundle = new Bundle();
                         bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, testStyle);
@@ -276,6 +261,7 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
             case R.id.aqr:
                 testStyle = Globals.AQR;
                 break;
+            //TODO: 新增设备需对应添加
             default:
                 break;
         }
@@ -285,10 +271,10 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
         RadioButton tempRadioButton;
 
         tempRadioButton = (RadioButton) findViewById(R.id.mate_style);
-        tempRadioButton.setText(getTextDetail(Globals.MATE_STYLE, "Mate Style" + " v" + TOOL_MATE_VERSION));
+        tempRadioButton.setText("Mate Style" + " v" + TOOL_MATE_VERSION);
 
         tempRadioButton = (RadioButton) findViewById(R.id.mate_pro);
-        tempRadioButton.setText(getTextDetail(Globals.MATE_PRO, "Mate Pro" + " v" + TOOL_MATE_VERSION));
+        tempRadioButton.setText("Mate Pro" + " v" + TOOL_MATE_VERSION);
 
         tempRadioButton = (RadioButton) findViewById(R.id.go);
         tempRadioButton.setText(getTextDetail(Globals.GO, "Go抽检" + " v" + TOOL_GO_VERSION));
@@ -342,12 +328,14 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
         tempRadioButton.setText(getTextDetail(Globals.AQR, "智能鱼缸（AQR）" + " v" + TOOL_AQR_VERSION));
         tempRadioButton.setVisibility(View.GONE);
 
+
+        //TODO: 新增设备需对应添加
     }
 
     private SpannableStringBuilder getTextDetail(int type, String text) {
         SpannableStringUtils.SpanText text1 = new SpannableStringUtils.SpanText(text, CommonUtils.getColorById(R.color.black), 1.0f);
 
-        if (type >= Globals.P3C && TesterManagerUtils.getCurrentTesterForType(type) != null) {
+        if (TesterManagerUtils.getCurrentTesterForType(type) != null) {
             SpannableStringUtils.SpanText text2 = new SpannableStringUtils.SpanText(" 已登录", CommonUtils.getColorById(R.color.yellow), 0.8f);
             return SpannableStringUtils.makeSpannableString(text1, text2);
         } else {
