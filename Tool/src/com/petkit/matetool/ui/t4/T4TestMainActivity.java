@@ -370,7 +370,7 @@ public class T4TestMainActivity extends BaseActivity implements PetkitSocketInst
     private void connectAp() {
         if(mTestState != TEST_STATE_CONNECTED && !PetkitSocketInstance.getInstance().isConnected()) {
             String remoteIp = mWifiAdminSimple.getCurrentApHostIp();
-            if(isEmpty(remoteIp)) {
+            if(isEmpty(remoteIp) || "0.0.0.0".equals(remoteIp)) {
                 mInfoTestTextView.setText("获取设备IP失败！");
                 mTestState = TEST_STATE_INVALID;
             } else if(mTestState != TEST_STATE_CONNECTING){
