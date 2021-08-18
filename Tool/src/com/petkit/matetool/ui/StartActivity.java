@@ -311,6 +311,7 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
 
         tempRadioButton = (RadioButton) findViewById(R.id.w5);
         tempRadioButton.setText(getTextDetail(Globals.W5, "智能饮水机（W5）" + " v" + TOOL_W5_VERSION));
+        tempRadioButton.setVisibility(View.GONE);   //W5项目暂停，修改了整个方案，和W5C不一致了。
 
         tempRadioButton = (RadioButton) findViewById(R.id.w5c);
         tempRadioButton.setText(getTextDetail(Globals.W5C, "智能饮水机MINI（W5C）" + " v" + TOOL_W5_VERSION));
@@ -336,6 +337,7 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
 
         tempRadioButton = (RadioButton) findViewById(R.id.aq1s);
         tempRadioButton.setText(getTextDetail(Globals.AQ1S, "智能鱼缸（AQ1S）" + " v" + TOOL_AQ1S_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         //TODO: 新增设备需对应添加
     }

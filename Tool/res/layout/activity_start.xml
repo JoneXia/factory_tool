@@ -15,6 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dip"
+            android:paddingBottom="50dip"
             android:layout_marginBottom="20dip">
 
             <RadioButton
@@ -158,7 +159,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dip"
-                android:layout_marginBottom="50dip"
                 android:text="智能鱼缸-AQ1S"/>
 
         </RadioGroup>
