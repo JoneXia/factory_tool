@@ -237,4 +237,13 @@ public class Versions {
 	 *
 	 */
 	public static final String TOOL_AQR_VERSION	= "0.1";
+
+
+	/**
+	 *
+	 * 1.0说明:
+	 * 1. 支持智能鱼缸（AQ1S）产测全流程
+	 *
+	 */
+	public static final String TOOL_AQ1S_VERSION	= "0.1";
 }

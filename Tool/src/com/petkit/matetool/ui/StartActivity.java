@@ -29,7 +29,7 @@ import com.petkit.matetool.ui.W5.W5TestPrepareActivity;
 import com.petkit.matetool.ui.W5.utils.W5Utils;
 import com.petkit.matetool.ui.aq.AQTestMainActivity;
 import com.petkit.matetool.ui.base.BaseActivity;
-import com.petkit.matetool.ui.common.DeviceCommonUtils;
+import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.ui.common.TestPrepareActivity;
 import com.petkit.matetool.ui.cozy.CozyTestPrepareActivity;
 import com.petkit.matetool.ui.feeder.FeederTestPrepareActivity;
@@ -48,6 +48,7 @@ import com.petkit.matetool.widget.LoadDialog;
 
 import java.util.ArrayList;
 
+import static com.petkit.matetool.utils.Versions.TOOL_AQ1S_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_AQR_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_AQ_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_COZY;
@@ -81,8 +82,10 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_start);
+        DeviceCommonUtils.initDeviceConfig();
         TesterManagerUtils.initTesterTempList();
+
+        setContentView(R.layout.activity_start);
 
         if(!checkSelfPermissionComplete(this)) {
             startActivity(PermissionDialogActivity.class);
@@ -261,6 +264,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
             case R.id.aqr:
                 testStyle = Globals.AQR;
                 break;
+            case R.id.aq1s:
+                testStyle = Globals.AQ1S;
+                break;
             //TODO: 新增设备需对应添加
             default:
                 break;
@@ -328,6 +334,8 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
         tempRadioButton.setText(getTextDetail(Globals.AQR, "智能鱼缸（AQR）" + " v" + TOOL_AQR_VERSION));
         tempRadioButton.setVisibility(View.GONE);
 
+        tempRadioButton = (RadioButton) findViewById(R.id.aq1s);
+        tempRadioButton.setText(getTextDetail(Globals.AQ1S, "智能鱼缸（AQ1S）" + " v" + TOOL_AQ1S_VERSION));
 
         //TODO: 新增设备需对应添加
     }

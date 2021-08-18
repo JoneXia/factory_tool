@@ -1,4 +1,4 @@
-package com.petkit.matetool.ui.K3;
+package com.petkit.matetool.ui.common;
 
 import android.os.Bundle;
 import android.view.View;
@@ -15,9 +15,10 @@ import com.petkit.matetool.utils.Globals;
  *
  * Created by Jone on 17/4/19.
  */
-public class K3StartActivity extends BaseActivity {
+public class BLEStartActivity extends BaseActivity {
 
     private Tester mTester;
+    private int mDeviceType;
 
 
     @Override
@@ -29,6 +30,12 @@ public class K3StartActivity extends BaseActivity {
             mTester = (Tester) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
         }
 
+        if(savedInstanceState != null) {
+            mDeviceType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE);
+        } else {
+            mDeviceType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, 0);
+        }
+
         setContentView(R.layout.activity_feeder_start);
 
     }
@@ -37,6 +44,7 @@ public class K3StartActivity extends BaseActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
+        outState.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
         outState.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
     }
 
@@ -55,6 +63,17 @@ public class K3StartActivity extends BaseActivity {
         findViewById(R.id.test_case4).setOnClickListener(this);
         findViewById(R.id.test_case5).setOnClickListener(this);
         findViewById(R.id.test_case5).setVisibility(View.GONE);
+
+        switch (mDeviceType) {
+            case Globals.K3:
+            case Globals.AQ1S:
+                findViewById(R.id.test_case1).setVisibility(View.GONE);
+                findViewById(R.id.test_case4).setVisibility(View.GONE);
+                findViewById(R.id.test_case5).setVisibility(View.GONE);
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
@@ -63,31 +82,36 @@ public class K3StartActivity extends BaseActivity {
             case R.id.test_case1:
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
-                bundle.putInt("TestType", Globals.TYPE_TEST_PARTIALLY);
-                startActivityWithData(K3ScanActivity.class, bundle, false);
+                bundle.putInt(DeviceCommonUtils.EXTRA_TEST_TYPE, Globals.TYPE_TEST_PARTIALLY);
+                bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
+                startActivityWithData(BLEScanActivity.class, bundle, false);
                 break;
             case R.id.test_case2:
                 bundle = new Bundle();
                 bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
-                bundle.putInt("TestType", Globals.TYPE_TEST);
-                startActivityWithData(K3ScanActivity.class, bundle, false);
+                bundle.putInt(DeviceCommonUtils.EXTRA_TEST_TYPE, Globals.TYPE_TEST);
+                bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
+                startActivityWithData(BLEScanActivity.class, bundle, false);
                 break;
             case R.id.test_case3:
                 bundle = new Bundle();
                 bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
-                bundle.putInt("TestType", Globals.TYPE_MAINTAIN);
-                startActivityWithData(K3ScanActivity.class, bundle, false);
+                bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
+                bundle.putInt(DeviceCommonUtils.EXTRA_TEST_TYPE, Globals.TYPE_MAINTAIN);
+                startActivityWithData(BLEScanActivity.class, bundle, false);
                 break;
             case R.id.test_case4:
                 bundle = new Bundle();
                 bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
-                bundle.putInt("TestType", Globals.TYPE_CHECK);
-                startActivityWithData(K3ScanActivity.class, bundle, false);
+                bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
+                bundle.putInt(DeviceCommonUtils.EXTRA_TEST_TYPE, Globals.TYPE_CHECK);
+                startActivityWithData(BLEScanActivity.class, bundle, false);
                 break;
             case R.id.test_case5:
                 bundle = new Bundle();
                 bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
-                startActivityWithData(K3StorageFileActivity.class, bundle, false);
+                bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
+                startActivityWithData(BLEStorageFileActivity.class, bundle, false);
                 break;
         }
     }

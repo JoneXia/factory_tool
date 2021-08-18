@@ -31,7 +31,7 @@ import com.petkit.matetool.ui.K3.mode.K3TestUnit;
 import com.petkit.matetool.ui.K3.utils.K3Utils;
 import com.petkit.matetool.ui.P3.mode.GsensorData;
 import com.petkit.matetool.ui.base.BaseActivity;
-import com.petkit.matetool.ui.common.DeviceCommonUtils;
+import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.ui.print.PrintActivity;
 import com.petkit.matetool.ui.utils.PrintResultCallback;
 import com.petkit.matetool.ui.utils.PrintUtils;

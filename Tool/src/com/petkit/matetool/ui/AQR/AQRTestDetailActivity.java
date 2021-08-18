@@ -32,7 +32,7 @@ import com.petkit.matetool.ui.AQR.mode.AQRTestUnit;
 import com.petkit.matetool.ui.AQR.utils.AQRUtils;
 import com.petkit.matetool.ui.P3.mode.GsensorData;
 import com.petkit.matetool.ui.base.BaseActivity;
-import com.petkit.matetool.ui.common.DeviceCommonUtils;
+import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.ui.print.PrintActivity;
 import com.petkit.matetool.ui.utils.PrintResultCallback;
 import com.petkit.matetool.ui.utils.PrintUtils;

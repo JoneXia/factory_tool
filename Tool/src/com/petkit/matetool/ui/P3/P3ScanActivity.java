@@ -33,7 +33,7 @@ import com.petkit.matetool.ui.P3.mode.P3TestUnit;
 import com.petkit.matetool.ui.P3.utils.P3Utils;
 import com.petkit.matetool.ui.aq.AQScanListAdapter;
 import com.petkit.matetool.ui.base.BaseActivity;
-import com.petkit.matetool.ui.common.DeviceCommonUtils;
+import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.utils.Globals;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.petkit.matetool.ui.common;
+package com.petkit.matetool.ui.common.utils;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,18 +14,18 @@ import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.DevicesError;
 import com.petkit.matetool.model.Tester;
-import com.petkit.matetool.ui.AQR.AQRStartActivity;
+import com.petkit.matetool.ui.AQ1S.AQ1STestMainActivity;
 import com.petkit.matetool.ui.AQR.AQRTestMainActivity;
-import com.petkit.matetool.ui.K3.K3StartActivity;
 import com.petkit.matetool.ui.K3.K3TestMainActivity;
-import com.petkit.matetool.ui.P3.P3StartActivity;
 import com.petkit.matetool.ui.P3.P3TestMainActivity;
+import com.petkit.matetool.ui.common.BLEStartActivity;
 import com.petkit.matetool.ui.t4.T4StartActivity;
 import com.petkit.matetool.ui.t4.T4TestMainActivity;
 import com.petkit.matetool.utils.Globals;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 
 import static com.petkit.android.utils.LogcatStorageHelper.getFileName;
 
@@ -42,6 +42,7 @@ public class DeviceCommonUtils {
     public static final String EXTRA_DEVICE_TYPE   = "EXTRA_DEVICE_TYPE";
     public static final String EXTRA_DEVICE   = "EXTRA_DEVICE";
     public static final String EXTRA_ERROR_DEVICE   = "EXTRA_ERROR_DEVICE";
+    public static final String EXTRA_TEST_TYPE = "EXTRA_TEST_TYPE";
 
     private static final String SHARED_SERIALIZABLE_DAY     = "%s_SerializableDay";
     private static final String SHARED_SERIALIZABLE_NUMBER     = "%s_SerializableNumber";
@@ -61,6 +62,26 @@ public class DeviceCommonUtils {
 
     private static final int MAX_SN_NUMBER_SESSION = 200;
 
+    private static HashMap<Integer, DeviceConfigInfo> mDeviceConfigs;
+
+    public static void initDeviceConfig() {
+        mDeviceConfigs = new HashMap<>();
+
+        mDeviceConfigs.put(Globals.P3C, new DeviceConfigInfo(true, "P3", "P3", "Petkit_P3C",
+                Globals.DEVICE_TYPE_CODE_P3C, P3TestMainActivity.class));
+        mDeviceConfigs.put(Globals.P3D, new DeviceConfigInfo(true, "P3", "P3D", "Petkit_P3D",
+                Globals.DEVICE_TYPE_CODE_P3D, P3TestMainActivity.class));
+        mDeviceConfigs.put(Globals.T4, new DeviceConfigInfo(false, "T4", "T4", null,
+                Globals.DEVICE_TYPE_CODE_T4, T4TestMainActivity.class));
+        mDeviceConfigs.put(Globals.T4_p, new DeviceConfigInfo(false, "T4", "T4P", null,
+                Globals.DEVICE_TYPE_CODE_T4, T4TestMainActivity.class));
+        mDeviceConfigs.put(Globals.K3, new DeviceConfigInfo(true, "K3", "K3", "Petkit_K3",
+                Globals.DEVICE_TYPE_CODE_K3, K3TestMainActivity.class));
+        mDeviceConfigs.put(Globals.AQR, new DeviceConfigInfo(true, "AQR", "AQR", "Petkit_AQR",
+                Globals.DEVICE_TYPE_CODE_AQR, AQRTestMainActivity.class));
+        mDeviceConfigs.put(Globals.AQ1S, new DeviceConfigInfo(true, "AQ1S", "AQ1S", "Petkit_AQ1S",
+                Globals.DEVICE_TYPE_CODE_AQ1S, AQ1STestMainActivity.class));
+    }
 
     /**
      *
@@ -68,27 +89,11 @@ public class DeviceCommonUtils {
      * @return
      */
     public static String getDeviceKeyByType(int deviceType) {
-        String key;
-        switch (deviceType) {
-            case Globals.P3C:
-            case Globals.P3D:
-                key = "P3";
-                break;
-            case Globals.T4:
-            case Globals.T4_p:
-                key = "T4";
-                break;
-            case Globals.K3:
-                key = "K3";
-                break;
-            case Globals.AQR:
-                key = "AQR";
-                break;
-            default:
-                throw  new RuntimeException("getDeviceKeyByType deviceType not support!");
+        if (mDeviceConfigs.get(deviceType) != null) {
+            return mDeviceConfigs.get(deviceType).getDeviceKey();
+        } else {
+            throw  new RuntimeException("getDeviceKeyByType deviceType not support!");
         }
-
-        return key;
     }
 
 
@@ -112,23 +117,29 @@ public class DeviceCommonUtils {
             case Globals.W5:
                 key = "W5L";
                 break;
-            case Globals.P3C:
-                key = "P3";
-                break;
-            case Globals.P3D:
-                key = "P3D";
-                break;
-            case Globals.T4:
-                key = "T4";
-                break;
-            case Globals.T4_p:
-                key = "T4P";
-                break;
             default:
-                key = getDeviceKeyByType(deviceType);
+                if (mDeviceConfigs.get(deviceType) != null) {
+                    key = mDeviceConfigs.get(deviceType).getDeviceTesterKey();
+                } else {
+                    throw  new RuntimeException("getDeviceKeyByType deviceType not support!");
+                }
         }
 
         return key;
+    }
+
+
+    /**
+     *
+     * @param deviceType
+     * @return
+     */
+    public static String getDeviceNameByType(int deviceType) {
+        if (mDeviceConfigs.get(deviceType) != null) {
+            return mDeviceConfigs.get(deviceType).getDeviceName();
+        } else {
+            throw  new RuntimeException("getDeviceKeyByType deviceType not support!");
+        }
     }
 
     /**
@@ -138,19 +149,14 @@ public class DeviceCommonUtils {
      * @return
      */
     public static Class getStartActivityByType(int deviceType) {
-        switch (deviceType) {
-            case Globals.P3C:
-            case Globals.P3D:
-                return P3StartActivity.class;
-            case Globals.T4:
-            case Globals.T4_p:
-                return T4StartActivity.class;
-            case Globals.K3:
-                return K3StartActivity.class;
-            case Globals.AQR:
-                return AQRStartActivity.class;
-            default:
-                throw  new RuntimeException("getStartActivity deviceType not support!");
+        if (mDeviceConfigs.get(deviceType) != null) {
+            if (mDeviceConfigs.get(deviceType).isBleDevice()) {
+                return BLEStartActivity.class;
+            } else {
+                return T4StartActivity.class;//TODO:
+            }
+        } else {
+            throw  new RuntimeException("getDeviceKeyByType deviceType not support!");
         }
     }
 
@@ -161,19 +167,10 @@ public class DeviceCommonUtils {
      * @return
      */
     public static Class getMainActivityByType(int deviceType) {
-        switch (deviceType) {
-            case Globals.P3C:
-            case Globals.P3D:
-                return P3TestMainActivity.class;
-            case Globals.T4:
-            case Globals.T4_p:
-                return T4TestMainActivity.class;
-            case Globals.K3:
-                return K3TestMainActivity.class;
-            case Globals.AQR:
-                return AQRTestMainActivity.class;
-            default:
-                throw  new RuntimeException("getStartActivity deviceType not support!");
+        if (mDeviceConfigs.get(deviceType) != null) {
+            return mDeviceConfigs.get(deviceType).getDeviceMainActiviy();
+        } else {
+            throw  new RuntimeException("getDeviceKeyByType deviceType not support! " + deviceType);
         }
     }
 
@@ -184,20 +181,10 @@ public class DeviceCommonUtils {
      * @return
      */
     public static String getDeviceFlagByType(int deviceType) {
-        switch (deviceType) {
-            case Globals.P3C:
-                return Globals.DEVICE_TYPE_CODE_P3C;
-            case Globals.P3D:
-                return Globals.DEVICE_TYPE_CODE_P3D;
-            case Globals.T4:
-            case Globals.T4_p:
-                return Globals.DEVICE_TYPE_CODE_T4;
-            case Globals.K3:
-                return Globals.DEVICE_TYPE_CODE_K3;
-            case Globals.AQR:
-                return Globals.DEVICE_TYPE_CODE_AQR;
-            default:
-                throw  new RuntimeException("getDeviceFlagByType deviceType not support!");
+        if (mDeviceConfigs.get(deviceType) != null) {
+            return mDeviceConfigs.get(deviceType).getDeviceSNFlag();
+        } else {
+            throw  new RuntimeException("getDeviceKeyByType deviceType not support!");
         }
     }
 
@@ -471,7 +458,7 @@ public class DeviceCommonUtils {
             File outFile = new File(dir, getFileName() + ".txt");
             int i = 1;
             while (outFile.exists()) {
-                outFile = new File(dir, getFileName() + "-" + (i++) + ".log");
+                outFile = new File(dir, getFileName() + "-" + (i++) + ".txt");
             }
             try {
                 outFile.createNewFile();
@@ -482,7 +469,7 @@ public class DeviceCommonUtils {
                 return "";
             }
             LogcatStorageHelper.addLog("file name: " + outFile.getName() + ", sn number: " + 1);
-            CommonUtils.addSysMap(CommonUtils.getSysMap(String.format(SHARED_SN_FILE_NAME, getDeviceKeyByType(deviceType))), outFile.getName());
+            CommonUtils.addSysMap(CommonUtils.getAppContext(), String.format(SHARED_SN_FILE_NAME, getDeviceKeyByType(deviceType)), outFile.getName());
             CommonUtils.addSysIntMap(CommonUtils.getAppContext(), String.format(SHARED_SN_FILE_NUMBER, getDeviceKeyByType(deviceType)), 1);
             return outFile.getAbsolutePath();
         } else {

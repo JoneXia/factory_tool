@@ -8,7 +8,7 @@ import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.D3.utils.D3Utils;
 import com.petkit.matetool.ui.D4.utils.D4Utils;
 import com.petkit.matetool.ui.K2.utils.K2Utils;
-import com.petkit.matetool.ui.common.DeviceCommonUtils;
+import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.ui.feeder.utils.FeederUtils;
 import com.petkit.matetool.ui.feederMini.utils.FeederMiniUtils;
@@ -72,9 +72,6 @@ public class TesterManagerUtils {
                 case Globals.D4:
                     testerString = CommonUtils.getSysMap(D4Utils.SHARED_D4_TESTER);
                     break;
-//                case Globals.W5:
-//                    testerString = CommonUtils.getSysMap(W5Utils.SHARED_W5_TESTER);
-//                    break;
                 default:
                     if (type >= Globals.W5) {       //旧设备不支持这个方式来获取
                         testerString = CommonUtils.getSysMap(getShareTesterKey(type));
@@ -85,6 +82,10 @@ public class TesterManagerUtils {
                 tester = new Gson().fromJson(testerString, Tester.class);
                 mTesterTempList.put(type, tester);
             }
+            tester = new Tester();
+            tester.setCode("00");
+            tester.setName("写死的账号");
+            tester.setStation("1");
         }
 
         return tester;

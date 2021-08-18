@@ -17,6 +17,7 @@ import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.DevicesError;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.base.BaseListActivity;
+import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.ui.t4.T4TestMainActivity;
 import com.petkit.matetool.ui.t4.utils.T4Utils;
 import com.petkit.matetool.widget.pulltorefresh.PullToRefreshBase;

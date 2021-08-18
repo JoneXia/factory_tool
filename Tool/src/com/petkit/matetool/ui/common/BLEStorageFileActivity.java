@@ -1,4 +1,4 @@
-package com.petkit.matetool.ui.K3;
+package com.petkit.matetool.ui.common;
 
 import android.os.Bundle;
 import android.view.View;
@@ -28,7 +28,7 @@ import cz.msebera.android.httpclient.Header;
  *
  * Created by Jone on 17/9/14.
  */
-public class K3StorageFileActivity extends BaseActivity {
+public class BLEStorageFileActivity extends BaseActivity {
 
     private Tester mTester;
     private String fileName;
@@ -55,7 +55,7 @@ public class K3StorageFileActivity extends BaseActivity {
 
         mFileNameTextView = (TextView) findViewById(R.id.file_name);
         mUploadTextView = (TextView) findViewById(R.id.file_upload);
-        mUploadTextView.setOnClickListener(K3StorageFileActivity.this);
+        mUploadTextView.setOnClickListener(BLEStorageFileActivity.this);
         mUploadTextView.setVisibility(View.INVISIBLE);
     }
 

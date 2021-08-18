@@ -144,7 +144,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dip"
-                android:layout_marginBottom="50dip"
                 android:text="智能净味器-K3"/>
 
             <RadioButton
@@ -153,6 +152,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dip"
                 android:text="智能鱼缸-AQR"/>
+
+            <RadioButton
+                android:id="@+id/aq1s"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip"
+                android:layout_marginBottom="50dip"
+                android:text="智能鱼缸-AQ1S"/>
 
         </RadioGroup>
     </ScrollView>

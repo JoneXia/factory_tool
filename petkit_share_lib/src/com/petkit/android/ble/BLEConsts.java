@@ -38,10 +38,13 @@ public class BLEConsts {
 	public static final String T4_DISPLAY_NAME = "Petkit_T4";
 	public static final String K3_DISPLAY_NAME = "Petkit_K3";
 	public static final String AQR_DISPLAY_NAME = "Petkit_AQR";
+	public static final String AQ1S_DISPLAY_NAME = "Petkit_AQ1S";
 
-	public static final String[] DeviceFilter = new String[]{"PETKIT", "PETKIT2", PET_FIT_DISPLAY_NAME, PET_FIT2_DISPLAY_NAME,
-			PET_HOME, PET_MATE, GO_DISPLAY_NAME, K2_DISPLAY_NAME, T3_DISPLAY_NAME, D3_DISPLAY_NAME, D4_DISPLAY_NAME,
-			AQ_DISPLAY_NAME, W5C_DISPLAY_NAME, W5_DISPLAY_NAME, P3C_DISPLAY_NAME, P3D_DISPLAY_NAME, T4_DISPLAY_NAME, K3_DISPLAY_NAME, AQR_DISPLAY_NAME};
+
+//	public static final String[] DeviceFilter = new String[]{"PETKIT", "PETKIT2", PET_FIT_DISPLAY_NAME, PET_FIT2_DISPLAY_NAME,
+//			PET_HOME, PET_MATE, GO_DISPLAY_NAME, K2_DISPLAY_NAME, T3_DISPLAY_NAME, D3_DISPLAY_NAME, D4_DISPLAY_NAME,
+//			AQ_DISPLAY_NAME, W5C_DISPLAY_NAME, W5_DISPLAY_NAME, P3C_DISPLAY_NAME, P3D_DISPLAY_NAME, T4_DISPLAY_NAME, K3_DISPLAY_NAME, AQR_DISPLAY_NAME};
+	public static final String[] DeviceFilter = new String[]{};
 
 	public static final int BLE_ACTION_SYNC				= 0x1;
 	public static final int BLE_ACTION_CHECK			= 0x2;
@@ -562,6 +565,12 @@ public class BLEConsts {
 	public static final int OP_CODE_K3_TEST_STEP					= 242;
 	public static final int OP_CODE_K3_TEST_RESULT					= 243;
 	public static final int OP_CODE_K3_WRITE_SN						= 244;
+
+	/** AQ1S cmd **/
+	public static final int OP_CODE_AQ1S_TEST_START					= 240;
+	public static final int OP_CODE_AQ1S_TEST_STEP					= 242;
+	public static final int OP_CODE_AQ1S_TEST_RESULT					= 243;
+	public static final int OP_CODE_AQ1S_WRITE_SN						= 244;
 
 	/** AQR cmd **/
 	public static final int OP_CODE_AQR_TEST_START					= 240;

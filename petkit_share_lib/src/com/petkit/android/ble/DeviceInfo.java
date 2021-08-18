@@ -56,7 +56,9 @@ public class DeviceInfo implements Serializable {
 	public static final int DEVICE_TYPE_W5 = 12;
 	public static final int DEVICE_TYPE_K3 = 13;
 	public static final int DEVICE_TYPE_AQR = 14;
-	
+	public static final int DEVICE_TYPE_AQ1S = 15;
+
+
 	private String address;
 	private String name;
 	private int mRssi;
@@ -67,7 +69,7 @@ public class DeviceInfo implements Serializable {
 	private byte[] scanRecord;
 
 	//设备类型：1： fit；2: fit2; 3： mate； 4： go
-	private int deviceType;
+	private int deviceType = 0xff;
 
 	private int hardware;
 	private int fireware;
@@ -263,6 +265,9 @@ public class DeviceInfo implements Serializable {
 			case 0xD1:
 				deviceType = DEVICE_TYPE_AQR;
 				return BLEConsts.AQR_DISPLAY_NAME;
+			case 0xD4:
+				deviceType = DEVICE_TYPE_AQ1S;
+				return BLEConsts.AQ1S_DISPLAY_NAME;
 			default:
 				return null;
 		}
@@ -304,6 +309,9 @@ public class DeviceInfo implements Serializable {
 				break;
 			case BLEConsts.AQR_DISPLAY_NAME:
 				deviceType = DEVICE_TYPE_AQR;
+				break;
+			case BLEConsts.AQ1S_DISPLAY_NAME:
+				deviceType = DEVICE_TYPE_AQ1S;
 				break;
 		}
 	}

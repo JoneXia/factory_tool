@@ -1,4 +1,4 @@
-package com.petkit.matetool.ui.P3;
+package com.petkit.matetool.ui.AQ1S;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -20,7 +20,7 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import com.petkit.android.ble.BLEConsts;
-import com.petkit.android.ble.data.P3DataUtils;
+import com.petkit.android.ble.data.BaseDataUtils;
 import com.petkit.android.ble.data.PetkitBleMsg;
 import com.petkit.android.utils.ByteUtil;
 import com.petkit.android.utils.PetkitLog;
@@ -28,8 +28,8 @@ import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.Tester;
-import com.petkit.matetool.ui.P3.mode.P3TestUnit;
-import com.petkit.matetool.ui.P3.utils.P3Utils;
+import com.petkit.matetool.ui.AQ1S.mode.AQ1STestUnit;
+import com.petkit.matetool.ui.AQ1S.utils.AQ1SUtils;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.ui.utils.WifiAdminSimple;
@@ -41,7 +41,7 @@ import java.util.ArrayList;
  *
  * Created by Jone on 17/4/24.
  */
-public class P3TestMainActivity extends BaseActivity {
+public class AQ1STestMainActivity extends BaseActivity {
 
     private static final int TEST_STATE_INVALID      = 0;
     private static final int TEST_STATE_CONNECTING      = 1;
@@ -49,13 +49,12 @@ public class P3TestMainActivity extends BaseActivity {
 
     private Tester mTester;
     private int mTestType;
-    private int mDeviceType;
 
     private WifiAdminSimple mWifiAdminSimple;
     private int mTestState;
     private Device mCurDevice, mErrorDevice;
 
-    private ArrayList<P3TestUnit> mP3TestUnits;
+    private ArrayList<AQ1STestUnit> mAQ1STestUnits;
     private TestItemAdapter mAdapter;
 
     private TextView mInfoTestTextView;
@@ -71,12 +70,10 @@ public class P3TestMainActivity extends BaseActivity {
             if (savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE) != null) {
                 mErrorDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE);
             }
-            mDeviceType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE);
         } else {
             mTester = (Tester) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
             mTestType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_TEST_TYPE, Globals.TYPE_TEST);
             mCurDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_DEVICE);
-            mDeviceType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, 0);
             if (getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE) != null) {
                 mErrorDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE);
             }
@@ -95,7 +92,6 @@ public class P3TestMainActivity extends BaseActivity {
         outState.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
         outState.putInt("TestType", mTestType);
         outState.putSerializable(DeviceCommonUtils.EXTRA_DEVICE, mCurDevice);
-        outState.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
         if (mErrorDevice != null) {
             outState.putSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
         }
@@ -103,7 +99,7 @@ public class P3TestMainActivity extends BaseActivity {
 
     @Override
     protected void setupViews() {
-        setTitle(getTitleByType());
+        setTitle("AQ1S-" + getTitleByType());
 
         mWifiAdminSimple = new WifiAdminSimple(this);
 
@@ -112,7 +108,7 @@ public class P3TestMainActivity extends BaseActivity {
         findViewById(R.id.connect_dev).setVisibility(View.GONE);
         findViewById(R.id.test_auto).setOnClickListener(this);
 
-        mP3TestUnits = P3Utils.generateP3TestUnitsForType(mTestType);
+        mAQ1STestUnits = AQ1SUtils.generateAQ1STestUnitsForType(mTestType);
 
         GridView gridView =(GridView) findViewById(R.id.gridView);
         mAdapter = new TestItemAdapter(this);
@@ -130,21 +126,19 @@ public class P3TestMainActivity extends BaseActivity {
 
         Intent intent = new Intent(BLEConsts.BROADCAST_ACTION);
         intent.putExtra(BLEConsts.EXTRA_ACTION, BLEConsts.ACTION_STEP_ENTRY);
-        intent.putExtra(BLEConsts.EXTRA_DATA, P3DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_GET_INFO));
+        intent.putExtra(BLEConsts.EXTRA_DATA, BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_GET_INFO));
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     private String getTitleByType() {
-        String result = mDeviceType == Globals.P3C ? "P3C-" : "P3D-";
-
         if (mTestType == Globals.TYPE_TEST) {
-            return result + "成品测试";
+            return "成品测试";
         } else if (mTestType == Globals.TYPE_TEST_PARTIALLY) {
-            return result + "半成品测试";
+            return "半成品测试";
         } else if (mTestType == Globals.TYPE_CHECK) {
-            return result + "抽检";
+            return "抽检";
         } else {
-            return result + "维修";
+            return "维修";
         }
     }
 
@@ -166,6 +160,7 @@ public class P3TestMainActivity extends BaseActivity {
                 break;
             case R.id.test_auto:
                 if (testComplete) {
+                    setResult(RESULT_OK);
                     finish();
                 } else {
                     startTestDetail(true, 0);
@@ -181,7 +176,7 @@ public class P3TestMainActivity extends BaseActivity {
         if(resultCode == RESULT_OK) {
             switch (requestCode) {
                 case 0x12:
-                    mP3TestUnits = (ArrayList<P3TestUnit>) data.getSerializableExtra("TestUnits");
+                    mAQ1STestUnits = (ArrayList<AQ1STestUnit>) data.getSerializableExtra("TestUnits");
                     mCurDevice = (Device) data.getSerializableExtra(DeviceCommonUtils.EXTRA_DEVICE);
                     mAdapter.notifyDataSetChanged();
                     checkTestComplete();
@@ -200,29 +195,30 @@ public class P3TestMainActivity extends BaseActivity {
             if(isAuto) {
                 int position = 0;
 
-                for (P3TestUnit unit : mP3TestUnits) {
+                for (AQ1STestUnit unit : mAQ1STestUnits) {
                     if (unit.getResult() == 1) {
                         position++;
                     } else {
                         break;
                     }
                 }
-                if (position == mP3TestUnits.size()) {
+                if (position == mAQ1STestUnits.size()) {
                     showShortToast("测试已完成");
+                    setResult(RESULT_OK);
+                    finish();
                     return;
                 }
                 pos = position;
             }
 
-            Intent intent = new Intent(P3TestMainActivity.this, P3TestDetailActivity.class);
-            intent.putExtra("TestUnits", mP3TestUnits);
+            Intent intent = new Intent(AQ1STestMainActivity.this, AQ1STestDetailActivity.class);
+            intent.putExtra("TestUnits", mAQ1STestUnits);
             intent.putExtra("CurrentTestStep", pos);
             intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mCurDevice);
             intent.putExtra("AutoTest", isAuto);
             intent.putExtra(DeviceCommonUtils.EXTRA_TESTER, mTester);
             intent.putExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
             intent.putExtra("TestType", mTestType);
-            intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
             startActivityForResult(intent, 0x12);
         } else {
             showShortToast(mInfoTestTextView.getText().toString());
@@ -332,12 +328,12 @@ public class P3TestMainActivity extends BaseActivity {
 
         @Override
         public int getCount() {
-            return mP3TestUnits.size();
+            return mAQ1STestUnits.size();
         }
 
         @Override
-        public P3TestUnit getItem(int position) {
-            return mP3TestUnits.get(position);
+        public AQ1STestUnit getItem(int position) {
+            return mAQ1STestUnits.get(position);
         }
 
         @Override
@@ -357,7 +353,7 @@ public class P3TestMainActivity extends BaseActivity {
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            P3TestUnit item = getItem(position);
+            AQ1STestUnit item = getItem(position);
 
             holder.name.setText(item.getName());
 
@@ -384,7 +380,7 @@ public class P3TestMainActivity extends BaseActivity {
 
     private void checkTestComplete() {
         int position = 0;
-        for (P3TestUnit unit : mP3TestUnits) {
+        for (AQ1STestUnit unit : mAQ1STestUnits) {
             if(unit.getResult() == 1) {
                 position++;
             } else {
@@ -392,17 +388,19 @@ public class P3TestMainActivity extends BaseActivity {
             }
         }
 
-        if(position >= mP3TestUnits.size() - 1) {       //维修和抽检，最后一项打印标签可以不执行，其他项都完成了就算成功
+        if(position >= mAQ1STestUnits.size() - 1) {       //维修和抽检，最后一项打印标签可以不执行，其他项都完成了就算成功
             if (mTestType == Globals.TYPE_MAINTAIN) {
-                DeviceCommonUtils.storeMainTainInfo(mDeviceType, mCurDevice);
-                testComplete = position >= mP3TestUnits.size();
+                DeviceCommonUtils.storeMainTainInfo(Globals.AQ1S, mCurDevice);
+                testComplete = position >= mAQ1STestUnits.size();
             } else if (mTestType == Globals.TYPE_CHECK) {
-                DeviceCommonUtils.storeCheckInfo(mDeviceType, mCurDevice);
-                testComplete = position >= mP3TestUnits.size();
+                DeviceCommonUtils.storeCheckInfo(Globals.AQ1S, mCurDevice);
+                testComplete = position >= mAQ1STestUnits.size();
             } else if (mTestType == Globals.TYPE_TEST_PARTIALLY) {
-                testComplete = position >= mP3TestUnits.size();
+                testComplete = position >= mAQ1STestUnits.size();
             } else if (mTestType == Globals.TYPE_TEST) {
-                testComplete = position >= mP3TestUnits.size();
+                testComplete = position >= mAQ1STestUnits.size();
+            } else {
+                testComplete = position >= mAQ1STestUnits.size();
             }
         }
     }

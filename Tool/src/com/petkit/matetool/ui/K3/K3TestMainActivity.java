@@ -31,7 +31,7 @@ import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.K3.mode.K3TestUnit;
 import com.petkit.matetool.ui.K3.utils.K3Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
-import com.petkit.matetool.ui.common.DeviceCommonUtils;
+import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.ui.utils.WifiAdminSimple;
 import com.petkit.matetool.utils.Globals;
 
@@ -65,14 +65,14 @@ public class K3TestMainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
             mTester = (Tester) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_TESTER);
-            mTestType = savedInstanceState.getInt("TestType");
+            mTestType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_TEST_TYPE);
             mCurDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_DEVICE);
             if (savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE) != null) {
                 mErrorDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE);
             }
         } else {
             mTester = (Tester) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
-            mTestType = getIntent().getIntExtra("TestType", Globals.TYPE_TEST);
+            mTestType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_TEST_TYPE, Globals.TYPE_TEST);
             mCurDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_DEVICE);
             if (getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE) != null) {
                 mErrorDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE);

@@ -1,4 +1,4 @@
-package com.petkit.matetool.ui.K3;
+package com.petkit.matetool.ui.common;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -29,27 +29,22 @@ import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.Tester;
-import com.petkit.matetool.ui.K3.mode.K3TestUnit;
-import com.petkit.matetool.ui.K3.utils.K3Utils;
 import com.petkit.matetool.ui.aq.AQScanListAdapter;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.utils.Globals;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
  * Created by Jone on 17/4/24.
  */
-public class K3ScanActivity extends BaseActivity implements View.OnClickListener {
+public class BLEScanActivity extends BaseActivity implements View.OnClickListener {
 
     private Tester mTester;
     private int mTestType;
     private Device mCurDevice, mErrorDevice;
-
-    private ArrayList<K3TestUnit> mK3TestUnits;
 
     private ListView mListView;
     private AQScanListAdapter mListAdapter;
@@ -61,6 +56,7 @@ public class K3ScanActivity extends BaseActivity implements View.OnClickListener
 
     private boolean scanState = false;
 
+    private int mDeviceType;
 
 
     @Override
@@ -68,12 +64,16 @@ public class K3ScanActivity extends BaseActivity implements View.OnClickListener
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
             mTester = (Tester) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_TESTER);
-            mTestType = savedInstanceState.getInt("TestType");
-            mErrorDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_DEVICE);
+            mTestType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_TEST_TYPE);
         } else {
             mTester = (Tester) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
-            mTestType = getIntent().getIntExtra("TestType", Globals.TYPE_TEST);
-            mErrorDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_DEVICE);
+            mTestType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_TEST_TYPE, Globals.TYPE_TEST);
+        }
+
+        if(savedInstanceState != null) {
+            mDeviceType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE);
+        } else {
+            mDeviceType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, 0);
         }
 
         setContentView(R.layout.activity_go_test);
@@ -87,16 +87,14 @@ public class K3ScanActivity extends BaseActivity implements View.OnClickListener
         super.onSaveInstanceState(outState);
 
         outState.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
-        outState.putInt("TestType", mTestType);
-        outState.putSerializable(DeviceCommonUtils.EXTRA_DEVICE, mErrorDevice);
+        outState.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
+        outState.putInt(DeviceCommonUtils.EXTRA_TEST_TYPE, mTestType);
     }
 
 
     @Override
     protected void setupViews() {
-        setTitle("智能净味器（K3）测试");
-
-        mK3TestUnits = K3Utils.generateK3TestUnitsForType(mTestType);
+        setTitle("扫描附近的蓝牙设备");
 
         scanImageView = (ImageView) findViewById(R.id.scan_img);
         scanImageView.setOnClickListener(this);
@@ -163,7 +161,7 @@ public class K3ScanActivity extends BaseActivity implements View.OnClickListener
             public void onCancel(DialogInterface dialog) {
                 Intent intent = new Intent(BLEConsts.BROADCAST_ACTION);
                 intent.putExtra(BLEConsts.EXTRA_ACTION, BLEConsts.ACTION_ABORT);
-                LocalBroadcastManager.getInstance(K3ScanActivity.this).sendBroadcast(intent);
+                LocalBroadcastManager.getInstance(BLEScanActivity.this).sendBroadcast(intent);
             }
         });
     }
@@ -252,12 +250,12 @@ public class K3ScanActivity extends BaseActivity implements View.OnClickListener
     private void entryDetailTestActivity() {
         LoadDialog.dismissDialog();
 
-        Intent intent = new Intent(this, K3TestMainActivity.class);
-        intent.putExtra("TestUnits", mK3TestUnits);
+        Intent intent = new Intent(this, DeviceCommonUtils.getMainActivityByType(mDeviceType));
         intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mCurDevice);
         intent.putExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
         intent.putExtra(DeviceCommonUtils.EXTRA_TESTER, mTester);
-        intent.putExtra("TestType", mTestType);
+        intent.putExtra(DeviceCommonUtils.EXTRA_TEST_TYPE, mTestType);
+        intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
         startActivityForResult(intent, 0x12);
     }
 
@@ -301,7 +299,7 @@ public class K3ScanActivity extends BaseActivity implements View.OnClickListener
                             case BLEConsts.ERROR_SYNC_TIMEOUT:
                             default:
                                 LoadDialog.dismissDialog();
-                                CommonUtils.showShortToast(K3ScanActivity.this, "设备已断开");
+                                CommonUtils.showShortToast(BLEScanActivity.this, "设备已断开");
                                 break;
                         }
                         break;
@@ -312,7 +310,7 @@ public class K3ScanActivity extends BaseActivity implements View.OnClickListener
                             return;
                         }
 
-                        if (deviceInfo.getName().equalsIgnoreCase(BLEConsts.K3_DISPLAY_NAME)) {
+                        if (deviceInfo.getName().equalsIgnoreCase(DeviceCommonUtils.getDeviceNameByType(mDeviceType))) {
                             List<DeviceInfo> list = mListAdapter.getList();
                             for (DeviceInfo deviceInfos : list) {
                                 if (deviceInfo.getMac()!=null){
