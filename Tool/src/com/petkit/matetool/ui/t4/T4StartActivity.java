@@ -9,7 +9,6 @@ import com.petkit.matetool.R;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
-import com.petkit.matetool.ui.t4.utils.T4Utils;
 import com.petkit.matetool.utils.Globals;
 
 /**
@@ -20,19 +19,18 @@ import com.petkit.matetool.utils.Globals;
 public class T4StartActivity extends BaseActivity {
 
     private Tester mTester;
-    private int mWithK3;
+    private int mDeviceType;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
-            mTester = (Tester) savedInstanceState.getSerializable(T4Utils.EXTRA_T4_TESTER);
-            mWithK3 = savedInstanceState.getInt(T4Utils.EXTRA_WITH_K3);
+            mTester = (Tester) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_TESTER);
+            mDeviceType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE);
         } else {
-            mTester = (Tester) getIntent().getSerializableExtra(T4Utils.EXTRA_T4_TESTER);
-            int deviceType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, 0);
-            mWithK3 = deviceType == Globals.T4_p ? 1 : 0;
+            mDeviceType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, 0);
+            mTester = (Tester) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
         }
 
         setContentView(R.layout.activity_feeder_start);
@@ -43,8 +41,8 @@ public class T4StartActivity extends BaseActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putSerializable(T4Utils.EXTRA_T4_TESTER, mTester);
-        outState.putInt(T4Utils.EXTRA_WITH_K3, mWithK3);
+        outState.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
+        outState.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
     }
 
     @Override
@@ -70,36 +68,37 @@ public class T4StartActivity extends BaseActivity {
         switch (v.getId()) {
             case R.id.test_case1:
                 Bundle bundle = new Bundle();
-                bundle.putSerializable(T4Utils.EXTRA_T4_TESTER, mTester);
-                bundle.putInt("TestType", T4Utils.TYPE_TEST_PARTIALLY);
-                bundle.putInt(T4Utils.EXTRA_WITH_K3, mWithK3);
+                bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
+                bundle.putInt(DeviceCommonUtils.EXTRA_TEST_TYPE, Globals.TYPE_TEST_PARTIALLY);
+                bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
                 startActivityWithData(T4TestMainActivity.class, bundle, false);
                 break;
             case R.id.test_case2:
                 bundle = new Bundle();
-                bundle.putSerializable(T4Utils.EXTRA_T4_TESTER, mTester);
-                bundle.putInt("TestType", T4Utils.TYPE_TEST);
-                bundle.putInt(T4Utils.EXTRA_WITH_K3, mWithK3);
+                bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
+                bundle.putInt(DeviceCommonUtils.EXTRA_TEST_TYPE, Globals.TYPE_TEST);
+                bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
                 startActivityWithData(T4TestMainActivity.class, bundle, false);
                 break;
             case R.id.test_case3:
                 bundle = new Bundle();
-                bundle.putSerializable(T4Utils.EXTRA_T4_TESTER, mTester);
-                bundle.putInt("TestType", T4Utils.TYPE_MAINTAIN);
-                bundle.putInt(T4Utils.EXTRA_WITH_K3, mWithK3);
+                bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
+                bundle.putInt(DeviceCommonUtils.EXTRA_TEST_TYPE, Globals.TYPE_MAINTAIN);
+                bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
                 startActivityWithData(T4TestMainActivity.class, bundle, false);
                 break;
             case R.id.test_case4:
                 bundle = new Bundle();
-                bundle.putSerializable(T4Utils.EXTRA_T4_TESTER, mTester);
-                bundle.putInt("TestType", T4Utils.TYPE_CHECK);
-                bundle.putInt(T4Utils.EXTRA_WITH_K3, mWithK3);
+                bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
+                bundle.putInt(DeviceCommonUtils.EXTRA_TEST_TYPE, Globals.TYPE_CHECK);
+                bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
                 startActivityWithData(T4TestMainActivity.class, bundle, false);
                 break;
             case R.id.test_case5:
                 bundle = new Bundle();
-                bundle.putSerializable(T4Utils.EXTRA_T4_TESTER, mTester);
-                bundle.putInt("TestType", T4Utils.TYPE_CHECK);
+                bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
+                bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
+                bundle.putInt(DeviceCommonUtils.EXTRA_TEST_TYPE, Globals.TYPE_CHECK);
                 startActivityWithData(T4LanguageActivity.class, bundle, false);
                 break;
         }

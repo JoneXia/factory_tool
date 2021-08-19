@@ -19,6 +19,7 @@ import com.petkit.matetool.ui.AQR.AQRTestMainActivity;
 import com.petkit.matetool.ui.K3.K3TestMainActivity;
 import com.petkit.matetool.ui.P3.P3TestMainActivity;
 import com.petkit.matetool.ui.common.BLEStartActivity;
+import com.petkit.matetool.ui.t4.T4ErrorListActivity;
 import com.petkit.matetool.ui.t4.T4StartActivity;
 import com.petkit.matetool.ui.t4.T4TestMainActivity;
 import com.petkit.matetool.utils.Globals;
@@ -42,7 +43,7 @@ public class DeviceCommonUtils {
     public static final String EXTRA_DEVICE_TYPE   = "EXTRA_DEVICE_TYPE";
     public static final String EXTRA_DEVICE   = "EXTRA_DEVICE";
     public static final String EXTRA_ERROR_DEVICE   = "EXTRA_ERROR_DEVICE";
-    public static final String EXTRA_TEST_TYPE = "EXTRA_TEST_TYPE";
+    public static final String EXTRA_TEST_TYPE = "TestType";
 
     private static final String SHARED_SERIALIZABLE_DAY     = "%s_SerializableDay";
     private static final String SHARED_SERIALIZABLE_NUMBER     = "%s_SerializableNumber";
@@ -159,6 +160,25 @@ public class DeviceCommonUtils {
             throw  new RuntimeException("getDeviceKeyByType deviceType not support!");
         }
     }
+
+    /**
+     *
+     *
+     * @param deviceType
+     * @return
+     */
+    public static Class getErrorActivityByType(int deviceType) {
+        if (mDeviceConfigs.get(deviceType) != null) {
+            if (mDeviceConfigs.get(deviceType).isBleDevice()) {
+                return BLEStartActivity.class;
+            } else {
+                return T4ErrorListActivity.class;//TODO:
+            }
+        } else {
+            throw  new RuntimeException("getDeviceKeyByType deviceType not support!");
+        }
+    }
+
 
     /**
      *
@@ -437,6 +457,25 @@ public class DeviceCommonUtils {
     }
 
     /**
+     *
+     * @param deviceType
+     * @param device
+     * @param ageingResult
+     * @param withK3
+     */
+    public static void storeSucceedDeviceInfo(int deviceType, Device device, String ageingResult, int withK3) {
+        if(device == null || !device.checkValid()) {
+            throw  new RuntimeException("store T4 failed, " + (device == null ? "T4 is null !" : device.toString()));
+        }
+        if(deviceType != Globals.T4_p) {
+            throw  new RuntimeException("store T4 failed, " + "device type must be T4 with K3");
+        }
+
+        PetkitLog.d("store T4 info: " + device.generateMainJson(ageingResult, withK3));
+        FileUtils.writeStringToFile(getStoreDeviceInfoFilePath(deviceType), device.generateMainJson(ageingResult, withK3) + ",", true);
+    }
+
+    /**
      * 获取存储SN的文件，内部实现文件内容的条件限制，文件名自增
      * @return
      */
@@ -480,6 +519,20 @@ public class DeviceCommonUtils {
         }
     }
 
+    /**
+     * 校验MAC是否存在重复
+     * @param mac mac
+     * @return bool
+     */
+    public static boolean checkMacIsDuplicate(int deviceType, String mac) {
+        String fileName = CommonUtils.getSysMap(String.format(SHARED_SN_FILE_NAME, getDeviceKeyByType(deviceType)));
+        if(!CommonUtils.isEmpty(fileName)) {
+            String content = FileUtils.readFileToString(new File(getStorageDirForDevice(deviceType) + fileName));
+            return content != null && content.contains(mac);
+        }
+
+        return false;
+    }
 
     public static void stopBle (Context context) {
         Intent intent = new Intent(BLEConsts.BROADCAST_ACTION);

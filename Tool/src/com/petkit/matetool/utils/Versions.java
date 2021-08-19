@@ -216,16 +216,22 @@ public class Versions {
 	 *
 	 * 2.1说明：
 	 * 1. P3C/P3D使用独立账户
+	 *
+	 * 2.2说明：
+	 * 1. 解决MAC/SN重复无法处理的问题
 	 */
-	public static final String TOOL_P3_VERSION	= "2.1";
+	public static final String TOOL_P3_VERSION	= "2.2";
 
 	/**
 	 *
 	 * 1.0说明:
 	 * 1. 支持智能猫厕所（T4）产测全流程
 	 *
+	 * 1.1说明：
+	 * 1. 解决MAC/SN重复无法处理的问题
+	 *
 	 */
-	public static final String TOOL_T4_VERSION	= "1.0";
+	public static final String TOOL_T4_VERSION	= "1.1";
 
 
 	/**
@@ -233,8 +239,10 @@ public class Versions {
 	 * 1.0说明:
 	 * 1. 支持智能净味器（K3）产测全流程
 	 *
+	 * 1.1说明：
+	 * 1. 解决MAC/SN重复无法处理的问题
 	 */
-	public static final String TOOL_K3_VERSION	= "1.0";
+	public static final String TOOL_K3_VERSION	= "1.1";
 
 
 	/**

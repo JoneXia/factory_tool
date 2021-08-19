@@ -32,6 +32,7 @@ import com.petkit.matetool.model.DeviceModuleStateStruct;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.K2.utils.K2Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.ui.print.PrintActivity;
 import com.petkit.matetool.ui.t4.mode.T4TestUnit;
@@ -40,6 +41,7 @@ import com.petkit.matetool.ui.utils.PetkitSocketInstance;
 import com.petkit.matetool.ui.utils.PrintResultCallback;
 import com.petkit.matetool.ui.utils.PrintUtils;
 import com.petkit.matetool.utils.DateUtil;
+import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.JSONUtils;
 
 import org.json.JSONException;
@@ -79,7 +81,7 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
     private ArrayList<T4TestUnit> mT4AutoTestUnits;
     private boolean isInAutoUnits = false;
     private int mAutoUnitStep; //有些测试项中会细分成几步
-    private int mWithK3;
+    private int mDeviceType;
 
 
     @Override
@@ -89,19 +91,19 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
         if (savedInstanceState != null) {
             mT4TestUnits = (ArrayList<T4TestUnit>) savedInstanceState.getSerializable("TestUnits");
             mCurTestStep = savedInstanceState.getInt("CurrentTestStep");
-            mDevice = (Device) savedInstanceState.getSerializable(T4Utils.EXTRA_T4);
+            mDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_DEVICE);
             isAutoTest = savedInstanceState.getBoolean("AutoTest");
-            mTester = (Tester) savedInstanceState.getSerializable(T4Utils.EXTRA_T4_TESTER);
-            mErrorDevice = (Device) savedInstanceState.getSerializable(T4Utils.EXTRA_ERROR_T4);
-            mWithK3 = savedInstanceState.getInt(T4Utils.EXTRA_WITH_K3);
+            mTester = (Tester) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_TESTER);
+            mErrorDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE);
+            mDeviceType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE);
         } else {
             mT4TestUnits = (ArrayList<T4TestUnit>) getIntent().getSerializableExtra("TestUnits");
             mCurTestStep = getIntent().getIntExtra("CurrentTestStep", 0);
-            mDevice = (Device) getIntent().getSerializableExtra(T4Utils.EXTRA_T4);
+            mDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_DEVICE);
             isAutoTest = getIntent().getBooleanExtra("AutoTest", true);
-            mTester = (Tester) getIntent().getSerializableExtra(T4Utils.EXTRA_T4_TESTER);
-            mErrorDevice = (Device) getIntent().getSerializableExtra(T4Utils.EXTRA_ERROR_T4);
-            mWithK3 = getIntent().getIntExtra(T4Utils.EXTRA_WITH_K3, 0);
+            mTester = (Tester) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
+            mErrorDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE);
+            mDeviceType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, 0);
         }
 
         setContentView(R.layout.activity_feeder_test_detail);
@@ -126,11 +128,11 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
 
         outState.putInt("CurrentTestStep", mCurTestStep);
         outState.putSerializable("TestUnits", mT4TestUnits);
-        outState.putSerializable(T4Utils.EXTRA_T4, mDevice);
+        outState.putSerializable(DeviceCommonUtils.EXTRA_DEVICE, mDevice);
         outState.putBoolean("AutoTest", isAutoTest);
-        outState.putSerializable(T4Utils.EXTRA_T4_TESTER, mTester);
-        outState.putSerializable(T4Utils.EXTRA_ERROR_T4, mErrorDevice);
-        outState.putInt(T4Utils.EXTRA_WITH_K3, mWithK3);
+        outState.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
+        outState.putSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
+        outState.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
     }
 
     @Override
@@ -475,7 +477,7 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
     public void finish() {
         Intent intent = new Intent();
         intent.putExtra("TestUnits", mT4TestUnits);
-        intent.putExtra(T4Utils.EXTRA_T4, mDevice);
+        intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mDevice);
         setResult(RESULT_OK, intent);
         super.finish();
     }
@@ -775,7 +777,11 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                     if (mDevice.getMac() != null && mDevice.getMac().equalsIgnoreCase(mac) &&
                             mDevice.getSn() != null && mDevice.getSn().equalsIgnoreCase(sn)) {
                         mDescTextView.append("\n写入SN成功");
-                        T4Utils.storeSucceedDeviceInfo(mDevice, mAgeingResult, mWithK3);
+                        if (mDeviceType == Globals.T4_p) {
+                            DeviceCommonUtils.storeSucceedDeviceInfo(mDeviceType, mDevice, mAgeingResult, 1);
+                        } else {
+                            DeviceCommonUtils.storeSucceedDeviceInfo(mDeviceType, mDevice, mAgeingResult);
+                        }
 
                         mT4TestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         refershBtnView();
@@ -805,7 +811,7 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-                String sn = T4Utils.generateSNForTester(mTester);
+                String sn = DeviceCommonUtils.generateSNForTester(Globals.T4, mTester);
                 if (sn == null) {
                     showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
                     return;
@@ -819,8 +825,8 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 HashMap<String, Object> payload = new HashMap<>();
                 payload.put("mac", mDevice.getMac());
                 payload.put("sn", sn);
-                if (mWithK3 > 0) {
-                    payload.put("withK3", mWithK3);
+                if (mDeviceType == Globals.T4_p) {
+                    payload.put("withK3", 1);
                 }
                 if (mT4TestUnits.get(mCurTestStep).getState() == 2) {
                     payload.put("force", 100);
@@ -923,8 +929,8 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 payload.put("sn", sn);
                 payload.put("opt", 0);
                 payload.put("force", 100);
-                if (mWithK3 > 0) {
-                    payload.put("withK3", mWithK3);
+                if (mDeviceType == Globals.T4_p) {
+                    payload.put("withK3", 1);
                 }
                 PetkitSocketInstance.getInstance().sendString(T4Utils.getRequestForKeyAndPayload(161, payload));
             }

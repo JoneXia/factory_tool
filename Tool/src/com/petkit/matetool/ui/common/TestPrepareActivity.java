@@ -156,7 +156,7 @@ public class TestPrepareActivity extends BaseActivity {
                     Bundle bundle = new Bundle();
                     bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
                     bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
-                    startActivityWithData(BLEErrorListActivity.class, bundle, false);
+                    startActivityWithData(DeviceCommonUtils.getErrorActivityByType(mDeviceType), bundle, false);
                 } else {
                     LoadDialog.show(this);
                     startUploadSn();

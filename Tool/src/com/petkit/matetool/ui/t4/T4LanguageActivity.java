@@ -21,10 +21,10 @@ import com.petkit.android.utils.PetkitToast;
 import com.petkit.matetool.R;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.ui.t3.mode.LocaleStringBitmapMode;
 import com.petkit.matetool.ui.t3.mode.StringBitmapMode;
 import com.petkit.matetool.ui.t3.utils.BitmapConverter;
-import com.petkit.matetool.ui.t4.utils.T4Utils;
 import com.petkit.matetool.widget.LoadDialog;
 
 import java.io.File;
@@ -60,9 +60,9 @@ public class T4LanguageActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
-            mTester = (Tester) savedInstanceState.getSerializable(T4Utils.EXTRA_T4_TESTER);
+            mTester = (Tester) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_TESTER);
         } else {
-            mTester = (Tester) getIntent().getSerializableExtra(T4Utils.EXTRA_T4_TESTER);
+            mTester = (Tester) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
         }
 
         setContentView(R.layout.activity_t3_language);

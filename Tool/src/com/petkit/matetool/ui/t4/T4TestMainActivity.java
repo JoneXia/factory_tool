@@ -24,6 +24,7 @@ import com.petkit.matetool.R;
 import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.ui.t4.mode.T4TestUnit;
 import com.petkit.matetool.ui.t4.utils.T4Utils;
 import com.petkit.matetool.ui.utils.PetkitSocketInstance;
@@ -59,7 +60,7 @@ public class T4TestMainActivity extends BaseActivity implements PetkitSocketInst
     private TestItemAdapter mAdapter;
 
     private TextView mInfoTestTextView;
-    private int mWithK3;
+    private int mDeviceType;
     private boolean testComplete = false;
 
 
@@ -67,15 +68,18 @@ public class T4TestMainActivity extends BaseActivity implements PetkitSocketInst
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState != null) {
-            mTester = (Tester) savedInstanceState.getSerializable(T4Utils.EXTRA_T4_TESTER);
-            mTestType = savedInstanceState.getInt("TestType");
-            mErrorDevice = (Device) savedInstanceState.getSerializable(T4Utils.EXTRA_T4);
-            mWithK3 = savedInstanceState.getInt(T4Utils.EXTRA_WITH_K3);
+            mTester = (Tester) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_TESTER);
+            mTestType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_TEST_TYPE);
+            mErrorDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_DEVICE);
         } else {
-            mTester = (Tester) getIntent().getSerializableExtra(T4Utils.EXTRA_T4_TESTER);
-            mTestType = getIntent().getIntExtra("TestType", T4Utils.TYPE_TEST);
-            mErrorDevice = (Device) getIntent().getSerializableExtra(T4Utils.EXTRA_T4);
-            mWithK3 = getIntent().getIntExtra(T4Utils.EXTRA_WITH_K3, 0);
+            mTester = (Tester) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
+            mErrorDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_DEVICE);
+            mTestType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_TEST_TYPE, Globals.TYPE_TEST);
+        }
+        if(savedInstanceState != null) {
+            mDeviceType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE);
+        } else {
+            mDeviceType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, 0);
         }
 
         setContentView(R.layout.activity_feeder_main_test);
@@ -87,10 +91,10 @@ public class T4TestMainActivity extends BaseActivity implements PetkitSocketInst
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putSerializable(T4Utils.EXTRA_T4_TESTER, mTester);
-        outState.putInt("TestType", mTestType);
-        outState.putInt(T4Utils.EXTRA_WITH_K3, mWithK3);
-        outState.putSerializable(T4Utils.EXTRA_T4, mErrorDevice);
+        outState.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
+        outState.putInt(DeviceCommonUtils.EXTRA_TEST_TYPE, mTestType);
+        outState.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
+        outState.putSerializable(DeviceCommonUtils.EXTRA_DEVICE, mErrorDevice);
     }
 
     @Override
@@ -201,7 +205,7 @@ public class T4TestMainActivity extends BaseActivity implements PetkitSocketInst
                         }
                     })
                     .show();
-        } else if (mCurDevice != null && mTestType == T4Utils.TYPE_CHECK) {
+        } else if (mCurDevice != null && mTestType == Globals.TYPE_CHECK) {
             boolean hasError = false;
             for (T4TestUnit unit : mT4TestUnits) {
                 if(unit.getResult() == Globals.TEST_FAILED) {
@@ -218,7 +222,7 @@ public class T4TestMainActivity extends BaseActivity implements PetkitSocketInst
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 mCurDevice.setInspectStatus(0);
-                                T4Utils.storeCheckInfo(mCurDevice);
+                                DeviceCommonUtils.storeCheckInfo(mDeviceType, mCurDevice);
                                 mCurDevice = null;
                                 finish();
                             }
@@ -245,7 +249,7 @@ public class T4TestMainActivity extends BaseActivity implements PetkitSocketInst
             switch (requestCode) {
                 case 0x12:
                     mT4TestUnits = (ArrayList<T4TestUnit>) data.getSerializableExtra("TestUnits");
-                    mCurDevice = (Device) data.getSerializableExtra(T4Utils.EXTRA_T4);
+                    mCurDevice = (Device) data.getSerializableExtra(DeviceCommonUtils.EXTRA_DEVICE);
                     mAdapter.notifyDataSetChanged();
                     checkTestComplete();
                     refreshBottomButton();
@@ -280,11 +284,11 @@ public class T4TestMainActivity extends BaseActivity implements PetkitSocketInst
             Intent intent = new Intent(T4TestMainActivity.this, T4TestDetailActivity.class);
             intent.putExtra("TestUnits", mT4TestUnits);
             intent.putExtra("CurrentTestStep", pos);
-            intent.putExtra(T4Utils.EXTRA_T4, mCurDevice);
+            intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mCurDevice);
             intent.putExtra("AutoTest", isAuto);
-            intent.putExtra(T4Utils.EXTRA_T4_TESTER, mTester);
-            intent.putExtra(T4Utils.EXTRA_ERROR_T4, mErrorDevice);
-            intent.putExtra(T4Utils.EXTRA_WITH_K3, mWithK3);
+            intent.putExtra(DeviceCommonUtils.EXTRA_TESTER, mTester);
+            intent.putExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
+            intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
             startActivityForResult(intent, 0x12);
         } else {
             showShortToast(mInfoTestTextView.getText().toString());
@@ -297,14 +301,14 @@ public class T4TestMainActivity extends BaseActivity implements PetkitSocketInst
             mInfoTestTextView.setText("请先连接到特定的WIFI，再进行测试！");
         } else {
             switch (mTestType) {
-                case T4Utils.TYPE_TEST_PARTIALLY:
+                case Globals.TYPE_TEST_PARTIALLY:
                     if (!apSsid.toUpperCase().startsWith("PETKIT_TOILET4_A_HW1_")) {
                         mInfoTestTextView.setText("请先连接到PETKIT_TOILET4_A_HW1_开头的WIFI，再进行测试！");
                     } else {
                         connectAp();
                     }
                     break;
-                case T4Utils.TYPE_TEST:
+                case Globals.TYPE_TEST:
                     if (!apSsid.toUpperCase().startsWith("PETKIT_TOILET4_B_HW1_")) {
                         mInfoTestTextView.setText("请先连接到PETKIT_TOILET4_B_HW1_开头的WIFI，再进行测试！");
                         return;
@@ -312,7 +316,7 @@ public class T4TestMainActivity extends BaseActivity implements PetkitSocketInst
                         connectAp();
                     }
                     break;
-                case T4Utils.TYPE_MAINTAIN:
+                case Globals.TYPE_MAINTAIN:
                     if (!apSsid.toUpperCase().startsWith("PETKIT_TOILET4_")) {
                         mInfoTestTextView.setText("请先连接到PETKIT_TOILET4_开头的WIFI，再进行测试！");
                         return;
@@ -320,7 +324,7 @@ public class T4TestMainActivity extends BaseActivity implements PetkitSocketInst
                         connectAp();
                     }
                     break;
-                case T4Utils.TYPE_CHECK:
+                case Globals.TYPE_CHECK:
                     if (!apSsid.toUpperCase().startsWith("PETKIT_TOILET4_HW1_")
                             || (apSsid.toUpperCase().startsWith("PETKIT_TOILET4_A_") || apSsid.toUpperCase().startsWith("PETKIT_TOILET4_B_"))) {
                         mInfoTestTextView.setText("请先连接到PETKIT_TOILET4_开头的WIFI，再进行测试！");
@@ -329,8 +333,8 @@ public class T4TestMainActivity extends BaseActivity implements PetkitSocketInst
                         connectAp();
                     }
                     break;
-                case T4Utils.TYPE_DUPLICATE_MAC:
-                case T4Utils.TYPE_DUPLICATE_SN:
+                case Globals.TYPE_DUPLICATE_MAC:
+                case Globals.TYPE_DUPLICATE_SN:
                     if (!apSsid.toUpperCase().startsWith("PETKIT_TOILET4_HW1_")) {
                         mInfoTestTextView.setText("请先连接到PETKIT_TOILET4_HW1_开头的WIFI，再进行测试！");
                         return;
@@ -346,18 +350,18 @@ public class T4TestMainActivity extends BaseActivity implements PetkitSocketInst
 
     private void showWifiManager() {
         switch (mTestType) {
-            case T4Utils.TYPE_TEST_PARTIALLY:
+            case Globals.TYPE_TEST_PARTIALLY:
                 startActivity(WifiManagerActivity.getIntent(this, "PETKIT_TOILET4_A_HW1_"));
                 break;
-            case T4Utils.TYPE_TEST:
+            case Globals.TYPE_TEST:
                 startActivity(WifiManagerActivity.getIntent(this, "PETKIT_TOILET4_B_HW1_"));
                 break;
-            case T4Utils.TYPE_MAINTAIN:
-            case T4Utils.TYPE_CHECK:
+            case Globals.TYPE_MAINTAIN:
+            case Globals.TYPE_CHECK:
                 startActivity(WifiManagerActivity.getIntent(this, "PETKIT_TOILET4_"));
                 break;
-            case T4Utils.TYPE_DUPLICATE_MAC:
-            case T4Utils.TYPE_DUPLICATE_SN:
+            case Globals.TYPE_DUPLICATE_MAC:
+            case Globals.TYPE_DUPLICATE_SN:
                 startActivity(WifiManagerActivity.getIntent(this, "PETKIT_TOILET4_HW1_"));
                 break;
         }
@@ -465,7 +469,7 @@ public class T4TestMainActivity extends BaseActivity implements PetkitSocketInst
                         return;
                     }
 
-                    if(sn == null && T4Utils.checkMacIsDuplicate(mac)) {
+                    if(sn == null && DeviceCommonUtils.checkMacIsDuplicate(mDeviceType, mac)) {
                         mInfoTestTextView.setText("设备MAC出现重复，该设备属于故障设备，不能正常测试！");
                         PetkitSocketInstance.getInstance().disconnect();
                         return;
@@ -544,12 +548,12 @@ public class T4TestMainActivity extends BaseActivity implements PetkitSocketInst
 
     private int getTestTypeCode() {
         switch (mTestType) {
-            case T4Utils.TYPE_TEST:
-            case T4Utils.TYPE_TEST_PARTIALLY:
+            case Globals.TYPE_TEST:
+            case Globals.TYPE_TEST_PARTIALLY:
                 return 1;
-            case T4Utils.TYPE_MAINTAIN:
+            case Globals.TYPE_MAINTAIN:
                 return 2;
-            case T4Utils.TYPE_CHECK:
+            case Globals.TYPE_CHECK:
                 return 3;
             default:
                 return 4;
@@ -626,16 +630,16 @@ public class T4TestMainActivity extends BaseActivity implements PetkitSocketInst
         }
 
         if(position >= mT4TestUnits.size() - 1) {       //维修和抽检，最后一项打印标签可以不执行，其他项都完成了就算成功
-            if (mTestType == T4Utils.TYPE_MAINTAIN) {
-                T4Utils.storeMainTainInfo(mCurDevice);
+            if (mTestType == Globals.TYPE_MAINTAIN) {
+                DeviceCommonUtils.storeMainTainInfo(mDeviceType, mCurDevice);
                 testComplete = position >= mT4TestUnits.size();
-            } else if (mTestType == T4Utils.TYPE_CHECK) {
+            } else if (mTestType == Globals.TYPE_CHECK) {
                 mCurDevice.setInspectStatus(1);
-                T4Utils.storeCheckInfo(mCurDevice);
+                DeviceCommonUtils.storeCheckInfo(mDeviceType, mCurDevice);
                 testComplete = position >= mT4TestUnits.size();
-            } else if (mTestType == T4Utils.TYPE_TEST_PARTIALLY) {
+            } else if (mTestType == Globals.TYPE_TEST_PARTIALLY) {
                 testComplete = position >= mT4TestUnits.size();
-            } else if (mTestType == T4Utils.TYPE_TEST) {
+            } else {
                 testComplete = position >= mT4TestUnits.size();
             }
         }

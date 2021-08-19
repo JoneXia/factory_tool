@@ -19,7 +19,7 @@ import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.base.BaseListActivity;
 import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.ui.t4.T4TestMainActivity;
-import com.petkit.matetool.ui.t4.utils.T4Utils;
+import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.widget.pulltorefresh.PullToRefreshBase;
 
 import java.util.Date;
@@ -43,10 +43,10 @@ public class WifiErrorListActivity extends BaseListActivity {
 
         if(savedInstanceState != null) {
             mDeviceType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE);
-            mTester = (Tester) savedInstanceState.getSerializable(T4Utils.EXTRA_T4_TESTER);
+            mTester = (Tester) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_TESTER);
         } else {
             mDeviceType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, 0);
-            mTester = (Tester) getIntent().getSerializableExtra(T4Utils.EXTRA_T4_TESTER);
+            mTester = (Tester) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
         }
     }
 
@@ -55,7 +55,7 @@ public class WifiErrorListActivity extends BaseListActivity {
         super.onSaveInstanceState(outState);
 
         outState.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
-        outState.putSerializable(T4Utils.EXTRA_T4_TESTER, mTester);
+        outState.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class WifiErrorListActivity extends BaseListActivity {
 
         mListView.setMode(PullToRefreshBase.Mode.DISABLED);
 
-        mDevicesError = T4Utils.getDevicesErrorMsg();
+        mDevicesError = DeviceCommonUtils.getDevicesErrorMsg(mDeviceType);
 
         mAdapter = new DevicesListAdapter();
         mListView.setAdapter(mAdapter);
@@ -89,9 +89,9 @@ public class WifiErrorListActivity extends BaseListActivity {
         mSelectPosition = position;
 
         Intent intent = new Intent(this, T4TestMainActivity.class);
-        intent.putExtra(T4Utils.EXTRA_T4_TESTER, mTester);
-        intent.putExtra("TestType", position < mDevicesError.getMac().size() ? T4Utils.TYPE_DUPLICATE_MAC : T4Utils.TYPE_DUPLICATE_SN);
-        intent.putExtra(T4Utils.EXTRA_T4, mAdapter.getItem(position));
+        intent.putExtra(DeviceCommonUtils.EXTRA_TESTER, mTester);
+        intent.putExtra(DeviceCommonUtils.EXTRA_TEST_TYPE, position < mDevicesError.getMac().size() ? Globals.TYPE_DUPLICATE_MAC : Globals.TYPE_DUPLICATE_SN);
+        intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mAdapter.getItem(position));
         startActivityForResult(intent, 0x11);
     }
 
@@ -106,7 +106,7 @@ public class WifiErrorListActivity extends BaseListActivity {
                 } else {
                     mDevicesError.getSn().remove(mSelectPosition - mDevicesError.getMac().size());
                 }
-                T4Utils.storeDuplicatedInfo(mDevicesError);
+                DeviceCommonUtils.storeDuplicatedInfo(mDeviceType, mDevicesError);
 
                 if(mAdapter.getCount() == 0) {
                     showShortToast("异常已经处理完成！");

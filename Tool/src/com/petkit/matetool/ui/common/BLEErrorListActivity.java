@@ -124,6 +124,7 @@ public class BLEErrorListActivity extends BaseListActivity {
                     mDevicesError.getSn().remove(mSelectPosition - mDevicesError.getMac().size());
                 }
                 DeviceCommonUtils.storeDuplicatedInfo(mDeviceType, mDevicesError);
+                mSelectPosition = 0;
 
                 if(mAdapter.getCount() == 0) {
                     showShortToast("异常已经处理完成！");
@@ -228,7 +229,7 @@ public class BLEErrorListActivity extends BaseListActivity {
 
         Intent intent = new Intent(this, DeviceCommonUtils.getMainActivityByType(mDeviceType));
         intent.putExtra(DeviceCommonUtils.EXTRA_TESTER, mTester);
-        intent.putExtra("TestType", mSelectPosition < mDevicesError.getMac().size() ? Globals.TYPE_DUPLICATE_MAC : Globals.TYPE_DUPLICATE_SN);
+        intent.putExtra(DeviceCommonUtils.EXTRA_TEST_TYPE, mSelectPosition < mDevicesError.getMac().size() ? Globals.TYPE_DUPLICATE_MAC : Globals.TYPE_DUPLICATE_SN);
         intent.putExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mAdapter.getItem(mSelectPosition));
         intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mAdapter.getItem(mSelectPosition));
         startActivityForResult(intent, 0x11);
@@ -251,6 +252,7 @@ public class BLEErrorListActivity extends BaseListActivity {
 
 
     private void startConnectDevice(DeviceInfo deviceInfo) {
+        scanState = false;
 
         Intent intent = new Intent(BLEConsts.BROADCAST_ACTION);
         intent.putExtra(BLEConsts.EXTRA_ACTION, BLEConsts.ACTION_ABORT);
@@ -289,7 +291,9 @@ public class BLEErrorListActivity extends BaseListActivity {
                             case BLEConsts.PROGRESS_DISCONNECTING:
                             case BLEConsts.ERROR_SYNC_INIT_FAIL:
                             case BLEConsts.ERROR_DEVICE_ID_NULL:
-                                scanFinish();
+                                if (scanState) {
+                                    scanFinish();
+                                }
                                 break;
                             default:
                                 break;
