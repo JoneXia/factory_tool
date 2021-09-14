@@ -18,6 +18,7 @@ import com.petkit.matetool.ui.AQ1S.AQ1STestMainActivity;
 import com.petkit.matetool.ui.AQR.AQRTestMainActivity;
 import com.petkit.matetool.ui.K3.K3TestMainActivity;
 import com.petkit.matetool.ui.P3.P3TestMainActivity;
+import com.petkit.matetool.ui.common.BLEErrorListActivity;
 import com.petkit.matetool.ui.common.BLEStartActivity;
 import com.petkit.matetool.ui.t4.T4ErrorListActivity;
 import com.petkit.matetool.ui.t4.T4StartActivity;
@@ -49,7 +50,7 @@ public class DeviceCommonUtils {
     private static final String SHARED_SERIALIZABLE_NUMBER     = "%s_SerializableNumber";
     private static final String SHARED_SN_FILE_NAME     = "%s_SnFileName";
     private static final String SHARED_SN_FILE_NUMBER     = "%s_SnFileNumber";
-    private static final String SHARED_W5_ERROR_INFO     = "%s_ERRORS";
+    private static final String SHARED_SN_ERROR_INFO = "%s_ERRORS";
 
     public static final String FILE_MAINTAIN_INFO_NAME     = "%s_maintain_info.txt";
     public static final String FILE_CHECK_INFO_NAME     = "%s_check_info.txt";
@@ -80,7 +81,7 @@ public class DeviceCommonUtils {
                 Globals.DEVICE_TYPE_CODE_K3, K3TestMainActivity.class));
         mDeviceConfigs.put(Globals.AQR, new DeviceConfigInfo(true, "AQR", "AQR", "Petkit_AQR",
                 Globals.DEVICE_TYPE_CODE_AQR, AQRTestMainActivity.class));
-        mDeviceConfigs.put(Globals.AQ1S, new DeviceConfigInfo(true, "AQ1S", "AQ1S", "Petkit_AQ1S",
+        mDeviceConfigs.put(Globals.AQ1S, new DeviceConfigInfo(true, "AQ1S", "AQ1S", "Petkit_AQ",
                 Globals.DEVICE_TYPE_CODE_AQ1S, AQ1STestMainActivity.class));
     }
 
@@ -170,7 +171,7 @@ public class DeviceCommonUtils {
     public static Class getErrorActivityByType(int deviceType) {
         if (mDeviceConfigs.get(deviceType) != null) {
             if (mDeviceConfigs.get(deviceType).isBleDevice()) {
-                return BLEStartActivity.class;
+                return BLEErrorListActivity.class;
             } else {
                 return T4ErrorListActivity.class;//TODO:
             }
@@ -245,8 +246,8 @@ public class DeviceCommonUtils {
             if (files != null && files.length > 0) {
                 for (String item : files) {
                     if(!item.startsWith(filename)
-                            && !item.contains(FILE_MAINTAIN_INFO_NAME)
-                            && !item.contains(FILE_CHECK_INFO_NAME)) {
+                            && !item.contains(String.format(FILE_MAINTAIN_INFO_NAME, getDeviceKeyByType(deviceType)))
+                            && !item.contains(String.format(FILE_CHECK_INFO_NAME, getDeviceKeyByType(deviceType)))) {
                         return true;
                     }
                 }
@@ -293,9 +294,9 @@ public class DeviceCommonUtils {
     public static void storeDuplicatedInfo(int deviceType, DevicesError devicesError) {
         if(devicesError == null || ((devicesError.getMac() == null || devicesError.getMac().size() == 0)
                 && (devicesError.getSn() == null || devicesError.getSn().size() == 0))) {
-            CommonUtils.addSysMap(SHARED_W5_ERROR_INFO, "");
+            CommonUtils.addSysMap(String.format(SHARED_SN_ERROR_INFO, getDeviceKeyByType(deviceType)), "");
         } else {
-            CommonUtils.addSysMap(SHARED_W5_ERROR_INFO, new Gson().toJson(devicesError));
+            CommonUtils.addSysMap(String.format(SHARED_SN_ERROR_INFO, getDeviceKeyByType(deviceType)), new Gson().toJson(devicesError));
         }
     }
 
@@ -308,7 +309,7 @@ public class DeviceCommonUtils {
             new File(dir).mkdirs();
         }
 
-        String fileName = dir + FILE_MAINTAIN_INFO_NAME;
+        String fileName = dir + String.format(FILE_MAINTAIN_INFO_NAME, getDeviceKeyByType(deviceType));
         String content = FileUtils.readFileToString(new File(fileName));
         if(content != null && content.contains(device.getMac())) {
             return;
@@ -328,7 +329,7 @@ public class DeviceCommonUtils {
         if(!new File(dir).exists()) {
             new File(dir).mkdirs();
         }
-        String fileName = dir + FILE_CHECK_INFO_NAME;
+        String fileName = dir + String.format(FILE_CHECK_INFO_NAME, getDeviceKeyByType(deviceType));
         String content = FileUtils.readFileToString(new File(fileName));
         if(content != null && content.contains(device.getMac())) {
             return;
@@ -344,7 +345,7 @@ public class DeviceCommonUtils {
      * @return DevicesError
      */
     public static DevicesError getDevicesErrorMsg(int deviceType) {
-        String msg = CommonUtils.getSysMap(SHARED_W5_ERROR_INFO);
+        String msg = CommonUtils.getSysMap(String.format(SHARED_SN_ERROR_INFO, getDeviceKeyByType(deviceType)));
         if(CommonUtils.isEmpty(msg)) {
             return null;
         }

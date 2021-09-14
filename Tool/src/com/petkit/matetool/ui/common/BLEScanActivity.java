@@ -310,7 +310,7 @@ public class BLEScanActivity extends BaseActivity implements View.OnClickListene
                             return;
                         }
 
-                        if (deviceInfo.getName().equalsIgnoreCase(DeviceCommonUtils.getDeviceNameByType(mDeviceType))) {
+                        if (deviceInfo.getName().startsWith(DeviceCommonUtils.getDeviceNameByType(mDeviceType))) {
                             List<DeviceInfo> list = mListAdapter.getList();
                             for (DeviceInfo deviceInfos : list) {
                                 if (deviceInfo.getMac()!=null){

@@ -51,8 +51,6 @@ public class BLEErrorListActivity extends BaseListActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
         if(savedInstanceState != null) {
             mDeviceType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE);
             mTester = (Tester) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_TESTER);
@@ -61,6 +59,7 @@ public class BLEErrorListActivity extends BaseListActivity {
             mTester = (Tester) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
         }
 
+        super.onCreate(savedInstanceState);
         registerBoradcastReceiver();
     }
 
