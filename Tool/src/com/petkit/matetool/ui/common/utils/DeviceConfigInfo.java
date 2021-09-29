@@ -5,15 +5,15 @@ public class DeviceConfigInfo {
     private boolean isBleDevice;
     private String deviceKey;
     private String deviceTesterKey;
-    private String deviceName;
+    private String[] deviceNames;
     private String deviceSNFlag;
     private Class deviceMainActiviy;
 
-    public DeviceConfigInfo(boolean isBleDevice, String deviceKey, String deviceTesterKey, String deviceName, String deviceSNFlag, Class deviceMainActiviy) {
+    public DeviceConfigInfo(boolean isBleDevice, String deviceKey, String deviceTesterKey, String[] deviceNames, String deviceSNFlag, Class deviceMainActiviy) {
         this.isBleDevice = isBleDevice;
         this.deviceKey = deviceKey;
         this.deviceTesterKey = deviceTesterKey;
-        this.deviceName = deviceName;
+        this.deviceNames = deviceNames;
         this.deviceSNFlag = deviceSNFlag;
         this.deviceMainActiviy = deviceMainActiviy;
     }
@@ -42,12 +42,12 @@ public class DeviceConfigInfo {
         this.deviceTesterKey = deviceTesterKey;
     }
 
-    public String getDeviceName() {
-        return deviceName;
+    public String[] getDeviceNames() {
+        return deviceNames;
     }
 
-    public void setDeviceName(String deviceName) {
-        this.deviceName = deviceName;
+    public void setDeviceNames(String[] deviceName) {
+        this.deviceNames = deviceNames;
     }
 
     public String getDeviceSNFlag() {

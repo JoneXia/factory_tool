@@ -18,6 +18,8 @@ import com.petkit.matetool.ui.AQ1S.AQ1STestMainActivity;
 import com.petkit.matetool.ui.AQR.AQRTestMainActivity;
 import com.petkit.matetool.ui.K3.K3TestMainActivity;
 import com.petkit.matetool.ui.P3.P3TestMainActivity;
+import com.petkit.matetool.ui.R2.R2TestMainActivity;
+import com.petkit.matetool.ui.W5New.W5NTestMainActivity;
 import com.petkit.matetool.ui.common.BLEErrorListActivity;
 import com.petkit.matetool.ui.common.BLEStartActivity;
 import com.petkit.matetool.ui.t4.T4ErrorListActivity;
@@ -69,20 +71,26 @@ public class DeviceCommonUtils {
     public static void initDeviceConfig() {
         mDeviceConfigs = new HashMap<>();
 
-        mDeviceConfigs.put(Globals.P3C, new DeviceConfigInfo(true, "P3", "P3", "Petkit_P3C",
+        mDeviceConfigs.put(Globals.P3C, new DeviceConfigInfo(true, "P3", "P3", new String[]{"Petkit_P3C"},
                 Globals.DEVICE_TYPE_CODE_P3C, P3TestMainActivity.class));
-        mDeviceConfigs.put(Globals.P3D, new DeviceConfigInfo(true, "P3", "P3D", "Petkit_P3D",
+        mDeviceConfigs.put(Globals.P3D, new DeviceConfigInfo(true, "P3", "P3D", new String[]{"Petkit_P3D", "Petkit_P3C"},
                 Globals.DEVICE_TYPE_CODE_P3D, P3TestMainActivity.class));
         mDeviceConfigs.put(Globals.T4, new DeviceConfigInfo(false, "T4", "T4", null,
                 Globals.DEVICE_TYPE_CODE_T4, T4TestMainActivity.class));
         mDeviceConfigs.put(Globals.T4_p, new DeviceConfigInfo(false, "T4", "T4P", null,
                 Globals.DEVICE_TYPE_CODE_T4, T4TestMainActivity.class));
-        mDeviceConfigs.put(Globals.K3, new DeviceConfigInfo(true, "K3", "K3", "Petkit_K3",
+        mDeviceConfigs.put(Globals.K3, new DeviceConfigInfo(true, "K3", "K3", new String[]{"Petkit_K3"},
                 Globals.DEVICE_TYPE_CODE_K3, K3TestMainActivity.class));
-        mDeviceConfigs.put(Globals.AQR, new DeviceConfigInfo(true, "AQR", "AQR", "Petkit_AQR",
+        mDeviceConfigs.put(Globals.AQR, new DeviceConfigInfo(true, "AQR", "AQR", new String[]{"Petkit_AQR"},
                 Globals.DEVICE_TYPE_CODE_AQR, AQRTestMainActivity.class));
-        mDeviceConfigs.put(Globals.AQ1S, new DeviceConfigInfo(true, "AQ1S", "AQ1S", "Petkit_AQ",
+        mDeviceConfigs.put(Globals.AQ1S, new DeviceConfigInfo(true, "AQ", "AQ1S", new String[]{"Petkit_AQ", "Petkit_AQ1S"},
                 Globals.DEVICE_TYPE_CODE_AQ1S, AQ1STestMainActivity.class));
+        mDeviceConfigs.put(Globals.R2, new DeviceConfigInfo(true, "R2", "R2", new String[]{"Petkit_R2"},
+                Globals.DEVICE_TYPE_CODE_R2, R2TestMainActivity.class));
+        mDeviceConfigs.put(Globals.W5N, new DeviceConfigInfo(true, "W5N", "W5N", new String[]{"Petkit_W5N", "Petkit_W4X"},
+                Globals.DEVICE_TYPE_CODE_W5N, W5NTestMainActivity.class));
+        mDeviceConfigs.put(Globals.W4X, new DeviceConfigInfo(true, "W5N", "W4X", new String[]{"Petkit_W5N", "Petkit_W4X"},
+                Globals.DEVICE_TYPE_CODE_W4X, W5NTestMainActivity.class));
     }
 
     /**
@@ -136,9 +144,30 @@ public class DeviceCommonUtils {
      * @param deviceType
      * @return
      */
-    public static String getDeviceNameByType(int deviceType) {
+    public static String[] getDeviceNameByType(int deviceType) {
         if (mDeviceConfigs.get(deviceType) != null) {
-            return mDeviceConfigs.get(deviceType).getDeviceName();
+            return mDeviceConfigs.get(deviceType).getDeviceNames();
+        } else {
+            throw  new RuntimeException("getDeviceKeyByType deviceType not support!");
+        }
+    }
+
+    /**
+     *
+     * @param deviceName
+     * @param deviceType
+     * @return
+     */
+    public static boolean checkDeviceNameByType(String deviceName, int deviceType) {
+        if (mDeviceConfigs.get(deviceType) != null) {
+            if (mDeviceConfigs.get(deviceType).getDeviceNames() != null) {
+                for (String name : mDeviceConfigs.get(deviceType).getDeviceNames()) {
+                    if (name.equalsIgnoreCase(deviceName)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         } else {
             throw  new RuntimeException("getDeviceKeyByType deviceType not support!");
         }

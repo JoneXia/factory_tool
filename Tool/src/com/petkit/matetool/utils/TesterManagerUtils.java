@@ -82,10 +82,13 @@ public class TesterManagerUtils {
                 tester = new Gson().fromJson(testerString, Tester.class);
                 mTesterTempList.put(type, tester);
             }
-//            tester = new Tester();
-//            tester.setCode("00");
-//            tester.setName("写死的账号");
-//            tester.setStation("1");
+
+//            if (type == Globals.W4X || type == Globals.W5N) {
+//                tester = new Tester();
+//                tester.setCode("00");
+//                tester.setName("写死的账号");
+//                tester.setStation("1");
+//            }
         }
 
         return tester;

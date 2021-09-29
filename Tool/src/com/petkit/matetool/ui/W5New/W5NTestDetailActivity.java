@@ -1,4 +1,4 @@
-package com.petkit.matetool.ui.AQR;
+package com.petkit.matetool.ui.W5New;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -19,7 +19,7 @@ import android.widget.TextView;
 import com.dothantech.printer.IDzPrinter;
 import com.google.gson.Gson;
 import com.petkit.android.ble.BLEConsts;
-import com.petkit.android.ble.data.AQRDataUtils;
+import com.petkit.android.ble.data.BaseDataUtils;
 import com.petkit.android.ble.data.PetkitBleMsg;
 import com.petkit.android.utils.ByteUtil;
 import com.petkit.android.utils.LogcatStorageHelper;
@@ -28,8 +28,6 @@ import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.Tester;
-import com.petkit.matetool.ui.AQR.mode.AQRTestUnit;
-import com.petkit.matetool.ui.AQR.utils.AQRUtils;
 import com.petkit.matetool.ui.P3.mode.GsensorData;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
@@ -49,12 +47,13 @@ import static com.petkit.matetool.utils.Globals.TEST_PASS;
 /**
  * Created by Jone on 17/4/24.
  */
-public class AQRTestDetailActivity extends BaseActivity implements PrintResultCallback {
+public class W5NTestDetailActivity extends BaseActivity implements PrintResultCallback {
 
     private Tester mTester;
     private int mTestType;
     private int mCurTestStep;
-    private ArrayList<AQRTestUnit> mAQRTestUnits;
+    private int mDeviceType;
+    private ArrayList<W5NTestUnit> mTestUnits;
     private int mTempResult;
     private Device mDevice, mErrorDevice;
     private boolean isWriteEndCmd = false;
@@ -65,7 +64,7 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
     private Button mBtn1, mBtn2, mBtn3;
     private ScrollView mDescScrollView;
 
-    private ArrayList<AQRTestUnit> mAQRAutoTestUnits;
+    private ArrayList<W5NTestUnit> mAutoTestUnits;
     private boolean isInAutoUnits = false;
     private int mAutoUnitStep; //有些测试项中会细分成几步
 
@@ -75,7 +74,7 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState != null) {
-            mAQRTestUnits = (ArrayList<AQRTestUnit>) savedInstanceState.getSerializable("TestUnits");
+            mTestUnits = (ArrayList<W5NTestUnit>) savedInstanceState.getSerializable("TestUnits");
             mCurTestStep = savedInstanceState.getInt("CurrentTestStep");
             mDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_DEVICE);
             isAutoTest = savedInstanceState.getBoolean("AutoTest");
@@ -85,7 +84,7 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
                 mErrorDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE);
             }
         } else {
-            mAQRTestUnits = (ArrayList<AQRTestUnit>) getIntent().getSerializableExtra("TestUnits");
+            mTestUnits = (ArrayList<W5NTestUnit>) getIntent().getSerializableExtra("TestUnits");
             mCurTestStep = getIntent().getIntExtra("CurrentTestStep", 0);
             mTestType = getIntent().getIntExtra("TestType", Globals.TYPE_TEST);
             mDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_DEVICE);
@@ -96,14 +95,20 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
             }
         }
 
+        if(savedInstanceState != null) {
+            mDeviceType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE);
+        } else {
+            mDeviceType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, 0);
+        }
+
         setContentView(R.layout.activity_feeder_test_detail);
 
         registerBoradcastReceiver();
 
-        if (mAQRTestUnits.get(mCurTestStep).getType() != AQRUtils.AQRTestModes.TEST_MODE_SN &&
-                mAQRTestUnits.get(mCurTestStep).getType() != AQRUtils.AQRTestModes.TEST_MODE_PRINT &&
-                mAQRTestUnits.get(mCurTestStep).getType() != AQRUtils.AQRTestModes.TEST_MODE_RESET_SN &&
-                mAQRTestUnits.get(mCurTestStep).getType() != AQRUtils.AQRTestModes.TEST_MODE_RESET_ID) {
+        if (mTestUnits.get(mCurTestStep).getType() != W5NUtils.W5NTestModes.TEST_MODE_SN &&
+                mTestUnits.get(mCurTestStep).getType() != W5NUtils.W5NTestModes.TEST_MODE_PRINT &&
+                mTestUnits.get(mCurTestStep).getType() != W5NUtils.W5NTestModes.TEST_MODE_RESET_SN &&
+                mTestUnits.get(mCurTestStep).getType() != W5NUtils.W5NTestModes.TEST_MODE_RESET_ID) {
             startTestModule();
         }
     }
@@ -121,10 +126,11 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
         super.onSaveInstanceState(outState);
 
         outState.putInt("CurrentTestStep", mCurTestStep);
-        outState.putSerializable("TestUnits", mAQRTestUnits);
+        outState.putSerializable("TestUnits", mTestUnits);
         outState.putSerializable(DeviceCommonUtils.EXTRA_DEVICE, mDevice);
         outState.putBoolean("AutoTest", isAutoTest);
         outState.putInt("TestType", mTestType);
+        outState.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
         outState.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
         if (mErrorDevice != null) {
             outState.putSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
@@ -149,18 +155,18 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
 
 
     private void refreshView() {
-        setTitle(mAQRTestUnits.get(mCurTestStep).getName());
+        setTitle(mTestUnits.get(mCurTestStep).getName());
 
         mDescTextView.setText("");
         mPromptTextView.setText("");
-        switch (mAQRTestUnits.get(mCurTestStep).getType()) {
+        switch (mTestUnits.get(mCurTestStep).getType()) {
             case TEST_MODE_PRINT:
                 mDescTextView.setText("mac:" + mDevice.getMac() + "\n" + "sn:" + mDevice.getSn());
                 break;
             case TEST_MODE_SN:
                 if (!isEmpty(mDevice.getSn())) {
-                    if (mAQRTestUnits.get(mCurTestStep).getState() != 2 || (mErrorDevice != null && !mDevice.getSn().equals(mErrorDevice.getSn()))) {
-                        mAQRTestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                    if (mTestUnits.get(mCurTestStep).getState() != 2 || (mErrorDevice != null && !mDevice.getSn().equals(mErrorDevice.getSn()))) {
+                        mTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                     }
                     mDescTextView.setText("mac:" + mDevice.getMac() + "\n" + "sn:" + mDevice.getSn());
                 } else {
@@ -188,7 +194,7 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
     }
 
     private void refershBtnView() {
-        switch (mAQRTestUnits.get(mCurTestStep).getType()) {
+        switch (mTestUnits.get(mCurTestStep).getType()) {
             case TEST_MODE_LED:
             case TEST_MODE_PUMP:
                 mBtn1.setText(R.string.Start);
@@ -203,7 +209,7 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
                 mBtn2.setText(R.string.Set_print);
                 mBtn2.setVisibility(View.VISIBLE);
                 mBtn2.setBackgroundResource(R.drawable.selector_gray);
-                if (mAQRTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
+                if (mTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
                     mBtn3.setText(R.string.Succeed);
                     mBtn3.setBackgroundResource(R.drawable.selector_blue);
                 } else {
@@ -214,7 +220,7 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
             case TEST_MODE_SN:
                 mBtn1.setText(R.string.Write);
                 mBtn2.setVisibility(View.INVISIBLE);
-                if (mAQRTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
+                if (mTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
                     mBtn3.setText(R.string.Succeed);
                     mBtn3.setBackgroundResource(R.drawable.selector_blue);
                 } else {
@@ -225,7 +231,7 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
             default:
                 mBtn1.setText(R.string.Start);
                 mBtn2.setVisibility(View.INVISIBLE);
-                if (mAQRTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
+                if (mTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
                     mBtn3.setText(R.string.Succeed);
                     mBtn3.setBackgroundResource(R.drawable.selector_blue);
                 } else {
@@ -241,7 +247,7 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.test_btn_1:
-                switch (mAQRTestUnits.get(mCurTestStep).getType()) {
+                switch (mTestUnits.get(mCurTestStep).getType()) {
                     case TEST_MODE_PRINT:
                         if (isPrinterConnected()) {
                             if (isEmpty(mDevice.getSn())) {
@@ -274,11 +280,11 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
                 }
                 break;
             case R.id.test_btn_2:
-                switch (mAQRTestUnits.get(mCurTestStep).getType()) {
+                switch (mTestUnits.get(mCurTestStep).getType()) {
                     case TEST_MODE_LED:
                     case TEST_MODE_PUMP:
                         isWriteEndCmd = true;
-                        mAQRTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
+                        mTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
 
                         refershBtnView();
                         gotoNextTestModule();
@@ -289,14 +295,14 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
                 }
                 break;
             case R.id.test_btn_3:
-                switch (mAQRTestUnits.get(mCurTestStep).getType()) {
+                switch (mTestUnits.get(mCurTestStep).getType()) {
                     case TEST_MODE_SN:
                     case TEST_MODE_PRINT:
                     case TEST_MODE_RESET_SN:
                         gotoNextTestModule();
                         break;
                     case TEST_MODE_LED:
-                        mAQRTestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                        mTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         gotoNextTestModule();
                         break;
                     case TEST_MODE_PUMP:
@@ -304,13 +310,13 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
                             showShortToast("请先测试有水和没水状态，再观察水泵是否正常转动！");
                             return;
                         }
-                        mAQRTestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                        mTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         gotoNextTestModule();
                         break;
                     default:
                         isWriteEndCmd = true;
-                        if (mAQRTestUnits.get(mCurTestStep).getResult() != TEST_PASS) {
-                            mAQRTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
+                        if (mTestUnits.get(mCurTestStep).getResult() != TEST_PASS) {
+                            mTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
                         }
 
                         gotoNextTestModule();
@@ -321,17 +327,17 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
     }
 
     private void startTestModule() {
-        switch (mAQRTestUnits.get(mCurTestStep).getType()) {
+        switch (mTestUnits.get(mCurTestStep).getType()) {
             case TEST_MODE_AUTO:
                 startAutoUnitsTest();
                 break;
             default:
-                sendBleData(AQRDataUtils.buildOpCodeBuffer(mAQRTestUnits.get(mCurTestStep).getModule(), mAQRTestUnits.get(mCurTestStep).getState()));
+                sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule(), mTestUnits.get(mCurTestStep).getState()));
                 break;
         }
 
-        if (mAQRTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
-            mAQRTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
+        if (mTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
+            mTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
             refershBtnView();
         }
     }
@@ -341,7 +347,7 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
             return;
         }
 
-        mAQRAutoTestUnits = AQRUtils.generateAQRAutoTestUnits();
+        mAutoTestUnits = W5NUtils.generateAutoTestUnits();
         isInAutoUnits = true;
         mAutoUnitStep = -1;
 
@@ -352,26 +358,26 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
     private void gotoNextAutoUnit() {
         mAutoUnitStep++;
 
-        if (mAQRAutoTestUnits.size() > 0 && mAutoUnitStep < mAQRAutoTestUnits.size()) {
+        if (mAutoTestUnits.size() > 0 && mAutoUnitStep < mAutoTestUnits.size()) {
             mDescTextView.append("\n------");
-            mDescTextView.append("\n开始进行：" + mAQRAutoTestUnits.get(mAutoUnitStep).getName());
+            mDescTextView.append("\n开始进行：" + mAutoTestUnits.get(mAutoUnitStep).getName());
 
             HashMap<String, Object> params = new HashMap<>();
-            params.put("module", mAQRAutoTestUnits.get(mAutoUnitStep).getModule());
-            params.put("state", mAQRAutoTestUnits.get(mAutoUnitStep).getState());
+            params.put("module", mAutoTestUnits.get(mAutoUnitStep).getModule());
+            params.put("state", mAutoTestUnits.get(mAutoUnitStep).getState());
             byte[] data = null;
-            switch (mAQRAutoTestUnits.get(mAutoUnitStep).getType()) {
+            switch (mAutoTestUnits.get(mAutoUnitStep).getType()) {
                 //if cmd need data, add it
             }
 
-            sendBleData(AQRDataUtils.buildOpCodeBuffer(mAQRAutoTestUnits.get(mAutoUnitStep).getModule(), data));
+            sendBleData(BaseDataUtils.buildOpCodeBuffer(mAutoTestUnits.get(mAutoUnitStep).getModule(), data));
         } else {
             isInAutoUnits = false;
 
             boolean result = true;
-            for (AQRTestUnit unit : mAQRAutoTestUnits) {
-                if (unit.getType() != AQRUtils.AQRTestModes.TEST_MODE_SN &&
-                        unit.getType() != AQRUtils.AQRTestModes.TEST_MODE_PRINT
+            for (W5NTestUnit unit : mAutoTestUnits) {
+                if (unit.getType() != W5NUtils.W5NTestModes.TEST_MODE_SN &&
+                        unit.getType() != W5NUtils.W5NTestModes.TEST_MODE_PRINT
                         && unit.getResult() != TEST_PASS) {
                     result = false;
                     break;
@@ -380,23 +386,23 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
             mDescTextView.append("\n------");
             mDescTextView.append("\n自动项测试已完成，结果：" + (result ? "成功" : "失败"));
 
-            mAQRTestUnits.get(mCurTestStep).setResult(result ? TEST_PASS : TEST_FAILED);
+            mTestUnits.get(mCurTestStep).setResult(result ? TEST_PASS : TEST_FAILED);
             refershBtnView();
         }
     }
 
     private void gotoNextTestModule() {
-        if (mCurTestStep == mAQRTestUnits.size() - 1 || !isAutoTest) {
+        if (mCurTestStep == mTestUnits.size() - 1 || !isAutoTest) {
             finish();
         } else {
             mTempResult = 0;
             mCurTestStep++;
             refreshView();
 
-            if (mAQRTestUnits.get(mCurTestStep).getType() != AQRUtils.AQRTestModes.TEST_MODE_SN
-                && mAQRTestUnits.get(mCurTestStep).getType() != AQRUtils.AQRTestModes.TEST_MODE_RESET_SN
-                    && mAQRTestUnits.get(mCurTestStep).getType() != AQRUtils.AQRTestModes.TEST_MODE_RESET_ID
-                    && mAQRTestUnits.get(mCurTestStep).getType() != AQRUtils.AQRTestModes.TEST_MODE_PRINT) {
+            if (mTestUnits.get(mCurTestStep).getType() != W5NUtils.W5NTestModes.TEST_MODE_SN
+                && mTestUnits.get(mCurTestStep).getType() != W5NUtils.W5NTestModes.TEST_MODE_RESET_SN
+                    && mTestUnits.get(mCurTestStep).getType() != W5NUtils.W5NTestModes.TEST_MODE_RESET_ID
+                    && mTestUnits.get(mCurTestStep).getType() != W5NUtils.W5NTestModes.TEST_MODE_PRINT) {
                 startTestModule();
             }
         }
@@ -405,7 +411,7 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
     @Override
     public void finish() {
         Intent intent = new Intent();
-        intent.putExtra("TestUnits", mAQRTestUnits);
+        intent.putExtra("TestUnits", mTestUnits);
         intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mDevice);
         setResult(RESULT_OK, intent);
         super.finish();
@@ -427,7 +433,7 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
 
         switch (key) {
             case BLEConsts.OP_CODE_BATTERY_KEY:
-                if (mAQRTestUnits.get(mCurTestStep).getType() != AQRUtils.AQRTestModes.TEST_MODE_DC) {
+                if (mTestUnits.get(mCurTestStep).getType() != W5NUtils.W5NTestModes.TEST_MODE_DC) {
                     return;
                 }
 
@@ -453,21 +459,6 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
                     }
                 }
                 break;
-//            case BLEConsts.OP_CODE_AQR_PUMP_DATA:
-//                if (mAQRTestUnits.get(mCurTestStep).getType() != AQRUtils.AQRTestModes.TEST_MODE_PUMP) {
-//                    return;
-//                }
-//
-//                if (data.length < 1) {
-//                    mDescTextView.append("\n数据错误");
-//                } else if (data[0] == 0){
-//                    mDescTextView.append("\n没水");
-//                    mTempResult = mTempResult | 0x1;
-//                } else {
-//                    mDescTextView.append("\n有水");
-//                    mTempResult = mTempResult | 0x10;
-//                }
-//                break;
             case BLEConsts.OP_CODE_TEST_STEP:
 //                if (data.length < 1) {
 //                    mDescTextView.append("\n数据错误");
@@ -488,8 +479,8 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
 //                }
                 break;
             case BLEConsts.OP_CODE_WRITE_SN:
-                if (mAQRTestUnits.get(mCurTestStep).getType() != AQRUtils.AQRTestModes.TEST_MODE_SN &&
-                        mAQRTestUnits.get(mCurTestStep).getType() != AQRUtils.AQRTestModes.TEST_MODE_RESET_SN) {
+                if (mTestUnits.get(mCurTestStep).getType() != W5NUtils.W5NTestModes.TEST_MODE_SN &&
+                        mTestUnits.get(mCurTestStep).getType() != W5NUtils.W5NTestModes.TEST_MODE_RESET_SN) {
                     return;
                 }
                 if (data.length != 1) {
@@ -500,7 +491,7 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
                     mDescTextView.append("\nSN写入成功");
                     result = true;
                 }
-                DeviceCommonUtils.storeSucceedDeviceInfo(Globals.AQR, mDevice, null);
+                DeviceCommonUtils.storeSucceedDeviceInfo(mDeviceType, mDevice, null);
                 break;
         }
         mDescTextView.append(desc.toString());
@@ -514,25 +505,25 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
         if (isInAutoUnits) {
             if (result) {
                 mDescTextView.append("\n测试结果正常");
-                mAQRAutoTestUnits.get(mAutoUnitStep).setResult(TEST_PASS);
+                mAutoTestUnits.get(mAutoUnitStep).setResult(TEST_PASS);
                 gotoNextAutoUnit();
             } else {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        sendBleData(AQRDataUtils.buildOpCodeBuffer(mAQRAutoTestUnits.get(mAutoUnitStep).getModule()), false);
+                        sendBleData(BaseDataUtils.buildOpCodeBuffer(mAutoTestUnits.get(mAutoUnitStep).getModule()), false);
                     }
                 }, 10);
             }
         } else {
             if (result) {
-                mAQRTestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                mTestUnits.get(mCurTestStep).setResult(TEST_PASS);
             } else {
                 new Handler().postDelayed(new Runnable() {
                       @Override
                       public void run() {
 //                          if (mAQRTestUnits.get(mCurTestStep).getType() == AQRUtils.AQRTestModes.TEST_MODE_PUMP) {
-//                              sendBleData(AQRDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_AQR_PUMP_DATA), false);
+//                              sendBleData(BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_AQR_PUMP_DATA), false);
 //                          }
                       }
                   }, 1000);
@@ -543,12 +534,12 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
 
 
     private void startSetSn() {
-        if (isEmpty(mDevice.getSn()) || (mAQRTestUnits.get(mCurTestStep).getState() == 2
+        if (isEmpty(mDevice.getSn()) || (mTestUnits.get(mCurTestStep).getState() == 2
                 && mErrorDevice != null && mDevice.getSn().equals(mErrorDevice.getSn()))) {
             boolean result = true;
-            for (AQRTestUnit unit : mAQRTestUnits) {
-                if (unit.getType() != AQRUtils.AQRTestModes.TEST_MODE_SN &&
-                        unit.getType() != AQRUtils.AQRTestModes.TEST_MODE_PRINT
+            for (W5NTestUnit unit : mTestUnits) {
+                if (unit.getType() != W5NUtils.W5NTestModes.TEST_MODE_SN &&
+                        unit.getType() != W5NUtils.W5NTestModes.TEST_MODE_PRINT
                         && unit.getResult() != TEST_PASS) {
                     result = false;
                     break;
@@ -558,7 +549,7 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-                String sn = DeviceCommonUtils.generateSNForTester(Globals.AQR, mTester);
+                String sn = DeviceCommonUtils.generateSNForTester(mDeviceType, mTester);
                 if (sn == null) {
                     showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
                     return;
@@ -566,10 +557,10 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
                 mDevice.setSn(sn);
                 mDevice.setCreation(System.currentTimeMillis());
 
-                sendBleData(AQRDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_WRITE_SN, sn.getBytes()));
+                sendBleData(BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_WRITE_SN, sn.getBytes()));
             }
         } else {
-            sendBleData(AQRDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_WRITE_SN, mDevice.getSn().getBytes()));
+            sendBleData(BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_WRITE_SN, mDevice.getSn().getBytes()));
         }
     }
 
@@ -585,7 +576,7 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
     }
 
     private boolean printBarcode(String onedBarcde, String twodBarcde) {
-        return PrintUtils.printText(onedBarcde, twodBarcde, mAQRTestUnits.get(mCurTestStep).getState());
+        return PrintUtils.printText(onedBarcde, twodBarcde, mTestUnits.get(mCurTestStep).getState());
     }
 
 
@@ -620,7 +611,7 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
                 }
                 mDevice.setSn(sn);
 
-                sendBleData(AQRDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_WRITE_SN, sn.getBytes()));
+                sendBleData(BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_WRITE_SN, sn.getBytes()));
             }
         });
         builder.setNegativeButton(R.string.Cancel, null);
@@ -637,11 +628,12 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
         et1 = (EditText) view.findViewById(R.id.et_value1);
         et1.setText(text1 == null ? "" : text1);
         et1.setSelection(et1.getText().length());
-        et1.setVisibility(View.GONE);
+        et1.setKeyListener(null);
         ((TextView) view.findViewById(R.id.tv_title2)).setText("SN:");
         et2 = (EditText) view.findViewById(R.id.et_value2);
         et2.setText(text2 == null ? "" : text2);
         et2.setSelection(et2.getText().toString().length());
+        et2.requestFocus();
         return view;
     }
 
@@ -653,7 +645,7 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
             public void run() {
                 LoadDialog.dismissDialog();
                 mDescTextView.append("\n" + getString(R.string.printsuccess));
-                mAQRTestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                mTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                 refershBtnView();
             }
         });
@@ -673,7 +665,6 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
     protected void onDestroy() {
         super.onDestroy();
 
-//        AQRUtils.stopBle(this);
         unregisterBroadcastReceiver();
     }
 

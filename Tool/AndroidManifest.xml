@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.petkit.matetool"
-          android:versionCode="3502"
-          android:versionName="4.1.4">
+          android:versionCode="3800"
+          android:versionName="4.3.1">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
@@ -378,21 +378,12 @@
 
 
         <!-- AQR -->
-        <activity android:name=".ui.AQR.AQRStartActivity"
-            android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".ui.AQR.AQRScanActivity"
-            android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
         <activity android:name=".ui.AQR.AQRTestMainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity android:name=".ui.AQR.AQRTestDetailActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".ui.AQR.AQRStorageFileActivity"
-            android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity"/>
 
         <!-- Common -->
         <activity android:name=".ui.common.TestPrepareActivity"
@@ -419,6 +410,22 @@
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity android:name=".ui.AQ1S.AQ1STestDetailActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+
+        <!-- R2 -->
+        <activity android:name=".ui.R2.R2TestMainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".ui.R2.R2TestDetailActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+
+        <!-- AQ1S -->
+        <activity android:name=".ui.W5New.W5NTestDetailActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".ui.W5New.W5NTestMainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
 

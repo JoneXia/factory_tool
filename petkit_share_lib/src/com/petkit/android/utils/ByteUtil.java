@@ -520,4 +520,8 @@ public class ByteUtil {
         return temp;
     }
 
+    public static byte intToByte(int i) {
+        return (byte) (i & 0xff);
+    }
+
 }

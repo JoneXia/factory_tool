@@ -61,8 +61,10 @@ import static com.petkit.matetool.utils.Versions.TOOL_K2_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_K3_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_MATE_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_P3_VERSION;
+import static com.petkit.matetool.utils.Versions.TOOL_R2_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_T3_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_T4_VERSION;
+import static com.petkit.matetool.utils.Versions.TOOL_W5N_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_W5_VERSION;
 
 /**
@@ -267,6 +269,15 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
             case R.id.aq1s:
                 testStyle = Globals.AQ1S;
                 break;
+            case R.id.r2:
+                testStyle = Globals.R2;
+                break;
+            case R.id.w5n:
+                testStyle = Globals.W5N;
+                break;
+            case R.id.w4x:
+                testStyle = Globals.W4X;
+                break;
             //TODO: 新增设备需对应添加
             default:
                 break;
@@ -333,12 +344,20 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
 
         tempRadioButton = (RadioButton) findViewById(R.id.aqr);
         tempRadioButton.setText(getTextDetail(Globals.AQR, "智能鱼缸（AQR）" + " v" + TOOL_AQR_VERSION));
-        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.aq1s);
         tempRadioButton.setText(getTextDetail(Globals.AQ1S, "智能鱼缸（AQ1S）" + " v" + TOOL_AQ1S_VERSION));
+
+        tempRadioButton = (RadioButton) findViewById(R.id.r2);
+        tempRadioButton.setText(getTextDetail(Globals.R2, "智能加热棒（R2）" + " v" + TOOL_R2_VERSION));
+
+        tempRadioButton = (RadioButton) findViewById(R.id.w5n);
+        tempRadioButton.setText(getTextDetail(Globals.W5N, "饮水机陶瓷版（W5）" + " v" + TOOL_W5N_VERSION));
         tempRadioButton.setVisibility(View.GONE);
 
+        tempRadioButton = (RadioButton) findViewById(R.id.w4x);
+        tempRadioButton.setText(getTextDetail(Globals.W4X, "饮水机不锈钢版（W4X）" + " v" + TOOL_W5N_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
         //TODO: 新增设备需对应添加
     }
 

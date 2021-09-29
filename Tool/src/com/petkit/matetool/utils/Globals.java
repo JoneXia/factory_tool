@@ -40,8 +40,11 @@ public class Globals {
 	public static final int AQR = 18;
 	public static final int P3D = 19;
 	public static final int AQ1S = 20;
+	public static final int R2 = 21;
+	public static final int W5N = 22;
+	public static final int W4X = 23;
 	//TODO: 新增设备时，max值需加一
-	public static final int MAX = 21;
+	public static final int MAX = 24;
 
 //	public static int g_testStyle = 0;
 
@@ -64,6 +67,9 @@ public class Globals {
 	public static final String DEVICE_TYPE_CODE_AQR = "N";
 	public static final String DEVICE_TYPE_CODE_P3D = "K";
 	public static final String DEVICE_TYPE_CODE_AQ1S = "O";
+	public static final String DEVICE_TYPE_CODE_R2 = "Q";
+	public static final String DEVICE_TYPE_CODE_W5N = "R";
+	public static final String DEVICE_TYPE_CODE_W4X = "S";
 
 
 

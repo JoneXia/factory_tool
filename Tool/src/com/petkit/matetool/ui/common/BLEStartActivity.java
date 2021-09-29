@@ -11,7 +11,7 @@ import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.utils.Globals;
 
 /**
- * K3测试，选择工站
+ * 测试，选择工站
  *
  * Created by Jone on 17/4/19.
  */
@@ -67,6 +67,9 @@ public class BLEStartActivity extends BaseActivity {
         switch (mDeviceType) {
             case Globals.K3:
             case Globals.AQ1S:
+            case Globals.W4X:
+            case Globals.W5N:
+            case Globals.AQR:
                 findViewById(R.id.test_case1).setVisibility(View.GONE);
                 findViewById(R.id.test_case4).setVisibility(View.GONE);
                 findViewById(R.id.test_case5).setVisibility(View.GONE);
