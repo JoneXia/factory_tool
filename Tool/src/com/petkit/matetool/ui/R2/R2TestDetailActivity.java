@@ -543,8 +543,8 @@ public class R2TestDetailActivity extends BaseActivity implements PrintResultCal
                     case TEST_MODE_HEAT:
                         int c = ByteUtil.bytes2Int(current);
                         mDescTextView.append("\n" + getDescByStatus(status));
-                        mDescTextView.append(", 电流：" + c);
-                        if (status == 1 && (c >= 1300 && c <= 1700)) {
+                        if (status == 1 && (c >= 1200 && c <= 2000)) {
+                            mDescTextView.append(", 电流：" + c);
                             mTempResult = mTempResult | 0x1;
 
                             //加热过程测试完成，测试冷却过程，设置目标温度是0
@@ -557,6 +557,8 @@ public class R2TestDetailActivity extends BaseActivity implements PrintResultCal
                             byte[] param4 = ByteUtil.mergeBytes(param3,ByteUtil.short2Bytes(Short.valueOf(String.valueOf(0))));
 
                             sendBleData(BaseDataUtils.buildOpCodeBuffer(221, param4));
+                        } else {
+                            mDescTextView.append(", 电流：" + c + ", 电量不符合标准【1200-2000】");
                         }
                         if (mTempResult == 0x1 && status > 2 && (c >= 0 && c <= 50)) {
                             mTempResult = mTempResult | 0x10;
