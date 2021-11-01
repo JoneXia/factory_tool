@@ -167,6 +167,7 @@ public class R2TestMainActivity extends BaseActivity {
                 break;
             case R.id.test_auto:
                 if (testComplete) {
+                    setResult(RESULT_OK);
                     finish();
                 } else {
                     startTestDetail(true, 0);
