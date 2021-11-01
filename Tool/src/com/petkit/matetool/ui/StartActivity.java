@@ -352,12 +352,11 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
         tempRadioButton.setText(getTextDetail(Globals.R2, "智能加热棒（R2）" + " v" + TOOL_R2_VERSION));
 
         tempRadioButton = (RadioButton) findViewById(R.id.w5n);
-        tempRadioButton.setText(getTextDetail(Globals.W5N, "饮水机陶瓷版（W5）" + " v" + TOOL_W5N_VERSION));
-        tempRadioButton.setVisibility(View.GONE);
+        tempRadioButton.setText(getTextDetail(Globals.W5N, "无线智能饮水机-陶瓷（W5）" + " v" + TOOL_W5N_VERSION));
 
         tempRadioButton = (RadioButton) findViewById(R.id.w4x);
-        tempRadioButton.setText(getTextDetail(Globals.W4X, "饮水机不锈钢版（W4X）" + " v" + TOOL_W5N_VERSION));
-        tempRadioButton.setVisibility(View.GONE);
+        tempRadioButton.setText(getTextDetail(Globals.W4X, "无线智能饮水机-不锈钢（W4X）" + " v" + TOOL_W5N_VERSION));
+
         //TODO: 新增设备需对应添加
     }
 

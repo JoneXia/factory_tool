@@ -92,6 +92,7 @@ public class WifiErrorListActivity extends BaseListActivity {
         intent.putExtra(DeviceCommonUtils.EXTRA_TESTER, mTester);
         intent.putExtra(DeviceCommonUtils.EXTRA_TEST_TYPE, position < mDevicesError.getMac().size() ? Globals.TYPE_DUPLICATE_MAC : Globals.TYPE_DUPLICATE_SN);
         intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mAdapter.getItem(position));
+        intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
         startActivityForResult(intent, 0x11);
     }
 

@@ -160,6 +160,7 @@ public class AQRTestMainActivity extends BaseActivity {
                 break;
             case R.id.test_auto:
                 if (testComplete) {
+                    setResult(RESULT_OK);
                     finish();
                 } else {
                     startTestDetail(true, 0);
@@ -394,7 +395,7 @@ public class AQRTestMainActivity extends BaseActivity {
                 testComplete = position >= mAQRTestUnits.size();
             } else if (mTestType == Globals.TYPE_TEST_PARTIALLY) {
                 testComplete = position >= mAQRTestUnits.size();
-            } else if (mTestType == Globals.TYPE_TEST) {
+            } else {
                 testComplete = position >= mAQRTestUnits.size();
             }
         }

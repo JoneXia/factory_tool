@@ -282,6 +282,12 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
                     case TEST_MODE_RESET_ID:
                         //TODO:
                         break;
+                    case TEST_MODE_MAC:
+                        mP3TestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                        refershBtnView();
+                        setResult(RESULT_OK);
+                        gotoNextTestModule();
+                        break;
                     default:
                         startTestModule();
                         break;
@@ -649,7 +655,6 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
         et1 = (EditText) view.findViewById(R.id.et_value1);
         et1.setText(text1 == null ? "" : text1);
         et1.setSelection(et1.getText().length());
-        et1.setVisibility(View.GONE);
         ((TextView) view.findViewById(R.id.tv_title2)).setText("SN:");
         et2 = (EditText) view.findViewById(R.id.et_value2);
         et2.setText(text2 == null ? "" : text2);

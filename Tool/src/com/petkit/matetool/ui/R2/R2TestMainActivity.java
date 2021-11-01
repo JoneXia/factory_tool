@@ -402,7 +402,7 @@ public class R2TestMainActivity extends BaseActivity {
                 testComplete = position >= mR2TestUnits.size();
             } else if (mTestType == Globals.TYPE_TEST_PARTIALLY) {
                 testComplete = position >= mR2TestUnits.size();
-            } else if (mTestType == Globals.TYPE_TEST) {
+            } else {
                 testComplete = position >= mR2TestUnits.size();
             }
         }

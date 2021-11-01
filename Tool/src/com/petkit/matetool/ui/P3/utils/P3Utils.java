@@ -27,6 +27,7 @@ public class P3Utils {
         TEST_MODE_RESET_SN, //重置SN
         TEST_MODE_RESET_ID, //清除ID
         TEST_MODE_AUTO,
+        TEST_MODE_MAC,
         TEST_MODE_PRINT     //打印标签
     }
 
@@ -54,9 +55,9 @@ public class P3Utils {
         ArrayList<P3TestUnit> results = new ArrayList<>();
 
         if(type == Globals.TYPE_DUPLICATE_MAC) {
-
+            results.add(new P3TestUnit(P3TestModes.TEST_MODE_MAC, "设置重复", 99, 1));
         } else if(type == Globals.TYPE_DUPLICATE_SN){
-            results.add(new P3TestUnit(P3TestModes.TEST_MODE_SN, "写入SN", 98, 2));
+            results.add(new P3TestUnit(P3TestModes.TEST_MODE_RESET_SN, "重写SN", 98, 2));
             results.add(new P3TestUnit(P3TestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
         } else {
             results.add(new P3TestUnit(P3TestModes.TEST_MODE_LED, "蜂鸣器测试", BLEConsts.OP_CODE_P3_RING, 1));

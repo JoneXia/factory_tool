@@ -629,7 +629,7 @@ public class D3TestMainActivity extends BaseActivity implements PetkitSocketInst
                 testComplete = position >= mD3TestUnits.size();
             } else if (mTestType == D3Utils.TYPE_TEST_PARTIALLY) {
                 testComplete = position >= mD3TestUnits.size();
-            } else if (mTestType == D3Utils.TYPE_TEST) {
+            } else {
                 testComplete = position >= mD3TestUnits.size();
             }
         }

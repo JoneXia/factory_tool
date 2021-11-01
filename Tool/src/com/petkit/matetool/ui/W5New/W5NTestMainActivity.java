@@ -167,6 +167,7 @@ public class W5NTestMainActivity extends BaseActivity {
                 break;
             case R.id.test_auto:
                 if (testComplete) {
+                    setResult(RESULT_OK);
                     finish();
                 } else {
                     startTestDetail(true, 0);
@@ -402,7 +403,7 @@ public class W5NTestMainActivity extends BaseActivity {
                 testComplete = position >= mW5NTestUnits.size();
             } else if (mTestType == Globals.TYPE_TEST_PARTIALLY) {
                 testComplete = position >= mW5NTestUnits.size();
-            } else if (mTestType == Globals.TYPE_TEST) {
+            } else {
                 testComplete = position >= mW5NTestUnits.size();
             }
         }

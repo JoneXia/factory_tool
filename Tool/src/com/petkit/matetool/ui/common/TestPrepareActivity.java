@@ -103,6 +103,7 @@ public class TestPrepareActivity extends BaseActivity {
         }
 
         mDevicesError = DeviceCommonUtils.getDevicesErrorMsg(mDeviceType);
+
     }
 
     @Override

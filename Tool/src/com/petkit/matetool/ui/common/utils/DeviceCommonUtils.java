@@ -87,9 +87,9 @@ public class DeviceCommonUtils {
                 Globals.DEVICE_TYPE_CODE_AQ1S, AQ1STestMainActivity.class));
         mDeviceConfigs.put(Globals.R2, new DeviceConfigInfo(true, "R2", "R2", new String[]{"Petkit_R2"},
                 Globals.DEVICE_TYPE_CODE_R2, R2TestMainActivity.class));
-        mDeviceConfigs.put(Globals.W5N, new DeviceConfigInfo(true, "W5N", "W5N", new String[]{"Petkit_W5N", "Petkit_W4X"},
+        mDeviceConfigs.put(Globals.W5N, new DeviceConfigInfo(true, "W5", "W5N", new String[]{"Petkit_W5N", "Petkit_W4X"},
                 Globals.DEVICE_TYPE_CODE_W5N, W5NTestMainActivity.class));
-        mDeviceConfigs.put(Globals.W4X, new DeviceConfigInfo(true, "W5N", "W4X", new String[]{"Petkit_W5N", "Petkit_W4X"},
+        mDeviceConfigs.put(Globals.W4X, new DeviceConfigInfo(true, "W5", "W4X", new String[]{"Petkit_W5N", "Petkit_W4X"},
                 Globals.DEVICE_TYPE_CODE_W4X, W5NTestMainActivity.class));
     }
 
@@ -375,6 +375,21 @@ public class DeviceCommonUtils {
      */
     public static DevicesError getDevicesErrorMsg(int deviceType) {
         String msg = CommonUtils.getSysMap(String.format(SHARED_SN_ERROR_INFO, getDeviceKeyByType(deviceType)));
+
+//        if (deviceType == Globals.T4_p) {
+//            DevicesError mDevicesError = new DevicesError();
+//            mDevicesError.setSn(new ArrayList<Device>());
+//            mDevicesError.getSn().add(new Device("943cc651ca8c", "03211028L10000", ""));
+//            return mDevicesError;
+//        }
+//
+//        if (deviceType == Globals.P3C) {
+//            DevicesError mDevicesError = new DevicesError();
+//            mDevicesError.setMac(new ArrayList<Device>());
+//            mDevicesError.getMac().add(new Device("a4c1382bcf52", "00210805K40001", ""));
+//            return mDevicesError;
+//        }
+
         if(CommonUtils.isEmpty(msg)) {
             return null;
         }

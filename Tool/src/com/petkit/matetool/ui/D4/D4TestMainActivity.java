@@ -629,7 +629,7 @@ public class D4TestMainActivity extends BaseActivity implements PetkitSocketInst
                 testComplete = position >= mD4TestUnits.size();
             } else if (mTestType == D4Utils.TYPE_TEST_PARTIALLY) {
                 testComplete = position >= mD4TestUnits.size();
-            } else if (mTestType == D4Utils.TYPE_TEST) {
+            } else {
                 testComplete = position >= mD4TestUnits.size();
             }
         }

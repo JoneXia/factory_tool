@@ -166,6 +166,7 @@ public class P3TestMainActivity extends BaseActivity {
                 break;
             case R.id.test_auto:
                 if (testComplete) {
+                    setResult(RESULT_OK);
                     finish();
                 } else {
                     startTestDetail(true, 0);
@@ -401,7 +402,7 @@ public class P3TestMainActivity extends BaseActivity {
                 testComplete = position >= mP3TestUnits.size();
             } else if (mTestType == Globals.TYPE_TEST_PARTIALLY) {
                 testComplete = position >= mP3TestUnits.size();
-            } else if (mTestType == Globals.TYPE_TEST) {
+            } else {
                 testComplete = position >= mP3TestUnits.size();
             }
         }
