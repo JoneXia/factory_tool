@@ -223,8 +223,10 @@ public class Versions {
 	 * 2.3说明：
 	 * 1. 解决P3D中无法搜索到P3C名称的设备，P3C是默认名称
 	 *
+	 * 2.4说明：
+	 * 1. 解决MAC/SN重复无法处理的问题
 	 */
-	public static final String TOOL_P3_VERSION	= "2.3";
+	public static final String TOOL_P3_VERSION	= "2.4";
 
 	/**
 	 *
@@ -232,10 +234,13 @@ public class Versions {
 	 * 1. 支持智能猫厕所（T4）产测全流程
 	 *
 	 * 1.1说明：
+	 * 1. 解决T4设备的账号问题
+	 *
+	 * 1.2说明：
 	 * 1. 解决MAC/SN重复无法处理的问题
 	 *
 	 */
-	public static final String TOOL_T4_VERSION	= "1.1";
+	public static final String TOOL_T4_VERSION	= "1.2";
 
 
 	/**
@@ -245,8 +250,11 @@ public class Versions {
 	 *
 	 * 1.1说明：
 	 * 1. 解决MAC/SN重复无法处理的问题
+	 *
+	 * 1.2说明：
+	 * 1. 解决MAC/SN重复无法处理的问题
 	 */
-	public static final String TOOL_K3_VERSION	= "1.1";
+	public static final String TOOL_K3_VERSION	= "1.2";
 
 
 	/**
@@ -254,8 +262,10 @@ public class Versions {
 	 * 1.0说明:
 	 * 1. 支持智能鱼缸（AQR）产测全流程
 	 *
+	 * 1.1说明：
+	 * 1. 解决MAC/SN重复无法处理的问题
 	 */
-	public static final String TOOL_AQR_VERSION	= "1.0";
+	public static final String TOOL_AQR_VERSION	= "1.1";
 
 
 	/**
@@ -263,8 +273,10 @@ public class Versions {
 	 * 1.0说明:
 	 * 1. 支持智能鱼缸（AQ1S）产测全流程
 	 *
+	 * 1.1说明：
+	 * 1. 解决MAC/SN重复无法处理的问题
 	 */
-	public static final String TOOL_AQ1S_VERSION	= "1.0";
+	public static final String TOOL_AQ1S_VERSION	= "1.1";
 
 
 
@@ -273,8 +285,10 @@ public class Versions {
 	 * 1.0说明:
 	 * 1. 支持智能鱼缸（R2）产测全流程
 	 *
+	 * 1.1说明：
+	 * 1. 调整电压范围，1.2 ~ 2.0
 	 */
-	public static final String TOOL_R2_VERSION	= "1.0";
+	public static final String TOOL_R2_VERSION	= "1.1";
 
 
 
@@ -284,7 +298,7 @@ public class Versions {
 	 * 1. 支持智能鱼缸（W5N/W4X）产测全流程
 	 *
 	 */
-	public static final String TOOL_W5N_VERSION	= "0.1";
+	public static final String TOOL_W5N_VERSION	= "1.0";
 
 
 
