@@ -274,6 +274,12 @@ public class W5NTestDetailActivity extends BaseActivity implements PrintResultCa
                     case TEST_MODE_RESET_ID:
                         //TODO:
                         break;
+                    case TEST_MODE_MAC:
+                        mTestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                        refershBtnView();
+                        setResult(RESULT_OK);
+                        gotoNextTestModule();
+                        break;
                     default:
                         startTestModule();
                         break;

@@ -20,6 +20,7 @@ import com.petkit.android.utils.CommonUtils;
 import com.petkit.android.utils.LogcatStorageHelper;
 import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.R;
+import com.petkit.matetool.http.ApiTools;
 import com.petkit.matetool.service.DatagramConsts;
 import com.petkit.matetool.service.DatagramProcessService;
 import com.petkit.matetool.ui.D3.D3TestPrepareActivity;
@@ -121,7 +122,8 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
 
     @Override
     protected void setupViews() {
-        setTitle(getString(R.string.app_name) + " v" + CommonUtils.getAppVersionName(this));
+        setTitle(getString(R.string.app_name) + " v" + CommonUtils.getAppVersionName(this)
+                        + (ApiTools.MODEL.equalsIgnoreCase("TEST") ? " debug" : ""));
 
         imb_titleleft.setVisibility(View.GONE);
         fixtureNumberEditText = (EditText) findViewById(R.id.fixture_number_edittxt);

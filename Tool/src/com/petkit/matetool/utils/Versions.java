@@ -287,8 +287,11 @@ public class Versions {
 	 *
 	 * 1.1说明：
 	 * 1. 调整电压范围，1.2 ~ 2.0
+	 *
+	 * 1.2说明：
+	 * 1. 修复MAC重复无法处理的问题
 	 */
-	public static final String TOOL_R2_VERSION	= "1.1";
+	public static final String TOOL_R2_VERSION	= "1.2";
 
 
 
@@ -297,8 +300,11 @@ public class Versions {
 	 * 1.0说明:
 	 * 1. 支持智能鱼缸（W5N/W4X）产测全流程
 	 *
+	 * 1.1说明：
+	 * 1. 修复MAC重复无法处理的问题
+	 *
 	 */
-	public static final String TOOL_W5N_VERSION	= "1.0";
+	public static final String TOOL_W5N_VERSION	= "1.1";
 
 
 

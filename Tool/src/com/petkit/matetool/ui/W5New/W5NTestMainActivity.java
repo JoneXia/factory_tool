@@ -96,7 +96,7 @@ public class W5NTestMainActivity extends BaseActivity {
         super.onSaveInstanceState(outState);
 
         outState.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
-        outState.putInt("TestType", mTestType);
+        outState.putInt(DeviceCommonUtils.EXTRA_TEST_TYPE, mTestType);
         outState.putSerializable(DeviceCommonUtils.EXTRA_DEVICE, mCurDevice);
         outState.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
         if (mErrorDevice != null) {

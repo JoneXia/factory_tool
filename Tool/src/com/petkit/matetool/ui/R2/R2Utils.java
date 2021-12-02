@@ -21,6 +21,7 @@ public class R2Utils {
         TEST_MODE_HEAT, //加热
         TEST_MODE_HEAT_PROTECT, //加热保护
         TEST_MODE_SN,   //写SN
+        TEST_MODE_MAC,
         TEST_MODE_RESET_SN, //重置SN
         TEST_MODE_RESET_ID, //清除ID
         TEST_MODE_AUTO,
@@ -49,7 +50,7 @@ public class R2Utils {
         ArrayList<R2TestUnit> results = new ArrayList<>();
 
         if(type == Globals.TYPE_DUPLICATE_MAC) {
-
+            results.add(new R2TestUnit(R2TestModes.TEST_MODE_MAC, "MAC重复", 97, 2));
         } else if(type == Globals.TYPE_DUPLICATE_SN){
             results.add(new R2TestUnit(R2TestModes.TEST_MODE_SN, "写入SN", 98, 2));
             results.add(new R2TestUnit(R2TestModes.TEST_MODE_PRINT, "打印标签", -1, 1));

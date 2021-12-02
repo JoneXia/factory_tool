@@ -22,6 +22,7 @@ public class W5NUtils {
         TEST_MODE_LED,
         TEST_MODE_PUMP,
         TEST_MODE_SN,   //写SN
+        TEST_MODE_MAC,
         TEST_MODE_RESET_SN, //重置SN
         TEST_MODE_RESET_ID, //清除ID
         TEST_MODE_AUTO,
@@ -56,7 +57,7 @@ public class W5NUtils {
         ArrayList<W5NTestUnit> results = new ArrayList<>();
 
         if(type == Globals.TYPE_DUPLICATE_MAC) {
-
+            results.add(new W5NTestUnit(W5NTestModes.TEST_MODE_MAC, "MAC重复", 97, 1));
         } else if(type == Globals.TYPE_DUPLICATE_SN){
             results.add(new W5NTestUnit(W5NTestModes.TEST_MODE_SN, "写入SN", 98, 2));
             results.add(new W5NTestUnit(W5NTestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
