@@ -348,7 +348,12 @@ public class R2TestDetailActivity extends BaseActivity implements PrintResultCal
                 sendBleData(BaseDataUtils.buildOpCodeBuffer(221, param4));
                 break;
             default:
-                sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule()));
+                if (mTestUnits.get(mCurTestStep).getType() != R2Utils.R2TestModes.TEST_MODE_SN
+                        && mTestUnits.get(mCurTestStep).getType() != R2Utils.R2TestModes.TEST_MODE_RESET_SN
+                        && mTestUnits.get(mCurTestStep).getType() != R2Utils.R2TestModes.TEST_MODE_RESET_ID
+                        && mTestUnits.get(mCurTestStep).getType() != R2Utils.R2TestModes.TEST_MODE_PRINT) {
+                    sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule()));
+                }
                 break;
         }
 
@@ -600,25 +605,30 @@ public class R2TestDetailActivity extends BaseActivity implements PrintResultCal
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        sendBleData(BaseDataUtils.buildOpCodeBuffer(mAutoTestUnits.get(mAutoUnitStep).getModule()), false);
-                    }
+                        if (mTestUnits.get(mCurTestStep).getType() == R2Utils.R2TestModes.TEST_MODE_TEMP ||
+                                mTestUnits.get(mCurTestStep).getType() == R2Utils.R2TestModes.TEST_MODE_WATER ||
+                                mTestUnits.get(mCurTestStep).getType() == R2Utils.R2TestModes.TEST_MODE_HEAT ||
+                                mTestUnits.get(mCurTestStep).getType() == R2Utils.R2TestModes.TEST_MODE_HEAT_PROTECT) {
+                            sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule()), false);
+                        }                    }
                 }, 100);
             }
         } else {
             if (result) {
                 mTestUnits.get(mCurTestStep).setResult(TEST_PASS);
             }
-            if (mTestUnits.get(mCurTestStep).getType() == R2Utils.R2TestModes.TEST_MODE_TEMP ||
-                    mTestUnits.get(mCurTestStep).getType() == R2Utils.R2TestModes.TEST_MODE_WATER ||
-                    mTestUnits.get(mCurTestStep).getType() == R2Utils.R2TestModes.TEST_MODE_HEAT ||
-                    mTestUnits.get(mCurTestStep).getType() == R2Utils.R2TestModes.TEST_MODE_HEAT_PROTECT) {
-                        new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule()), false);
-                                }
-                            }, 1000);
-            }
+
+            new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mTestUnits.get(mCurTestStep).getType() == R2Utils.R2TestModes.TEST_MODE_TEMP ||
+                                mTestUnits.get(mCurTestStep).getType() == R2Utils.R2TestModes.TEST_MODE_WATER ||
+                                mTestUnits.get(mCurTestStep).getType() == R2Utils.R2TestModes.TEST_MODE_HEAT ||
+                                mTestUnits.get(mCurTestStep).getType() == R2Utils.R2TestModes.TEST_MODE_HEAT_PROTECT) {
+                                   sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule()), false);
+                        }
+                    }
+            }, 1000);
             refershBtnView();
         }
     }

@@ -15,6 +15,7 @@ import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.DevicesError;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.AQ1S.AQ1STestMainActivity;
+import com.petkit.matetool.ui.AQH1.AQH1TestMainActivity;
 import com.petkit.matetool.ui.AQR.AQRTestMainActivity;
 import com.petkit.matetool.ui.K3.K3TestMainActivity;
 import com.petkit.matetool.ui.P3.P3TestMainActivity;
@@ -22,8 +23,8 @@ import com.petkit.matetool.ui.R2.R2TestMainActivity;
 import com.petkit.matetool.ui.W5New.W5NTestMainActivity;
 import com.petkit.matetool.ui.common.BLEErrorListActivity;
 import com.petkit.matetool.ui.common.BLEStartActivity;
-import com.petkit.matetool.ui.t4.T4ErrorListActivity;
-import com.petkit.matetool.ui.t4.T4StartActivity;
+import com.petkit.matetool.ui.common.WifiErrorListActivity;
+import com.petkit.matetool.ui.common.WifiStartActivity;
 import com.petkit.matetool.ui.t4.T4TestMainActivity;
 import com.petkit.matetool.utils.Globals;
 
@@ -91,6 +92,10 @@ public class DeviceCommonUtils {
                 Globals.DEVICE_TYPE_CODE_W5N, W5NTestMainActivity.class));
         mDeviceConfigs.put(Globals.W4X, new DeviceConfigInfo(true, "W5", "W4X", new String[]{"Petkit_W5N", "Petkit_W4X"},
                 Globals.DEVICE_TYPE_CODE_W4X, W5NTestMainActivity.class));
+        mDeviceConfigs.put(Globals.AQH1_500, new DeviceConfigInfo(false, "AQH1", "AQH1_500", null,
+                Globals.DEVICE_TYPE_CODE_AQH1_500, AQH1TestMainActivity.class));
+        mDeviceConfigs.put(Globals.AQH1_1000, new DeviceConfigInfo(false, "AQH1", "AQH1_1000", null,
+                Globals.DEVICE_TYPE_CODE_AQH1_1000, AQH1TestMainActivity.class));
     }
 
     /**
@@ -184,7 +189,7 @@ public class DeviceCommonUtils {
             if (mDeviceConfigs.get(deviceType).isBleDevice()) {
                 return BLEStartActivity.class;
             } else {
-                return T4StartActivity.class;//TODO:
+                return WifiStartActivity.class;
             }
         } else {
             throw  new RuntimeException("getDeviceKeyByType deviceType not support!");
@@ -202,7 +207,7 @@ public class DeviceCommonUtils {
             if (mDeviceConfigs.get(deviceType).isBleDevice()) {
                 return BLEErrorListActivity.class;
             } else {
-                return T4ErrorListActivity.class;//TODO:
+                return WifiErrorListActivity.class;
             }
         } else {
             throw  new RuntimeException("getDeviceKeyByType deviceType not support!");
@@ -494,10 +499,10 @@ public class DeviceCommonUtils {
      */
     public static void storeSucceedDeviceInfo(int deviceType, Device device, String ageingResult) {
         if(device == null || !device.checkValid()) {
-            throw  new RuntimeException("store W5 failed, " + (device == null ? "W5 is null !" : device.toString()));
+            throw  new RuntimeException("storeSucceedDeviceInfo failed, " + (device == null ? "device is null !" : device.toString()));
         }
 
-        PetkitLog.d("store W5 info: " + device.generateMainJson(ageingResult));
+        PetkitLog.d("storeSucceedDeviceInfo info: " + device.generateMainJson(ageingResult));
         FileUtils.writeStringToFile(getStoreDeviceInfoFilePath(deviceType), device.generateMainJson(ageingResult) + ",", true);
     }
 
@@ -510,13 +515,13 @@ public class DeviceCommonUtils {
      */
     public static void storeSucceedDeviceInfo(int deviceType, Device device, String ageingResult, int withK3) {
         if(device == null || !device.checkValid()) {
-            throw  new RuntimeException("store T4 failed, " + (device == null ? "T4 is null !" : device.toString()));
+            throw  new RuntimeException("storeSucceedDeviceInfo failed, " + (device == null ? "device is null !" : device.toString()));
         }
-        if(deviceType != Globals.T4_p) {
-            throw  new RuntimeException("store T4 failed, " + "device type must be T4 with K3");
-        }
+//        if(deviceType != Globals.T4_p) {
+//            throw  new RuntimeException("storeSucceedDeviceInfo failed, " + "device type must be device with K3");
+//        }
 
-        PetkitLog.d("store T4 info: " + device.generateMainJson(ageingResult, withK3));
+        PetkitLog.d("storeSucceedDeviceInfo info: " + device.generateMainJson(ageingResult, withK3));
         FileUtils.writeStringToFile(getStoreDeviceInfoFilePath(deviceType), device.generateMainJson(ageingResult, withK3) + ",", true);
     }
 

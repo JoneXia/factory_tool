@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.petkit.matetool"
-          android:versionCode="3903"
-          android:versionName="4.4.2">
+          android:versionCode="4001"
+          android:versionName="4.5.1">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
@@ -404,6 +404,9 @@
         <activity android:name=".ui.common.BLEStorageFileActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"/>
+        <activity android:name=".ui.common.WifiStartActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"/>
 
         <!-- AQ1S -->
         <activity android:name=".ui.AQ1S.AQ1STestMainActivity"
@@ -426,6 +429,14 @@
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity android:name=".ui.W5New.W5NTestMainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+
+        <!-- AQH1 -->
+        <activity android:name=".ui.AQH1.AQH1TestDetailActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".ui.AQH1.AQH1TestMainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
 

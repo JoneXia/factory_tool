@@ -307,5 +307,11 @@ public class Versions {
 	public static final String TOOL_W5N_VERSION	= "1.1";
 
 
+	/**
+	 *
+	 *
+	 *
+	 */
+	public static final String TOOL_AQH1_VERSION	= "0.1";
 
 }

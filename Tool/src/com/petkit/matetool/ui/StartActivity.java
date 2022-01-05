@@ -50,6 +50,7 @@ import com.petkit.matetool.widget.LoadDialog;
 import java.util.ArrayList;
 
 import static com.petkit.matetool.utils.Versions.TOOL_AQ1S_VERSION;
+import static com.petkit.matetool.utils.Versions.TOOL_AQH1_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_AQR_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_AQ_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_COZY;
@@ -280,6 +281,12 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
             case R.id.w4x:
                 testStyle = Globals.W4X;
                 break;
+            case R.id.aqh1_500:
+                testStyle = Globals.AQH1_500;
+                break;
+            case R.id.aqh1_1000:
+                testStyle = Globals.AQH1_1000;
+                break;
             //TODO: 新增设备需对应添加
             default:
                 break;
@@ -358,6 +365,12 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
 
         tempRadioButton = (RadioButton) findViewById(R.id.w4x);
         tempRadioButton.setText(getTextDetail(Globals.W4X, "无线智能饮水机-不锈钢（W4X）" + " v" + TOOL_W5N_VERSION));
+
+        tempRadioButton = (RadioButton) findViewById(R.id.aqh1_500);
+        tempRadioButton.setText(getTextDetail(Globals.AQH1_500, "鱼缸加热棒-500W（AQ-H1）" + " v" + TOOL_AQH1_VERSION));
+
+        tempRadioButton = (RadioButton) findViewById(R.id.aqh1_1000);
+        tempRadioButton.setText(getTextDetail(Globals.AQH1_1000, "鱼缸加热棒-100W（AQ-H1）" + " v" + TOOL_AQH1_VERSION));
 
         //TODO: 新增设备需对应添加
     }

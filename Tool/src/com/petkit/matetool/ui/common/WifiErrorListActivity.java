@@ -18,7 +18,6 @@ import com.petkit.matetool.model.DevicesError;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.base.BaseListActivity;
 import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
-import com.petkit.matetool.ui.t4.T4TestMainActivity;
 import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.widget.pulltorefresh.PullToRefreshBase;
 
@@ -39,8 +38,6 @@ public class WifiErrorListActivity extends BaseListActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
         if(savedInstanceState != null) {
             mDeviceType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE);
             mTester = (Tester) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_TESTER);
@@ -48,6 +45,8 @@ public class WifiErrorListActivity extends BaseListActivity {
             mDeviceType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, 0);
             mTester = (Tester) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
         }
+
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -88,7 +87,7 @@ public class WifiErrorListActivity extends BaseListActivity {
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         mSelectPosition = position;
 
-        Intent intent = new Intent(this, T4TestMainActivity.class);
+        Intent intent = new Intent(this, DeviceCommonUtils.getMainActivityByType(mDeviceType));
         intent.putExtra(DeviceCommonUtils.EXTRA_TESTER, mTester);
         intent.putExtra(DeviceCommonUtils.EXTRA_TEST_TYPE, position < mDevicesError.getMac().size() ? Globals.TYPE_DUPLICATE_MAC : Globals.TYPE_DUPLICATE_SN);
         intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mAdapter.getItem(position));

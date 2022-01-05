@@ -17,7 +17,7 @@ public class Globals {
 	public static final String EXTRA_PERMISSION_CONTENT      = "com.petkit.android.EXTRA_PERMISSION_CONTENT";
 	public static final String BROADCAST_PERMISSION_FINISHED = "com.petkit.android.BROADCAST_PERMISSION_FINISHED";
 
-	public static final boolean PERMISSION_ERASE = false;
+	public static final boolean PERMISSION_ERASE = true;
 	
 	//test style  1--mate style , 2---mate pro
 	public static final int MATE_STYLE = 1;
@@ -43,8 +43,10 @@ public class Globals {
 	public static final int R2 = 21;
 	public static final int W5N = 22;
 	public static final int W4X = 23;
+	public static final int AQH1_500 = 24;
+	public static final int AQH1_1000 = 25;
 	//TODO: 新增设备时，max值需加一
-	public static final int MAX = 24;
+	public static final int MAX = 26;
 
 //	public static int g_testStyle = 0;
 
@@ -70,6 +72,8 @@ public class Globals {
 	public static final String DEVICE_TYPE_CODE_R2 = "Q";
 	public static final String DEVICE_TYPE_CODE_W5N = "R";
 	public static final String DEVICE_TYPE_CODE_W4X = "S";
+	public static final String DEVICE_TYPE_CODE_AQH1_500 = "T";
+	public static final String DEVICE_TYPE_CODE_AQH1_1000 = "U";
 
 
 
