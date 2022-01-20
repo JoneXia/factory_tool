@@ -419,8 +419,8 @@ public class K3TestDetailActivity extends BaseActivity implements PrintResultCal
                 } else {
                     mDescTextView.append("\nSN写入成功");
                     result = true;
+                    DeviceCommonUtils.storeSucceedDeviceInfo(Globals.K3, mDevice, null);
                 }
-                DeviceCommonUtils.storeSucceedDeviceInfo(Globals.K3, mDevice, null);
                 break;
         }
         mDescTextView.append(desc.toString());

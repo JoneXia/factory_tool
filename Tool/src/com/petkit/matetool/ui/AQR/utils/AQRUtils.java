@@ -20,6 +20,7 @@ public class AQRUtils {
 
     public enum AQRTestModes {
         TEST_MODE_DC,   //电压
+        TEST_MODE_MAC,
         TEST_MODE_LED,
         TEST_MODE_PUMP,
         TEST_MODE_SN,   //写SN
@@ -57,7 +58,7 @@ public class AQRUtils {
         ArrayList<AQRTestUnit> results = new ArrayList<>();
 
         if(type == Globals.TYPE_DUPLICATE_MAC) {
-
+            results.add(new AQRTestUnit(AQRTestModes.TEST_MODE_MAC, "MAC重复", 97, 1));
         } else if(type == Globals.TYPE_DUPLICATE_SN){
             results.add(new AQRTestUnit(AQRTestModes.TEST_MODE_SN, "写入SN", 98, 2));
             results.add(new AQRTestUnit(AQRTestModes.TEST_MODE_PRINT, "打印标签", -1, 1));

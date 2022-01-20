@@ -508,8 +508,8 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
                 } else {
                     mDescTextView.append("\nSN写入成功");
                     result = true;
+                    DeviceCommonUtils.storeSucceedDeviceInfo(mDeviceType, mDevice, null);
                 }
-                DeviceCommonUtils.storeSucceedDeviceInfo(mDeviceType, mDevice, null);
                 break;
             case BLEConsts.OP_CODE_P3_TEST_RESULT:
             case BLEConsts.OP_CODE_P3_RING:

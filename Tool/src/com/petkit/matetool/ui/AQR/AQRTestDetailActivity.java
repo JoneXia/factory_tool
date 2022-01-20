@@ -102,6 +102,7 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
 
         if (mAQRTestUnits.get(mCurTestStep).getType() != AQRUtils.AQRTestModes.TEST_MODE_SN &&
                 mAQRTestUnits.get(mCurTestStep).getType() != AQRUtils.AQRTestModes.TEST_MODE_PRINT &&
+                mAQRTestUnits.get(mCurTestStep).getType() != AQRUtils.AQRTestModes.TEST_MODE_MAC &&
                 mAQRTestUnits.get(mCurTestStep).getType() != AQRUtils.AQRTestModes.TEST_MODE_RESET_SN &&
                 mAQRTestUnits.get(mCurTestStep).getType() != AQRUtils.AQRTestModes.TEST_MODE_RESET_ID) {
             startTestModule();
@@ -268,6 +269,12 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
                     case TEST_MODE_RESET_ID:
                         //TODO:
                         break;
+                    case TEST_MODE_MAC:
+                        mAQRTestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                        refershBtnView();
+                        setResult(RESULT_OK);
+                        gotoNextTestModule();
+                        break;
                     default:
                         startTestModule();
                         break;
@@ -395,6 +402,7 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
 
             if (mAQRTestUnits.get(mCurTestStep).getType() != AQRUtils.AQRTestModes.TEST_MODE_SN
                 && mAQRTestUnits.get(mCurTestStep).getType() != AQRUtils.AQRTestModes.TEST_MODE_RESET_SN
+                    && mAQRTestUnits.get(mCurTestStep).getType() != AQRUtils.AQRTestModes.TEST_MODE_MAC
                     && mAQRTestUnits.get(mCurTestStep).getType() != AQRUtils.AQRTestModes.TEST_MODE_RESET_ID
                     && mAQRTestUnits.get(mCurTestStep).getType() != AQRUtils.AQRTestModes.TEST_MODE_PRINT) {
                 startTestModule();
@@ -499,8 +507,8 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
                 } else {
                     mDescTextView.append("\nSN写入成功");
                     result = true;
+                    DeviceCommonUtils.storeSucceedDeviceInfo(Globals.AQR, mDevice, null);
                 }
-                DeviceCommonUtils.storeSucceedDeviceInfo(Globals.AQR, mDevice, null);
                 break;
         }
         mDescTextView.append(desc.toString());

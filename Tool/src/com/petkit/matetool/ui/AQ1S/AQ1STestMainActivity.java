@@ -59,6 +59,7 @@ public class AQ1STestMainActivity extends BaseActivity {
 
     private TextView mInfoTestTextView;
     private boolean testComplete = false;
+    private int mDeviceType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +68,7 @@ public class AQ1STestMainActivity extends BaseActivity {
             mTester = (Tester) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_TESTER);
             mTestType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_TEST_TYPE);
             mCurDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_DEVICE);
+            mDeviceType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE);
             if (savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE) != null) {
                 mErrorDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE);
             }
@@ -74,6 +76,7 @@ public class AQ1STestMainActivity extends BaseActivity {
             mTester = (Tester) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
             mTestType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_TEST_TYPE, Globals.TYPE_TEST);
             mCurDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_DEVICE);
+            mDeviceType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, 0);
             if (getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE) != null) {
                 mErrorDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE);
             }
@@ -92,6 +95,7 @@ public class AQ1STestMainActivity extends BaseActivity {
         outState.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
         outState.putInt("TestType", mTestType);
         outState.putSerializable(DeviceCommonUtils.EXTRA_DEVICE, mCurDevice);
+        outState.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
         if (mErrorDevice != null) {
             outState.putSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
         }
@@ -218,6 +222,7 @@ public class AQ1STestMainActivity extends BaseActivity {
             intent.putExtra("AutoTest", isAuto);
             intent.putExtra(DeviceCommonUtils.EXTRA_TESTER, mTester);
             intent.putExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
+            intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
             intent.putExtra("TestType", mTestType);
             startActivityForResult(intent, 0x12);
         } else {

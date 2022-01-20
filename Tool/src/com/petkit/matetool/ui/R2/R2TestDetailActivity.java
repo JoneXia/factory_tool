@@ -492,8 +492,8 @@ public class R2TestDetailActivity extends BaseActivity implements PrintResultCal
                 } else {
                     mDescTextView.append("\nSN写入成功");
                     result = true;
+                    DeviceCommonUtils.storeSucceedDeviceInfo(mDeviceType, mDevice, null);
                 }
-                DeviceCommonUtils.storeSucceedDeviceInfo(mDeviceType, mDevice, null);
                 break;
             case 210:
                 int power = ByteUtil.toInt(data[0]);

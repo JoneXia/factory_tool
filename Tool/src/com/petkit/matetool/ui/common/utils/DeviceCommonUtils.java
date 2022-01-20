@@ -48,6 +48,7 @@ public class DeviceCommonUtils {
     public static final String EXTRA_DEVICE   = "EXTRA_DEVICE";
     public static final String EXTRA_ERROR_DEVICE   = "EXTRA_ERROR_DEVICE";
     public static final String EXTRA_TEST_TYPE = "TestType";
+    public static final String EXTRA_DEVICE_SN = "EXTRA_DEVICE_SN";
 
     private static final String SHARED_SERIALIZABLE_DAY     = "%s_SerializableDay";
     private static final String SHARED_SERIALIZABLE_NUMBER     = "%s_SerializableNumber";
@@ -590,5 +591,16 @@ public class DeviceCommonUtils {
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 
+    public static boolean checkSN (String sn, int deviceType) {
+        if (sn == null || sn.length() != 14)
+            return false;
+
+        if (mDeviceConfigs.get(deviceType) != null) {
+            return mDeviceConfigs.get(deviceType).getDeviceSNFlag().equalsIgnoreCase(sn.substring(8,9));
+        } else {
+            return true;
+        }
+
+    }
 
 }

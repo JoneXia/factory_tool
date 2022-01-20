@@ -496,8 +496,8 @@ public class W5NTestDetailActivity extends BaseActivity implements PrintResultCa
                 } else {
                     mDescTextView.append("\nSN写入成功");
                     result = true;
+                    DeviceCommonUtils.storeSucceedDeviceInfo(mDeviceType, mDevice, null);
                 }
-                DeviceCommonUtils.storeSucceedDeviceInfo(mDeviceType, mDevice, null);
                 break;
         }
         mDescTextView.append(desc.toString());

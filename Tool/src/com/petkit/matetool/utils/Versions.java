@@ -264,8 +264,11 @@ public class Versions {
 	 *
 	 * 1.1说明：
 	 * 1. 解决MAC/SN重复无法处理的问题
+	 *
+	 * 1.2说明：
+	 * 1. 解决MAC重复无法处理的问题
 	 */
-	public static final String TOOL_AQR_VERSION	= "1.1";
+	public static final String TOOL_AQR_VERSION	= "1.2";
 
 
 	/**
@@ -275,8 +278,11 @@ public class Versions {
 	 *
 	 * 1.1说明：
 	 * 1. 解决MAC/SN重复无法处理的问题
+	 *
+	 * 1.2说明：
+	 * 1. 写入SN改成扫描二维码的方式
 	 */
-	public static final String TOOL_AQ1S_VERSION	= "1.1";
+	public static final String TOOL_AQ1S_VERSION	= "1.2";
 
 
 
@@ -290,6 +296,10 @@ public class Versions {
 	 *
 	 * 1.2说明：
 	 * 1. 修复MAC重复无法处理的问题
+	 *
+	 * 1.3说明：
+	 * 1. 修复自动测试时指令紊乱的问题
+	 *
 	 */
 	public static final String TOOL_R2_VERSION	= "1.2";
 
