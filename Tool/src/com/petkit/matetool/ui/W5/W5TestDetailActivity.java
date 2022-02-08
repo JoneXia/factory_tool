@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.dothantech.printer.IDzPrinter;
 import com.google.gson.Gson;
 import com.petkit.android.ble.BLEConsts;
+import com.petkit.android.ble.data.BaseDataUtils;
 import com.petkit.android.ble.data.PetkitBleMsg;
 import com.petkit.android.ble.data.W5DataUtils;
 import com.petkit.android.utils.ByteUtil;
@@ -32,13 +33,16 @@ import com.petkit.matetool.ui.P3.mode.GsensorData;
 import com.petkit.matetool.ui.W5.mode.W5TestUnit;
 import com.petkit.matetool.ui.W5.utils.W5Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.ui.print.PrintActivity;
 import com.petkit.matetool.ui.utils.PrintResultCallback;
 import com.petkit.matetool.ui.utils.PrintUtils;
+import com.petkit.matetool.utils.Globals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static com.petkit.matetool.ui.W5.utils.W5Utils.W5_TYPE_MINI;
 import static com.petkit.matetool.ui.utils.PrintUtils.isPrinterConnected;
 import static com.petkit.matetool.utils.Globals.PERMISSION_ERASE;
 import static com.petkit.matetool.utils.Globals.TEST_FAILED;
@@ -67,6 +71,7 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
     private ArrayList<W5TestUnit> mW5AutoTestUnits;
     private boolean isInAutoUnits = false;
     private int mAutoUnitStep; //有些测试项中会细分成几步
+    private boolean isNewSN = false;
 
 
     @Override
@@ -239,6 +244,33 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
 
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode != RESULT_OK)
+            return;
+
+        switch (requestCode) {
+            case 0x199:
+                String sn = data.getStringExtra(DeviceCommonUtils.EXTRA_DEVICE_SN);
+                if (!DeviceCommonUtils.checkSN(sn, mW5Type == W5_TYPE_MINI ? Globals.W5C : Globals.W5)) {
+                    showShortToast("无效的SN！");
+                    return;
+                }
+                if (mDevice.getSn() == null || !mDevice.getSn().equals(sn)) {
+                    isNewSN = true;
+                }
+                mDevice.setSn(sn);
+                mDevice.setCreation(System.currentTimeMillis());
+                LogcatStorageHelper.addLog("write SN: " + sn);
+
+                sendBleData(BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_WRITE_SN, sn.getBytes()));
+                break;
+        }
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -262,7 +294,7 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
                         }
                         break;
                     case TEST_MODE_RESET_SN:
-                        showSNSetDialog();
+                        startScanSN(mW5Type == W5_TYPE_MINI ? Globals.W5C : Globals.W5);
                         break;
                     case TEST_MODE_SN:
                         startSetSn();
@@ -507,8 +539,11 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
                 } else {
                     mDescTextView.append("\nSN写入成功");
                     result = true;
+                    if (isNewSN) {
+                        W5Utils.storeSucceedDeviceInfo(mDevice, null);
+//                        DeviceCommonUtils.storeSucceedDeviceInfo(mW5Type == W5_TYPE_MINI ? Globals.W5C : Globals.W5, mDevice, null);
+                    }
                 }
-                W5Utils.storeSucceedDeviceInfo(mDevice, null);
                 break;
         }
         mDescTextView.append(desc.toString());
@@ -566,15 +601,7 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-                String sn = W5Utils.generateSNForTester(mTester, mW5Type);
-                if (sn == null) {
-                    showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
-                    return;
-                }
-                mDevice.setSn(sn);
-                mDevice.setCreation(System.currentTimeMillis());
-
-                sendBleData(W5DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_W5_WRITE_SN, sn.getBytes()));
+                startScanSN(mW5Type == W5_TYPE_MINI ? Globals.W5C : Globals.W5);
             }
         } else {
             sendBleData(W5DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_W5_WRITE_SN, mDevice.getSn().getBytes()));

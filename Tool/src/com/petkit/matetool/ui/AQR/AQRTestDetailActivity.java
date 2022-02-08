@@ -68,7 +68,8 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
     private ArrayList<AQRTestUnit> mAQRAutoTestUnits;
     private boolean isInAutoUnits = false;
     private int mAutoUnitStep; //有些测试项中会细分成几步
-
+    private int mDeviceType;
+    private boolean isNewSN = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +82,7 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
             isAutoTest = savedInstanceState.getBoolean("AutoTest");
             mTestType = savedInstanceState.getInt("TestType");
             mTester = (Tester) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_TESTER);
+            mDeviceType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE);
             if (savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE) != null) {
                 mErrorDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE);
             }
@@ -90,6 +92,7 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
             mTestType = getIntent().getIntExtra("TestType", Globals.TYPE_TEST);
             mDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_DEVICE);
             isAutoTest = getIntent().getBooleanExtra("AutoTest", true);
+            mDeviceType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, 0);
             mTester = (Tester) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
             if (getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE) != null) {
                 mErrorDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE);
@@ -127,6 +130,7 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
         outState.putBoolean("AutoTest", isAutoTest);
         outState.putInt("TestType", mTestType);
         outState.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
+        outState.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
         if (mErrorDevice != null) {
             outState.putSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
         }
@@ -239,6 +243,32 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode != RESULT_OK)
+            return;
+
+        switch (requestCode) {
+            case 0x199:
+                String sn = data.getStringExtra(DeviceCommonUtils.EXTRA_DEVICE_SN);
+                if (!DeviceCommonUtils.checkSN(sn, mDeviceType)) {
+                    showShortToast("无效的SN！");
+                    return;
+                }
+                if (mDevice.getSn() == null || !mDevice.getSn().equals(sn)) {
+                    isNewSN = true;
+                }
+                mDevice.setSn(sn);
+                mDevice.setCreation(System.currentTimeMillis());
+                LogcatStorageHelper.addLog("write SN: " + sn);
+
+                sendBleData(AQRDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_WRITE_SN, sn.getBytes()));
+                break;
+        }
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.test_btn_1:
@@ -261,7 +291,7 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
                         }
                         break;
                     case TEST_MODE_RESET_SN:
-                        showSNSetDialog();
+                        startScanSN(mDeviceType);
                         break;
                     case TEST_MODE_SN:
                         startSetSn();
@@ -507,7 +537,9 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
                 } else {
                     mDescTextView.append("\nSN写入成功");
                     result = true;
-                    DeviceCommonUtils.storeSucceedDeviceInfo(Globals.AQR, mDevice, null);
+                    if (isNewSN) {
+                        DeviceCommonUtils.storeSucceedDeviceInfo(Globals.AQR, mDevice, null);
+                    }
                 }
                 break;
         }
@@ -566,15 +598,7 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-                String sn = DeviceCommonUtils.generateSNForTester(Globals.AQR, mTester);
-                if (sn == null) {
-                    showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
-                    return;
-                }
-                mDevice.setSn(sn);
-                mDevice.setCreation(System.currentTimeMillis());
-
-                sendBleData(AQRDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_WRITE_SN, sn.getBytes()));
+                startScanSN(mDeviceType);
             }
         } else {
             sendBleData(AQRDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_WRITE_SN, mDevice.getSn().getBytes()));

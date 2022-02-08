@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.zxing.Result;
+import com.petkit.android.utils.LogcatStorageHelper;
 import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.model.Tester;
@@ -180,17 +181,13 @@ public class CommonScanActivity extends BaseActivity implements ScanListener {
 
     private void checkContent(String data) {
 
-        if(data == null) {
+        if(data == null || data.length() < 12) {
             showShortToast("无效的内容！");
             return;
         }
         String sn = "";
 
-        if(data.startsWith("SN:")) {
-            sn = data.substring(3);
-        } else if(data.startsWith("SN：")) {
-            sn = data.substring(3);
-        } else {
+        if(data.contains("SN:")) {
             try {
                 JSONObject result = JSONUtils.getJSONObject(data);
                 if (result != null && !result.isNull("SN")) {
@@ -200,6 +197,8 @@ public class CommonScanActivity extends BaseActivity implements ScanListener {
                 e.printStackTrace();
                 showShortToast("非法的SN！");
             }
+        } else if (data.length() <= 18){
+            sn = data;
         }
 
         if(isEmpty(sn)) {
@@ -208,6 +207,7 @@ public class CommonScanActivity extends BaseActivity implements ScanListener {
         }
 
         if(DeviceCommonUtils.checkSN(sn, mDeviceType)) {
+            LogcatStorageHelper.addLog("Scaned sn: " + sn);
             Intent intent = new Intent();
             intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE_SN, sn.toUpperCase());
             setResult(RESULT_OK, intent);

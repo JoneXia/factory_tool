@@ -57,7 +57,7 @@ public class Device implements Serializable {
     }
 
     public boolean checkValid() {
-        return mac != null && mac.length() > 0 && sn != null && sn.length() == 14;
+        return mac != null && mac.length() > 0 && sn != null && sn.length() >= 12;
     }
 
     public void setChipid(String chipid) {

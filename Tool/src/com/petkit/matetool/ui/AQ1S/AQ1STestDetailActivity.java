@@ -31,7 +31,6 @@ import com.petkit.matetool.ui.AQ1S.mode.AQ1STestUnit;
 import com.petkit.matetool.ui.AQ1S.utils.AQ1SUtils;
 import com.petkit.matetool.ui.P3.mode.GsensorData;
 import com.petkit.matetool.ui.base.BaseActivity;
-import com.petkit.matetool.ui.common.CommonScanActivity;
 import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.ui.print.PrintActivity;
 import com.petkit.matetool.ui.utils.PrintResultCallback;
@@ -165,7 +164,9 @@ public class AQ1STestDetailActivity extends BaseActivity implements PrintResultC
                     showShortToast("无效的SN！");
                     return;
                 }
-                isNewSN = true;
+                if (mDevice.getSn() == null || !mDevice.getSn().equals(sn)) {
+                    isNewSN = true;
+                }
                 mDevice.setSn(sn);
                 mDevice.setCreation(System.currentTimeMillis());
                 LogcatStorageHelper.addLog("write SN: " + sn);
@@ -265,7 +266,7 @@ public class AQ1STestDetailActivity extends BaseActivity implements PrintResultC
                         }
                         break;
                     case TEST_MODE_RESET_SN:
-                        startScanSN();
+                        startScanSN(mDeviceType);
                         break;
                     case TEST_MODE_SN:
                         startSetSn();
@@ -502,19 +503,12 @@ public class AQ1STestDetailActivity extends BaseActivity implements PrintResultC
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-                startScanSN();
+                startScanSN(mDeviceType);
             }
         } else {
             isNewSN = false;
             sendBleData(BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_AQ1S_WRITE_SN, mDevice.getSn().getBytes()));
         }
-    }
-
-    private void startScanSN() {
-        Intent intent = new Intent(this, CommonScanActivity.class);
-        intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
-
-        startActivityForResult(intent, 0x199);
     }
 
 

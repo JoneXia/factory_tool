@@ -71,6 +71,7 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
     private ArrayList<P3TestUnit> mP3AutoTestUnits;
     private boolean isInAutoUnits = false;
     private int mAutoUnitStep; //有些测试项中会细分成几步
+    private boolean isNewSN = false;
 
 
     @Override
@@ -252,6 +253,32 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode != RESULT_OK)
+            return;
+
+        switch (requestCode) {
+            case 0x199:
+                String sn = data.getStringExtra(DeviceCommonUtils.EXTRA_DEVICE_SN);
+                if (!DeviceCommonUtils.checkSN(sn, mDeviceType)) {
+                    showShortToast("无效的SN！");
+                    return;
+                }
+                if (mDevice.getSn() == null || !mDevice.getSn().equals(sn)) {
+                    isNewSN = true;
+                }
+                mDevice.setSn(sn);
+                mDevice.setCreation(System.currentTimeMillis());
+                LogcatStorageHelper.addLog("write SN: " + sn);
+
+                sendBleData(P3DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_P3_WRITE_SN, sn.getBytes()));
+                break;
+        }
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.test_btn_1:
@@ -274,7 +301,7 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
                         }
                         break;
                     case TEST_MODE_RESET_SN:
-                        showSNSetDialog();
+                        startScanSN(mDeviceType);
                         break;
                     case TEST_MODE_SN:
                         startSetSn();
@@ -508,7 +535,10 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
                 } else {
                     mDescTextView.append("\nSN写入成功");
                     result = true;
-                    DeviceCommonUtils.storeSucceedDeviceInfo(mDeviceType, mDevice, null);
+
+                    if (isNewSN) {
+                        DeviceCommonUtils.storeSucceedDeviceInfo(mDeviceType, mDevice, null);
+                    }
                 }
                 break;
             case BLEConsts.OP_CODE_P3_TEST_RESULT:
@@ -576,15 +606,7 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-                String sn = DeviceCommonUtils.generateSNForTester(mDeviceType, mTester);
-                if (sn == null) {
-                    showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
-                    return;
-                }
-                mDevice.setSn(sn);
-                mDevice.setCreation(System.currentTimeMillis());
-
-                sendBleData(P3DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_P3_WRITE_SN, sn.getBytes()));
+                startScanSN(mDeviceType);
             }
         } else {
             sendBleData(P3DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_P3_WRITE_SN, mDevice.getSn().getBytes()));

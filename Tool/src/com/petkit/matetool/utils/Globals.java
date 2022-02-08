@@ -75,7 +75,27 @@ public class Globals {
 	public static final String DEVICE_TYPE_CODE_AQH1_500 = "T";
 	public static final String DEVICE_TYPE_CODE_AQH1_1000 = "U";
 
-
+	public static final String DEVICE_TYPE_CODE_NEW_D1 = "D1";
+	public static final String DEVICE_TYPE_CODE_NEW_Z1 = "Z1";
+	public static final String DEVICE_TYPE_CODE_NEW_D2 = "D2";
+	public static final String DEVICE_TYPE_CODE_NEW_Z1S = "Z1S";
+	public static final String DEVICE_TYPE_CODE_NEW_T3 = "T3";
+	public static final String DEVICE_TYPE_CODE_NEW_K2 = "K2";
+	public static final String DEVICE_TYPE_CODE_NEW_D3 = "D3";
+	public static final String DEVICE_TYPE_CODE_NEW_D4 = "D4";
+	public static final String DEVICE_TYPE_CODE_NEW_P3C = "P3C";
+	public static final String DEVICE_TYPE_CODE_NEW_W5 = "W5";
+	public static final String DEVICE_TYPE_CODE_NEW_W5C = "W5C";
+	public static final String DEVICE_TYPE_CODE_NEW_T4 = "T4";
+	public static final String DEVICE_TYPE_CODE_NEW_K3 = "M";
+	public static final String DEVICE_TYPE_CODE_NEW_AQR = "AQ-R";
+	public static final String DEVICE_TYPE_CODE_NEW_P3D = "P3D";
+	public static final String DEVICE_TYPE_CODE_NEW_AQ1S = "AQ-1S";
+	public static final String DEVICE_TYPE_CODE_NEW_R2 = "R2";
+	public static final String DEVICE_TYPE_CODE_NEW_W5N = "W5";
+	public static final String DEVICE_TYPE_CODE_NEW_W4X = "W4X";
+	public static final String DEVICE_TYPE_CODE_NEW_AQH1_500 = "AQ-H1";
+	public static final String DEVICE_TYPE_CODE_NEW_AQH1_1000 = "AQ-H1";
 
 	public static final int TYPE_TEST_PARTIALLY         = 1;
 	public static final int TYPE_TEST                   = 2;

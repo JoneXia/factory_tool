@@ -27,6 +27,8 @@ import android.widget.TextView;
 
 import com.petkit.android.utils.CommonUtils;
 import com.petkit.matetool.R;
+import com.petkit.matetool.ui.common.CommonScanActivity;
+import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.widget.InputMethodRelativeLayout;
 import com.petkit.matetool.widget.LoadDialog;
 import com.umeng.analytics.MobclickAgent;
@@ -389,4 +391,13 @@ public abstract class BaseActivity extends Activity implements OnClickListener, 
 		intent.putExtra(MediaStore.EXTRA_OUTPUT, u);
 		startActivityForResult(intent, FLAG_CHOOSE_CAMERA);
 	}
+
+	protected void startScanSN(int deviceType) {
+		Intent intent = new Intent(this, CommonScanActivity.class);
+		intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, deviceType);
+
+		startActivityForResult(intent, 0x199);
+	}
+
+
 }
