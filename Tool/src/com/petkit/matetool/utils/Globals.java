@@ -76,7 +76,6 @@ public class Globals {
 	public static final String DEVICE_TYPE_CODE_AQH1_1000 = "U";
 
 
-
 	public static final int TYPE_TEST_PARTIALLY         = 1;
 	public static final int TYPE_TEST                   = 2;
 	public static final int TYPE_MAINTAIN               = 3;

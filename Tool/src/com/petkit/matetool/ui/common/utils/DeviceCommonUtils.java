@@ -503,7 +503,7 @@ public class DeviceCommonUtils {
             throw  new RuntimeException("storeSucceedDeviceInfo failed, " + (device == null ? "device is null !" : device.toString()));
         }
 
-        PetkitLog.d("storeSucceedDeviceInfo info: " + device.generateMainJson(ageingResult));
+        LogcatStorageHelper.addLog("storeSucceedDeviceInfo info: " + device.generateMainJson(ageingResult));
         FileUtils.writeStringToFile(getStoreDeviceInfoFilePath(deviceType), device.generateMainJson(ageingResult) + ",", true);
     }
 
@@ -522,7 +522,7 @@ public class DeviceCommonUtils {
 //            throw  new RuntimeException("storeSucceedDeviceInfo failed, " + "device type must be device with K3");
 //        }
 
-        PetkitLog.d("storeSucceedDeviceInfo info: " + device.generateMainJson(ageingResult, withK3));
+        LogcatStorageHelper.addLog("storeSucceedDeviceInfo info: " + device.generateMainJson(ageingResult, withK3));
         FileUtils.writeStringToFile(getStoreDeviceInfoFilePath(deviceType), device.generateMainJson(ageingResult, withK3) + ",", true);
     }
 
@@ -592,12 +592,16 @@ public class DeviceCommonUtils {
     }
 
     public static boolean checkSN (String sn, int deviceType) {
-        if (sn == null || sn.length() != 14)
+        if (sn == null || sn.length() < 14)
             return false;
 
         if (mDeviceConfigs.get(deviceType) != null) {
-            return mDeviceConfigs.get(deviceType).getDeviceSNFlag().equalsIgnoreCase(sn.substring(8,9));
+            return sn.contains(mDeviceConfigs.get(deviceType).getDeviceSNFlag());
         } else {
+            switch (deviceType) {
+                case Globals.W5C:
+                    return sn.contains(Globals.DEVICE_TYPE_CODE_W5C);
+            }
             return true;
         }
 
