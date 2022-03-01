@@ -368,11 +368,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
 
         tempRadioButton = (RadioButton) findViewById(R.id.aqh1_500);
         tempRadioButton.setText(getTextDetail(Globals.AQH1_500, "鱼缸加热棒-500W（AQ-H1）" + " v" + TOOL_AQH1_VERSION));
-        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.aqh1_1000);
         tempRadioButton.setText(getTextDetail(Globals.AQH1_1000, "鱼缸加热棒-100W（AQ-H1）" + " v" + TOOL_AQH1_VERSION));
-        tempRadioButton.setVisibility(View.GONE);
 
         //TODO: 新增设备需对应添加
     }

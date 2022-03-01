@@ -39,18 +39,16 @@ import com.petkit.matetool.ui.utils.PetkitSocketInstance;
 import com.petkit.matetool.ui.utils.PrintResultCallback;
 import com.petkit.matetool.ui.utils.PrintUtils;
 import com.petkit.matetool.utils.DateUtil;
+import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.JSONUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 
-import static com.petkit.matetool.ui.AQH1.AQH1Utils.AQH1TestModes.TEST_MODE_AGEINGRESULT;
-import static com.petkit.matetool.ui.AQH1.AQH1Utils.AQH1TestModes.TEST_MODE_AUTO;
-import static com.petkit.matetool.ui.AQH1.AQH1Utils.AQH1TestModes.TEST_MODE_BALANCE_SET;
+import static com.petkit.matetool.ui.AQH1.AQH1Utils.AQH1TestModes.TEST_MODE_TEMP_SET_1;
 import static com.petkit.matetool.ui.utils.PrintUtils.isPrinterConnected;
 import static com.petkit.matetool.utils.Globals.TEST_FAILED;
 import static com.petkit.matetool.utils.Globals.TEST_PASS;
@@ -79,7 +77,8 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
     private boolean isInAutoUnits = false;
     private int mAutoUnitStep; //有些测试项中会细分成几步
     private int mDeviceType;
-
+    private short offset1, offset2;
+    private boolean tempValid = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,42 +169,24 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
             case TEST_MODE_KEY:
                 mPromptTextView.setText("需要分别测试菜单按键和OK按键！");
                 break;
-            case TEST_MODE_DC:
-                mPromptTextView.setText("正常电压范围（单位mV）：[11000, 13000]");
-                break;
             case TEST_MODE_LED:
                 mPromptTextView.setText("测试显示屏和蜂鸣器，观察是否正常！");
                 break;
             case TEST_MODE_AGEINGRESULT:
                 mPromptTextView.setText("观察老化数据，手动判断结果！");
                 break;
-            case TEST_MODE_MOTOR_2:
-                mPromptTextView.setText("测试集便盒电机，需分别测试合上位置霍尔和打开位置霍尔！");
+            case TEST_MODE_TEMP:
+                mPromptTextView.setText("检测温度，需与正确温度进行比较！");
                 break;
-            case TEST_MODE_BALANCE:
-                mPromptTextView.setText("观察秤数据，手动判断是否正常！");
+            case TEST_MODE_TEMP_SET_1:
+            case TEST_MODE_TEMP_SET_2:
+                mPromptTextView.setText("温度校准，校准后温度应该与正确温度一致！");
                 break;
-            case TEST_MODE_BALANCE_SET:
-            case TEST_MODE_BALANCE_SET_2:
-                mPromptTextView.setText("秤校准，请按照提示操作！");
-                break;
-            case TEST_MODE_MOTOR:
-                mPromptTextView.setText("需分别测试初始位置霍尔、排废位置霍尔和抚平位置霍尔！");
-                break;
-            case TEST_MODE_PROXIMITY:
-                mPromptTextView.setText("测试接近传感器！");
-                break;
-            case TEST_MODE_COVER_HOLZER:
-                mPromptTextView.setText("需分别测试上盖盖上与取下！");
+            case TEST_MODE_HOT:
+                mPromptTextView.setText("测试加热棒的功率、电压和电流！");
                 break;
             case TEST_MODE_BT:
                 mPromptTextView.setText("需测试蓝牙正常工作！");
-                break;
-            case TEST_MODE_TIME:
-                mPromptTextView.setText("测试设备时钟正常！");
-                break;
-            case TEST_MODE_AUTO:
-                mPromptTextView.setText("自动测试项包括：电压、RTC、蓝牙，点击开始后程序自动完成检测。");
                 break;
             default:
                 break;
@@ -217,8 +198,10 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
     private void refershBtnView() {
         switch (mTestUnits.get(mCurTestStep).getType()) {
             case TEST_MODE_AGEINGRESULT:  // 人工判定结果
-            case TEST_MODE_BALANCE:
+            case TEST_MODE_TEMP:
             case TEST_MODE_LED:
+            case TEST_MODE_TEMP_SET_1:
+            case TEST_MODE_TEMP_SET_2:
                 mBtn1.setText(R.string.Start);
                 mBtn2.setText(R.string.Failure);
                 mBtn2.setBackgroundResource(R.drawable.selector_red);
@@ -318,7 +301,7 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
             case R.id.test_btn_2:
                 switch (mTestUnits.get(mCurTestStep).getType()) {
                     case TEST_MODE_LED:
-                    case TEST_MODE_PROXIMITY:
+                    case TEST_MODE_TEMP:
                         isWriteEndCmd = true;
                         mTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
 
@@ -331,15 +314,6 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
                         startActivity(PrintActivity.class);
                         break;
                     case TEST_MODE_AGEINGRESULT:
-                        mTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
-                        gotoNextTestModule();
-                        break;
-                    case TEST_MODE_BALANCE:
-                        params = new HashMap<>();
-                        params.put("module", mTestUnits.get(mCurTestStep).getModule());
-                        params.put("state", 0);
-                        PetkitSocketInstance.getInstance().sendString(AQH1Utils.getRequestForKeyAndPayload(163, params));
-
                         mTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
                         gotoNextTestModule();
                         break;
@@ -358,22 +332,18 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
                         mTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         gotoNextTestModule();
                         break;
-                    case TEST_MODE_BALANCE:
-                        HashMap<String, Object> params = new HashMap<>();
-                        params.put("module", mTestUnits.get(mCurTestStep).getModule());
-                        params.put("state", 0);
-                        PetkitSocketInstance.getInstance().sendString(AQH1Utils.getRequestForKeyAndPayload(163, params));
-
-                        mTestUnits.get(mCurTestStep).setResult(TEST_PASS);
-                        gotoNextTestModule();
-                        break;
+                    case TEST_MODE_TEMP:
+                        if (!tempValid) {
+                            showShortToast("两个传感器温差较大，请确认！");
+                            return;
+                        }
                     default:
                         isWriteEndCmd = true;
                         if (mTestUnits.get(mCurTestStep).getResult() != TEST_PASS) {
                             mTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
                         }
 
-                        params = new HashMap<>();
+                        HashMap<String, Object> params = new HashMap<>();
                         params.put("module", mTestUnits.get(mCurTestStep).getModule());
                         params.put("state", 0);
                         PetkitSocketInstance.getInstance().sendString(AQH1Utils.getRequestForKeyAndPayload(163, params));
@@ -387,10 +357,6 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
         HashMap<String, Object> params = new HashMap<>();
         params.put("module", mTestUnits.get(mCurTestStep).getModule());
         switch (mTestUnits.get(mCurTestStep).getType()) {
-            case TEST_MODE_TIME:
-                params.put("state", mTestUnits.get(mCurTestStep).getState());
-                params.put("time", DateUtil.formatISO8601DateWithMills(new Date()));
-                break;
             case TEST_MODE_AUTO:
                 startAutoUnitsTest();
                 return;
@@ -432,11 +398,6 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
             HashMap<String, Object> params = new HashMap<>();
             params.put("module", mAutoTestUnits.get(mAutoUnitStep).getModule());
             params.put("state", mAutoTestUnits.get(mAutoUnitStep).getState());
-            switch (mAutoTestUnits.get(mAutoUnitStep).getType()) {
-                case TEST_MODE_TIME:
-                    params.put("time", DateUtil.formatISO8601DateWithMills(new Date()));
-                    break;
-            }
 
             PetkitSocketInstance.getInstance().sendString(AQH1Utils.getRequestForKeyAndPayload(163, params));
         } else {
@@ -463,12 +424,72 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
         if (mCurTestStep == mTestUnits.size() - 1 || !isAutoTest) {
             finish();
         } else {
+            switch (mTestUnits.get(mCurTestStep).getType()) {
+                //TODO: 测试项正在测试时，增加相应的提示
+                case TEST_MODE_TEMP_SET_1:
+                case TEST_MODE_TEMP_SET_2:
+                    changeSetViewState(View.GONE);
+                    break;
+            }
             mTempResult = 0;
             mTempStep = 0;
             mCurTestStep++;
             refreshView();
         }
     }
+
+    private void changeSetViewState(int state) {
+        if (state == View.VISIBLE) {
+            findViewById(R.id.set_view).setVisibility(View.VISIBLE);
+
+            View.OnClickListener listener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    switch (v.getId()) {
+                        case R.id.set_btn_1:
+                            setNewTemp((short) -1);
+                            break;
+                        case R.id.set_btn_2:
+                            setNewTemp((short) 1);
+                            break;
+                    }
+                }
+            };
+
+            Button btn1 = (Button) findViewById(R.id.set_view).findViewById(R.id.set_btn_1);
+            btn1.setText("-0.1℃");
+            btn1.setOnClickListener(listener);
+            Button btn2 = (Button) findViewById(R.id.set_view).findViewById(R.id.set_btn_2);
+            btn2.setText("+0.1℃");
+            btn2.setOnClickListener(listener);
+        } else {
+            findViewById(R.id.set_view).setVisibility(View.GONE);
+        }
+    }
+
+    private void setNewTemp(short offset) {
+
+        if (mTestUnits.get(mCurTestStep).getType() == TEST_MODE_TEMP_SET_1) {
+            offset1 += offset;
+        } else {
+            offset2 += offset;
+        }
+
+        if (Math.abs(offset1) > 30 || Math.abs(offset2) > 30) {
+            mDescTextView.append("校准温度不能超过3℃");
+        } else {
+            short a = (short) ((0x0000 | Byte.decode(String.valueOf(offset2))) << 8);
+            short b = (short) (0x00ff & (Byte.decode(String.valueOf(offset1))));
+            short c = (short) (a | b);
+            int state = 0xFFFF0000 | c;
+
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("module", mTestUnits.get(mCurTestStep).getModule());
+            params.put("state", state);
+            PetkitSocketInstance.getInstance().sendString(AQH1Utils.getRequestForKeyAndPayload(163, params));
+        }
+    }
+
 
     @Override
     public void finish() {
@@ -507,6 +528,10 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
 
                                     switch (mTestUnits.get(mCurTestStep).getType()) {
                                         //TODO: 测试项正在测试时，增加相应的提示
+                                        case TEST_MODE_TEMP_SET_1:
+                                        case TEST_MODE_TEMP_SET_2:
+                                            changeSetViewState(View.VISIBLE);
+                                            break;
                                     }
                                 }
                                 break;
@@ -524,19 +549,30 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
                 boolean result = false;
                 StringBuilder desc = new StringBuilder();
 
-                if ((mTestUnits.get(mCurTestStep).getType() == TEST_MODE_AUTO &&
-                        mAutoTestUnits != null && mAutoUnitStep < mAutoTestUnits.size() &&
-                        mAutoTestUnits.get(mAutoUnitStep).getModule() != moduleStateStruct.getModule())
-                        || (mTestUnits.get(mCurTestStep).getType() != TEST_MODE_AUTO &&
-                        moduleStateStruct.getModule() != mTestUnits.get(mCurTestStep).getModule())) {
+                if (moduleStateStruct.getModule() != mTestUnits.get(mCurTestStep).getModule()) {
                     LogcatStorageHelper.addLog("response和request的module不一致！放弃！");
                     return;
                 }
 
                 switch (moduleStateStruct.getModule()) {
-                    case 0:
-                        desc.append("\n").append("直流电压").append(":").append(moduleStateStruct.getSub0()).append("mv");
-                        result = moduleStateStruct.getSub0() >= 11000 && moduleStateStruct.getSub0() <= 13000;
+                    case 3:
+//                        desc.append("\n").append("mcu").append("-").append("通信").append("-").append(moduleStateStruct.getSub0() == 1 ? "打开" : "异常");
+//                        if (moduleStateStruct.getSub0() > 0) {
+//                            mTempResult = mTempResult | 0x1;
+//                        }
+                        if (moduleStateStruct.getSub0() > 0) {
+                            mTempResult = mTempResult | 0x1;
+                            desc.append("\n").append("按键").append("-").append("菜单键").append("-").append(getKeyDescByState(moduleStateStruct.getSub0()));
+                        }
+                        if (moduleStateStruct.getSub1() > 0) {
+                            mTempResult = mTempResult | 0x10;
+                            desc.append("\n").append("按键").append("-").append("电源键").append("-").append(getKeyDescByState(moduleStateStruct.getSub1()));
+                        }
+                        result = mTempResult == 0x11;
+                        break;
+                    case 2:
+                        desc.append("\n").append("蓝牙").append(":").append("已打开");
+                        startBleTest(moduleStateStruct.getBtMac());
                         break;
                     case 1:
                         if (moduleStateStruct.getState() == 0) {
@@ -548,126 +584,73 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
                         }
                         result = mTempResult == 0x11;
                         break;
-                    case 2:
-                        desc.append("\n").append("mcu").append("-").append("通信").append("-").append(moduleStateStruct.getSub0() == 1 ? "正常" : "异常");
-                        if (moduleStateStruct.getSub0() > 0) {
-                            mTempResult = mTempResult | 0x1;
-                        }
-                        if (moduleStateStruct.getSub1() > 0) {
-                            mTempResult = mTempResult | 0x10;
-                            desc.append("\n").append("按键").append("-").append("菜单").append("-").append(getKeyDescByState(moduleStateStruct.getSub1()));
-                        }
-                        if (moduleStateStruct.getSub2() > 0) {
-                            mTempResult = mTempResult | 0x100;
-                            desc.append("\n").append("按键").append("-").append("OK键").append("-").append(getKeyDescByState(moduleStateStruct.getSub2()));
-                        }
-                        result = mTempResult == 0x111;
-                        break;
-                    case 3:
-                        if ((moduleStateStruct.getSub0() & 0x1) == 1
-                                        || (moduleStateStruct.getSub0() >> 1 & 0x1) == 1) {
-                            desc.append("\n").append("电机").append("-").append(moduleStateStruct.getState() == 0 ? "异常" : "正常")
-                                    .append((moduleStateStruct.getSub0() & 0x1) == 1 ? "，打开到位" : "，打开不到位")
-                                    .append((moduleStateStruct.getSub0() >> 1 & 0x1) == 1 ? "，关闭到位" : "，关闭不到位");
-                        }
-
-                        if (moduleStateStruct.getState() > 0) {
-                            if ((moduleStateStruct.getSub0() & 0x3) == 1) {
-                                mTempResult = (mTempResult | 0x1);
-                            }
-                            if ((moduleStateStruct.getSub0() & 0x2) == 2) {
-                                mTempResult = (mTempResult | 0x10);
-                            }
-                        }
-                        result = mTempResult == 0x11;
-                        break;
                     case 4:
-                        desc.append("\n").append("电机").append("-").append(moduleStateStruct.getState() == 1 ? "正常" : "异常")
-                                .append("，电流").append("：").append((moduleStateStruct.getSub2()) == 1 ? "正常" : "异常").append("\n");
-
-                        if (moduleStateStruct.getState() > 0) {
-                            if ((moduleStateStruct.getSub0() & 0x1) == 1) {
-                                mTempResult = (mTempResult | 0x1);
-                            }
-                            if ((moduleStateStruct.getSub0() >> 1 & 0x1) == 1) {
-                                mTempResult = (mTempResult | 0x10);
-                            }
-                            if ((moduleStateStruct.getSub0() >> 2 & 0x1) == 1) {
-                                mTempResult = (mTempResult | 0x100);
-                            }
-                            desc.append("初始位置霍尔: ").append((mTempResult & 0x1) == 1 ? "正常" : "测试中").append("\n")
-                                    .append("排废位置霍尔: ").append((mTempResult & 0x10) == 0x10 ? "正常" : "测试中").append("\n")
-                                    .append("抚平位置霍尔: ").append((mTempResult & 0x100) == 0x100 ? "正常" : "测试中").append("\n");
-                        }
-                        result = mTempResult == 0x111;
+                        desc.append("\n").append("温度1：").append(moduleStateStruct.getSub0()/10f + "℃")
+                                .append(", 温度2：").append(moduleStateStruct.getSub1()/10f + "℃");
+                        tempValid = Math.abs(moduleStateStruct.getSub0() - moduleStateStruct.getSub1()) <= 20;
                         break;
                     case 5:
-                        if (mTestUnits.get(mCurTestStep).getState() == 1) {
-                            desc.append("\n").append("秤").append("-").append("校准模式").append("-");
-                            switch (moduleStateStruct.getSub2()) {
-                                case 0:
-                                    desc.append("空桶");
-                                    mTempResult = mTempResult | 0x1;
-                                    break;
-                                case 1:
-                                    desc.append(mTestUnits.get(mCurTestStep).getType() == TEST_MODE_BALANCE_SET ? "10KG模式" : "4KG模式");
-                                    mTempResult = mTempResult | 0x10;
-                                    break;
-                                case 2:
-                                    desc.append(mTestUnits.get(mCurTestStep).getType() == TEST_MODE_BALANCE_SET ? "20KG模式" : "8KG模式");
-                                    mTempResult = mTempResult | 0x100;
-                                    break;
-                                case 3:
-                                    if (mTempResult == 0x111) {
-                                        desc.append("校准完成");
-                                        result = true;
-                                    }
-                                    break;
-                            }
-                        }
-                        desc.append("\n").append("秤").append("-").append("读取数值").append("-").append(moduleStateStruct.getSub1());
-                        desc.append("\n").append("秤").append("-").append("实际克数").append("-").append(moduleStateStruct.getSub0()).append("克");
-                        break;
-                    case 6:
-                        int leftState = moduleStateStruct.getState() & 0x1;
-                        int rightState = (moduleStateStruct.getState() >> 1) & 0x1;
-                        desc.append("\n接近传感器： ").append(" 左 - ").append(leftState == 1 ? "已靠近； " : "未靠近； ")
-                                .append(" 右 - ").append(rightState == 1 ? "已靠近" : "未靠近");
-
-                        desc.append("\n").append("左侧读取数值：").append(moduleStateStruct.getSub1());
-                        desc.append("\n").append("右侧读取数值：").append(moduleStateStruct.getSub2());
-
-                        if (leftState > 0) {
+                        if (moduleStateStruct.getSub0() > 0) {
                             mTempResult = mTempResult | 0x1;
+                            desc.append("\n").append("水位：").append("没水");
                         } else {
                             mTempResult = mTempResult | 0x10;
-                        }
-                        if (rightState > 0) {
-                            mTempResult = mTempResult | 0x100;
-                        } else {
-                            mTempResult = mTempResult | 0x1000;
-                        }
-                        result = mTempResult == 0x1111;
-                        break;
-                    case 7:
-                        if (moduleStateStruct.getState() > 0) {
-                            mTempResult = mTempResult | 0x1;
-                            desc.append("\n").append("上盖：").append("已安装");
-                        } else {
-                            mTempResult = mTempResult | 0x10;
-                            desc.append("\n").append("上盖：").append("已打开");
+                            desc.append("\n").append("水位：").append("有水");
                         }
                         result = mTempResult == 0x11;
                         break;
-                    case 8:
-                        desc.append("\n").append("蓝牙").append(":").append("已打开");
-                        //TODO: 连接蓝牙
-                        startBleTest(moduleStateStruct.getBtMac());
+                    case 6:
+                        desc.append("\n").append("功率").append("：").append(moduleStateStruct.getSub0() + "W")
+                                .append("，电压").append("：").append((moduleStateStruct.getSub1()) + "V")
+                                .append("，电流").append("：").append((moduleStateStruct.getSub2()) + "A");
+
+                        if (moduleStateStruct.getState() == 1 && mTempResult > 0) {
+                            if (moduleStateStruct.getSub0() < 50) {
+                                mTempResult = 0x1;
+                                desc.append("关闭状态测试通过，打开加热功能");
+                            }
+                        } else if (moduleStateStruct.getState() == 2) {
+                            if (mDeviceType == Globals.AQH1_1000) {
+                                if (moduleStateStruct.getSub0() >= 900 && moduleStateStruct.getSub0() <= 1100) {
+                                    mTempResult = mTempResult | 0x10;
+
+                                    HashMap<String, Object> params = new HashMap<>();
+                                    params.put("module", mTestUnits.get(mCurTestStep).getModule());
+                                    params.put("state", 2);
+                                    PetkitSocketInstance.getInstance().sendString(AQH1Utils.getRequestForKeyAndPayload(163, params));
+                                }
+                            } else {
+                                if (moduleStateStruct.getSub0() >= 450 && moduleStateStruct.getSub0() <= 550) {
+                                    mTempResult = mTempResult | 0x10;
+
+                                    HashMap<String, Object> params = new HashMap<>();
+                                    params.put("module", mTestUnits.get(mCurTestStep).getModule());
+                                    params.put("state", 2);
+                                    PetkitSocketInstance.getInstance().sendString(AQH1Utils.getRequestForKeyAndPayload(163, params));
+                                }
+                            }
+                        }
+                        result = mTempResult == 0x11;
                         break;
-                    case 9:
+                    case 7:
                         if (!isEmpty(moduleStateStruct.getTime())) {
                             desc.append("\n").append(DateUtil.getFormatDateFromString(moduleStateStruct.getTime()));
                             result = true;
+                        }
+                        int a = moduleStateStruct.getSub0()&0xffff;
+                        int b = (moduleStateStruct.getSub0()>>16)&0xffff;
+                        offset1 = (short) (a - b);
+                        offset1 = (short) ((moduleStateStruct.getSub0()&0xffff) - (moduleStateStruct.getSub0()>>16)&0xffff);
+                        offset2 = (short) ((moduleStateStruct.getSub1()&0xffff) - (moduleStateStruct.getSub1()>>16)&0xffff);
+
+                        if (mTestUnits.get(mCurTestStep).getType() == TEST_MODE_TEMP_SET_1) {
+                            desc.append("\n").append("温度1 - ")
+                                    .append("校准前：").append(((moduleStateStruct.getSub0()>>16)&0xffff)/10f + "℃")
+                                    .append("，校准后：").append((moduleStateStruct.getSub0()&0xffff)/10f + "℃");
+                        } else {
+                            desc.append("\n").append("温度2 - ")
+                                    .append("校准前：").append(((moduleStateStruct.getSub1()>>16)&0xffff)/10f + "℃")
+                                    .append("，校准后：").append((moduleStateStruct.getSub1()&0xffff)/10f + "℃");
                         }
                         break;
                 }
@@ -754,11 +737,7 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
                 break;
             case 167:
                 mAgeingResult = data;
-                if (mTestUnits.get(mCurTestStep).getType() == TEST_MODE_AGEINGRESULT) {
-                    mDescTextView.setText(mAgeingResult);
-                } else {
-                    startSetSn();
-                }
+                startSetSn();
                 break;
             case 110:
                 try {
@@ -804,25 +783,8 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-                String sn = DeviceCommonUtils.generateSNForTester(mDeviceType, mTester);
-                if (sn == null) {
-                    showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
-                    return;
-                }
-                mDevice.setSn(sn);
-                mDevice.setCreation(System.currentTimeMillis());
-
-                //写入设备前先存储到临时数据区，写入成功后需删除
-//                AQH1Utils.storeTempDeviceInfo(mDevice);
-
-                HashMap<String, Object> payload = new HashMap<>();
-                payload.put("mac", mDevice.getMac());
-                payload.put("sn", sn);
-                if (mTestUnits.get(mCurTestStep).getState() == 2) {
-                    payload.put("force", 100);
-                }
-                payload.put("opt", 0);
-                PetkitSocketInstance.getInstance().sendString(AQH1Utils.getRequestForKeyAndPayload(161, payload));
+//                startScanSN(mDeviceType);
+                generateAndSendSN();
             }
         } else {
             HashMap<String, Object> params = new HashMap<>();
@@ -831,6 +793,25 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
             params.put("opt", 0);
             PetkitSocketInstance.getInstance().sendString(AQH1Utils.getRequestForKeyAndPayload(161, params));
         }
+    }
+
+    private void generateAndSendSN() {
+        String sn = DeviceCommonUtils.generateSNForTester(mDeviceType, mTester);
+        if (sn == null) {
+            showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
+            return;
+        }
+        mDevice.setSn(sn);
+        mDevice.setCreation(System.currentTimeMillis());
+
+        HashMap<String, Object> payload = new HashMap<>();
+        payload.put("mac", mDevice.getMac());
+        payload.put("sn", sn);
+        if (mTestUnits.get(mCurTestStep).getState() == 2) {
+            payload.put("force", 100);
+        }
+        payload.put("opt", 0);
+        PetkitSocketInstance.getInstance().sendString(AQH1Utils.getRequestForKeyAndPayload(161, payload));
     }
 
     private Bundle getPrintParam() {
@@ -892,7 +873,7 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
     private void showSNSetDialog() {
 
         if (mDevice == null || mDevice.getMac() == null) {
-            showShortToast("无效的猫厕所");
+            showShortToast("无效的加热棒");
             return;
         }
 

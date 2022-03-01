@@ -9,6 +9,7 @@ import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.DevicesError;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.D4.mode.D4TestUnit;
+import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.petkit.android.utils.LogcatStorageHelper.getFileName;
-import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_D4;
+import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_NEW_D4;
 import static com.petkit.matetool.utils.Globals.PERMISSION_ERASE;
 
 /**
@@ -187,18 +188,7 @@ public class D4Utils {
             return null;
         }
 
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(tester.getCode())
-                .append(day)
-                .append(DEVICE_TYPE_CODE_D4)
-                .append(tester.getStation())
-                .append(serializableNumber);
-
-        if(stringBuilder.toString().length() != 14) {
-            throw  new RuntimeException("generate SN failed!");
-        }
-
-        return stringBuilder.toString().toUpperCase();
+        return DeviceCommonUtils.generateSN(day, DEVICE_TYPE_CODE_NEW_D4, serializableNumber);
     }
 
     /**

@@ -8,6 +8,7 @@ import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.DevicesError;
 import com.petkit.matetool.model.Tester;
+import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.ui.t3.mode.T3TestUnit;
 
 import java.io.File;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.petkit.android.utils.LogcatStorageHelper.getFileName;
-import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_T3;
+import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_NEW_T3;
 import static com.petkit.matetool.utils.Globals.PERMISSION_ERASE;
 
 /**
@@ -204,18 +205,7 @@ public class T3Utils {
             return null;
         }
 
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(tester.getCode())
-                .append(day)
-                .append(DEVICE_TYPE_CODE_T3)
-                .append(tester.getStation())
-                .append(serializableNumber);
-
-        if(stringBuilder.toString().length() != 14) {
-            throw  new RuntimeException("generate SN failed!");
-        }
-
-        return stringBuilder.toString().toUpperCase();
+        return DeviceCommonUtils.generateSN(day, DEVICE_TYPE_CODE_NEW_T3, serializableNumber);
     }
 
     /**

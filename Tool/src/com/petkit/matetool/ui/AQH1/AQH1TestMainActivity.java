@@ -97,7 +97,7 @@ public class AQH1TestMainActivity extends BaseActivity implements PetkitSocketIn
 
     @Override
     protected void setupViews() {
-        setTitle("猫厕所测试");
+        setTitle(mDeviceType == Globals.AQH1_500 ? "AQ-H1 500w测试" : "AQ-H1 1000w测试");
 
         mWifiAdminSimple = new WifiAdminSimple(this);
 

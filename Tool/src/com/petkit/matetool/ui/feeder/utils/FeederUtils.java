@@ -4,9 +4,10 @@ import com.google.gson.Gson;
 import com.petkit.android.utils.CommonUtils;
 import com.petkit.android.utils.FileUtils;
 import com.petkit.android.utils.PetkitLog;
+import com.petkit.matetool.model.Tester;
+import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.ui.feeder.mode.Feeder;
 import com.petkit.matetool.ui.feeder.mode.FeederTestUnit;
-import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.feeder.mode.FeedersError;
 
 import java.io.File;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.petkit.android.utils.LogcatStorageHelper.getFileName;
-import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_D1;
+import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_NEW_D1;
 import static com.petkit.matetool.utils.Globals.PERMISSION_ERASE;
 
 /**
@@ -153,19 +154,7 @@ public class FeederUtils {
             return null;
         }
 
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(tester.getCode())
-                .append(day)
-                .append(DEVICE_TYPE_CODE_D1)
-                .append(tester.getStation())
-                .append(serializableNumber);
-
-        if(stringBuilder.toString().length() != 14) {
-            throw  new RuntimeException("generate SN failed!");
-        }
-
-//        return "0A170516P10022";
-        return stringBuilder.toString();
+        return DeviceCommonUtils.generateSN(day, DEVICE_TYPE_CODE_NEW_D1, serializableNumber);
     }
 
     /**

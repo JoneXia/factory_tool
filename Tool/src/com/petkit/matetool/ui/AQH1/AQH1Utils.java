@@ -19,15 +19,12 @@ public class AQH1Utils {
         TEST_MODE_DC,   //电压
         TEST_MODE_LED,  //显示屏和蜂鸣器
         TEST_MODE_KEY,  //按键
-        TEST_MODE_MOTOR,    //电机
-        TEST_MODE_MOTOR_2,   //集便盒电机
-        TEST_MODE_BALANCE_SET,  //半成品秤校准
-        TEST_MODE_BALANCE_SET_2,  //成品秤校准
-        TEST_MODE_BALANCE,  //秤读取
-        TEST_MODE_PROXIMITY, //接近
-        TEST_MODE_COVER_HOLZER, //上盖霍尔
+        TEST_MODE_TEMP,    //温度
+        TEST_MODE_WATER,   //水位检测
+        TEST_MODE_TEMP_SET_1,
+        TEST_MODE_TEMP_SET_2,  //温度校准
+        TEST_MODE_HOT,  //加热
         TEST_MODE_BT,   //蓝牙
-        TEST_MODE_TIME, //时钟
         TEST_MODE_MAC,
         TEST_MODE_SN,   //写SN
         TEST_MODE_RESET_SN, //重置SN
@@ -92,32 +89,24 @@ public class AQH1Utils {
             results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
         } else {
             if (type != Globals.TYPE_TEST_PARTIALLY) {
-                results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_AGEINGRESULT, "老化结果", 97, 1));
+//                results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_AGEINGRESULT, "老化结果", 97, 1));
             }
 
             if (type == Globals.TYPE_MAINTAIN) {
 //                results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_DC, "电压测试", 0, 1));
 //                results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_TIME, "时钟测试", 9, 1));
-//                results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_BT, "蓝牙测试", 8, 1));
             } else {
 //                results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_AUTO, "自动项测试", 10, 1));
             }
 
-//            results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_LED, "显示屏和蜂鸣器测试", 1, 1));
-//            results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_KEY, "按键测试", 2, 1));
-//            results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_MOTOR_2, "集便盒电机测试", 3, 1));
-
-//            if (type == Globals.TYPE_TEST) {
-//                results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_BALANCE_SET_2, "秤校准", 5, 1));
-//            } else if (type != Globals.TYPE_CHECK) {
-//                results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_BALANCE_SET, "秤校准", 5, 1));
-//            } else {
-//                results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_BALANCE, "秤读取", 5, 3));
-//            }
-//            results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_MOTOR, "马达测试", 4, 1));
-
-//            results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_PROXIMITY, "接近模组", 6, 1));
-//            results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_COVER_HOLZER, "上盖霍尔", 7, 1));
+            results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_BT, "蓝牙测试", 2, 1));
+            results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_LED, "显示屏和蜂鸣器测试", 1, 1));
+            results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_KEY, "按键测试", 3, 1));
+            results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_WATER, "水位检测", 5, 1));
+            results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_TEMP_SET_1, "温度1校准", 7, 1));
+            results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_TEMP_SET_2, "温度2校准", 7, 1));
+            results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_TEMP, "温度测试", 4, 1));
+            results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_HOT, "加热测试", 6, 2));
 
             if (type != Globals.TYPE_TEST_PARTIALLY) {
                 if (type == Globals.TYPE_TEST) {

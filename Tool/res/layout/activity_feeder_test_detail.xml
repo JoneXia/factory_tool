@@ -33,6 +33,30 @@
     </ScrollView>
 
     <LinearLayout
+        android:id="@+id/set_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:gravity="center_horizontal"
+        android:padding="10dip">
+        <Button
+            android:id="@+id/set_btn_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Text_Small_White"
+            />
+
+        <Button
+            android:id="@+id/set_btn_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dip"
+            style="@style/Text_Small_White"
+            />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
