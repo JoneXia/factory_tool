@@ -62,6 +62,12 @@ public class WifiStartActivity extends BaseActivity {
 
         ((Button) findViewById(R.id.test_case5)).setText("位图生成");
         ((Button) findViewById(R.id.test_case5)).setVisibility(View.GONE);
+        switch (mDeviceType) {
+            case Globals.AQH1_500:
+            case Globals.AQH1_1000:
+                findViewById(R.id.test_case1).setVisibility(View.GONE);
+                break;
+        }
     }
 
     @Override

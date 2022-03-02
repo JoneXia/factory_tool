@@ -79,6 +79,8 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
     private int mDeviceType;
     private short offset1, offset2;
     private boolean tempValid = false;
+    private boolean isNewSN = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -587,7 +589,7 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
                     case 4:
                         desc.append("\n").append("温度1：").append(moduleStateStruct.getSub0()/10f + "℃")
                                 .append(", 温度2：").append(moduleStateStruct.getSub1()/10f + "℃");
-                        tempValid = Math.abs(moduleStateStruct.getSub0() - moduleStateStruct.getSub1()) <= 20;
+                        tempValid = Math.abs(moduleStateStruct.getSub0() - moduleStateStruct.getSub1()) <= 2;
                         break;
                     case 5:
                         if (moduleStateStruct.getSub0() > 0) {
@@ -606,27 +608,32 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
 
                         if (moduleStateStruct.getState() == 1 && mTempResult > 0) {
                             if (moduleStateStruct.getSub0() < 50) {
-                                mTempResult = 0x1;
-                                desc.append("关闭状态测试通过，打开加热功能");
+                                mTempResult = mTempResult | 0x1;
                             }
                         } else if (moduleStateStruct.getState() == 2) {
                             if (mDeviceType == Globals.AQH1_1000) {
                                 if (moduleStateStruct.getSub0() >= 900 && moduleStateStruct.getSub0() <= 1100) {
-                                    mTempResult = mTempResult | 0x10;
+                                    if (mTempResult == 0) {
+                                        mDescTextView.append("\n加热过程测试完成，开始测试关闭功能");
+                                        HashMap<String, Object> params = new HashMap<>();
+                                        params.put("module", mTestUnits.get(mCurTestStep).getModule());
+                                        params.put("state", 1);
+                                        PetkitSocketInstance.getInstance().sendString(AQH1Utils.getRequestForKeyAndPayload(163, params));
+                                    }
 
-                                    HashMap<String, Object> params = new HashMap<>();
-                                    params.put("module", mTestUnits.get(mCurTestStep).getModule());
-                                    params.put("state", 2);
-                                    PetkitSocketInstance.getInstance().sendString(AQH1Utils.getRequestForKeyAndPayload(163, params));
+                                    mTempResult = mTempResult | 0x10;
                                 }
                             } else {
                                 if (moduleStateStruct.getSub0() >= 450 && moduleStateStruct.getSub0() <= 550) {
-                                    mTempResult = mTempResult | 0x10;
+                                    if (mTempResult == 0) {
+                                        mDescTextView.append("\n加热过程测试完成，开始测试关闭功能");
+                                        HashMap<String, Object> params = new HashMap<>();
+                                        params.put("module", mTestUnits.get(mCurTestStep).getModule());
+                                        params.put("state", 1);
+                                        PetkitSocketInstance.getInstance().sendString(AQH1Utils.getRequestForKeyAndPayload(163, params));
+                                    }
 
-                                    HashMap<String, Object> params = new HashMap<>();
-                                    params.put("module", mTestUnits.get(mCurTestStep).getModule());
-                                    params.put("state", 2);
-                                    PetkitSocketInstance.getInstance().sendString(AQH1Utils.getRequestForKeyAndPayload(163, params));
+                                    mTempResult = mTempResult | 0x10;
                                 }
                             }
                         }
@@ -753,8 +760,10 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
                     if (mDevice.getMac() != null && mDevice.getMac().equalsIgnoreCase(mac) &&
                             mDevice.getSn() != null && mDevice.getSn().equalsIgnoreCase(sn)) {
                         mDescTextView.append("\n写入SN成功");
-                        DeviceCommonUtils.storeSucceedDeviceInfo(mDeviceType, mDevice, mAgeingResult);
-
+                        if (isNewSN) {
+                            DeviceCommonUtils.storeSucceedDeviceInfo(mDeviceType, mDevice, mAgeingResult);
+                            isNewSN = false;
+                        }
                         mTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         refershBtnView();
                     } else {
@@ -801,6 +810,7 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
             showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
             return;
         }
+        isNewSN = true;
         mDevice.setSn(sn);
         mDevice.setCreation(System.currentTimeMillis());
 
