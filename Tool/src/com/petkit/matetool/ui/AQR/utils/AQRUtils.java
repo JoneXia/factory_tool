@@ -67,7 +67,7 @@ public class AQRUtils {
                 results.add(new AQRTestUnit(AQRTestModes.TEST_MODE_SN, "写入SN", 98, 2));
             }
             if (type != Globals.TYPE_TEST_PARTIALLY && type != Globals.TYPE_CHECK) {
-                results.add(new AQRTestUnit(AQRTestModes.TEST_MODE_PRINT, "打印标签", -1, type == Globals.TYPE_TEST ? 2 : 1));
+//                results.add(new AQRTestUnit(AQRTestModes.TEST_MODE_PRINT, "打印标签", -1, type == Globals.TYPE_TEST ? 2 : 1));
             }
 
             if (type == Globals.TYPE_MAINTAIN) {        //擦除ID选项先关闭，暂不开放

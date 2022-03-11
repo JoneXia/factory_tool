@@ -331,6 +331,8 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
                         gotoNextTestModule();
                         break;
                     case TEST_MODE_AGEINGRESULT:
+                    case TEST_MODE_TEMP_SET_1:
+                    case TEST_MODE_TEMP_SET_2:
                         mTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         gotoNextTestModule();
                         break;
@@ -339,6 +341,9 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
                             showShortToast("两个传感器温差较大，请确认！");
                             return;
                         }
+                        mTestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                        gotoNextTestModule();
+                        break;
                     default:
                         isWriteEndCmd = true;
                         if (mTestUnits.get(mCurTestStep).getResult() != TEST_PASS) {
@@ -511,6 +516,40 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
     public void onDisconnected() {
         showShortToast("与设备断开连接！");
         finish();
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode != RESULT_OK)
+            return;
+
+        switch (requestCode) {
+            case 0x199:
+                String sn = data.getStringExtra(DeviceCommonUtils.EXTRA_DEVICE_SN);
+                if (!DeviceCommonUtils.checkSN(sn, mDeviceType)) {
+                    showShortToast("无效的SN！");
+                    return;
+                }
+                if (mDevice.getSn() == null || !mDevice.getSn().equals(sn)) {
+                    isNewSN = true;
+                }
+                mDevice.setSn(sn);
+                mDevice.setCreation(System.currentTimeMillis());
+                LogcatStorageHelper.addLog("write SN: " + sn);
+
+                HashMap<String, Object> payload = new HashMap<>();
+                payload.put("mac", mDevice.getMac());
+                payload.put("sn", sn);
+                if (mTestUnits.get(mCurTestStep).getState() == 2) {
+                    payload.put("force", 100);
+                }
+                payload.put("opt", 0);
+                PetkitSocketInstance.getInstance().sendString(AQH1Utils.getRequestForKeyAndPayload(161, payload));
+                break;
+        }
     }
 
     @Override
@@ -792,8 +831,8 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-//                startScanSN(mDeviceType);
-                generateAndSendSN();
+                startScanSN(mDeviceType);
+//                generateAndSendSN();
             }
         } else {
             HashMap<String, Object> params = new HashMap<>();

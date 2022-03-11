@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.petkit.android.utils.LogcatStorageHelper.getFileName;
-import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_NEW_T3;
+import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_T3;
 import static com.petkit.matetool.utils.Globals.PERMISSION_ERASE;
 
 /**
@@ -205,7 +205,7 @@ public class T3Utils {
             return null;
         }
 
-        return DeviceCommonUtils.generateSN(day, DEVICE_TYPE_CODE_NEW_T3, serializableNumber);
+        return DeviceCommonUtils.generateSN(CommonUtils.getDateStringByOffset(0), DEVICE_TYPE_CODE_T3, tester.getStation(), serializableNumber);
     }
 
     /**

@@ -29,14 +29,12 @@ import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.Tester;
-import com.petkit.matetool.ui.AQH1.AQH1Utils;
 import com.petkit.matetool.ui.P3.mode.GsensorData;
 import com.petkit.matetool.ui.W5.mode.W5TestUnit;
 import com.petkit.matetool.ui.W5.utils.W5Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.ui.print.PrintActivity;
-import com.petkit.matetool.ui.utils.PetkitSocketInstance;
 import com.petkit.matetool.ui.utils.PrintResultCallback;
 import com.petkit.matetool.ui.utils.PrintUtils;
 import com.petkit.matetool.utils.Globals;
@@ -542,6 +540,7 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
                     mDescTextView.append("\nSN写入成功");
                     result = true;
                     if (isNewSN) {
+                        isNewSN = false;
                         W5Utils.storeSucceedDeviceInfo(mDevice, null);
 //                        DeviceCommonUtils.storeSucceedDeviceInfo(mW5Type == W5_TYPE_MINI ? Globals.W5C : Globals.W5, mDevice, null);
                     }
@@ -612,22 +611,16 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
     }
 
     private void generateAndSendSN() {
-        String sn = DeviceCommonUtils.generateSNForTester(mW5Type == W5_TYPE_MINI ? Globals.W5C : Globals.W5, mTester);
+        String sn = W5Utils.generateSNForTester(mTester, mW5Type == W5_TYPE_MINI ? Globals.W5C : Globals.W5);
         if (sn == null) {
             showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
             return;
         }
+        isNewSN = true;
         mDevice.setSn(sn);
         mDevice.setCreation(System.currentTimeMillis());
 
-        HashMap<String, Object> payload = new HashMap<>();
-        payload.put("mac", mDevice.getMac());
-        payload.put("sn", sn);
-        if (mW5TestUnits.get(mCurTestStep).getState() == 2) {
-            payload.put("force", 100);
-        }
-        payload.put("opt", 0);
-        PetkitSocketInstance.getInstance().sendString(AQH1Utils.getRequestForKeyAndPayload(161, payload));
+        sendBleData(BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_W5_WRITE_SN, mDevice.getSn().getBytes()));
     }
 
     private Bundle getPrintParam() {

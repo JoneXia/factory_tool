@@ -318,10 +318,20 @@ public class Versions {
 
 
 	/**
+	 * 1.0说明:
+	 *
+	 * 1. 支持智能变频加热棒（AQ-H1）产测全功能
+	 *
+	 */
+	public static final String TOOL_AQH1_VERSION	= "1.0";
+
+
+
+	/**
 	 *
 	 *
 	 *
 	 */
-	public static final String TOOL_AQH1_VERSION	= "0.1";
+	public static final String TOOL_CTW2_VERSION	= "0.1";
 
 }

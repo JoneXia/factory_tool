@@ -45,8 +45,9 @@ public class Globals {
 	public static final int W4X = 23;
 	public static final int AQH1_500 = 24;
 	public static final int AQH1_1000 = 25;
+	public static final int CTW2 = 26;
 	//TODO: 新增设备时，max值需加一
-	public static final int MAX = 26;
+	public static final int MAX = 27;
 
 //	public static int g_testStyle = 0;
 
@@ -78,28 +79,29 @@ public class Globals {
 	/**
 	 * 设备代码必须是2位
 	 */
-	public static final String DEVICE_TYPE_CODE_NEW_D1 = "P1";
-	public static final String DEVICE_TYPE_CODE_NEW_Z1 = "A1";
-	public static final String DEVICE_TYPE_CODE_NEW_D2 = "B1";
-	public static final String DEVICE_TYPE_CODE_NEW_Z1S = "C1";
-	public static final String DEVICE_TYPE_CODE_NEW_T3 = "D1";
-	public static final String DEVICE_TYPE_CODE_NEW_K2 = "E1";
-	public static final String DEVICE_TYPE_CODE_NEW_D3 = "F1";
-	public static final String DEVICE_TYPE_CODE_NEW_D4 = "G1";
-	public static final String DEVICE_TYPE_CODE_NEW_P3C = "H1";
-	public static final String DEVICE_TYPE_CODE_NEW_W5 = "I1";
-	public static final String DEVICE_TYPE_CODE_NEW_W5C = "J1";
-	public static final String DEVICE_TYPE_CODE_NEW_T4 = "L1";
-	public static final String DEVICE_TYPE_CODE_NEW_K3 = "M1";
+//	public static final String DEVICE_TYPE_CODE_NEW_D1 = "P1";
+//	public static final String DEVICE_TYPE_CODE_NEW_Z1 = "A1";
+//	public static final String DEVICE_TYPE_CODE_NEW_D2 = "B1";
+//	public static final String DEVICE_TYPE_CODE_NEW_Z1S = "C1";
+//	public static final String DEVICE_TYPE_CODE_NEW_T3 = "D1";
+//	public static final String DEVICE_TYPE_CODE_NEW_K2 = "E1";
+//	public static final String DEVICE_TYPE_CODE_NEW_D3 = "F1";
+//	public static final String DEVICE_TYPE_CODE_NEW_D4 = "G1";
+//	public static final String DEVICE_TYPE_CODE_NEW_P3C = "H1";
+//	public static final String DEVICE_TYPE_CODE_NEW_W5 = "I1";
+//	public static final String DEVICE_TYPE_CODE_NEW_W5C = "J1";
+//	public static final String DEVICE_TYPE_CODE_NEW_T4 = "L1";
+//	public static final String DEVICE_TYPE_CODE_NEW_K3 = "M1";
+//	public static final String DEVICE_TYPE_CODE_NEW_P3D = "K1";
+//	public static final String DEVICE_TYPE_CODE_NEW_R2 = "Q1";
+//	public static final String DEVICE_TYPE_CODE_NEW_W5N = "R1";
+//	public static final String DEVICE_TYPE_CODE_NEW_W4X = "S1";
+
 	public static final String DEVICE_TYPE_CODE_NEW_AQR = "N1";
-	public static final String DEVICE_TYPE_CODE_NEW_P3D = "K1";
 	public static final String DEVICE_TYPE_CODE_NEW_AQ1S = "O1";
-	public static final String DEVICE_TYPE_CODE_NEW_R2 = "Q1";
-	public static final String DEVICE_TYPE_CODE_NEW_W5N = "R1";
-	public static final String DEVICE_TYPE_CODE_NEW_W4X = "S1";
 	public static final String DEVICE_TYPE_CODE_NEW_AQH1_1000 = "U1";
 	public static final String DEVICE_TYPE_CODE_NEW_AQH1_500 = "T1";
-
+	public static final String DEVICE_TYPE_CODE_NEW_CTW2 = "W2";
 
 
 	public static final int TYPE_TEST_PARTIALLY         = 1;

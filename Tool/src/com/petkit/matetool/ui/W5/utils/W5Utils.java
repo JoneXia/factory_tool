@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.petkit.android.utils.LogcatStorageHelper.getFileName;
-import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_NEW_W5;
-import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_NEW_W5C;
+import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_W5;
+import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_W5C;
 import static com.petkit.matetool.utils.Globals.PERMISSION_ERASE;
 
 /**
@@ -190,7 +190,8 @@ public class W5Utils {
             return null;
         }
 
-        return DeviceCommonUtils.generateSN(day, w5Type == W5_TYPE_MINI ? DEVICE_TYPE_CODE_NEW_W5C : DEVICE_TYPE_CODE_NEW_W5, serializableNumber);
+        return DeviceCommonUtils.generateSN(CommonUtils.getDateStringByOffset(0),
+                w5Type == W5_TYPE_MINI ? DEVICE_TYPE_CODE_W5C : DEVICE_TYPE_CODE_W5, tester.getStation(), serializableNumber);
     }
 
     /**
