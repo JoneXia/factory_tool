@@ -586,10 +586,14 @@ public class W5NTestDetailActivity extends BaseActivity implements PrintResultCa
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-//                startScanSN(mDeviceType);
-                generateAndSendSN();
+                if (mDeviceType == Globals.CTW2) {
+                    startScanSN(mDeviceType);
+                } else {
+                    generateAndSendSN();
+                }
             }
         } else {
+//            startScanSN(mDeviceType);
             sendBleData(BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_WRITE_SN, mDevice.getSn().getBytes()));
         }
     }

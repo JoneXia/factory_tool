@@ -378,7 +378,7 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
 
         tempRadioButton = (RadioButton) findViewById(R.id.ctw2);
         tempRadioButton.setText(getTextDetail(Globals.CTW2, "智能饮水机SOLO（CTW2）" + " v" + TOOL_CTW2_VERSION));
-        tempRadioButton.setVisibility(View.GONE);
+
         //TODO: 新增设备需对应添加
     }
 
