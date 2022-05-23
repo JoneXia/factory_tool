@@ -67,9 +67,11 @@ public class TesterManagerUtils {
                     testerString = CommonUtils.getSysMap(K2Utils.SHARED_K2_TESTER);
                     break;
                 case Globals.D3:
+                case Globals.D3_1:
                     testerString = CommonUtils.getSysMap(D3Utils.SHARED_D3_TESTER);
                     break;
                 case Globals.D4:
+                case Globals.D4_1:
                     testerString = CommonUtils.getSysMap(D4Utils.SHARED_D4_TESTER);
                     break;
                 default:
@@ -115,9 +117,11 @@ public class TesterManagerUtils {
                 CommonUtils.addSysMap(K2Utils.SHARED_K2_TESTER, testerString);
                 break;
             case Globals.D3:
+            case Globals.D3_1:
                 CommonUtils.addSysMap(D3Utils.SHARED_D3_TESTER, testerString);
                 break;
             case Globals.D4:
+            case Globals.D4_1:
                 CommonUtils.addSysMap(D4Utils.SHARED_D4_TESTER, testerString);
                 break;
 //            case Globals.W5:
@@ -168,9 +172,11 @@ public class TesterManagerUtils {
                         CommonUtils.addSysMap(K2Utils.SHARED_K2_TESTER, "");
                         break;
                     case Globals.D3:
+                    case Globals.D3_1:
                         CommonUtils.addSysMap(D3Utils.SHARED_D3_TESTER, "");
                         break;
                     case Globals.D4:
+                    case Globals.D4_1:
                         CommonUtils.addSysMap(D4Utils.SHARED_D4_TESTER, "");
                         break;
 //                    case Globals.W5:

@@ -941,7 +941,7 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
                     return;
                 }
                 mDevice.setSn(sn);
-
+                isNewSN = true;
 //                AQH1Utils.storeTempDeviceInfo(mDevice);
 
                 HashMap<String, Object> payload = new HashMap<>();

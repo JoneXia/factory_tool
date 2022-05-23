@@ -19,6 +19,7 @@ import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.ui.feeder.mode.Feeder;
 import com.petkit.matetool.ui.feeder.mode.ModuleStateStruct;
@@ -29,6 +30,7 @@ import com.petkit.matetool.ui.utils.PetkitSocketInstance;
 import com.petkit.matetool.ui.utils.PrintResultCallback;
 import com.petkit.matetool.ui.utils.PrintUtils;
 import com.petkit.matetool.utils.DateUtil;
+import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.JSONUtils;
 
 import org.json.JSONException;
@@ -62,6 +64,7 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
     private TextView mDescTextView, mPromptTextView;
     private Button mBtn1, mBtn2, mBtn3;
     private ScrollView mDescScrollView;
+    private boolean isNewSN = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -573,7 +576,10 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
                                 mDescTextView.append("\n写入SN成功");
 
                                 FeederMiniUtils.removeTempFeederInfo(mFeeder);
-                                FeederMiniUtils.storeSucceedFeederInfo(mFeeder, mAgeingResult);
+                                if (isNewSN) {
+                                    isNewSN = false;
+                                    FeederMiniUtils.storeSucceedFeederInfo(mFeeder, mAgeingResult);
+                                }
 
                                 mFeederMiniTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                                 refershBtnView();
@@ -641,13 +647,38 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-                String sn = FeederMiniUtils.generateSNForTester(mTester);
-                if (sn == null) {
-                    showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
+                generateAndSendSN();
+//                startScanSN(Globals.FEEDER_MINI);
+            }
+        } else {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("mac", mFeeder.getMac());
+            params.put("sn", mFeeder.getSn());
+            PetkitSocketInstance.getInstance().sendString(FeederMiniUtils.getRequestForKeyAndPayload(161, params));
+        }
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode != RESULT_OK)
+            return;
+
+        switch (requestCode) {
+            case 0x199:
+                String sn = data.getStringExtra(DeviceCommonUtils.EXTRA_DEVICE_SN);
+                if (!DeviceCommonUtils.checkSN(sn, Globals.FEEDER_MINI)) {
+                    showShortToast("无效的SN！");
                     return;
+                }
+                if (mFeeder.getSn() == null || !mFeeder.getSn().equals(sn)) {
+                    isNewSN = true;
                 }
                 mFeeder.setSn(sn);
                 mFeeder.setCreation(System.currentTimeMillis());
+                LogcatStorageHelper.addLog("write SN: " + sn);
 
                 //写入设备前先存储到临时数据区，写入成功后需删除
                 FeederMiniUtils.storeTempFeederInfo(mFeeder);
@@ -659,13 +690,28 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
                     payload.put("force", 100);
                 }
                 PetkitSocketInstance.getInstance().sendString(FeederMiniUtils.getRequestForKeyAndPayload(161, payload));
-            }
-        } else {
-            HashMap<String, Object> params = new HashMap<>();
-            params.put("mac", mFeeder.getMac());
-            params.put("sn", mFeeder.getSn());
-            PetkitSocketInstance.getInstance().sendString(FeederMiniUtils.getRequestForKeyAndPayload(161, params));
+                break;
         }
+    }
+
+
+    private void generateAndSendSN() {
+        String sn = FeederMiniUtils.generateSNForTester(mTester);
+        if (sn == null) {
+            showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
+            return;
+        }
+        mFeeder.setSn(sn);
+        mFeeder.setCreation(System.currentTimeMillis());
+
+        isNewSN = true;
+        HashMap<String, Object> payload = new HashMap<>();
+        payload.put("mac", mFeeder.getMac());
+        payload.put("sn", sn);
+        if (mFeederMiniTestUnits.get(mCurTestStep).getState() == 2) {
+            payload.put("force", 100);
+        }
+        PetkitSocketInstance.getInstance().sendString(FeederMiniUtils.getRequestForKeyAndPayload(161, payload));
     }
 
     private Bundle getPrintParam() {
@@ -745,7 +791,7 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
                     return;
                 }
                 mFeeder.setSn(sn);
-
+                isNewSN = true;
                 FeederMiniUtils.storeTempFeederInfo(mFeeder);
 
                 HashMap<String, Object> payload = new HashMap<>();

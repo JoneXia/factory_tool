@@ -10,6 +10,7 @@ import com.petkit.matetool.model.DevicesError;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.D4.mode.D4TestUnit;
 import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
+import com.petkit.matetool.utils.Globals;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +18,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.petkit.android.utils.LogcatStorageHelper.getFileName;
-import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_D4;
+import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_NEW_D4;
+import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_NEW_D4_1;
 import static com.petkit.matetool.utils.Globals.PERMISSION_ERASE;
 
 /**
@@ -177,7 +179,7 @@ public class D4Utils {
      * @param tester 测试者信息
      * @return sn
      */
-    public static String generateSNForTester(Tester tester) {
+    public static String generateSNForTester(Tester tester, int deviceType) {
         if(tester == null || !tester.checkValid()) {
             throw  new RuntimeException("D4 Tester is invalid!");
         }
@@ -188,7 +190,8 @@ public class D4Utils {
             return null;
         }
 
-        return DeviceCommonUtils.generateSN(CommonUtils.getDateStringByOffset(0), DEVICE_TYPE_CODE_D4, tester.getStation(), serializableNumber);
+        return DeviceCommonUtils.generateSN(CommonUtils.getDateStringByOffset(0),
+                deviceType == Globals.D4 ? DEVICE_TYPE_CODE_NEW_D4 : DEVICE_TYPE_CODE_NEW_D4_1, serializableNumber);
     }
 
     /**

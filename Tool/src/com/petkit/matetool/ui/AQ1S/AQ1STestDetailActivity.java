@@ -29,12 +29,10 @@ import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.AQ1S.mode.AQ1STestUnit;
 import com.petkit.matetool.ui.AQ1S.utils.AQ1SUtils;
-import com.petkit.matetool.ui.AQH1.AQH1Utils;
 import com.petkit.matetool.ui.P3.mode.GsensorData;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.ui.print.PrintActivity;
-import com.petkit.matetool.ui.utils.PetkitSocketInstance;
 import com.petkit.matetool.ui.utils.PrintResultCallback;
 import com.petkit.matetool.ui.utils.PrintUtils;
 import com.petkit.matetool.utils.Globals;
@@ -560,6 +558,7 @@ public class AQ1STestDetailActivity extends BaseActivity implements PrintResultC
                     return;
                 }
                 mDevice.setSn(sn);
+                isNewSN = true;
 
                 sendBleData(BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_AQ1S_WRITE_SN, sn.getBytes()));
             }

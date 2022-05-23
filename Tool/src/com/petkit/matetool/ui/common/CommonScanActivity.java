@@ -1,5 +1,7 @@
 package com.petkit.matetool.ui.common;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -81,7 +83,7 @@ public class CommonScanActivity extends BaseActivity implements ScanListener {
     @Override
     protected void setupViews() {
 
-        setTitle("入库");
+        setTitle("扫码");
 
         scanPreview = (SurfaceView) findViewById(R.id.capture_preview);
         scanContainer = findViewById(R.id.capture_container);
@@ -181,7 +183,7 @@ public class CommonScanActivity extends BaseActivity implements ScanListener {
 
     private void checkContent(String data) {
 
-        if(data == null || data.length() < 14) {
+        if(data == null || data.contains(" ") || data.length() != 14) {
             showShortToast("无效的内容！");
             return;
         }
@@ -208,16 +210,36 @@ public class CommonScanActivity extends BaseActivity implements ScanListener {
 
         if(DeviceCommonUtils.checkSN(sn, mDeviceType)) {
             LogcatStorageHelper.addLog("Scaned sn: " + sn);
-            Intent intent = new Intent();
-            intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE_SN, sn.toUpperCase());
-            setResult(RESULT_OK, intent);
-            finish();
+            showConfirmDialog(sn);
         } else {
             showShortToast("SN规则不匹配，请检查！");
         }
 
     }
 
+    private void showConfirmDialog(final String sn) {
 
+        new AlertDialog.Builder(this)
+                .setCancelable(false)
+                .setTitle(R.string.Prompt)
+                .setMessage("请确认SN: " + sn)
+                .setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent();
+                        intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE_SN, sn.toUpperCase());
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+                })
+                .setNegativeButton(R.string.Cancel,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).show();
+
+    }
 
 }

@@ -115,7 +115,7 @@ public class W5NTestMainActivity extends BaseActivity {
         findViewById(R.id.connect_dev).setVisibility(View.GONE);
         findViewById(R.id.test_auto).setOnClickListener(this);
 
-        mW5NTestUnits = W5NUtils.generateTestUnitsForType(mTestType);
+        mW5NTestUnits = W5NUtils.generateTestUnitsForType(mTestType, mDeviceType);
 
         GridView gridView =(GridView) findViewById(R.id.gridView);
         mAdapter = new TestItemAdapter(this);

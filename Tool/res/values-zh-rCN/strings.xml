@@ -362,6 +362,7 @@
     <string name="s_spr_fb">启动失败，请检查净味器电量</string>
     <string name="s_spr_fn">启动失败，未找到净味器</string>
     <string name="s_spr_bt">净味器电量不足，请更换电池</string>
-
+    <string name="s_mten">维护模式</string>
+    <string name="s_mten_i">维护中，点击OK键退出</string>
 
 </resources>

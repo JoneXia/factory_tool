@@ -55,7 +55,9 @@ import static com.petkit.matetool.utils.Versions.TOOL_AQR_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_AQ_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_COZY;
 import static com.petkit.matetool.utils.Versions.TOOL_CTW2_VERSION;
+import static com.petkit.matetool.utils.Versions.TOOL_D3_1_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_D3_VERSION;
+import static com.petkit.matetool.utils.Versions.TOOL_D4_1_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_D4_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_FEEDER_MINI_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_FEEDER_VERSION;
@@ -188,10 +190,16 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
                         startActivity(AQTestMainActivity.class);
                         break;
                     case Globals.D3:
-                        startActivity(D3TestPrepareActivity.class);
+                    case Globals.D3_1:
+                        bundle = new Bundle();
+                        bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, testStyle);
+                        startActivityWithData(D3TestPrepareActivity.class, bundle, false);
                         break;
                     case Globals.D4:
-                        startActivity(D4TestPrepareActivity.class);
+                    case Globals.D4_1:
+                        bundle = new Bundle();
+                        bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, testStyle);
+                        startActivityWithData(D4TestPrepareActivity.class, bundle, false);
                         break;
                     case Globals.W5:
                     case Globals.W5C:
@@ -291,6 +299,12 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
             case R.id.ctw2:
                 testStyle = Globals.CTW2;
                 break;
+            case R.id.d3_1:
+                testStyle = Globals.D3_1;
+                break;
+            case R.id.d4_1:
+                testStyle = Globals.D4_1;
+                break;
             //TODO: 新增设备需对应添加
             default:
                 break;
@@ -374,10 +388,18 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
         tempRadioButton.setText(getTextDetail(Globals.AQH1_500, "鱼缸加热棒-500W（AQ-H1）" + " v" + TOOL_AQH1_VERSION));
 
         tempRadioButton = (RadioButton) findViewById(R.id.aqh1_1000);
-        tempRadioButton.setText(getTextDetail(Globals.AQH1_1000, "鱼缸加热棒-100W（AQ-H1）" + " v" + TOOL_AQH1_VERSION));
+        tempRadioButton.setText(getTextDetail(Globals.AQH1_1000, "鱼缸加热棒-1000W（AQ-H1）" + " v" + TOOL_AQH1_VERSION));
 
         tempRadioButton = (RadioButton) findViewById(R.id.ctw2);
         tempRadioButton.setText(getTextDetail(Globals.CTW2, "智能饮水机SOLO（CTW2）" + " v" + TOOL_CTW2_VERSION));
+
+        tempRadioButton = (RadioButton) findViewById(R.id.d4_1);
+        tempRadioButton.setText(getTextDetail(Globals.D4_1, "喂食器SOLO NEW（D4-1）" + " v" + TOOL_D4_1_VERSION));
+
+        tempRadioButton = (RadioButton) findViewById(R.id.d3_1);
+        tempRadioButton.setText(getTextDetail(Globals.D3_1, "行星喂食器NEW（D3-1）" + " v" + TOOL_D3_1_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
+
 
         //TODO: 新增设备需对应添加
     }

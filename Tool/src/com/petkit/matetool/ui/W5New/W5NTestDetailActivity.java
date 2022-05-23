@@ -293,7 +293,8 @@ public class W5NTestDetailActivity extends BaseActivity implements PrintResultCa
                         }
                         break;
                     case TEST_MODE_RESET_SN:
-                        startScanSN(mDeviceType);
+//                        startScanSN(mDeviceType);
+                        showSNSetDialog();
                         break;
                     case TEST_MODE_SN:
                         startSetSn();
@@ -658,6 +659,7 @@ public class W5NTestDetailActivity extends BaseActivity implements PrintResultCa
                     showShortToast("无效的SN");
                     return;
                 }
+                isNewSN = true;
                 mDevice.setSn(sn);
 
                 sendBleData(BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_WRITE_SN, sn.getBytes()));

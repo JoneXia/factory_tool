@@ -651,6 +651,7 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
                     return;
                 }
                 mDevice.setSn(sn);
+                isNewSN = true;
 
                 sendBleData(AQRDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_WRITE_SN, sn.getBytes()));
             }

@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.petkit.android.ble.BLEConsts;
 import com.petkit.android.ble.data.K3DataUtils;
 import com.petkit.android.ble.data.PetkitBleMsg;
+import com.petkit.android.utils.ByteUtil;
 import com.petkit.android.utils.LogcatStorageHelper;
 import com.petkit.android.utils.PetkitLog;
 import com.petkit.android.widget.LoadDialog;
@@ -66,6 +67,7 @@ public class K3TestDetailActivity extends BaseActivity implements PrintResultCal
     private ArrayList<K3TestUnit> mK3AutoTestUnits;
     private boolean isInAutoUnits = false;
     private int mAutoUnitStep; //有些测试项中会细分成几步
+    private boolean isNewSN = false;
 
 
     @Override
@@ -417,10 +419,33 @@ public class K3TestDetailActivity extends BaseActivity implements PrintResultCal
                 } else if (data[0] != 1){
                     mDescTextView.append("\nSN写入失败");
                 } else {
-                    mDescTextView.append("\nSN写入成功");
-                    result = true;
-                    DeviceCommonUtils.storeSucceedDeviceInfo(Globals.K3, mDevice, null);
+                    mDescTextView.append("\nSN写入成功，开始校验");
+                    sendBleData(K3DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_GET_INFO), false);
                 }
+                break;
+            case BLEConsts.OP_CODE_GET_INFO:
+                if (data.length >= 22) {
+                    byte[] snRaw = new byte[14];
+                    System.arraycopy(data, 8, snRaw, 0, 14);
+
+                    if (!"0000000000000000000000000000".equals(ByteUtil.byteArrayToHexStr(snRaw))) {
+                        String sn = new String(snRaw);
+                        if (mDevice.getSn().equalsIgnoreCase(sn)) {
+                            mDescTextView.append("\nSN校验成功");
+                            if (isNewSN) {
+                                isNewSN = false;
+                                DeviceCommonUtils.storeSucceedDeviceInfo(Globals.K3, mDevice, null);
+                            }
+                        }
+                    } else {
+                        isNewSN = false;
+                        mDescTextView.append("\nSN校验失败，未写入成功");
+                    }
+                } else {
+                    isNewSN = false;
+                    mDescTextView.append("\nSN校验失败，未写入成功");
+                }
+                result = true;
                 break;
         }
         mDescTextView.append(desc.toString());
@@ -476,6 +501,7 @@ public class K3TestDetailActivity extends BaseActivity implements PrintResultCal
                     showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
                     return;
                 }
+                isNewSN = true;
                 mDevice.setSn(sn);
                 mDevice.setCreation(System.currentTimeMillis());
 
@@ -531,6 +557,7 @@ public class K3TestDetailActivity extends BaseActivity implements PrintResultCal
                     showShortToast("无效的SN");
                     return;
                 }
+                isNewSN = true;
                 mDevice.setSn(sn);
 
                 sendBleData(K3DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_K3_WRITE_SN, sn.getBytes()));

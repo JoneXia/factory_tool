@@ -62,6 +62,8 @@
   <string name="s_spr_fb">Avvio del Cestino della Spazzatura non riuscito. Controlla la batteria del Dispositivo Rimuovi Odori</string>
   <string name="s_spr_fn">Avvio del Cestino della Spazzatura non riuscito. Dispositivo Rimuovi Odori non rilevato.</string>
   <string name="s_spr_bt">Batteria scarica del Dispositivo Rimuovi Odori. Sostituisci le batterie.</string>
+  <string name="s_mten">Modalità di Manutenzione</string>
+  <string name="s_mten_i">In manutenzione, fare clic su OK per uscire</string>
 
 
 </resources>

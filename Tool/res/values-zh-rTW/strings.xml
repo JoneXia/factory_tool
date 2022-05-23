@@ -63,5 +63,7 @@
     <string name="s_spr_fn">啟動失敗，未找到淨味器</string>
     <string name="s_spr_bt">淨味器電量不足，請更換電池</string>
 
+    <string name="s_mten">保養/維護模式</string>
+    <string name="s_mten_i">在保養/維護模式下，點擊OK退出</string>
 
 </resources>

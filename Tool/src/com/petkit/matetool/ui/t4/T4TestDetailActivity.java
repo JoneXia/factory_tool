@@ -82,7 +82,7 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
     private boolean isInAutoUnits = false;
     private int mAutoUnitStep; //有些测试项中会细分成几步
     private int mDeviceType;
-
+    private boolean isNewSN = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -777,10 +777,13 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                     if (mDevice.getMac() != null && mDevice.getMac().equalsIgnoreCase(mac) &&
                             mDevice.getSn() != null && mDevice.getSn().equalsIgnoreCase(sn)) {
                         mDescTextView.append("\n写入SN成功");
-                        if (mDeviceType == Globals.T4_p) {
-                            DeviceCommonUtils.storeSucceedDeviceInfo(mDeviceType, mDevice, mAgeingResult, 1);
-                        } else {
-                            DeviceCommonUtils.storeSucceedDeviceInfo(mDeviceType, mDevice, mAgeingResult);
+                        if (isNewSN) {
+                            isNewSN = false;
+                            if (mDeviceType == Globals.T4_p) {
+                                DeviceCommonUtils.storeSucceedDeviceInfo(mDeviceType, mDevice, mAgeingResult, 1);
+                            } else {
+                                DeviceCommonUtils.storeSucceedDeviceInfo(mDeviceType, mDevice, mAgeingResult);
+                            }
                         }
 
                         mT4TestUnits.get(mCurTestStep).setResult(TEST_PASS);
@@ -811,16 +814,38 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-                String sn = DeviceCommonUtils.generateSNForTester(Globals.T4, mTester);
-                if (sn == null) {
-                    showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
+//                startScanSN(mDeviceType);
+                generateAndSendSN();
+            }
+        } else {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("mac", mDevice.getMac());
+            params.put("sn", mDevice.getSn());
+            params.put("opt", 0);
+            PetkitSocketInstance.getInstance().sendString(T4Utils.getRequestForKeyAndPayload(161, params));
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode != RESULT_OK)
+            return;
+
+        switch (requestCode) {
+            case 0x199:
+                String sn = data.getStringExtra(DeviceCommonUtils.EXTRA_DEVICE_SN);
+                if (!DeviceCommonUtils.checkSN(sn, Globals.T4)) {
+                    showShortToast("无效的SN！");
                     return;
+                }
+                if (mDevice.getSn() == null || !mDevice.getSn().equals(sn)) {
+                    isNewSN = true;
                 }
                 mDevice.setSn(sn);
                 mDevice.setCreation(System.currentTimeMillis());
-
-                //写入设备前先存储到临时数据区，写入成功后需删除
-//                T4Utils.storeTempDeviceInfo(mDevice);
+                LogcatStorageHelper.addLog("write SN: " + sn);
 
                 HashMap<String, Object> payload = new HashMap<>();
                 payload.put("mac", mDevice.getMac());
@@ -833,14 +858,32 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 }
                 payload.put("opt", 0);
                 PetkitSocketInstance.getInstance().sendString(T4Utils.getRequestForKeyAndPayload(161, payload));
-            }
-        } else {
-            HashMap<String, Object> params = new HashMap<>();
-            params.put("mac", mDevice.getMac());
-            params.put("sn", mDevice.getSn());
-            params.put("opt", 0);
-            PetkitSocketInstance.getInstance().sendString(T4Utils.getRequestForKeyAndPayload(161, params));
+                break;
         }
+    }
+
+
+    private void generateAndSendSN() {
+        String sn = DeviceCommonUtils.generateSNForTester(Globals.T4, mTester);
+        if (sn == null) {
+            showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
+            return;
+        }
+        mDevice.setSn(sn);
+        mDevice.setCreation(System.currentTimeMillis());
+
+        isNewSN = true;
+        HashMap<String, Object> payload = new HashMap<>();
+        payload.put("mac", mDevice.getMac());
+        payload.put("sn", sn);
+        if (mDeviceType == Globals.T4_p) {
+            payload.put("withK3", 1);
+        }
+        if (mT4TestUnits.get(mCurTestStep).getState() == 2) {
+            payload.put("force", 100);
+        }
+        payload.put("opt", 0);
+        PetkitSocketInstance.getInstance().sendString(T4Utils.getRequestForKeyAndPayload(161, payload));
     }
 
     private Bundle getPrintParam() {

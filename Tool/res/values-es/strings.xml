@@ -62,6 +62,8 @@
     <string name="s_spr_fb">La caja de arena no se ha iniciado. Compruebe la batería del dispositivo de eliminación de olores. </string>
     <string name="s_spr_fn">La caja de arena no se ha iniciado. No se ha detectado el dispositivo de eliminación de olores. </string>
     <string name="s_spr_bt">La batería del dispositivo de eliminación de olores está baja. Reemplace las pilas.</string>
+    <string name="s_mten">Modo de mantenimiento</string>
+    <string name="s_mten_i">En mantenimiento, clic en OK para salir</string>
 
 
 </resources>

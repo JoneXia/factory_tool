@@ -25,6 +25,7 @@ import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.DeviceModuleStateStruct;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.ui.cozy.mode.CozyState;
 import com.petkit.matetool.ui.cozy.mode.CozyTestUnit;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
@@ -34,6 +35,7 @@ import com.petkit.matetool.ui.utils.PrintResultCallback;
 import com.petkit.matetool.ui.utils.PrintUtils;
 import com.petkit.matetool.ui.utils.WifiAdminSimple;
 import com.petkit.matetool.utils.DateUtil;
+import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.JSONUtils;
 import com.vilyever.socketclient.util.StringValidation;
 
@@ -81,6 +83,7 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
     private String mCacheFileName;
     private String mAgeingResult = null;    //老化测试的结果
     private boolean mTempSensorResult = true;    //温度测试时，缓存传感器的状态，失败时不能手动设置成功
+    private boolean isNewSN = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -574,7 +577,10 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                                 break;
                             case 1:
                                 mDescTextView.append("\n写入SN成功");
-                                CozyUtils.storeSucceedCozyInfo(mDevice, mAgeingResult);
+                                if (isNewSN) {
+                                    isNewSN = false;
+                                    CozyUtils.storeSucceedCozyInfo(mDevice, mAgeingResult);
+                                }
                                 mDeviceTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                                 refershBtnView();
                                 break;
@@ -767,6 +773,7 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
                 payload.put("mac", mac);
                 payload.put("sn", sn);
                 mDevice.setSn(sn);
+                isNewSN = true;
                 PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(161, payload));
             }
         });
@@ -878,20 +885,8 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-                String sn = CozyUtils.generateSNForTester(mTester);
-                if (sn == null) {
-                    showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
-                    return;
-                }
-                HashMap<String, Object> payload = new HashMap<>();
-                payload.put("mac", mDevice.getMac());
-                payload.put("sn", sn);
-                if (mDeviceTestUnits.get(mCurTestStep).getState() == 2) {
-                    payload.put("force", 100);
-                }
-                mDevice.setSn(sn);
-                mDevice.setCreation(System.currentTimeMillis());
-                PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(161, payload));
+//                startScanSN(Globals.COZY);
+                generateAndSendSN();
             }
         } else {
             HashMap<String, Object> params = new HashMap<>();
@@ -901,6 +896,57 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode != RESULT_OK)
+            return;
+
+        switch (requestCode) {
+            case 0x199:
+                String sn = data.getStringExtra(DeviceCommonUtils.EXTRA_DEVICE_SN);
+                if (!DeviceCommonUtils.checkSN(sn, Globals.COZY)) {
+                    showShortToast("无效的SN！");
+                    return;
+                }
+                if (mDevice.getSn() == null || !mDevice.getSn().equals(sn)) {
+                    isNewSN = true;
+                }
+                mDevice.setSn(sn);
+                mDevice.setCreation(System.currentTimeMillis());
+                LogcatStorageHelper.addLog("write SN: " + sn);
+
+                HashMap<String, Object> payload = new HashMap<>();
+                payload.put("mac", mDevice.getMac());
+                payload.put("sn", sn);
+                if (mDeviceTestUnits.get(mCurTestStep).getState() == 2) {
+                    payload.put("force", 100);
+                }
+                PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(161, payload));
+                break;
+        }
+    }
+
+
+    private void generateAndSendSN() {
+        String sn = CozyUtils.generateSNForTester(mTester);
+        if (sn == null) {
+            showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
+            return;
+        }
+        mDevice.setSn(sn);
+        mDevice.setCreation(System.currentTimeMillis());
+
+        isNewSN = true;
+        HashMap<String, Object> payload = new HashMap<>();
+        payload.put("mac", mDevice.getMac());
+        payload.put("sn", sn);
+        if (mDeviceTestUnits.get(mCurTestStep).getState() == 2) {
+            payload.put("force", 100);
+        }
+        PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(161, payload));
+    }
 
     @Override
     public void onPrintSuccess() {

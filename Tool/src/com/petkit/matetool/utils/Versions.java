@@ -253,8 +253,11 @@ public class Versions {
 	 *
 	 * 1.2说明：
 	 * 1. 解决MAC/SN重复无法处理的问题
+	 *
+	 * 1.3说明：
+	 * 1. 增加SN写入结果校验
 	 */
-	public static final String TOOL_K3_VERSION	= "1.2";
+	public static final String TOOL_K3_VERSION	= "1.3";
 
 
 	/**
@@ -328,10 +331,31 @@ public class Versions {
 
 
 	/**
+	 * 1.0说明：
 	 *
+	 * 1. 支持小佩智能饮水机SOLO 2（CTW2）产测全功能
 	 *
 	 *
 	 */
-	public static final String TOOL_CTW2_VERSION	= "0.1";
+	public static final String TOOL_CTW2_VERSION	= "1.0";
+
+
+	/**
+	 * 1.0说明：
+	 *
+	 * 1. 支持小佩智能喂食器SOLO NEW（D4-1）产测全功能
+	 *
+	 *
+	 */
+	public static final String TOOL_D4_1_VERSION	= "1.0";
+
+
+	/**
+	 *
+	 * v1.0
+	 * 1. D3-1废弃，沿用D3即可。
+	 *
+	 */
+	public static final String TOOL_D3_1_VERSION	= "1.0";
 
 }

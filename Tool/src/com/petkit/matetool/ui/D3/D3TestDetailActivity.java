@@ -34,6 +34,7 @@ import com.petkit.matetool.ui.D3.mode.D3TestUnit;
 import com.petkit.matetool.ui.D3.utils.D3Utils;
 import com.petkit.matetool.ui.K2.utils.K2Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.ui.print.PrintActivity;
 import com.petkit.matetool.ui.utils.PetkitSocketInstance;
@@ -78,6 +79,8 @@ public class D3TestDetailActivity extends BaseActivity implements PetkitSocketIn
     private ArrayList<D3TestUnit> mD3AutoTestUnits;
     private boolean isInAutoUnits = false;
     private int mAutoUnitStep; //有些测试项中会细分成几步
+    private boolean isNewSN = false;
+    private int mDeviceType;
 
 
     @Override
@@ -90,6 +93,7 @@ public class D3TestDetailActivity extends BaseActivity implements PetkitSocketIn
             mDevice = (Device) savedInstanceState.getSerializable(D3Utils.EXTRA_D3);
             isAutoTest = savedInstanceState.getBoolean("AutoTest");
             mTester = (Tester) savedInstanceState.getSerializable(D3Utils.EXTRA_D3_TESTER);
+            mDeviceType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE);
             mErrorDevice = (Device) savedInstanceState.getSerializable(D3Utils.EXTRA_ERROR_D3);
         } else {
             mD3TestUnits = (ArrayList<D3TestUnit>) getIntent().getSerializableExtra("TestUnits");
@@ -97,6 +101,7 @@ public class D3TestDetailActivity extends BaseActivity implements PetkitSocketIn
             mDevice = (Device) getIntent().getSerializableExtra(D3Utils.EXTRA_D3);
             isAutoTest = getIntent().getBooleanExtra("AutoTest", true);
             mTester = (Tester) getIntent().getSerializableExtra(D3Utils.EXTRA_D3_TESTER);
+            mDeviceType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, 0);
             mErrorDevice = (Device) getIntent().getSerializableExtra(D3Utils.EXTRA_ERROR_D3);
         }
 
@@ -125,6 +130,7 @@ public class D3TestDetailActivity extends BaseActivity implements PetkitSocketIn
         outState.putSerializable(D3Utils.EXTRA_D3, mDevice);
         outState.putBoolean("AutoTest", isAutoTest);
         outState.putSerializable(D3Utils.EXTRA_D3_TESTER, mTester);
+        outState.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
         outState.putSerializable(D3Utils.EXTRA_ERROR_D3, mErrorDevice);
     }
 
@@ -829,7 +835,10 @@ public class D3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                             mDevice.getSn() != null && mDevice.getSn().equalsIgnoreCase(sn)) {
                         mDescTextView.append("\n写入SN成功");
 //                        D3Utils.removeTempDeviceInfo(mDevice);
-                        D3Utils.storeSucceedDeviceInfo(mDevice, mAgeingResult);
+                        if (isNewSN) {
+                            isNewSN = false;
+                            D3Utils.storeSucceedDeviceInfo(mDevice, mAgeingResult);
+                        }
 
                         mD3TestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         refershBtnView();
@@ -859,16 +868,38 @@ public class D3TestDetailActivity extends BaseActivity implements PetkitSocketIn
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-                String sn = D3Utils.generateSNForTester(mTester);
-                if (sn == null) {
-                    showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
+//                startScanSN(mDeviceType);
+                generateAndSendSN();
+            }
+        } else {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("mac", mDevice.getMac());
+            params.put("sn", mDevice.getSn());
+            params.put("opt", 0);
+            PetkitSocketInstance.getInstance().sendString(D3Utils.getRequestForKeyAndPayload(161, params));
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode != RESULT_OK)
+            return;
+
+        switch (requestCode) {
+            case 0x199:
+                String sn = data.getStringExtra(DeviceCommonUtils.EXTRA_DEVICE_SN);
+                if (!DeviceCommonUtils.checkSN(sn, mDeviceType)) {
+                    showShortToast("无效的SN！");
                     return;
+                }
+                if (mDevice.getSn() == null || !mDevice.getSn().equals(sn)) {
+                    isNewSN = true;
                 }
                 mDevice.setSn(sn);
                 mDevice.setCreation(System.currentTimeMillis());
-
-                //写入设备前先存储到临时数据区，写入成功后需删除
-//                D3Utils.storeTempDeviceInfo(mDevice);
+                LogcatStorageHelper.addLog("write SN: " + sn);
 
                 HashMap<String, Object> payload = new HashMap<>();
                 payload.put("mac", mDevice.getMac());
@@ -878,14 +909,29 @@ public class D3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 }
                 payload.put("opt", 0);
                 PetkitSocketInstance.getInstance().sendString(D3Utils.getRequestForKeyAndPayload(161, payload));
-            }
-        } else {
-            HashMap<String, Object> params = new HashMap<>();
-            params.put("mac", mDevice.getMac());
-            params.put("sn", mDevice.getSn());
-            params.put("opt", 0);
-            PetkitSocketInstance.getInstance().sendString(D3Utils.getRequestForKeyAndPayload(161, params));
+                break;
         }
+    }
+
+
+    private void generateAndSendSN() {
+        String sn = D3Utils.generateSNForTester(mTester, mDeviceType);
+        if (sn == null) {
+            showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
+            return;
+        }
+        mDevice.setSn(sn);
+        mDevice.setCreation(System.currentTimeMillis());
+
+        isNewSN = true;
+        HashMap<String, Object> payload = new HashMap<>();
+        payload.put("mac", mDevice.getMac());
+        payload.put("sn", sn);
+        if (mD3TestUnits.get(mCurTestStep).getState() == 2) {
+            payload.put("force", 100);
+        }
+        payload.put("opt", 0);
+        PetkitSocketInstance.getInstance().sendString(D3Utils.getRequestForKeyAndPayload(161, payload));
     }
 
     private Bundle getPrintParam() {
@@ -966,6 +1012,7 @@ public class D3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                     return;
                 }
                 mDevice.setSn(sn);
+                isNewSN = true;
 
 //                D3Utils.storeTempDeviceInfo(mDevice);
 

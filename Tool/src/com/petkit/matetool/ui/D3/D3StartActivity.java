@@ -8,6 +8,7 @@ import com.petkit.matetool.R;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.D3.utils.D3Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 
 /**
  * D3测试，选择工站
@@ -17,6 +18,8 @@ import com.petkit.matetool.ui.base.BaseActivity;
 public class D3StartActivity extends BaseActivity {
 
     private Tester mTester;
+    private int mDeviceType;
+
 
 
     @Override
@@ -27,15 +30,21 @@ public class D3StartActivity extends BaseActivity {
         } else {
             mTester = (Tester) getIntent().getSerializableExtra(D3Utils.EXTRA_D3_TESTER);
         }
-
+        if(savedInstanceState != null) {
+            mDeviceType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE);
+        } else {
+            mDeviceType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, 0);
+        }
         setContentView(R.layout.activity_feeder_start);
 
     }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
+        outState.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
         outState.putSerializable(D3Utils.EXTRA_D3_TESTER, mTester);
     }
 
@@ -60,6 +69,7 @@ public class D3StartActivity extends BaseActivity {
             case R.id.test_case1:
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(D3Utils.EXTRA_D3_TESTER, mTester);
+                bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
                 bundle.putInt("TestType", D3Utils.TYPE_TEST_PARTIALLY);
                 startActivityWithData(D3TestMainActivity.class, bundle, false);
                 break;
@@ -67,23 +77,27 @@ public class D3StartActivity extends BaseActivity {
                 bundle = new Bundle();
                 bundle.putSerializable(D3Utils.EXTRA_D3_TESTER, mTester);
                 bundle.putInt("TestType", D3Utils.TYPE_TEST);
+                bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
                 startActivityWithData(D3TestMainActivity.class, bundle, false);
                 break;
             case R.id.test_case3:
                 bundle = new Bundle();
                 bundle.putSerializable(D3Utils.EXTRA_D3_TESTER, mTester);
                 bundle.putInt("TestType", D3Utils.TYPE_MAINTAIN);
+                bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
                 startActivityWithData(D3TestMainActivity.class, bundle, false);
                 break;
             case R.id.test_case4:
                 bundle = new Bundle();
                 bundle.putSerializable(D3Utils.EXTRA_D3_TESTER, mTester);
                 bundle.putInt("TestType", D3Utils.TYPE_CHECK);
+                bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
                 startActivityWithData(D3TestMainActivity.class, bundle, false);
                 break;
             case R.id.test_case5:
                 bundle = new Bundle();
                 bundle.putSerializable(D3Utils.EXTRA_D3_TESTER, mTester);
+                bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
                 startActivityWithData(D3StorageFileActivity.class, bundle, false);
                 break;
         }

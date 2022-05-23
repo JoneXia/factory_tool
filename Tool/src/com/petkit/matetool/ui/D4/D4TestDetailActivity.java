@@ -34,6 +34,7 @@ import com.petkit.matetool.ui.D4.mode.D4TestUnit;
 import com.petkit.matetool.ui.D4.utils.D4Utils;
 import com.petkit.matetool.ui.K2.utils.K2Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.ui.print.PrintActivity;
 import com.petkit.matetool.ui.utils.PetkitSocketInstance;
@@ -78,7 +79,8 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
     private ArrayList<D4TestUnit> mD4AutoTestUnits;
     private boolean isInAutoUnits = false;
     private int mAutoUnitStep; //有些测试项中会细分成几步
-
+    private boolean isNewSN = false;
+    private int mDeviceType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +91,7 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
             mCurTestStep = savedInstanceState.getInt("CurrentTestStep");
             mDevice = (Device) savedInstanceState.getSerializable(D4Utils.EXTRA_D4);
             isAutoTest = savedInstanceState.getBoolean("AutoTest");
+            mDeviceType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE);
             mTester = (Tester) savedInstanceState.getSerializable(D4Utils.EXTRA_D4_TESTER);
             mErrorDevice = (Device) savedInstanceState.getSerializable(D4Utils.EXTRA_ERROR_D4);
         } else {
@@ -96,6 +99,7 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
             mCurTestStep = getIntent().getIntExtra("CurrentTestStep", 0);
             mDevice = (Device) getIntent().getSerializableExtra(D4Utils.EXTRA_D4);
             isAutoTest = getIntent().getBooleanExtra("AutoTest", true);
+            mDeviceType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, 0);
             mTester = (Tester) getIntent().getSerializableExtra(D4Utils.EXTRA_D4_TESTER);
             mErrorDevice = (Device) getIntent().getSerializableExtra(D4Utils.EXTRA_ERROR_D4);
         }
@@ -125,6 +129,7 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
         outState.putSerializable(D4Utils.EXTRA_D4, mDevice);
         outState.putBoolean("AutoTest", isAutoTest);
         outState.putSerializable(D4Utils.EXTRA_D4_TESTER, mTester);
+        outState.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
         outState.putSerializable(D4Utils.EXTRA_ERROR_D4, mErrorDevice);
     }
 
@@ -704,7 +709,10 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                             mDevice.getSn() != null && mDevice.getSn().equalsIgnoreCase(sn)) {
                         mDescTextView.append("\n写入SN成功");
 //                        D4Utils.removeTempDeviceInfo(mDevice);
-                        D4Utils.storeSucceedDeviceInfo(mDevice, mAgeingResult);
+                        if (isNewSN) {
+                            isNewSN = false;
+                            D4Utils.storeSucceedDeviceInfo(mDevice, mAgeingResult);
+                        }
 
                         mD4TestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         refershBtnView();
@@ -734,16 +742,38 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-                String sn = D4Utils.generateSNForTester(mTester);
-                if (sn == null) {
-                    showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
+//                startScanSN(mDeviceType);
+                generateAndSendSN();
+            }
+        } else {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("mac", mDevice.getMac());
+            params.put("sn", mDevice.getSn());
+            params.put("opt", 0);
+            PetkitSocketInstance.getInstance().sendString(D4Utils.getRequestForKeyAndPayload(161, params));
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode != RESULT_OK)
+            return;
+
+        switch (requestCode) {
+            case 0x199:
+                String sn = data.getStringExtra(DeviceCommonUtils.EXTRA_DEVICE_SN);
+                if (!DeviceCommonUtils.checkSN(sn, mDeviceType)) {
+                    showShortToast("无效的SN！");
                     return;
+                }
+                if (mDevice.getSn() == null || !mDevice.getSn().equals(sn)) {
+                    isNewSN = true;
                 }
                 mDevice.setSn(sn);
                 mDevice.setCreation(System.currentTimeMillis());
-
-                //写入设备前先存储到临时数据区，写入成功后需删除
-//                D4Utils.storeTempDeviceInfo(mDevice);
+                LogcatStorageHelper.addLog("write SN: " + sn);
 
                 HashMap<String, Object> payload = new HashMap<>();
                 payload.put("mac", mDevice.getMac());
@@ -753,14 +783,29 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                 }
                 payload.put("opt", 0);
                 PetkitSocketInstance.getInstance().sendString(D4Utils.getRequestForKeyAndPayload(161, payload));
-            }
-        } else {
-            HashMap<String, Object> params = new HashMap<>();
-            params.put("mac", mDevice.getMac());
-            params.put("sn", mDevice.getSn());
-            params.put("opt", 0);
-            PetkitSocketInstance.getInstance().sendString(D4Utils.getRequestForKeyAndPayload(161, params));
+                break;
         }
+    }
+
+
+    private void generateAndSendSN() {
+        String sn = D4Utils.generateSNForTester(mTester, mDeviceType);
+        if (sn == null) {
+            showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
+            return;
+        }
+        mDevice.setSn(sn);
+        mDevice.setCreation(System.currentTimeMillis());
+
+        isNewSN = true;
+        HashMap<String, Object> payload = new HashMap<>();
+        payload.put("mac", mDevice.getMac());
+        payload.put("sn", sn);
+        if (mD4TestUnits.get(mCurTestStep).getState() == 2) {
+            payload.put("force", 100);
+        }
+        payload.put("opt", 0);
+        PetkitSocketInstance.getInstance().sendString(D4Utils.getRequestForKeyAndPayload(161, payload));
     }
 
     private Bundle getPrintParam() {

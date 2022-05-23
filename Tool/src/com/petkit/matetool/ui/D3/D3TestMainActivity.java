@@ -26,6 +26,7 @@ import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.D3.mode.D3TestUnit;
 import com.petkit.matetool.ui.D3.utils.D3Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.ui.utils.PetkitSocketInstance;
 import com.petkit.matetool.ui.utils.WifiAdminSimple;
 import com.petkit.matetool.ui.wifi.WifiManagerActivity;
@@ -60,6 +61,9 @@ public class D3TestMainActivity extends BaseActivity implements PetkitSocketInst
 
     private TextView mInfoTestTextView;
     private boolean testComplete = false;
+    private int mDeviceType;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,10 +71,12 @@ public class D3TestMainActivity extends BaseActivity implements PetkitSocketInst
         if(savedInstanceState != null) {
             mTester = (Tester) savedInstanceState.getSerializable(D3Utils.EXTRA_D3_TESTER);
             mTestType = savedInstanceState.getInt("TestType");
+            mDeviceType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE);
             mErrorDevice = (Device) savedInstanceState.getSerializable(D3Utils.EXTRA_D3);
         } else {
             mTester = (Tester) getIntent().getSerializableExtra(D3Utils.EXTRA_D3_TESTER);
             mTestType = getIntent().getIntExtra("TestType", D3Utils.TYPE_TEST);
+            mDeviceType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, 0);
             mErrorDevice = (Device) getIntent().getSerializableExtra(D3Utils.EXTRA_D3);
         }
 
@@ -85,6 +91,7 @@ public class D3TestMainActivity extends BaseActivity implements PetkitSocketInst
 
         outState.putSerializable(D3Utils.EXTRA_D3_TESTER, mTester);
         outState.putInt("TestType", mTestType);
+        outState.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
         outState.putSerializable(D3Utils.EXTRA_D3, mErrorDevice);
     }
 

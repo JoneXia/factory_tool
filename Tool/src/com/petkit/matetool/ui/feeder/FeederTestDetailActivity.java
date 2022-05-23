@@ -18,6 +18,7 @@ import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.ui.feeder.mode.Feeder;
 import com.petkit.matetool.ui.feeder.mode.FeederTestUnit;
@@ -28,6 +29,7 @@ import com.petkit.matetool.ui.utils.PetkitSocketInstance;
 import com.petkit.matetool.ui.utils.PrintResultCallback;
 import com.petkit.matetool.ui.utils.PrintUtils;
 import com.petkit.matetool.utils.DateUtil;
+import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.JSONUtils;
 
 import org.json.JSONException;
@@ -61,6 +63,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
     private TextView mDescTextView, mPromptTextView;
     private Button mBtn1, mBtn2, mBtn3;
     private ScrollView mDescScrollView;
+    private boolean isNewSN = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -623,20 +626,7 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-                String sn = FeederUtils.generateSNForTester(mTester);
-                if (sn == null) {
-                    showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
-                    return;
-                }
-                HashMap<String, Object> payload = new HashMap<>();
-                payload.put("mac", mFeeder.getMac());
-                payload.put("sn", sn);
-                if (mFeederTestUnits.get(mCurTestStep).getState() == 2) {
-                    payload.put("force", 100);
-                }
-                mFeeder.setSn(sn);
-                mFeeder.setCreation(System.currentTimeMillis());
-                PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(161, payload));
+                startScanSN(Globals.FEEDER);
             }
         } else {
             HashMap<String, Object> params = new HashMap<>();
@@ -646,6 +636,58 @@ public class FeederTestDetailActivity extends BaseActivity implements PetkitSock
         }
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode != RESULT_OK)
+            return;
+
+        switch (requestCode) {
+            case 0x199:
+                String sn = data.getStringExtra(DeviceCommonUtils.EXTRA_DEVICE_SN);
+                if (!DeviceCommonUtils.checkSN(sn, Globals.FEEDER)) {
+                    showShortToast("无效的SN！");
+                    return;
+                }
+                if (mFeeder.getSn() == null || !mFeeder.getSn().equals(sn)) {
+                    isNewSN = true;
+                }
+                mFeeder.setSn(sn);
+                mFeeder.setCreation(System.currentTimeMillis());
+                LogcatStorageHelper.addLog("write SN: " + sn);
+
+                HashMap<String, Object> payload = new HashMap<>();
+                payload.put("mac", mFeeder.getMac());
+                payload.put("sn", sn);
+                if (mFeederTestUnits.get(mCurTestStep).getState() == 2) {
+                    payload.put("force", 100);
+                }
+                PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(161, payload));
+                break;
+        }
+    }
+
+
+    private void generateAndSendSN() {
+        String sn = FeederUtils.generateSNForTester(mTester);
+        if (sn == null) {
+            showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
+            return;
+        }
+        mFeeder.setSn(sn);
+        mFeeder.setCreation(System.currentTimeMillis());
+
+        isNewSN = true;
+        HashMap<String, Object> payload = new HashMap<>();
+        payload.put("mac", mFeeder.getMac());
+        payload.put("sn", sn);
+        if (mFeederTestUnits.get(mCurTestStep).getState() == 2) {
+            payload.put("force", 100);
+        }
+        PetkitSocketInstance.getInstance().sendString(FeederUtils.getRequestForKeyAndPayload(161, payload));
+    }
 
     private String getKeyDescByState(int state) {
         String desc = null;

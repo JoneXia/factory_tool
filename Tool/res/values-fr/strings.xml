@@ -62,5 +62,7 @@
     <string name="s_spr_fb">Le démarrage du bac à litière a échoué. Veuillez vérifier la batterie du dispositif d\'élimination des odeurs. </string>
     <string name="s_spr_fn">Le démarrage du bac à litière a échoué. Le dispositif d\'élimination des odeurs n\'a pas été détecté. </string>
     <string name="s_spr_bt">La pile du dispositif d\'élimination des odeurs est faible. Veuillez remplacer les piles.</string>
+    <string name="s_mten">Mode de Maintenance</string>
+    <string name="s_mten_i">Sous maintenance, cliquez sur OK pour quitter</string>
 
 </resources>

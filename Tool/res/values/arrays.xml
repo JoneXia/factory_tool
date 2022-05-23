@@ -178,6 +178,8 @@
         <item>s_4min</item>
         <item>s_3min</item>
         <item>s_2min</item>
+        <item>s_mten</item>
+        <item>s_mten_i</item>
     </string-array>
 
 </resources>

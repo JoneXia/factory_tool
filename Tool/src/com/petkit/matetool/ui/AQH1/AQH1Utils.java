@@ -102,10 +102,10 @@ public class AQH1Utils {
             results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_BT, "蓝牙测试", 2, 1));
             results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_LED, "显示屏和蜂鸣器测试", 1, 1));
             results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_KEY, "按键测试", 3, 1));
-            results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_WATER, "水位检测", 5, 1));
             results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_TEMP_SET_1, "温度1校准", 7, 1));
             results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_TEMP_SET_2, "温度2校准", 7, 1));
             results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_TEMP, "温度测试", 4, 1));
+            results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_WATER, "水位检测", 5, 1));
             results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_HOT, "加热测试", 6, 2));
 
             if (type != Globals.TYPE_TEST_PARTIALLY) {

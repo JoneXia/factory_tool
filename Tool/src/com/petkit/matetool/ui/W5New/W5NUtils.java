@@ -53,7 +53,7 @@ public class W5NUtils {
      * @param type 测试类型
      * @return 测试项
      */
-    public static ArrayList<W5NTestUnit> generateTestUnitsForType(int type) {
+    public static ArrayList<W5NTestUnit> generateTestUnitsForType(int type, int deviceType) {
         ArrayList<W5NTestUnit> results = new ArrayList<>();
 
         if(type == Globals.TYPE_DUPLICATE_MAC) {
@@ -65,7 +65,7 @@ public class W5NUtils {
             if (type == Globals.TYPE_TEST) {
                 results.add(new W5NTestUnit(W5NTestModes.TEST_MODE_SN, "写入SN", 98, 2));
             }
-            if (type != Globals.TYPE_TEST_PARTIALLY && type != Globals.TYPE_CHECK) {
+            if (deviceType != Globals.CTW2 && type != Globals.TYPE_TEST_PARTIALLY && type != Globals.TYPE_CHECK) {
                 results.add(new W5NTestUnit(W5NTestModes.TEST_MODE_PRINT, "打印标签", -1, type == Globals.TYPE_TEST ? 2 : 1));
             }
 

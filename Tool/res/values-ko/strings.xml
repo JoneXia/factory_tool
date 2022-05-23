@@ -61,5 +61,7 @@
   <string name="s_spr_fb">작동 실패. 냄새 청정기 배터리를 확인하여 주십시오</string>
   <string name="s_spr_fn">작동 실패. 냄새 청정기를 찾지 못함</string>
   <string name="s_spr_bt">냄새 청정기의 배터리가 부족함. 배터리를 교체하여 주십시오</string>
+  <string name="s_mten">유지 보수 모드</string>
+  <string name="s_mten_i">유지 보수 중, OK를 눌러 나가기 </string>
 
 </resources>

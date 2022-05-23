@@ -20,6 +20,7 @@ import com.petkit.matetool.model.DevicesError;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.D4.utils.D4Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.utils.FileUtils;
 import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.JSONUtils;
@@ -53,14 +54,28 @@ public class D4TestPrepareActivity extends BaseActivity {
 
     private DevicesError mDevicesError;
     private boolean isLogining;
+    private int mDeviceType;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if(savedInstanceState != null) {
+            mDeviceType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE);
+        } else {
+            mDeviceType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, 0);
+        }
         setContentView(R.layout.activity_feeder_prepare);
 
         ApiTools.setApiBaseUrl();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
     }
 
     @Override
@@ -138,6 +153,7 @@ public class D4TestPrepareActivity extends BaseActivity {
                 if(mDevicesError != null) {
                     Bundle bundle = new Bundle();
                     bundle.putSerializable(D4Utils.EXTRA_D4_TESTER, mTester);
+                    bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
                     startActivityWithData(D4ErrorListActivity.class, bundle, false);
                 } else {
                     LoadDialog.show(this);
@@ -192,6 +208,7 @@ public class D4TestPrepareActivity extends BaseActivity {
     private void startTest() {
         Bundle bundle = new Bundle();
         bundle.putSerializable(D4Utils.EXTRA_D4_TESTER, mTester);
+        bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
         startActivityWithData(D4StartActivity.class, bundle, false);
     }
 

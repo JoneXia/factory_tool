@@ -31,12 +31,14 @@ import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.K2.mode.K2TestUnit;
 import com.petkit.matetool.ui.K2.utils.K2Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.ui.cozy.utils.CozyUtils;
 import com.petkit.matetool.ui.print.PrintActivity;
 import com.petkit.matetool.ui.utils.PetkitSocketInstance;
 import com.petkit.matetool.ui.utils.PrintResultCallback;
 import com.petkit.matetool.ui.utils.PrintUtils;
 import com.petkit.matetool.utils.DateUtil;
+import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.JSONUtils;
 
 import org.json.JSONException;
@@ -74,6 +76,7 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
     private ArrayList<K2TestUnit> mK2AutoTestUnits;
     private boolean isInAutoUnits = false;
     private int mAutoUnitStep; //有些测试项中会细分成几步
+    private boolean isNewSN = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -730,7 +733,10 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                             mDevice.getSn() != null && mDevice.getSn().equalsIgnoreCase(sn)) {
                         mDescTextView.append("\n写入SN成功");
 //                        K2Utils.removeTempDeviceInfo(mDevice);
-                        K2Utils.storeSucceedDeviceInfo(mDevice, mAgeingResult);
+                        if (isNewSN) {
+                            isNewSN = false;
+                            K2Utils.storeSucceedDeviceInfo(mDevice, mAgeingResult);
+                        }
 
                         mK2TestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         refershBtnView();
@@ -760,19 +766,8 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-                String sn = K2Utils.generateSNForTester(mTester);
-                if (sn == null) {
-                    showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
-                    return;
-                }
-                mDevice.setSn(sn);
-                mDevice.setCreation(System.currentTimeMillis());
-
-                HashMap<String, Object> payload = new HashMap<>();
-                payload.put("mac", mDevice.getMac());
-                payload.put("sn", sn);
-                payload.put("opt", 0);
-                PetkitSocketInstance.getInstance().sendString(K2Utils.getRequestForKeyAndPayload(161, payload));
+//                startScanSN(Globals.K2);
+                generateAndSendSN();
             }
         } else {
             HashMap<String, Object> params = new HashMap<>();
@@ -783,6 +778,53 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode != RESULT_OK)
+            return;
+
+        switch (requestCode) {
+            case 0x199:
+                String sn = data.getStringExtra(DeviceCommonUtils.EXTRA_DEVICE_SN);
+                if (!DeviceCommonUtils.checkSN(sn, Globals.K2)) {
+                    showShortToast("无效的SN！");
+                    return;
+                }
+                if (mDevice.getSn() == null || !mDevice.getSn().equals(sn)) {
+                    isNewSN = true;
+                }
+                mDevice.setSn(sn);
+                mDevice.setCreation(System.currentTimeMillis());
+                LogcatStorageHelper.addLog("write SN: " + sn);
+
+                HashMap<String, Object> payload = new HashMap<>();
+                payload.put("mac", mDevice.getMac());
+                payload.put("sn", sn);
+                payload.put("opt", 0);
+                PetkitSocketInstance.getInstance().sendString(K2Utils.getRequestForKeyAndPayload(161, payload));
+                break;
+        }
+    }
+
+
+    private void generateAndSendSN() {
+        String sn = K2Utils.generateSNForTester(mTester);
+        if (sn == null) {
+            showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
+            return;
+        }
+        mDevice.setSn(sn);
+        mDevice.setCreation(System.currentTimeMillis());
+
+        isNewSN = true;
+        HashMap<String, Object> payload = new HashMap<>();
+        payload.put("mac", mDevice.getMac());
+        payload.put("sn", sn);
+        payload.put("opt", 0);
+        PetkitSocketInstance.getInstance().sendString(K2Utils.getRequestForKeyAndPayload(161, payload));
+    }
 
     private boolean printBarcode(String onedBarcde, String twodBarcde) {
         return PrintUtils.printText(onedBarcde, twodBarcde, mK2TestUnits.get(mCurTestStep).getState(), new PrintResultCallback() {

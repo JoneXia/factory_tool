@@ -74,13 +74,13 @@ public class DeviceCommonUtils {
         mDeviceConfigs = new HashMap<>();
 
         mDeviceConfigs.put(Globals.P3C, new DeviceConfigInfo(true, "P3", "P3", new String[]{"Petkit_P3C"},
-                Globals.DEVICE_TYPE_CODE_P3C, P3TestMainActivity.class));
+                Globals.DEVICE_TYPE_CODE_NEW_P3C, P3TestMainActivity.class));
         mDeviceConfigs.put(Globals.P3D, new DeviceConfigInfo(true, "P3", "P3D", new String[]{"Petkit_P3D", "Petkit_P3C"},
-                Globals.DEVICE_TYPE_CODE_P3D, P3TestMainActivity.class));
+                Globals.DEVICE_TYPE_CODE_NEW_P3D, P3TestMainActivity.class));
         mDeviceConfigs.put(Globals.T4, new DeviceConfigInfo(false, "T4", "T4", null,
-                Globals.DEVICE_TYPE_CODE_T4, T4TestMainActivity.class));
+                Globals.DEVICE_TYPE_CODE_NEW_T4, T4TestMainActivity.class));
         mDeviceConfigs.put(Globals.T4_p, new DeviceConfigInfo(false, "T4", "T4P", null,
-                Globals.DEVICE_TYPE_CODE_T4, T4TestMainActivity.class));
+                Globals.DEVICE_TYPE_CODE_NEW_T4, T4TestMainActivity.class));
         mDeviceConfigs.put(Globals.K3, new DeviceConfigInfo(true, "K3", "K3", new String[]{"Petkit_K3"},
                 Globals.DEVICE_TYPE_CODE_K3, K3TestMainActivity.class));
         mDeviceConfigs.put(Globals.AQR, new DeviceConfigInfo(true, "AQR", "AQR", new String[]{"Petkit_AQR"},
@@ -88,17 +88,21 @@ public class DeviceCommonUtils {
         mDeviceConfigs.put(Globals.AQ1S, new DeviceConfigInfo(true, "AQ", "AQ1S", new String[]{"Petkit_AQ", "Petkit_AQ1S"},
                 Globals.DEVICE_TYPE_CODE_NEW_AQ1S, AQ1STestMainActivity.class));
         mDeviceConfigs.put(Globals.R2, new DeviceConfigInfo(true, "R2", "R2", new String[]{"Petkit_R2"},
-                Globals.DEVICE_TYPE_CODE_R2, R2TestMainActivity.class));
+                Globals.DEVICE_TYPE_CODE_NEW_R2, R2TestMainActivity.class));
         mDeviceConfigs.put(Globals.W5N, new DeviceConfigInfo(true, "W5", "W5N", new String[]{"Petkit_W5N", "Petkit_W4X"},
-                Globals.DEVICE_TYPE_CODE_W5N, W5NTestMainActivity.class));
+                Globals.DEVICE_TYPE_CODE_NEW_W5N, W5NTestMainActivity.class));
         mDeviceConfigs.put(Globals.W4X, new DeviceConfigInfo(true, "W5", "W4X", new String[]{"Petkit_W5N", "Petkit_W4X"},
-                Globals.DEVICE_TYPE_CODE_W4X, W5NTestMainActivity.class));
+                Globals.DEVICE_TYPE_CODE_NEW_W4X, W5NTestMainActivity.class));
         mDeviceConfigs.put(Globals.AQH1_500, new DeviceConfigInfo(false, "AQH1", "AQH1_500", null,
                 Globals.DEVICE_TYPE_CODE_NEW_AQH1_500, AQH1TestMainActivity.class));
         mDeviceConfigs.put(Globals.AQH1_1000, new DeviceConfigInfo(false, "AQH1", "AQH1_1000", null,
                 Globals.DEVICE_TYPE_CODE_NEW_AQH1_1000, AQH1TestMainActivity.class));
         mDeviceConfigs.put(Globals.CTW2, new DeviceConfigInfo(true, "W5", "CTW2", new String[]{"Petkit_W5N", "Petkit_W4X", "Petkit_CTW2"},
                 Globals.DEVICE_TYPE_CODE_NEW_CTW2, W5NTestMainActivity.class));
+//        mDeviceConfigs.put(Globals.D3_1, new DeviceConfigInfo(true, "D3_1", "D3_1", null,
+//                Globals.DEVICE_TYPE_CODE_NEW_D3_1, D3TestMainActivity.class));
+//        mDeviceConfigs.put(Globals.D4_1, new DeviceConfigInfo(true, "D4_1", "D4_1", null,
+//                Globals.DEVICE_TYPE_CODE_NEW_D4_1, D4TestMainActivity.class));
     }
 
     /**
@@ -437,8 +441,8 @@ public class DeviceCommonUtils {
             case Globals.R2:
                 return generateSN(CommonUtils.getDateStringByOffset(0), getDeviceFlagByType(deviceType), tester.getStation(), serializableNumber);
             default:
-                throw  new RuntimeException("generate SN is forbidden!");
-//                return generateSN(CommonUtils.getDateStringByOffset(0), getDeviceFlagByType(deviceType), serializableNumber);
+//                throw  new RuntimeException("generate SN is forbidden!");
+                return generateSN(CommonUtils.getDateStringByOffset(0), getDeviceFlagByType(deviceType), serializableNumber);
         }
     }
 
@@ -636,11 +640,65 @@ public class DeviceCommonUtils {
         } else {
             switch (deviceType) {
                 case Globals.W5C:
-                    return sn.contains(Globals.DEVICE_TYPE_CODE_W5C);
+                    return sn.contains(Globals.DEVICE_TYPE_CODE_NEW_W5C);
+                case Globals.COZY:
+                    return sn.contains(Globals.DEVICE_TYPE_CODE_NEW_Z1S);
+                case Globals.D3:
+                    return sn.contains(Globals.DEVICE_TYPE_CODE_NEW_D3);
+                case Globals.D3_1:
+                    return sn.contains(Globals.DEVICE_TYPE_CODE_NEW_D3_1);
+                case Globals.D4:
+                    return sn.contains(Globals.DEVICE_TYPE_CODE_NEW_D4);
+                case Globals.D4_1:
+                    return sn.contains(Globals.DEVICE_TYPE_CODE_NEW_D4_1);
+                case Globals.FEEDER:
+                    return sn.contains(Globals.DEVICE_TYPE_CODE_NEW_D1);
+                case Globals.FEEDER_MINI:
+                    return sn.contains(Globals.DEVICE_TYPE_CODE_NEW_D2);
+                case Globals.K2:
+                    return sn.contains(Globals.DEVICE_TYPE_CODE_NEW_K2);
+                case Globals.T3:
+                    return sn.contains(Globals.DEVICE_TYPE_CODE_NEW_T3);
+                case Globals.T4:
+                case Globals.T4_p:
+                    return sn.contains(Globals.DEVICE_TYPE_CODE_NEW_T4);
             }
             return true;
         }
 
     }
+
+
+    /**
+     * 计算饮水机系列的水循环次数和电量
+     *
+     * @param valueType 能源种类：1 水循环次数；2 电量
+     * @param deviceType Wx系列类型：W4X/W5C/W5/CTW2
+     * @param time 运行时间：单位秒
+     */
+    private float canculateWxEnergyForType(int valueType, String deviceType, int time) {
+        if (valueType == 1) {
+            float flow = "W5C".equals(deviceType) ? 1.3f : 1.5f;
+            float capacity = "W5C".equals(deviceType) ? 1f : "W4X".equals(deviceType) ? 1.8f : 2f;
+            return flow * time / 60f / capacity;
+        } else {
+            float watt = "W5C".equals(deviceType) ? 0.182f : 0.75f;
+            return watt * time / 3600f / 1000f;
+        }
+    }
+
+    /**
+     * 计算饮水机滤芯剩余使用天数
+     *
+     * @param leftPercent 当前剩余比例
+     * @param workDuration 工作时间
+     * @param sleepDuration 休眠时间
+     * @return
+     */
+    public static int canculateWxFilterLeftDays(float leftPercent, int workDuration, int sleepDuration) {
+        return (int) Math.ceil(30f * leftPercent / (workDuration / (workDuration + sleepDuration)));
+    }
+
+
 
 }
