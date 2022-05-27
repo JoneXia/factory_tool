@@ -77,6 +77,7 @@ public class Globals {
 	public static final String DEVICE_TYPE_CODE_W4X = "S";
 	public static final String DEVICE_TYPE_CODE_AQH1_500 = "T";
 	public static final String DEVICE_TYPE_CODE_AQH1_1000 = "U";
+	public static final String DEVICE_TYPE_CODE_D4_1 = "D";
 
 	/**
 	 * 设备代码必须是2位

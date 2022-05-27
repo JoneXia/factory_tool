@@ -459,9 +459,9 @@ public class T4TestMainActivity extends BaseActivity implements PetkitSocketInst
                     if (!jsonObject.isNull("version")) {
                         stringBuilder.append("version: ").append(jsonObject.getString("version")).append("\n");
                     }
-                    if (!jsonObject.isNull("id")) {
-                        stringBuilder.append("id: ").append(jsonObject.getInt("id")).append("\n");
-                    }
+//                    if (!jsonObject.isNull("id")) {
+//                        stringBuilder.append("id: ").append(jsonObject.getInt("id")).append("\n");
+//                    }
 
                     if(isEmpty(mac)) {
                         mInfoTestTextView.setText("设备信息不正确，没有MAC地址！");

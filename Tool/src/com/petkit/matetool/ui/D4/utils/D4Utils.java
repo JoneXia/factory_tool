@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.petkit.android.utils.LogcatStorageHelper.getFileName;
-import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_NEW_D4;
-import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_NEW_D4_1;
+import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_D4;
+import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_D4_1;
 import static com.petkit.matetool.utils.Globals.PERMISSION_ERASE;
 
 /**
@@ -191,7 +191,7 @@ public class D4Utils {
         }
 
         return DeviceCommonUtils.generateSN(CommonUtils.getDateStringByOffset(0),
-                deviceType == Globals.D4 ? DEVICE_TYPE_CODE_NEW_D4 : DEVICE_TYPE_CODE_NEW_D4_1, serializableNumber);
+                deviceType == Globals.D4 ? DEVICE_TYPE_CODE_D4 : DEVICE_TYPE_CODE_D4_1, tester.getStation(), serializableNumber);
     }
 
     /**
