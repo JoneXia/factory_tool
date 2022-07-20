@@ -284,6 +284,7 @@ public class D3TestMainActivity extends BaseActivity implements PetkitSocketInst
             intent.putExtra("CurrentTestStep", pos);
             intent.putExtra(D3Utils.EXTRA_D3, mCurDevice);
             intent.putExtra("AutoTest", isAuto);
+            intent.putExtra("TestType", mTestType);
             intent.putExtra(D3Utils.EXTRA_D3_TESTER, mTester);
             intent.putExtra(D3Utils.EXTRA_ERROR_D3, mErrorDevice);
             startActivityForResult(intent, 0x12);

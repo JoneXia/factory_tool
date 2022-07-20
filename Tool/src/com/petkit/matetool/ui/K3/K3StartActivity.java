@@ -54,7 +54,9 @@ public class K3StartActivity extends BaseActivity {
         findViewById(R.id.test_case3).setOnClickListener(this);
         findViewById(R.id.test_case4).setOnClickListener(this);
         findViewById(R.id.test_case5).setOnClickListener(this);
+        findViewById(R.id.test_case6).setOnClickListener(this);
         findViewById(R.id.test_case5).setVisibility(View.GONE);
+        findViewById(R.id.test_case6).setOnClickListener(this);
     }
 
     @Override
@@ -88,6 +90,12 @@ public class K3StartActivity extends BaseActivity {
                 bundle = new Bundle();
                 bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
                 startActivityWithData(K3StorageFileActivity.class, bundle, false);
+                break;
+            case R.id.test_case6:
+                bundle = new Bundle();
+                bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
+                bundle.putInt("TestType", Globals.TYPE_AFTERMARKET);
+                startActivityWithData(K3ScanActivity.class, bundle, false);
                 break;
         }
     }

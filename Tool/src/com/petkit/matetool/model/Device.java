@@ -14,6 +14,8 @@ public class Device implements Serializable {
     private String chipid = "";
     private long creation = 0;
     private int inspectStatus = 0;
+    private int hardware;
+    private int firmware;
 
     public Device(String mac, String sn, String chipid) {
         this.mac = mac;
@@ -92,13 +94,29 @@ public class Device implements Serializable {
         return String.format("{\"sn\":\"%s\",\"mac\":\"%s\",\"chipId\":\"%s\",\"withK3\":%d,\"creation\":%d,\"ageingResult\":%s}", sn, mac, chipid, withK3, creation, ageingResult);
     }
 
+    public int getHardware() {
+        return hardware;
+    }
+
+    public void setHardware(int hardware) {
+        this.hardware = hardware;
+    }
+
+    public int getFirmware() {
+        return firmware;
+    }
+
+    public void setFirmware(int firmware) {
+        this.firmware = firmware;
+    }
+
     @Override
     public String toString() {
         return "Device{" +
                 "mac='" + mac + '\'' +
                 ", sn='" + sn + '\'' +
-                ", chipid='" + chipid + '\'' +
-                ", creation='" + creation + '\'' +
+                ", id='" + id + '\'' +
+                ", version='" + hardware + "." + firmware + '\'' +
                 '}';
     }
 }

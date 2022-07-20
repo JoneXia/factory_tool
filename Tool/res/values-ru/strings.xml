@@ -65,5 +65,6 @@
 
     <string name="s_mten">Режим обслуживания</string>
     <string name="s_mten_i">Производится обслуживание, нажмите ОК, чтобы выйти</string>
+    <string name="s_err_hall_o">Ошибка уплотнительной крышки, пожалуйста, проверьте ее</string>
 
 </resources>

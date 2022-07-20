@@ -117,7 +117,7 @@ public abstract class BaseActivity extends Activity implements OnClickListener, 
 	
 	
 	public void cancel(View view){
-		finish();
+		onBackPressed();
 	}
 	
 	protected abstract void setupViews();
@@ -399,5 +399,34 @@ public abstract class BaseActivity extends Activity implements OnClickListener, 
 		startActivityForResult(intent, 0x199);
 	}
 
+	protected void showQuitConfirmDialog() {
+		button2DialogBuilder("正在写入SN，请稍后...", "确认", "坚持退出", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		}, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+				ShowQuitConfirmAgainDialog();
+			}
+		}).show();
+	}
+
+	protected void ShowQuitConfirmAgainDialog() {
+		button2DialogBuilder("现在退出可能会导致SN写入状态异常，建议再等等...", "坚持退出", "取消", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+				finish();
+			}
+		}, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		}).show();
+	}
 
 }

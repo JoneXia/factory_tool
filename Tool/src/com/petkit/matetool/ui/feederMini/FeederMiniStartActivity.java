@@ -8,6 +8,7 @@ import com.petkit.matetool.R;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.feederMini.utils.FeederMiniUtils;
+import com.petkit.matetool.utils.Globals;
 
 /**
  * 喂食器测试，选择工站
@@ -51,6 +52,7 @@ public class FeederMiniStartActivity extends BaseActivity {
         findViewById(R.id.test_case3).setOnClickListener(this);
         findViewById(R.id.test_case4).setOnClickListener(this);
         findViewById(R.id.test_case5).setOnClickListener(this);
+        findViewById(R.id.test_case6).setOnClickListener(this);
     }
 
     @Override
@@ -85,6 +87,13 @@ public class FeederMiniStartActivity extends BaseActivity {
                 bundle.putSerializable(FeederMiniUtils.EXTRA_FEEDER_MINI_TESTER, mTester);
                 startActivityWithData(FeederMiniStorageActivity.class, bundle, false);
                 break;
+            case R.id.test_case6:
+                bundle = new Bundle();
+                bundle.putSerializable(FeederMiniUtils.EXTRA_FEEDER_MINI_TESTER, mTester);
+                bundle.putInt("TestType", Globals.TYPE_AFTERMARKET);
+                startActivityWithData(FeederMiniTestMainActivity.class, bundle, false);
+                break;
+
         }
     }
 

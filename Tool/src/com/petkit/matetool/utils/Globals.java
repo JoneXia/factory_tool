@@ -48,8 +48,9 @@ public class Globals {
 	public static final int CTW2 = 26;
 	public static final int D3_1 = 27;
 	public static final int D4_1 = 28;
+	public static final int D4S = 29;
 	//TODO: 新增设备时，max值需加一
-	public static final int MAX = 29;
+	public static final int MAX = 30;
 
 //	public static int g_testStyle = 0;
 
@@ -94,6 +95,7 @@ public class Globals {
 	public static final String DEVICE_TYPE_CODE_NEW_W5 = "I1";
 	public static final String DEVICE_TYPE_CODE_NEW_W5C = "J1";
 	public static final String DEVICE_TYPE_CODE_NEW_T4 = "L1";
+	public static final String DEVICE_TYPE_CODE_NEW_T4_P = "L2";	//产线区分出厂是否标配K3
 	public static final String DEVICE_TYPE_CODE_NEW_K3 = "M1";
 	public static final String DEVICE_TYPE_CODE_NEW_P3D = "K1";
 	public static final String DEVICE_TYPE_CODE_NEW_R2 = "Q1";
@@ -107,12 +109,14 @@ public class Globals {
 	public static final String DEVICE_TYPE_CODE_NEW_CTW2 = "W2";
 	public static final String DEVICE_TYPE_CODE_NEW_D3_1 = "D3";
 	public static final String DEVICE_TYPE_CODE_NEW_D4_1 = "D4";
+	public static final String DEVICE_TYPE_CODE_NEW_D4S = "D5";
 
 
 	public static final int TYPE_TEST_PARTIALLY         = 1;
 	public static final int TYPE_TEST                   = 2;
 	public static final int TYPE_MAINTAIN               = 3;
 	public static final int TYPE_CHECK                  = 4;
+	public static final int TYPE_AFTERMARKET           	= 7;
 	public static final int TYPE_DUPLICATE_MAC          = 5;
 	public static final int TYPE_DUPLICATE_SN           = 6;
 

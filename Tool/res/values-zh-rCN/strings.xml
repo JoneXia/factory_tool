@@ -225,6 +225,7 @@
     <string name="feeder_test_case3">维修</string>
     <string name="feeder_test_case4">抽检</string>
     <string name="feeder_test_case5">入库</string>
+    <string name="feeder_test_case6">售后</string>
 
     <string name="Set_wifi">设置WIFI</string>
     <string name="Test_auto">自动模式</string>
@@ -364,5 +365,6 @@
     <string name="s_spr_bt">净味器电量不足，请更换电池</string>
     <string name="s_mten">维护模式</string>
     <string name="s_mten_i">维护中，点击OK键退出</string>
+    <string name="s_err_hall_o">集便盒上盖异常，请检查</string>
 
 </resources>

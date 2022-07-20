@@ -293,7 +293,6 @@ public class W5NTestDetailActivity extends BaseActivity implements PrintResultCa
                         }
                         break;
                     case TEST_MODE_RESET_SN:
-//                        startScanSN(mDeviceType);
                         showSNSetDialog();
                         break;
                     case TEST_MODE_SN:
@@ -452,6 +451,16 @@ public class W5NTestDetailActivity extends BaseActivity implements PrintResultCa
     }
 
     @Override
+    public void onBackPressed() {
+        if (isNewSN) {
+            showQuitConfirmDialog();
+            return;
+        }
+
+        super.onBackPressed();
+    }
+
+    @Override
     public void onConnected() {
 
     }
@@ -522,14 +531,31 @@ public class W5NTestDetailActivity extends BaseActivity implements PrintResultCa
                 } else if (data[0] != 1){
                     mDescTextView.append("\nSN写入失败");
                 } else {
-                    mDescTextView.append("\nSN写入成功");
-                    result = true;
-
-                    if (isNewSN) {
-                        isNewSN = false;
-                        DeviceCommonUtils.storeSucceedDeviceInfo(mDeviceType, mDevice, null);
-                    }
+                    mDescTextView.append("\nSN写入成功，开始校验");
+                    sendBleData(BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_GET_INFO), false);
                 }
+                break;
+            case BLEConsts.OP_CODE_GET_INFO:
+                if (data.length >= 22) {
+                    byte[] snRaw = new byte[14];
+                    System.arraycopy(data, 8, snRaw, 0, 14);
+
+                    if (!"0000000000000000000000000000".equals(ByteUtil.byteArrayToHexStr(snRaw))) {
+                        String sn = new String(snRaw);
+                        if (mDevice.getSn().equalsIgnoreCase(sn)) {
+                            mDescTextView.append("\nSN校验成功");
+                            if (isNewSN) {
+                                isNewSN = false;
+                                DeviceCommonUtils.storeSucceedDeviceInfo(mDeviceType, mDevice, null);
+                            }
+                        }
+                    } else {
+                        mDescTextView.append("\nSN校验失败，未写入成功");
+                    }
+                } else {
+                    mDescTextView.append("\nSN校验失败，未写入成功");
+                }
+                result = true;
                 break;
         }
         mDescTextView.append(desc.toString());
@@ -587,14 +613,13 @@ public class W5NTestDetailActivity extends BaseActivity implements PrintResultCa
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-                if (mDeviceType == Globals.CTW2) {
-                    startScanSN(mDeviceType);
-                } else {
+                if (mTestType == Globals.TYPE_AFTERMARKET) {
                     generateAndSendSN();
+                } else {
+                    startScanSN(mDeviceType);
                 }
             }
         } else {
-//            startScanSN(mDeviceType);
             sendBleData(BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_WRITE_SN, mDevice.getSn().getBytes()));
         }
     }

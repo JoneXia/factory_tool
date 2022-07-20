@@ -64,5 +64,6 @@
     <string name="s_spr_bt">La pile du dispositif d\'élimination des odeurs est faible. Veuillez remplacer les piles.</string>
     <string name="s_mten">Mode de Maintenance</string>
     <string name="s_mten_i">Sous maintenance, cliquez sur OK pour quitter</string>
+    <string name="s_err_hall_o">Erreur du couvercle d\'étanchéité, veuillez vérifier</string>
 
 </resources>

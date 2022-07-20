@@ -18,8 +18,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.petkit.android.utils.LogcatStorageHelper.getFileName;
-import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_D4;
-import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_D4_1;
+import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_NEW_D4;
+import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_NEW_D4_1;
 import static com.petkit.matetool.utils.Globals.PERMISSION_ERASE;
 
 /**
@@ -155,16 +155,12 @@ public class D4Utils {
             results.add(new D4TestUnit(D4TestModes.TEST_MODE_MOTOR, "马达测试", 4, 1));
             results.add(new D4TestUnit(D4TestModes.TEST_MODE_BAT, "电池", 5, 1));
 
-            if (type != TYPE_TEST_PARTIALLY) {
-                if (type == TYPE_TEST) {
-                    results.add(new D4TestUnit(D4TestModes.TEST_MODE_SN, "写入SN", 98, 2));
-                }
-            }
-            if (type != TYPE_TEST_PARTIALLY && type != TYPE_CHECK) {
-                results.add(new D4TestUnit(D4TestModes.TEST_MODE_PRINT, "打印标签", -1, type == TYPE_TEST ? 2 : 1));
+            if (type == TYPE_TEST) {
+                results.add(new D4TestUnit(D4TestModes.TEST_MODE_SN, "写入SN", 98, 2));
             }
 
             if (type == TYPE_MAINTAIN) {        //擦除ID选项先关闭，暂不开放
+                results.add(new D4TestUnit(D4TestModes.TEST_MODE_PRINT, "打印标签", -1, type == TYPE_TEST ? 2 : 1));
                 if (PERMISSION_ERASE) {
                     results.add(new D4TestUnit(D4TestModes.TEST_MODE_RESET_SN, "重写SN", 97, 1));
                     results.add(new D4TestUnit(D4TestModes.TEST_MODE_RESET_ID, "擦除ID", 98, 1));
@@ -191,7 +187,7 @@ public class D4Utils {
         }
 
         return DeviceCommonUtils.generateSN(CommonUtils.getDateStringByOffset(0),
-                deviceType == Globals.D4 ? DEVICE_TYPE_CODE_D4 : DEVICE_TYPE_CODE_D4_1, tester.getStation(), serializableNumber);
+                deviceType == Globals.D4 ? DEVICE_TYPE_CODE_NEW_D4 : DEVICE_TYPE_CODE_NEW_D4_1, serializableNumber);
     }
 
     /**

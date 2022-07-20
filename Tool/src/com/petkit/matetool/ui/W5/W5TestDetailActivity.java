@@ -452,6 +452,16 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
     }
 
     @Override
+    public void onBackPressed() {
+        if (isNewSN) {
+            showQuitConfirmDialog();
+            return;
+        }
+
+        super.onBackPressed();
+    }
+
+    @Override
     public void onConnected() {
 
     }
@@ -537,14 +547,33 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
                 } else if (data[0] != 1){
                     mDescTextView.append("\nSN写入失败");
                 } else {
-                    mDescTextView.append("\nSN写入成功");
-                    result = true;
-                    if (isNewSN) {
-                        isNewSN = false;
-                        W5Utils.storeSucceedDeviceInfo(mDevice, null);
-//                        DeviceCommonUtils.storeSucceedDeviceInfo(mW5Type == W5_TYPE_MINI ? Globals.W5C : Globals.W5, mDevice, null);
-                    }
+                    mDescTextView.append("\nSN写入成功，开始校验");
+                    sendBleData(BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_GET_INFO), false);
                 }
+                break;
+            case BLEConsts.OP_CODE_GET_INFO:
+                if (data.length >= 22) {
+                    byte[] snRaw = new byte[14];
+                    System.arraycopy(data, 8, snRaw, 0, 14);
+
+                    if (!"0000000000000000000000000000".equals(ByteUtil.byteArrayToHexStr(snRaw))) {
+                        String sn = new String(snRaw);
+                        if (mDevice.getSn().equalsIgnoreCase(sn)) {
+                            mDescTextView.append("\nSN校验成功");
+                            if (isNewSN) {
+                                isNewSN = false;
+                                W5Utils.storeSucceedDeviceInfo(mDevice, null);
+                            }
+                        }
+                    } else {
+                        isNewSN = false;
+                        mDescTextView.append("\nSN校验失败，未写入成功");
+                    }
+                } else {
+                    isNewSN = false;
+                    mDescTextView.append("\nSN校验失败，未写入成功");
+                }
+                result = true;
                 break;
         }
         mDescTextView.append(desc.toString());
@@ -564,7 +593,7 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        sendBleData(W5DataUtils.buildOpCodeBuffer(mW5AutoTestUnits.get(mAutoUnitStep).getModule()), false);
+                        sendBleData(BaseDataUtils.buildOpCodeBuffer(mW5AutoTestUnits.get(mAutoUnitStep).getModule()), false);
                     }
                 }, 10);
             }
@@ -576,7 +605,7 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
                       @Override
                       public void run() {
                           if (mW5TestUnits.get(mCurTestStep).getType() == W5Utils.W5TestModes.TEST_MODE_PUMP) {
-                              sendBleData(W5DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_W5_PUMP_DATA), false);
+                              sendBleData(BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_W5_PUMP_DATA), false);
                           }
                       }
                   }, 1000);
@@ -602,8 +631,11 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-//                startScanSN(mW5Type == W5_TYPE_MINI ? Globals.W5C : Globals.W5);
-                generateAndSendSN();
+                if (mTestType == Globals.TYPE_AFTERMARKET) {
+                    generateAndSendSN();
+                } else {
+                    startScanSN(mW5Type == W5_TYPE_MINI ? Globals.W5C : Globals.W5);
+                }
             }
         } else {
             sendBleData(W5DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_W5_WRITE_SN, mDevice.getSn().getBytes()));
@@ -669,6 +701,7 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
                     return;
                 }
                 mDevice.setSn(sn);
+                isNewSN = true;
 
                 sendBleData(W5DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_W5_WRITE_SN, sn.getBytes()));
             }

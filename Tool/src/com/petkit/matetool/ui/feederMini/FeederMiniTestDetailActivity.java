@@ -45,6 +45,7 @@ import static com.petkit.matetool.ui.feederMini.utils.FeederMiniUtils.FeederMini
 import static com.petkit.matetool.ui.utils.PrintUtils.isPrinterConnected;
 import static com.petkit.matetool.utils.Globals.TEST_FAILED;
 import static com.petkit.matetool.utils.Globals.TEST_PASS;
+import static com.petkit.matetool.utils.Globals.TYPE_TEST;
 
 /**
  * Created by Jone on 17/4/24.
@@ -65,6 +66,7 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
     private Button mBtn1, mBtn2, mBtn3;
     private ScrollView mDescScrollView;
     private boolean isNewSN = false;
+    private int mTestType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +78,7 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
             mFeeder = (Feeder) savedInstanceState.getSerializable("Feeder");
             isAutoTest = savedInstanceState.getBoolean("AutoTest");
             mTester = (Tester) savedInstanceState.getSerializable(FeederMiniUtils.EXTRA_FEEDER_MINI_TESTER);
+            mTestType = savedInstanceState.getInt("TestType");
             mErrorFeeder = (Feeder) savedInstanceState.getSerializable(FeederMiniUtils.EXTRA_FEEDER);
         } else {
             mFeederMiniTestUnits = (ArrayList<FeederMiniTestUnit>) getIntent().getSerializableExtra("TestUnits");
@@ -83,6 +86,7 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
             mFeeder = (Feeder) getIntent().getSerializableExtra("Feeder");
             isAutoTest = getIntent().getBooleanExtra("AutoTest", true);
             mTester = (Tester) getIntent().getSerializableExtra(FeederMiniUtils.EXTRA_FEEDER_MINI_TESTER);
+            mTestType = getIntent().getIntExtra("TestType", TYPE_TEST);
             mErrorFeeder = (Feeder) getIntent().getSerializableExtra(FeederMiniUtils.EXTRA_FEEDER);
         }
 
@@ -108,6 +112,7 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
         outState.putSerializable("Feeder", mFeeder);
         outState.putBoolean("AutoTest", isAutoTest);
         outState.putSerializable(FeederMiniUtils.EXTRA_FEEDER_MINI_TESTER, mTester);
+        outState.putInt("TestType", mTestType);
         outState.putSerializable(FeederMiniUtils.EXTRA_FEEDER, mErrorFeeder);
     }
 
@@ -394,6 +399,16 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
     }
 
     @Override
+    public void onBackPressed() {
+        if (isNewSN) {
+            showQuitConfirmDialog();
+            return;
+        }
+
+        super.onBackPressed();
+    }
+
+    @Override
     public void onConnected() {
 
     }
@@ -647,8 +662,11 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-                generateAndSendSN();
-//                startScanSN(Globals.FEEDER_MINI);
+                if (mTestType == Globals.TYPE_AFTERMARKET) {
+                    generateAndSendSN();
+                } else {
+                    startScanSN(Globals.FEEDER_MINI);
+                }
             }
         } else {
             HashMap<String, Object> params = new HashMap<>();

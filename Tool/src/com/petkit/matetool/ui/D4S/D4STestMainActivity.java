@@ -1,4 +1,4 @@
-package com.petkit.matetool.ui.AQH1;
+package com.petkit.matetool.ui.D4S;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -23,6 +23,8 @@ import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.Tester;
+import com.petkit.matetool.ui.D4S.mode.D4STestUnit;
+import com.petkit.matetool.ui.D4S.utils.D4SUtils;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.ui.utils.PetkitSocketInstance;
@@ -41,7 +43,7 @@ import java.util.HashMap;
  *
  * Created by Jone on 17/4/24.
  */
-public class AQH1TestMainActivity extends BaseActivity implements PetkitSocketInstance.IPetkitSocketListener {
+public class D4STestMainActivity extends BaseActivity implements PetkitSocketInstance.IPetkitSocketListener {
 
     private static final int TEST_STATE_INVALID      = 0;
     private static final int TEST_STATE_CONNECTING      = 1;
@@ -54,12 +56,13 @@ public class AQH1TestMainActivity extends BaseActivity implements PetkitSocketIn
     private int mTestState;
     private Device mCurDevice, mErrorDevice;
 
-    private ArrayList<AQH1TestUnit> mTestUnits;
+    private ArrayList<D4STestUnit> mD4TestUnits;
     private TestItemAdapter mAdapter;
 
     private TextView mInfoTestTextView;
-    private int mDeviceType;
     private boolean testComplete = false;
+    private int mDeviceType;
+
 
 
     @Override
@@ -97,7 +100,7 @@ public class AQH1TestMainActivity extends BaseActivity implements PetkitSocketIn
 
     @Override
     protected void setupViews() {
-        setTitle(mDeviceType == Globals.AQH1_500 ? "AQ-H1 500w测试" : "AQ-H1 1000w测试");
+        setTitle("双子星喂食器");
 
         mWifiAdminSimple = new WifiAdminSimple(this);
 
@@ -106,7 +109,7 @@ public class AQH1TestMainActivity extends BaseActivity implements PetkitSocketIn
         findViewById(R.id.connect_dev).setOnClickListener(this);
         findViewById(R.id.test_auto).setOnClickListener(this);
 
-        mTestUnits = AQH1Utils.generateTestUnitsForType(mTestType);
+        mD4TestUnits = D4SUtils.generateTestUnitsForType(mTestType);
 
         GridView gridView =(GridView) findViewById(R.id.gridView);
         mAdapter = new TestItemAdapter(this);
@@ -132,14 +135,14 @@ public class AQH1TestMainActivity extends BaseActivity implements PetkitSocketIn
     public void finish() {
 
         int position = 0;
-        for (AQH1TestUnit unit : mTestUnits) {
+        for (D4STestUnit unit : mD4TestUnits) {
             if(unit.getResult() == 1) {
                 position++;
             } else {
                 break;
             }
         }
-        if(position == mTestUnits.size()) {
+        if(position == mD4TestUnits.size()) {
             setResult(RESULT_OK);
         }
         super.finish();
@@ -174,7 +177,7 @@ public class AQH1TestMainActivity extends BaseActivity implements PetkitSocketIn
                     params.put("state", getTestTypeCode());
                     params.put("opt", 1);
 //
-                    PetkitSocketInstance.getInstance().sendString(AQH1Utils.getRequestForKeyAndPayload(160, params));
+                    PetkitSocketInstance.getInstance().sendString(DeviceCommonUtils.getRequestForKeyAndPayload(160, params));
 //                    finish();
                 } else {
                     startTestDetail(true, 0);
@@ -192,20 +195,20 @@ public class AQH1TestMainActivity extends BaseActivity implements PetkitSocketIn
                     .setNegativeButton(R.string.OK, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            LoadDialog.show(AQH1TestMainActivity.this);
+                            LoadDialog.show(D4STestMainActivity.this);
                             HashMap<String, Object> params = new HashMap<>();
                             params.put("mac", mCurDevice.getMac());
                             params.put("state", getTestTypeCode());
                             params.put("opt", 1);
 
-                            PetkitSocketInstance.getInstance().sendString(AQH1Utils.getRequestForKeyAndPayload(160, params));
+                            PetkitSocketInstance.getInstance().sendString(DeviceCommonUtils.getRequestForKeyAndPayload(160, params));
 //                            finish();
                         }
                     })
                     .show();
         } else if (mCurDevice != null && mTestType == Globals.TYPE_CHECK) {
             boolean hasError = false;
-            for (AQH1TestUnit unit : mTestUnits) {
+            for (D4STestUnit unit : mD4TestUnits) {
                 if(unit.getResult() == Globals.TEST_FAILED) {
                     hasError = true;
                     break;
@@ -246,7 +249,7 @@ public class AQH1TestMainActivity extends BaseActivity implements PetkitSocketIn
         if(resultCode == RESULT_OK) {
             switch (requestCode) {
                 case 0x12:
-                    mTestUnits = (ArrayList<AQH1TestUnit>) data.getSerializableExtra("TestUnits");
+                    mD4TestUnits = (ArrayList<D4STestUnit>) data.getSerializableExtra("TestUnits");
                     mCurDevice = (Device) data.getSerializableExtra(DeviceCommonUtils.EXTRA_DEVICE);
                     mAdapter.notifyDataSetChanged();
                     checkTestComplete();
@@ -265,28 +268,28 @@ public class AQH1TestMainActivity extends BaseActivity implements PetkitSocketIn
             if(isAuto) {
                 int position = 0;
 
-                for (AQH1TestUnit unit : mTestUnits) {
+                for (D4STestUnit unit : mD4TestUnits) {
                     if (unit.getResult() == 1) {
                         position++;
                     } else {
                         break;
                     }
                 }
-                if (position == mTestUnits.size()) {
+                if (position == mD4TestUnits.size()) {
                     showShortToast("测试已完成");
                     return;
                 }
                 pos = position;
             }
 
-            Intent intent = new Intent(AQH1TestMainActivity.this, AQH1TestDetailActivity.class);
-            intent.putExtra("TestUnits", mTestUnits);
+            Intent intent = new Intent(D4STestMainActivity.this, D4STestDetailActivity.class);
+            intent.putExtra("TestUnits", mD4TestUnits);
             intent.putExtra("CurrentTestStep", pos);
-            intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mCurDevice);
-            intent.putExtra("TestType", mTestType);
             intent.putExtra("AutoTest", isAuto);
+            intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mCurDevice);
             intent.putExtra(DeviceCommonUtils.EXTRA_TESTER, mTester);
             intent.putExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
+            intent.putExtra("TestType", mTestType);
             intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
             startActivityForResult(intent, 0x12);
         } else {
@@ -301,41 +304,33 @@ public class AQH1TestMainActivity extends BaseActivity implements PetkitSocketIn
         } else {
             switch (mTestType) {
                 case Globals.TYPE_TEST_PARTIALLY:
-                    if (!apSsid.toUpperCase().startsWith("PETKIT_HEATER1_A_HW1_")) {
-                        mInfoTestTextView.setText("请先连接到PETKIT_HEATER1_A_HW1_开头的WIFI，再进行测试！");
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_FEEDER_4S_A_HW1_")) {
+                        mInfoTestTextView.setText("请先连接到PETKIT_FEEDER_4S_A_HW1_开头的WIFI，再进行测试！");
                     } else {
                         connectAp();
                     }
                     break;
                 case Globals.TYPE_TEST:
-                    //TODO: test
-                    if (!apSsid.toUpperCase().startsWith("PETKIT_HEATER1_")) {
-                        mInfoTestTextView.setText("请先连接到PETKIT_HEATER1_B_HW1_开头的WIFI，再进行测试！");
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_FEEDER_4S_B_HW1_")) {
+                        mInfoTestTextView.setText("请先连接到PETKIT_FEEDER_4S_B_HW1_开头的WIFI，再进行测试！");
                         return;
                     } else {
                         connectAp();
                     }
-
-//                    if (!apSsid.toUpperCase().startsWith("PETKIT_HEATER1_B_HW1_")) {
-//                        mInfoTestTextView.setText("请先连接到PETKIT_HEATER1_B_HW1_开头的WIFI，再进行测试！");
-//                        return;
-//                    } else {
-//                        connectAp();
-//                    }
                     break;
                 case Globals.TYPE_MAINTAIN:
                 case Globals.TYPE_AFTERMARKET:
-                    if (!apSsid.toUpperCase().startsWith("PETKIT_HEATER1_")) {
-                        mInfoTestTextView.setText("请先连接到PETKIT_HEATER1_开头的WIFI，再进行测试！");
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_FEEDER_4S_")) {
+                        mInfoTestTextView.setText("请先连接到PETKIT_FEEDER_4S_开头的WIFI，再进行测试！");
                         return;
                     } else {
                         connectAp();
                     }
                     break;
                 case Globals.TYPE_CHECK:
-                    if (!apSsid.toUpperCase().startsWith("PETKIT_HEATER1_HW1_")
-                            || (apSsid.toUpperCase().startsWith("PETKIT_HEATER1_A_") || apSsid.toUpperCase().startsWith("PETKIT_HEATER1_B_"))) {
-                        mInfoTestTextView.setText("请先连接到PETKIT_HEATER1_开头的WIFI，再进行测试！");
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_FEEDER_4S_HW1_")
+                            || (apSsid.toUpperCase().startsWith("PETKIT_FEEDER_4S_A_") || apSsid.toUpperCase().startsWith("PETKIT_FEEDER_4S_B_"))) {
+                        mInfoTestTextView.setText("请先连接到<PETKIT_FEEDER_4S_HW1_>开头的WIFI，再进行测试！");
                         return;
                     } else {
                         connectAp();
@@ -343,8 +338,8 @@ public class AQH1TestMainActivity extends BaseActivity implements PetkitSocketIn
                     break;
                 case Globals.TYPE_DUPLICATE_MAC:
                 case Globals.TYPE_DUPLICATE_SN:
-                    if (!apSsid.toUpperCase().startsWith("PETKIT_HEATER1_HW1_")) {
-                        mInfoTestTextView.setText("请先连接到PETKIT_HEATER1_HW1_开头的WIFI，再进行测试！");
+                    if (!apSsid.toUpperCase().startsWith("PETKIT_FEEDER_4S_HW1_")) {
+                        mInfoTestTextView.setText("请先连接到PETKIT_FEEDER_4S_HW1_开头的WIFI，再进行测试！");
                         return;
                     } else {
                         connectAp();
@@ -359,19 +354,19 @@ public class AQH1TestMainActivity extends BaseActivity implements PetkitSocketIn
     private void showWifiManager() {
         switch (mTestType) {
             case Globals.TYPE_TEST_PARTIALLY:
-                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_HEATER1_A_HW1_"));
+                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_FEEDER_4S_A_HW1_"));
                 break;
             case Globals.TYPE_TEST:
-                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_HEATER1_B_HW1_"));
+                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_FEEDER_4S_B_HW1_"));
                 break;
             case Globals.TYPE_MAINTAIN:
             case Globals.TYPE_AFTERMARKET:
             case Globals.TYPE_CHECK:
-                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_HEATER1_"));
+                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_FEEDER_4S_"));
                 break;
             case Globals.TYPE_DUPLICATE_MAC:
             case Globals.TYPE_DUPLICATE_SN:
-                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_HEATER1_HW1_"));
+                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_FEEDER_4S_HW1_"));
                 break;
         }
     }
@@ -383,7 +378,7 @@ public class AQH1TestMainActivity extends BaseActivity implements PetkitSocketIn
     private void connectAp() {
         if(mTestState != TEST_STATE_CONNECTED && !PetkitSocketInstance.getInstance().isConnected()) {
             String remoteIp = mWifiAdminSimple.getCurrentApHostIp();
-            if(isEmpty(remoteIp) || "0.0.0.0".equals(remoteIp)) {
+            if(isEmpty(remoteIp)) {
                 mInfoTestTextView.setText("获取设备IP失败！");
                 mTestState = TEST_STATE_INVALID;
             } else if(mTestState != TEST_STATE_CONNECTING){
@@ -430,10 +425,10 @@ public class AQH1TestMainActivity extends BaseActivity implements PetkitSocketIn
     public void onConnected() {
         mInfoTestTextView.setText("设备已连接");
         mTestState = TEST_STATE_CONNECTED;
-        mTestUnits = AQH1Utils.generateTestUnitsForType(mTestType);
+        mD4TestUnits = D4SUtils.generateTestUnitsForType(mTestType);
         mAdapter.notifyDataSetChanged();
 
-        PetkitSocketInstance.getInstance().sendString(AQH1Utils.getDefaultRequestForKey(110));
+        PetkitSocketInstance.getInstance().sendString(DeviceCommonUtils.getDefaultRequestForKey(110));
     }
 
     @Override
@@ -468,9 +463,9 @@ public class AQH1TestMainActivity extends BaseActivity implements PetkitSocketIn
                     if (!jsonObject.isNull("version")) {
                         stringBuilder.append("version: ").append(jsonObject.getString("version")).append("\n");
                     }
-                    if (!jsonObject.isNull("id")) {
+//                    if (!jsonObject.isNull("id")) {
 //                        stringBuilder.append("id: ").append(jsonObject.getInt("id")).append("\n");
-                    }
+//                    }
 
                     if(isEmpty(mac)) {
                         mInfoTestTextView.setText("设备信息不正确，没有MAC地址！");
@@ -500,7 +495,7 @@ public class AQH1TestMainActivity extends BaseActivity implements PetkitSocketIn
                     params.put("mac", mCurDevice.getMac());
                     params.put("state", getTestTypeCode());
                     params.put("opt", 0);
-                    PetkitSocketInstance.getInstance().sendString(AQH1Utils.getRequestForKeyAndPayload(160, params));
+                    PetkitSocketInstance.getInstance().sendString(DeviceCommonUtils.getRequestForKeyAndPayload(160, params));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -508,10 +503,10 @@ public class AQH1TestMainActivity extends BaseActivity implements PetkitSocketIn
             case 160:
                 if(!testComplete) {
 //                    //最近写入SN后，没有及时收到写入成功的通知，需补打印条码
-//                    if(AQH1Utils.isDeviceInTemp(mCurDevice)) {
+//                    if(D4SUtils.isDeviceInTemp(mCurDevice)) {
 //                        LogcatStorageHelper.addLog("检测到该设备写入SN时异常: " + mCurDevice.toString());
-//                        AQH1Utils.removeTempDeviceInfo(mCurDevice);
-//                        AQH1Utils.storeSucceedDeviceInfo(mCurDevice, "");
+//                        D4SUtils.removeTempDeviceInfo(mCurDevice);
+//                        D4SUtils.storeSucceedDeviceInfo(mCurDevice, "");
 //                        showDeviceInTempDialog();
 //                    }
                     return;
@@ -579,12 +574,12 @@ public class AQH1TestMainActivity extends BaseActivity implements PetkitSocketIn
 
         @Override
         public int getCount() {
-            return mTestUnits.size();
+            return mD4TestUnits.size();
         }
 
         @Override
-        public AQH1TestUnit getItem(int position) {
-            return mTestUnits.get(position);
+        public D4STestUnit getItem(int position) {
+            return mD4TestUnits.get(position);
         }
 
         @Override
@@ -604,7 +599,7 @@ public class AQH1TestMainActivity extends BaseActivity implements PetkitSocketIn
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            AQH1TestUnit item = getItem(position);
+            D4STestUnit item = getItem(position);
 
             holder.name.setText(item.getName());
 
@@ -631,7 +626,7 @@ public class AQH1TestMainActivity extends BaseActivity implements PetkitSocketIn
 
     private void checkTestComplete() {
         int position = 0;
-        for (AQH1TestUnit unit : mTestUnits) {
+        for (D4STestUnit unit : mD4TestUnits) {
             if(unit.getResult() == 1) {
                 position++;
             } else {
@@ -639,18 +634,18 @@ public class AQH1TestMainActivity extends BaseActivity implements PetkitSocketIn
             }
         }
 
-        if(position >= mTestUnits.size() - 1) {       //维修和抽检，最后一项打印标签可以不执行，其他项都完成了就算成功
+        if(position >= mD4TestUnits.size() - 1) {       //维修和抽检，最后一项打印标签可以不执行，其他项都完成了就算成功
             if (mTestType == Globals.TYPE_MAINTAIN) {
                 DeviceCommonUtils.storeMainTainInfo(mDeviceType, mCurDevice);
-                testComplete = position >= mTestUnits.size();
+                testComplete = position >= mD4TestUnits.size();
             } else if (mTestType == Globals.TYPE_CHECK) {
                 mCurDevice.setInspectStatus(1);
                 DeviceCommonUtils.storeCheckInfo(mDeviceType, mCurDevice);
-                testComplete = position >= mTestUnits.size();
+                testComplete = position >= mD4TestUnits.size();
             } else if (mTestType == Globals.TYPE_TEST_PARTIALLY) {
-                testComplete = position >= mTestUnits.size();
+                testComplete = position >= mD4TestUnits.size();
             } else {
-                testComplete = position >= mTestUnits.size();
+                testComplete = position >= mD4TestUnits.size();
             }
         }
     }

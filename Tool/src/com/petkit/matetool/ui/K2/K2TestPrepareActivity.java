@@ -11,7 +11,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.petkit.android.http.AsyncHttpUtil;
+import com.petkit.android.utils.LogcatStorageHelper;
 import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.http.ApiTools;
@@ -89,6 +91,7 @@ public class K2TestPrepareActivity extends BaseActivity {
             if (!isEmpty(mTester.getName())) {
                 testerInfoTextView.setText("当前用户名：" + mTester.getName());
             }
+            LogcatStorageHelper.addLog("Store Tester: " + new Gson().toJson(mTester));
             AsyncHttpUtil.addHttpHeader("F-Session", mTester.getSession());
         }
 
@@ -235,6 +238,7 @@ public class K2TestPrepareActivity extends BaseActivity {
 
                             AsyncHttpUtil.addHttpHeader("F-Session", token);
                             testerInfoTextView.setText("当前用户名：" + mTester.getName());
+                            LogcatStorageHelper.addLog("Tester: " + new Gson().toJson(mTester));
 
                             if (K2Utils.checkHasSnCache()) {
                                 isLogining = true;

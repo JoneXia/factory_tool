@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.petkit.android.utils.LogcatStorageHelper.getFileName;
-import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_K2;
+import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_NEW_K2;
 import static com.petkit.matetool.utils.Globals.PERMISSION_ERASE;
 
 /**
@@ -158,16 +158,12 @@ public class K2Utils {
             results.add(new K2TestUnit(K2TestModes.TEST_MODE_HOLZER, "液位霍尔测试", 9, 1));
             results.add(new K2TestUnit(K2TestModes.TEST_MODE_TEMP, "温湿度测试", 8, 1));
 
-            if (type != TYPE_TEST_PARTIALLY) {
-                if (type == TYPE_TEST) {
-                    results.add(new K2TestUnit(K2TestModes.TEST_MODE_SN, "写入SN", 12, 1));
-                }
-                if (type == TYPE_MAINTAIN) {
-                }
-                results.add(new K2TestUnit(K2TestModes.TEST_MODE_PRINT, "打印标签", -1, type == TYPE_TEST ? 2 : 1));
+            if (type == TYPE_TEST) {
+                results.add(new K2TestUnit(K2TestModes.TEST_MODE_SN, "写入SN", 12, 1));
             }
 
             if (type == TYPE_MAINTAIN) {        //擦除ID选项先关闭，暂不开放
+                results.add(new K2TestUnit(K2TestModes.TEST_MODE_PRINT, "打印标签", -1, type == TYPE_TEST ? 2 : 1));
                 if (PERMISSION_ERASE) {
                     results.add(new K2TestUnit(K2TestModes.TEST_MODE_RESET_SN, "重写SN", 97, 1));
                     results.add(new K2TestUnit(K2TestModes.TEST_MODE_RESET_ID, "擦除ID", 98, 1));
@@ -193,7 +189,7 @@ public class K2Utils {
             return null;
         }
 
-        return DeviceCommonUtils.generateSN(CommonUtils.getDateStringByOffset(0), DEVICE_TYPE_CODE_K2, tester.getStation(), serializableNumber);
+        return DeviceCommonUtils.generateSN(CommonUtils.getDateStringByOffset(0), DEVICE_TYPE_CODE_NEW_K2, serializableNumber);
     }
 
     /**

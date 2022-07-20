@@ -65,6 +65,7 @@
     <string name="s_spr_bt">消臭デバイスのバッテリーが少なくなっています。バッテリーを交換してください。</string>
     <string name="s_mten">メンテナンスモード</string>
     <string name="s_mten_i">メンテナンス中に OKをクリックすると終了します</string>
+    <string name="s_err_hall_o">密閉カバーエラーです。確認してください</string>
 
 
 </resources>

@@ -8,6 +8,7 @@ import com.petkit.matetool.R;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.W5.utils.W5Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.utils.Globals;
 
 /**
  * W5测试，选择工站
@@ -57,6 +58,7 @@ public class W5StartActivity extends BaseActivity {
         findViewById(R.id.test_case5).setOnClickListener(this);
         findViewById(R.id.test_case5).setVisibility(View.GONE);
         findViewById(R.id.test_case1).setVisibility(View.GONE);
+        findViewById(R.id.test_case6).setOnClickListener(this);
     }
 
     @Override
@@ -94,6 +96,13 @@ public class W5StartActivity extends BaseActivity {
                 bundle = new Bundle();
                 bundle.putSerializable(W5Utils.EXTRA_W5_TESTER, mTester);
                 startActivityWithData(W5StorageFileActivity.class, bundle, false);
+                break;
+            case R.id.test_case6:
+                bundle = new Bundle();
+                bundle.putSerializable(W5Utils.EXTRA_W5_TESTER, mTester);
+                bundle.putInt("TestType", Globals.TYPE_AFTERMARKET);
+                bundle.putInt(W5Utils.EXTRA_W5_TYPE, mW5Type);
+                startActivityWithData(W5ScanActivity.class, bundle, false);
                 break;
         }
     }

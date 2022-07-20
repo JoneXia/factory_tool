@@ -57,6 +57,7 @@ import static com.petkit.matetool.ui.t3.utils.T3Utils.T3TestModes.TEST_MODE_BALA
 import static com.petkit.matetool.ui.utils.PrintUtils.isPrinterConnected;
 import static com.petkit.matetool.utils.Globals.TEST_FAILED;
 import static com.petkit.matetool.utils.Globals.TEST_PASS;
+import static com.petkit.matetool.utils.Globals.TYPE_TEST;
 
 /**
  * Created by Jone on 17/4/24.
@@ -82,6 +83,7 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
     private boolean isInAutoUnits = false;
     private int mAutoUnitStep; //有些测试项中会细分成几步
     private boolean isNewSN = false;
+    private int mTestType;
 
 
     @Override
@@ -94,6 +96,7 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
             mDevice = (Device) savedInstanceState.getSerializable(T3Utils.EXTRA_T3);
             isAutoTest = savedInstanceState.getBoolean("AutoTest");
             mTester = (Tester) savedInstanceState.getSerializable(T3Utils.EXTRA_T3_TESTER);
+            mTestType = savedInstanceState.getInt("TestType");
             mErrorDevice = (Device) savedInstanceState.getSerializable(T3Utils.EXTRA_ERROR_T3);
         } else {
             mT3TestUnits = (ArrayList<T3TestUnit>) getIntent().getSerializableExtra("TestUnits");
@@ -101,6 +104,7 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
             mDevice = (Device) getIntent().getSerializableExtra(T3Utils.EXTRA_T3);
             isAutoTest = getIntent().getBooleanExtra("AutoTest", true);
             mTester = (Tester) getIntent().getSerializableExtra(T3Utils.EXTRA_T3_TESTER);
+            mTestType = getIntent().getIntExtra("TestType", TYPE_TEST);
             mErrorDevice = (Device) getIntent().getSerializableExtra(T3Utils.EXTRA_ERROR_T3);
         }
 
@@ -129,6 +133,7 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
         outState.putSerializable(T3Utils.EXTRA_T3, mDevice);
         outState.putBoolean("AutoTest", isAutoTest);
         outState.putSerializable(T3Utils.EXTRA_T3_TESTER, mTester);
+        outState.putInt("TestType", mTestType);
         outState.putSerializable(T3Utils.EXTRA_ERROR_T3, mErrorDevice);
     }
 
@@ -482,6 +487,16 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
         intent.putExtra(T3Utils.EXTRA_T3, mDevice);
         setResult(RESULT_OK, intent);
         super.finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isNewSN) {
+            showQuitConfirmDialog();
+            return;
+        }
+
+        super.onBackPressed();
     }
 
     @Override
@@ -892,8 +907,11 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-//                startScanSN(Globals.T3);
-                generateAndSendSN();
+                if (mTestType == Globals.TYPE_AFTERMARKET) {
+                    generateAndSendSN();
+                } else {
+                    startScanSN(Globals.T3);
+                }
             }
         } else {
             HashMap<String, Object> params = new HashMap<>();
@@ -1037,6 +1055,7 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
                     return;
                 }
                 mDevice.setSn(sn);
+                isNewSN = true;
 
 //                T3Utils.storeTempDeviceInfo(mDevice);
 

@@ -132,14 +132,12 @@ public class FeederMiniUtils {
             results.add(new FeederMiniTestUnit(FeederMiniTestModes.TEST_MODE_BAT, "电池电压", 10, 1));
             results.add(new FeederMiniTestUnit(FeederMiniTestModes.TEST_MODE_TIME, "时钟测试", 15, 1));
 
-            if (type != TYPE_TEST_PARTIALLY) {
-                if (type == TYPE_TEST) {
-                    results.add(new FeederMiniTestUnit(FeederMiniTestModes.TEST_MODE_SN, "写入SN", 12, 2));
-                }
-                results.add(new FeederMiniTestUnit(FeederMiniTestModes.TEST_MODE_PRINT, "打印标签", -1, type == TYPE_TEST ? 2 : 1));
+            if (type == TYPE_TEST) {
+                results.add(new FeederMiniTestUnit(FeederMiniTestModes.TEST_MODE_SN, "写入SN", 12, 2));
             }
 
             if (type == TYPE_MAINTAIN) {        //擦除ID选项先关闭，暂不开放
+                results.add(new FeederMiniTestUnit(FeederMiniTestModes.TEST_MODE_PRINT, "打印标签", -1, type == TYPE_TEST ? 2 : 1));
                 if (PERMISSION_ERASE) {
                     results.add(new FeederMiniTestUnit(FeederMiniTestModes.TEST_MODE_RESET_SN, "重写SN", 97, 1));
                     results.add(new FeederMiniTestUnit(FeederMiniTestModes.TEST_MODE_RESET_ID, "擦除ID", 98, 1));

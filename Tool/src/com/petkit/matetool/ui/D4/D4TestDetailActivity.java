@@ -41,6 +41,7 @@ import com.petkit.matetool.ui.utils.PetkitSocketInstance;
 import com.petkit.matetool.ui.utils.PrintResultCallback;
 import com.petkit.matetool.ui.utils.PrintUtils;
 import com.petkit.matetool.utils.DateUtil;
+import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.JSONUtils;
 
 import org.json.JSONException;
@@ -55,6 +56,7 @@ import static com.petkit.matetool.ui.D4.utils.D4Utils.D4TestModes.TEST_MODE_AUTO
 import static com.petkit.matetool.ui.utils.PrintUtils.isPrinterConnected;
 import static com.petkit.matetool.utils.Globals.TEST_FAILED;
 import static com.petkit.matetool.utils.Globals.TEST_PASS;
+import static com.petkit.matetool.utils.Globals.TYPE_TEST;
 
 /**
  * Created by Jone on 17/4/24.
@@ -81,6 +83,7 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
     private int mAutoUnitStep; //有些测试项中会细分成几步
     private boolean isNewSN = false;
     private int mDeviceType;
+    private int mTestType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +96,7 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
             isAutoTest = savedInstanceState.getBoolean("AutoTest");
             mDeviceType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE);
             mTester = (Tester) savedInstanceState.getSerializable(D4Utils.EXTRA_D4_TESTER);
+            mTestType = savedInstanceState.getInt("TestType");
             mErrorDevice = (Device) savedInstanceState.getSerializable(D4Utils.EXTRA_ERROR_D4);
         } else {
             mD4TestUnits = (ArrayList<D4TestUnit>) getIntent().getSerializableExtra("TestUnits");
@@ -101,6 +105,7 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
             isAutoTest = getIntent().getBooleanExtra("AutoTest", true);
             mDeviceType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, 0);
             mTester = (Tester) getIntent().getSerializableExtra(D4Utils.EXTRA_D4_TESTER);
+            mTestType = getIntent().getIntExtra("TestType", TYPE_TEST);
             mErrorDevice = (Device) getIntent().getSerializableExtra(D4Utils.EXTRA_ERROR_D4);
         }
 
@@ -130,6 +135,7 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
         outState.putBoolean("AutoTest", isAutoTest);
         outState.putSerializable(D4Utils.EXTRA_D4_TESTER, mTester);
         outState.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
+        outState.putInt("TestType", mTestType);
         outState.putSerializable(D4Utils.EXTRA_ERROR_D4, mErrorDevice);
     }
 
@@ -151,22 +157,6 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
 
 
     /**
-     *
-     if (type == TYPE_MAINTAIN) {
-     results.add(new D4TestUnit(D4TestModes.TEST_MODE_TIME, "时钟测试", 11, 1));
-     results.add(new D4TestUnit(D4TestModes.TEST_MODE_BT, "蓝牙测试", 10, 1));
-     } else {
-     results.add(new D4TestUnit(D4TestModes.TEST_MODE_AUTO, "自动项测试", 10, 1));
-     }
-
-     results.add(new D4TestUnit(D4TestModes.TEST_MODE_BAT_SHIP, "电池运输模式", 12, 1));
-
-     if (type != TYPE_TEST_PARTIALLY) {
-     if (type == TYPE_TEST) {
-     results.add(new D4TestUnit(D4TestModes.TEST_MODE_SN, "写入SN", 12, 2));
-     }
-     results.add(new D4TestUnit(D4TestModes.TEST_MODE_PRINT, "打印标签", -1, type == TYPE_TEST ? 2 : 1));
-     }
 
      */
     private void refreshView() {
@@ -470,6 +460,16 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
     }
 
     @Override
+    public void onBackPressed() {
+        if (isNewSN) {
+            showQuitConfirmDialog();
+            return;
+        }
+
+        super.onBackPressed();
+    }
+
+    @Override
     public void onConnected() {
 
     }
@@ -742,8 +742,11 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-//                startScanSN(mDeviceType);
-                generateAndSendSN();
+                if (mTestType == Globals.TYPE_AFTERMARKET) {
+                    generateAndSendSN();
+                } else {
+                    startScanSN(mDeviceType);
+                }
             }
         } else {
             HashMap<String, Object> params = new HashMap<>();
@@ -886,8 +889,7 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                     return;
                 }
                 mDevice.setSn(sn);
-
-//                D4Utils.storeTempDeviceInfo(mDevice);
+                isNewSN =true;
 
                 HashMap<String, Object> payload = new HashMap<>();
                 payload.put("mac", mac);

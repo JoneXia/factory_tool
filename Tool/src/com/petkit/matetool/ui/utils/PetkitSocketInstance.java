@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import com.petkit.android.utils.CommonUtils;
 import com.petkit.android.utils.LogcatStorageHelper;
 import com.petkit.android.utils.PetkitLog;
+import com.petkit.android.utils.PetkitToast;
 import com.petkit.matetool.utils.JSONUtils;
 import com.vilyever.socketclient.SocketClient;
 import com.vilyever.socketclient.helper.SocketClientDelegate;
@@ -54,6 +55,10 @@ public class PetkitSocketInstance implements SocketClientDelegate {
     public void startConnect(String remoteIp, int port) {
         PetkitLog.d("start connect " + remoteIp);
         LogcatStorageHelper.addLog("[SOCKET] start connect " + remoteIp + ", port: " + port);
+        if ("0.0.0.0".equalsIgnoreCase(remoteIp)) {
+            PetkitToast.showToast("无效的IP，请重启设备后再试！");
+            return;
+        }
         mSocketClient.connect(remoteIp, port);
         mSocketClient.registerSocketClientDelegate(this);
     }

@@ -9,6 +9,7 @@ import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.D4.utils.D4Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
+import com.petkit.matetool.utils.Globals;
 
 /**
  * D3测试，选择工站
@@ -60,6 +61,7 @@ public class D4StartActivity extends BaseActivity {
         findViewById(R.id.test_case3).setOnClickListener(this);
         findViewById(R.id.test_case4).setOnClickListener(this);
         findViewById(R.id.test_case5).setOnClickListener(this);
+        findViewById(R.id.test_case6).setOnClickListener(this);
 
     }
 
@@ -100,6 +102,14 @@ public class D4StartActivity extends BaseActivity {
                 bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
                 startActivityWithData(D4StorageFileActivity.class, bundle, false);
                 break;
+            case R.id.test_case6:
+                bundle = new Bundle();
+                bundle.putSerializable(D4Utils.EXTRA_D4_TESTER, mTester);
+                bundle.putInt("TestType", Globals.TYPE_AFTERMARKET);
+                bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
+                startActivityWithData(D4TestMainActivity.class, bundle, false);
+                break;
+
         }
     }
 

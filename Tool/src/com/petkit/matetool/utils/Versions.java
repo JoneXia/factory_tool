@@ -132,9 +132,13 @@ public class Versions {
 	 v1.3说明：
 	 1. 写入SN成功以后增加读取校验过程，确保写入和读取完全一致。
 	 2. 维修中增加重写SN
+
+	 v1.4说明：
+	 1. 写入SN改成扫码
+	 2. 修改SN规则
 	 *
 	 */
-	public static final String TOOL_K2_VERSION	= "1.3";
+	public static final String TOOL_K2_VERSION	= "1.4";
 
 
 	/**
@@ -151,8 +155,13 @@ public class Versions {
 	 * 1. 修复部分机型偶现的闪退问题
 	 * 2. 修复偶现的错误数据上传问题
 	 *
+	 *
+	 v1.3说明：
+	 1. 写入SN改成扫码
+	 2. 修改SN规则
+	 *
 	 */
-	public static final String TOOL_T3_VERSION	= "1.2";
+	public static final String TOOL_T3_VERSION	= "1.3";
 
 
 	/**
@@ -160,9 +169,12 @@ public class Versions {
 	 * 1.0说明:
 	 * 1. 支持智能鱼缸的整机测试
 	 *
+	 v1.2说明：
+	 1. 写入SN改成扫码
+	 2. 修改SN规则
 	 *
 	 */
-	public static final String TOOL_AQ_VERSION	= "1.0";
+	public static final String TOOL_AQ_VERSION	= "1.1";
 
 
 	/**
@@ -176,8 +188,13 @@ public class Versions {
 	 * 3. 马达测试中增加光栅步数显示
 	 * 4. WiFi列表增加信号排序
 	 *
+	 *
+		 v1.2说明：
+		 1. 写入SN改成扫码
+		 2. 修改SN规则
+	 *
 	 */
-	public static final String TOOL_D3_VERSION	= "1.1";
+	public static final String TOOL_D3_VERSION	= "1.2";
 
 
 
@@ -188,8 +205,12 @@ public class Versions {
 	 * 1.0说明:
 	 * 1. 支持小佩喂食器SOLO（D4）产测全流程
 	 *
+	 *
+		 v1.1说明：
+		 1. 写入SN改成扫码
+		 2. 修改SN规则
 	 */
-	public static final String TOOL_D4_VERSION	= "1.0";
+	public static final String TOOL_D4_VERSION	= "1.1";
 
 	/**
 	 *
@@ -203,8 +224,12 @@ public class Versions {
 	 * 2.1说明：
 	 * 1. W5/W5C使用独立账号
 	 * 2. 移除W5产测功能
+	 *
+		 v2.2说明：
+		 1. 写入SN改成扫码
+		 2. 修改SN规则
 	 */
-	public static final String TOOL_W5_VERSION	= "2.1";
+	public static final String TOOL_W5_VERSION	= "2.2";
 
 	/**
 	 *
@@ -225,8 +250,16 @@ public class Versions {
 	 *
 	 * 2.4说明：
 	 * 1. 解决MAC/SN重复无法处理的问题
+	 *
+	 *
+		v2.5说明：
+		1. 写入SN改成扫码
+		2. 修改SN规则
+	 	3. 增加版本号显示
+	 	4. 增加SN写入校验
+
 	 */
-	public static final String TOOL_P3_VERSION	= "2.4";
+	public static final String TOOL_P3_VERSION	= "2.5";
 
 	/**
 	 *
@@ -240,7 +273,7 @@ public class Versions {
 	 * 1. 解决MAC/SN重复无法处理的问题
 	 *
 	 */
-	public static final String TOOL_T4_VERSION	= "1.2";
+	public static final String TOOL_T4_VERSION	= "1.3";
 
 
 	/**
@@ -271,7 +304,7 @@ public class Versions {
 	 * 1.2说明：
 	 * 1. 解决MAC重复无法处理的问题
 	 */
-	public static final String TOOL_AQR_VERSION	= "1.2";
+	public static final String TOOL_AQR_VERSION	= "1.3";
 
 
 	/**
@@ -284,8 +317,15 @@ public class Versions {
 	 *
 	 * 1.2说明：
 	 * 1. 写入SN改成扫描二维码的方式
+	 *
+	 * *
+	 * 		 v1.3说明：
+	 * 		 1. 写入SN改成扫码
+	 * 		 2. 修改SN规则
+	 * 		 3. 增加版本号显示
+	 * 		 4. 增加SN写入校验
 	 */
-	public static final String TOOL_AQ1S_VERSION	= "1.2";
+	public static final String TOOL_AQ1S_VERSION	= "1.3";
 
 
 
@@ -303,8 +343,15 @@ public class Versions {
 	 * 1.3说明：
 	 * 1. 修复自动测试时指令紊乱的问题
 	 *
+	 * *
+	 * 		 v1.4说明：
+	 * 		 1. 写入SN改成扫码
+	 * 		 2. 修改SN规则
+	 * 		 3. 增加版本号显示
+	 * 		 4. 增加SN写入校验
+	 *
 	 */
-	public static final String TOOL_R2_VERSION	= "1.2";
+	public static final String TOOL_R2_VERSION	= "1.3";
 
 
 
@@ -316,8 +363,15 @@ public class Versions {
 	 * 1.1说明：
 	 * 1. 修复MAC重复无法处理的问题
 	 *
+	 * *
+	 * 		 v1.2说明：
+	 * 		 1. 写入SN改成扫码
+	 * 		 2. 修改SN规则
+	 * 		 3. 增加版本号显示
+	 * 		 4. 增加SN写入校验
+	 *
 	 */
-	public static final String TOOL_W5N_VERSION	= "1.1";
+	public static final String TOOL_W5N_VERSION	= "1.2";
 
 
 	/**
@@ -326,7 +380,7 @@ public class Versions {
 	 * 1. 支持智能变频加热棒（AQ-H1）产测全功能
 	 *
 	 */
-	public static final String TOOL_AQH1_VERSION	= "1.0";
+	public static final String TOOL_AQH1_VERSION	= "1.1";
 
 
 
@@ -336,8 +390,13 @@ public class Versions {
 	 * 1. 支持小佩智能饮水机SOLO 2（CTW2）产测全功能
 	 *
 	 *
+		 v1.1说明：
+		 1. 写入SN改成扫码
+		 2. 修改SN规则
+		 3. 增加版本号显示
+		 4. 增加SN写入校验
 	 */
-	public static final String TOOL_CTW2_VERSION	= "1.0";
+	public static final String TOOL_CTW2_VERSION	= "1.1";
 
 
 	/**
@@ -357,5 +416,14 @@ public class Versions {
 	 *
 	 */
 	public static final String TOOL_D3_1_VERSION	= "1.0";
+
+
+	/**
+	 *
+	 * v1.0
+	 * 1. D3-1废弃，沿用D3即可。
+	 *
+	 */
+	public static final String TOOL_D4S_VERSION	= "0.1";
 
 }

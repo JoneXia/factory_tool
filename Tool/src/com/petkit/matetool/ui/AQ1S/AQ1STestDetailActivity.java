@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.petkit.android.ble.BLEConsts;
 import com.petkit.android.ble.data.BaseDataUtils;
 import com.petkit.android.ble.data.PetkitBleMsg;
+import com.petkit.android.utils.ByteUtil;
 import com.petkit.android.utils.LogcatStorageHelper;
 import com.petkit.android.utils.PetkitLog;
 import com.petkit.android.widget.LoadDialog;
@@ -167,6 +168,7 @@ public class AQ1STestDetailActivity extends BaseActivity implements PrintResultC
                 if (mDevice.getSn() == null || !mDevice.getSn().equals(sn)) {
                     isNewSN = true;
                 }
+                isNewSN = true;
                 mDevice.setSn(sn);
                 mDevice.setCreation(System.currentTimeMillis());
                 LogcatStorageHelper.addLog("write SN: " + sn);
@@ -404,6 +406,16 @@ public class AQ1STestDetailActivity extends BaseActivity implements PrintResultC
     }
 
     @Override
+    public void onBackPressed() {
+        if (isNewSN) {
+            showQuitConfirmDialog();
+            return;
+        }
+
+        super.onBackPressed();
+    }
+
+    @Override
     public void onConnected() {
 
     }
@@ -447,12 +459,31 @@ public class AQ1STestDetailActivity extends BaseActivity implements PrintResultC
                 } else if (data[0] != 1){
                     mDescTextView.append("\nSN写入失败");
                 } else {
-                    mDescTextView.append("\nSN写入成功");
-                    result = true;
-                    if (isNewSN) {
-                        DeviceCommonUtils.storeSucceedDeviceInfo(Globals.AQ1S, mDevice, null);
-                    }
+                    mDescTextView.append("\nSN写入成功，开始校验");
+                    sendBleData(BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_GET_INFO), false);
                 }
+            break;
+            case BLEConsts.OP_CODE_GET_INFO:
+                if (data.length >= 22) {
+                    byte[] snRaw = new byte[14];
+                    System.arraycopy(data, 8, snRaw, 0, 14);
+
+                    if (!"0000000000000000000000000000".equals(ByteUtil.byteArrayToHexStr(snRaw))) {
+                        String sn = new String(snRaw);
+                        if (mDevice.getSn().equalsIgnoreCase(sn)) {
+                            mDescTextView.append("\nSN校验成功");
+                            if (isNewSN) {
+                                isNewSN = false;
+                                DeviceCommonUtils.storeSucceedDeviceInfo(Globals.AQ1S, mDevice, null);
+                            }
+                        }
+                    } else {
+                        mDescTextView.append("\nSN校验失败，未写入成功");
+                    }
+                } else {
+                    mDescTextView.append("\nSN校验失败，未写入成功");
+                }
+                result = true;
                 break;
         }
         mDescTextView.append(desc.toString());
@@ -506,7 +537,6 @@ public class AQ1STestDetailActivity extends BaseActivity implements PrintResultC
                 startScanSN(mDeviceType);
             }
         } else {
-            isNewSN = false;
             sendBleData(BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_AQ1S_WRITE_SN, mDevice.getSn().getBytes()));
         }
     }

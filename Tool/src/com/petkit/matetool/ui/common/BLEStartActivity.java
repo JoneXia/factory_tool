@@ -63,6 +63,7 @@ public class BLEStartActivity extends BaseActivity {
         findViewById(R.id.test_case4).setOnClickListener(this);
         findViewById(R.id.test_case5).setOnClickListener(this);
         findViewById(R.id.test_case5).setVisibility(View.GONE);
+        findViewById(R.id.test_case6).setOnClickListener(this);
 
         switch (mDeviceType) {
             case Globals.K3:
@@ -116,6 +117,13 @@ public class BLEStartActivity extends BaseActivity {
                 bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
                 bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
                 startActivityWithData(BLEStorageFileActivity.class, bundle, false);
+                break;
+            case R.id.test_case6:
+                bundle = new Bundle();
+                bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
+                bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
+                bundle.putInt(DeviceCommonUtils.EXTRA_TEST_TYPE, Globals.TYPE_AFTERMARKET);
+                startActivityWithData(BLEScanActivity.class, bundle, false);
                 break;
         }
     }

@@ -57,6 +57,7 @@ import static com.petkit.matetool.ui.t4.utils.T4Utils.T4TestModes.TEST_MODE_BALA
 import static com.petkit.matetool.ui.utils.PrintUtils.isPrinterConnected;
 import static com.petkit.matetool.utils.Globals.TEST_FAILED;
 import static com.petkit.matetool.utils.Globals.TEST_PASS;
+import static com.petkit.matetool.utils.Globals.TYPE_TEST;
 
 /**
  * Created by Jone on 17/4/24.
@@ -83,6 +84,7 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
     private int mAutoUnitStep; //有些测试项中会细分成几步
     private int mDeviceType;
     private boolean isNewSN = false;
+    private int mTestType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +97,7 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
             isAutoTest = savedInstanceState.getBoolean("AutoTest");
             mTester = (Tester) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_TESTER);
             mErrorDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE);
+            mTestType = savedInstanceState.getInt("TestType");
             mDeviceType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE);
         } else {
             mT4TestUnits = (ArrayList<T4TestUnit>) getIntent().getSerializableExtra("TestUnits");
@@ -103,6 +106,7 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
             isAutoTest = getIntent().getBooleanExtra("AutoTest", true);
             mTester = (Tester) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
             mErrorDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE);
+            mTestType = getIntent().getIntExtra("TestType", TYPE_TEST);
             mDeviceType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, 0);
         }
 
@@ -132,6 +136,7 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
         outState.putBoolean("AutoTest", isAutoTest);
         outState.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
         outState.putSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
+        outState.putInt("TestType", mTestType);
         outState.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
     }
 
@@ -483,6 +488,16 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
     }
 
     @Override
+    public void onBackPressed() {
+        if (isNewSN) {
+            showQuitConfirmDialog();
+            return;
+        }
+
+        super.onBackPressed();
+    }
+
+    @Override
     public void onConnected() {
 
     }
@@ -814,8 +829,11 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-//                startScanSN(mDeviceType);
-                generateAndSendSN();
+                if (mTestType == Globals.TYPE_AFTERMARKET) {
+                    generateAndSendSN();
+                } else {
+                    startScanSN(mDeviceType);
+                }
             }
         } else {
             HashMap<String, Object> params = new HashMap<>();
@@ -836,7 +854,7 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
         switch (requestCode) {
             case 0x199:
                 String sn = data.getStringExtra(DeviceCommonUtils.EXTRA_DEVICE_SN);
-                if (!DeviceCommonUtils.checkSN(sn, Globals.T4)) {
+                if (!DeviceCommonUtils.checkSN(sn, mDeviceType)) {
                     showShortToast("无效的SN！");
                     return;
                 }
@@ -864,7 +882,7 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
 
 
     private void generateAndSendSN() {
-        String sn = DeviceCommonUtils.generateSNForTester(Globals.T4, mTester);
+        String sn = DeviceCommonUtils.generateSNForTester(mDeviceType, mTester);
         if (sn == null) {
             showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
             return;
@@ -964,7 +982,7 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                     return;
                 }
                 mDevice.setSn(sn);
-
+                isNewSN = true;
 //                T4Utils.storeTempDeviceInfo(mDevice);
 
                 HashMap<String, Object> payload = new HashMap<>();

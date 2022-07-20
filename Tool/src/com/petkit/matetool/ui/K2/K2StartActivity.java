@@ -53,6 +53,7 @@ public class K2StartActivity extends BaseActivity {
         findViewById(R.id.test_case4).setOnClickListener(this);
         findViewById(R.id.test_case5).setOnClickListener(this);
         findViewById(R.id.test_case5).setVisibility(View.GONE);
+        findViewById(R.id.test_case6).setOnClickListener(this);
     }
 
     @Override

@@ -577,6 +577,7 @@ public class BLEConsts {
 	public static final int OP_CODE_TEST_STEP 						= 242;
 	public static final int OP_CODE_TEST_RESULT 					= 243;
 	public static final int OP_CODE_WRITE_SN 						= 244;
+	public static final int OP_CODE_GET_VERSION						= 200;
 
 
 	public static final int ERROR_SYNC_MASK = 0x8000;

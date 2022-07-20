@@ -65,5 +65,7 @@
 
     <string name="s_mten">Modo de Manutenção</string>
     <string name="s_mten_i">Em manutenção, clique OK para sair</string>
+    <string name="s_err_hall_o">Erro da tampa de fecho. Verifique</string>
+
 
 </resources>

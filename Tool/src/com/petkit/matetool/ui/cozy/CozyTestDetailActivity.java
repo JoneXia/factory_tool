@@ -424,6 +424,16 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
     }
 
     @Override
+    public void onBackPressed() {
+        if (isNewSN) {
+            showQuitConfirmDialog();
+            return;
+        }
+
+        super.onBackPressed();
+    }
+
+    @Override
     public void onConnected() {
 
     }

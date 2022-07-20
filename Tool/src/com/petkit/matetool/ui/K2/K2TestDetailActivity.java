@@ -53,6 +53,7 @@ import static com.petkit.matetool.ui.K2.utils.K2Utils.K2TestModes.TEST_MODE_AGEI
 import static com.petkit.matetool.ui.K2.utils.K2Utils.K2TestModes.TEST_MODE_AUTO;
 import static com.petkit.matetool.utils.Globals.TEST_FAILED;
 import static com.petkit.matetool.utils.Globals.TEST_PASS;
+import static com.petkit.matetool.utils.Globals.TYPE_TEST;
 
 /**
  * Created by Jone on 17/4/24.
@@ -77,6 +78,7 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
     private boolean isInAutoUnits = false;
     private int mAutoUnitStep; //有些测试项中会细分成几步
     private boolean isNewSN = false;
+    private int mTestType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +90,7 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
             mDevice = (Device) savedInstanceState.getSerializable(K2Utils.EXTRA_K2);
             isAutoTest = savedInstanceState.getBoolean("AutoTest");
             mTester = (Tester) savedInstanceState.getSerializable(K2Utils.EXTRA_K2_TESTER);
+            mTestType = savedInstanceState.getInt("TestType");
             mErrorDevice = (Device) savedInstanceState.getSerializable(K2Utils.EXTRA_ERROR_K2);
         } else {
             mK2TestUnits = (ArrayList<K2TestUnit>) getIntent().getSerializableExtra("TestUnits");
@@ -95,6 +98,7 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
             mDevice = (Device) getIntent().getSerializableExtra(K2Utils.EXTRA_K2);
             isAutoTest = getIntent().getBooleanExtra("AutoTest", true);
             mTester = (Tester) getIntent().getSerializableExtra(K2Utils.EXTRA_K2_TESTER);
+            mTestType = getIntent().getIntExtra("TestType", TYPE_TEST);
             mErrorDevice = (Device) getIntent().getSerializableExtra(K2Utils.EXTRA_ERROR_K2);
         }
 
@@ -121,6 +125,7 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
         outState.putSerializable(K2Utils.EXTRA_K2, mDevice);
         outState.putBoolean("AutoTest", isAutoTest);
         outState.putSerializable(K2Utils.EXTRA_K2_TESTER, mTester);
+        outState.putInt("TestType", mTestType);
         outState.putSerializable(K2Utils.EXTRA_ERROR_K2, mErrorDevice);
     }
 
@@ -490,6 +495,16 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
     }
 
     @Override
+    public void onBackPressed() {
+        if (isNewSN) {
+            showQuitConfirmDialog();
+            return;
+        }
+
+        super.onBackPressed();
+    }
+
+    @Override
     public void onConnected() {
 
     }
@@ -766,8 +781,11 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-//                startScanSN(Globals.K2);
-                generateAndSendSN();
+                if (mTestType == Globals.TYPE_AFTERMARKET) {
+                    generateAndSendSN();
+                } else {
+                    startScanSN(Globals.K2);
+                }
             }
         } else {
             HashMap<String, Object> params = new HashMap<>();
@@ -919,6 +937,7 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                     return;
                 }
                 mDevice.setSn(sn);
+                isNewSN =true;
 
                 HashMap<String, Object> payload = new HashMap<>();
                 payload.put("mac", mac);

@@ -17,6 +17,7 @@ import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.AQ1S.AQ1STestMainActivity;
 import com.petkit.matetool.ui.AQH1.AQH1TestMainActivity;
 import com.petkit.matetool.ui.AQR.AQRTestMainActivity;
+import com.petkit.matetool.ui.D4S.D4STestMainActivity;
 import com.petkit.matetool.ui.K3.K3TestMainActivity;
 import com.petkit.matetool.ui.P3.P3TestMainActivity;
 import com.petkit.matetool.ui.R2.R2TestMainActivity;
@@ -74,25 +75,25 @@ public class DeviceCommonUtils {
         mDeviceConfigs = new HashMap<>();
 
         mDeviceConfigs.put(Globals.P3C, new DeviceConfigInfo(true, "P3", "P3", new String[]{"Petkit_P3C"},
-                Globals.DEVICE_TYPE_CODE_P3C, P3TestMainActivity.class));
+                Globals.DEVICE_TYPE_CODE_NEW_P3C, P3TestMainActivity.class));
         mDeviceConfigs.put(Globals.P3D, new DeviceConfigInfo(true, "P3", "P3D", new String[]{"Petkit_P3D", "Petkit_P3C"},
-                Globals.DEVICE_TYPE_CODE_P3D, P3TestMainActivity.class));
+                Globals.DEVICE_TYPE_CODE_NEW_P3D, P3TestMainActivity.class));
         mDeviceConfigs.put(Globals.T4, new DeviceConfigInfo(false, "T4", "T4", null,
-                Globals.DEVICE_TYPE_CODE_T4, T4TestMainActivity.class));
+                Globals.DEVICE_TYPE_CODE_NEW_T4, T4TestMainActivity.class));
         mDeviceConfigs.put(Globals.T4_p, new DeviceConfigInfo(false, "T4", "T4P", null,
-                Globals.DEVICE_TYPE_CODE_T4, T4TestMainActivity.class));
+                Globals.DEVICE_TYPE_CODE_NEW_T4_P, T4TestMainActivity.class));
         mDeviceConfigs.put(Globals.K3, new DeviceConfigInfo(true, "K3", "K3", new String[]{"Petkit_K3"},
-                Globals.DEVICE_TYPE_CODE_K3, K3TestMainActivity.class));
+                Globals.DEVICE_TYPE_CODE_NEW_K3, K3TestMainActivity.class));
         mDeviceConfigs.put(Globals.AQR, new DeviceConfigInfo(true, "AQR", "AQR", new String[]{"Petkit_AQR"},
                 Globals.DEVICE_TYPE_CODE_NEW_AQR, AQRTestMainActivity.class));
         mDeviceConfigs.put(Globals.AQ1S, new DeviceConfigInfo(true, "AQ", "AQ1S", new String[]{"Petkit_AQ", "Petkit_AQ1S"},
                 Globals.DEVICE_TYPE_CODE_NEW_AQ1S, AQ1STestMainActivity.class));
         mDeviceConfigs.put(Globals.R2, new DeviceConfigInfo(true, "R2", "R2", new String[]{"Petkit_R2"},
-                Globals.DEVICE_TYPE_CODE_R2, R2TestMainActivity.class));
+                Globals.DEVICE_TYPE_CODE_NEW_R2, R2TestMainActivity.class));
         mDeviceConfigs.put(Globals.W5N, new DeviceConfigInfo(true, "W5", "W5N", new String[]{"Petkit_W5N", "Petkit_W4X"},
-                Globals.DEVICE_TYPE_CODE_W5N, W5NTestMainActivity.class));
+                Globals.DEVICE_TYPE_CODE_NEW_W5N, W5NTestMainActivity.class));
         mDeviceConfigs.put(Globals.W4X, new DeviceConfigInfo(true, "W5", "W4X", new String[]{"Petkit_W5N", "Petkit_W4X"},
-                Globals.DEVICE_TYPE_CODE_W4X, W5NTestMainActivity.class));
+                Globals.DEVICE_TYPE_CODE_NEW_W4X, W5NTestMainActivity.class));
         mDeviceConfigs.put(Globals.AQH1_500, new DeviceConfigInfo(false, "AQH1", "AQH1_500", null,
                 Globals.DEVICE_TYPE_CODE_NEW_AQH1_500, AQH1TestMainActivity.class));
         mDeviceConfigs.put(Globals.AQH1_1000, new DeviceConfigInfo(false, "AQH1", "AQH1_1000", null,
@@ -103,6 +104,8 @@ public class DeviceCommonUtils {
 //                Globals.DEVICE_TYPE_CODE_NEW_D3_1, D3TestMainActivity.class));
 //        mDeviceConfigs.put(Globals.D4_1, new DeviceConfigInfo(true, "D4_1", "D4_1", null,
 //                Globals.DEVICE_TYPE_CODE_NEW_D4_1, D4TestMainActivity.class));
+        mDeviceConfigs.put(Globals.D4S, new DeviceConfigInfo(false, "D4S", "D4S", null,
+                Globals.DEVICE_TYPE_CODE_NEW_D4S, D4STestMainActivity.class));
     }
 
     /**
@@ -429,17 +432,17 @@ public class DeviceCommonUtils {
             /**
              * 这些设备使用工站代码来生成SN
              */
+            case Globals.W5:
+            case Globals.W5C:
+            case Globals.W5N:
+//                return generateSN(tester.getCode() + day, getDeviceFlagByType(deviceType), tester.getStation(), serializableNumber);
             case Globals.K3:
             case Globals.P3C:
             case Globals.P3D:
             case Globals.T4:
             case Globals.T4_p:
             case Globals.W4X:
-            case Globals.W5:
-            case Globals.W5C:
-            case Globals.W5N:
             case Globals.R2:
-                return generateSN(tester.getCode() + day, getDeviceFlagByType(deviceType), tester.getStation(), serializableNumber);
             default:
 //                throw  new RuntimeException("generate SN is forbidden!");
                 return generateSN(CommonUtils.getDateStringByOffset(0), getDeviceFlagByType(deviceType), serializableNumber);
@@ -640,27 +643,28 @@ public class DeviceCommonUtils {
         } else {
             switch (deviceType) {
                 case Globals.W5C:
-                    return sn.contains(Globals.DEVICE_TYPE_CODE_W5C);
+                    return sn.contains(Globals.DEVICE_TYPE_CODE_NEW_W5C);
                 case Globals.COZY:
                     return sn.contains(Globals.DEVICE_TYPE_CODE_Z1S);
                 case Globals.D3:
                 case Globals.D3_1:
-                    return sn.contains(Globals.DEVICE_TYPE_CODE_D3);
+                    return sn.contains(Globals.DEVICE_TYPE_CODE_NEW_D3);
                 case Globals.D4:
-                    return sn.contains(Globals.DEVICE_TYPE_CODE_D4);
+                    return sn.contains(Globals.DEVICE_TYPE_CODE_NEW_D4);
                 case Globals.D4_1:
-                    return sn.contains(Globals.DEVICE_TYPE_CODE_D4_1);
+                    return sn.contains(Globals.DEVICE_TYPE_CODE_NEW_D4_1);
                 case Globals.FEEDER:
                     return sn.contains(Globals.DEVICE_TYPE_CODE_D1);
                 case Globals.FEEDER_MINI:
                     return sn.contains(Globals.DEVICE_TYPE_CODE_D2);
                 case Globals.K2:
-                    return sn.contains(Globals.DEVICE_TYPE_CODE_K2);
+                    return sn.contains(Globals.DEVICE_TYPE_CODE_NEW_K2);
                 case Globals.T3:
-                    return sn.contains(Globals.DEVICE_TYPE_CODE_T3);
+                    return sn.contains(Globals.DEVICE_TYPE_CODE_NEW_T3);
                 case Globals.T4:
+                    return sn.contains(Globals.DEVICE_TYPE_CODE_NEW_T4);
                 case Globals.T4_p:
-                    return sn.contains(Globals.DEVICE_TYPE_CODE_T4);
+                    return sn.contains(Globals.DEVICE_TYPE_CODE_NEW_T4_P);
             }
             return true;
         }
@@ -699,5 +703,40 @@ public class DeviceCommonUtils {
     }
 
 
+
+    public static String getDefaultResponseForKey(int key) {
+        HashMap<String, Object> payload = new HashMap<>();
+        payload.put("state", 1);
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("key", key);
+        data.put("payload", payload);
+        return new Gson().toJson(data);
+    }
+
+    /**
+     * 获取Socket默认的数据格式
+     *
+     * @param key key
+     * @return String
+     */
+    public static String getDefaultRequestForKey(int key) {
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("key", key);
+        return new Gson().toJson(data);
+    }
+
+    /**
+     * 获取Socket数据格式
+     *
+     * @param key key
+     * @param payload content
+     * @return json
+     */
+    public static String getRequestForKeyAndPayload(int key, HashMap<String, Object> payload) {
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("key", key);
+        data.put("payload", payload);
+        return new Gson().toJson(data);
+    }
 
 }

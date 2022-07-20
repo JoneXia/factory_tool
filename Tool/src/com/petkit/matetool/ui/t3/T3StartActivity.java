@@ -9,6 +9,7 @@ import com.petkit.matetool.R;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.t3.utils.T3Utils;
+import com.petkit.matetool.utils.Globals;
 
 /**
  * 猫厕所测试，选择工站
@@ -53,9 +54,10 @@ public class T3StartActivity extends BaseActivity {
         findViewById(R.id.test_case4).setOnClickListener(this);
         findViewById(R.id.test_case5).setOnClickListener(this);
         findViewById(R.id.test_case5).setOnClickListener(this);
+        findViewById(R.id.test_case6).setOnClickListener(this);
 
         ((Button) findViewById(R.id.test_case5)).setText("位图生成");
-        ((Button) findViewById(R.id.test_case5)).setVisibility(View.VISIBLE);
+        ((Button) findViewById(R.id.test_case5)).setVisibility(View.GONE);
     }
 
     @Override
@@ -89,6 +91,12 @@ public class T3StartActivity extends BaseActivity {
                 bundle = new Bundle();
                 bundle.putSerializable(T3Utils.EXTRA_T3_TESTER, mTester);
                 startActivityWithData(T3LanguageActivity.class, bundle, false);
+                break;
+            case R.id.test_case6:
+                bundle = new Bundle();
+                bundle.putSerializable(T3Utils.EXTRA_T3_TESTER, mTester);
+                bundle.putInt("TestType", Globals.TYPE_AFTERMARKET);
+                startActivityWithData(T3TestMainActivity.class, bundle, false);
                 break;
         }
     }

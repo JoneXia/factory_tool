@@ -32,7 +32,7 @@ import com.petkit.android.ble.DeviceInfo;
 import com.petkit.android.ble.GattError;
 import com.petkit.android.ble.HexInputStream;
 import com.petkit.android.ble.ZipHexInputStream;
-import com.petkit.android.ble.data.AqDataUtils;
+import com.petkit.android.ble.data.BaseDataUtils;
 import com.petkit.android.ble.data.P3DataUtils;
 import com.petkit.android.ble.data.PetkitBleMsg;
 import com.petkit.android.ble.exception.BLEAbortedException;
@@ -4611,7 +4611,7 @@ public class AndroidBLEActionService extends BLEActionService {
 			} catch (InterruptedException e) {
 			}
 
-			writeSyncCodeNew(gatt, controlCharacteristic, AqDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_AQ_TEST_ENTRY));
+			writeSyncCodeNew(gatt, controlCharacteristic, BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_AQ_TEST_ENTRY));
 			response = readNotificationResponse();
 			PetkitBleMsg msg = P3DataUtils.parseRawData(response);
 
@@ -4763,7 +4763,7 @@ public class AndroidBLEActionService extends BLEActionService {
 			} catch (InterruptedException e) {
 			}
 
-			writeSyncCodeNew(gatt, controlCharacteristic, P3DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_W5_TEST_START));
+			writeSyncCodeNew(gatt, controlCharacteristic, BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_W5_TEST_START));
 			response = readNotificationResponse();
 
 			updateProgressNotification(BLEConsts.PROGRESS_CONNECTED);
@@ -4845,7 +4845,7 @@ public class AndroidBLEActionService extends BLEActionService {
 			} catch (InterruptedException e) {
 			}
 
-			writeSyncCodeNew(gatt, controlCharacteristic, P3DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_K3_TEST_START));
+			writeSyncCodeNew(gatt, controlCharacteristic, BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_K3_TEST_START));
 			response = readNotificationResponse();
 			PetkitBleMsg msg = P3DataUtils.parseRawData(response);
 

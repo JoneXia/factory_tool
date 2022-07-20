@@ -446,6 +446,16 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
     }
 
     @Override
+    public void onBackPressed() {
+        if (isNewSN) {
+            showQuitConfirmDialog();
+            return;
+        }
+
+        super.onBackPressed();
+    }
+
+    @Override
     public void onConnected() {
 
     }
@@ -607,8 +617,11 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-//                startScanSN(mDeviceType);
-                generateAndSendSN();
+                if (mTestType == Globals.TYPE_AFTERMARKET) {
+                    generateAndSendSN();
+                } else {
+                    startScanSN(mDeviceType);
+                };
             }
         } else {
             sendBleData(P3DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_P3_WRITE_SN, mDevice.getSn().getBytes()));
@@ -673,6 +686,7 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
                     return;
                 }
                 mDevice.setSn(sn);
+                isNewSN =true;
 
                 sendBleData(P3DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_P3_WRITE_SN, sn.getBytes()));
             }

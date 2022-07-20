@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.dothantech.printer.IDzPrinter;
 import com.google.gson.Gson;
 import com.petkit.android.ble.BLEConsts;
+import com.petkit.android.ble.data.BaseDataUtils;
 import com.petkit.android.ble.data.K3DataUtils;
 import com.petkit.android.ble.data.PetkitBleMsg;
 import com.petkit.android.utils.ByteUtil;
@@ -376,6 +377,16 @@ public class K3TestDetailActivity extends BaseActivity implements PrintResultCal
     }
 
     @Override
+    public void onBackPressed() {
+        if (isNewSN) {
+            showQuitConfirmDialog();
+            return;
+        }
+
+        super.onBackPressed();
+    }
+
+    @Override
     public void onConnected() {
 
     }
@@ -415,12 +426,14 @@ public class K3TestDetailActivity extends BaseActivity implements PrintResultCal
                     return;
                 }
                 if (data.length != 1) {
+                    isNewSN = false;
                     mDescTextView.append("\n数据错误，处理失败");
                 } else if (data[0] != 1){
+                    isNewSN = false;
                     mDescTextView.append("\nSN写入失败");
                 } else {
                     mDescTextView.append("\nSN写入成功，开始校验");
-                    sendBleData(K3DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_GET_INFO), false);
+                    sendBleData(BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_GET_INFO), false);
                 }
                 break;
             case BLEConsts.OP_CODE_GET_INFO:
@@ -465,7 +478,7 @@ public class K3TestDetailActivity extends BaseActivity implements PrintResultCal
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        sendBleData(K3DataUtils.buildOpCodeBuffer(mK3AutoTestUnits.get(mAutoUnitStep).getModule()), false);
+                        sendBleData(BaseDataUtils.buildOpCodeBuffer(mK3AutoTestUnits.get(mAutoUnitStep).getModule()), false);
                     }
                 }, 10);
             }

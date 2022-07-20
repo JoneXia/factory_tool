@@ -285,6 +285,7 @@ public class D4TestMainActivity extends BaseActivity implements PetkitSocketInst
             intent.putExtra(D4Utils.EXTRA_D4, mCurDevice);
             intent.putExtra("AutoTest", isAuto);
             intent.putExtra(D4Utils.EXTRA_D4_TESTER, mTester);
+            intent.putExtra("TestType", mTestType);
             intent.putExtra(D4Utils.EXTRA_ERROR_D4, mErrorDevice);
             startActivityForResult(intent, 0x12);
         } else {

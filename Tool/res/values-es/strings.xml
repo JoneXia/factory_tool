@@ -64,6 +64,7 @@
     <string name="s_spr_bt">La batería del dispositivo de eliminación de olores está baja. Reemplace las pilas.</string>
     <string name="s_mten">Modo de mantenimiento</string>
     <string name="s_mten_i">En mantenimiento, clic en OK para salir</string>
+    <string name="s_err_hall_o">Tapa protectora anormal, por favor compruebe</string>
 
 
 </resources>

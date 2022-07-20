@@ -20,7 +20,7 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import com.petkit.android.ble.BLEConsts;
-import com.petkit.android.ble.data.AQRDataUtils;
+import com.petkit.android.ble.data.BaseDataUtils;
 import com.petkit.android.ble.data.PetkitBleMsg;
 import com.petkit.android.utils.ByteUtil;
 import com.petkit.android.utils.PetkitLog;
@@ -130,7 +130,7 @@ public class AQRTestMainActivity extends BaseActivity {
 
         Intent intent = new Intent(BLEConsts.BROADCAST_ACTION);
         intent.putExtra(BLEConsts.EXTRA_ACTION, BLEConsts.ACTION_STEP_ENTRY);
-        intent.putExtra(BLEConsts.EXTRA_DATA, AQRDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_GET_INFO));
+        intent.putExtra(BLEConsts.EXTRA_DATA, BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_GET_INFO));
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
@@ -260,6 +260,18 @@ public class AQRTestMainActivity extends BaseActivity {
                 }
 
                 mInfoTestTextView.setText(mCurDevice.toString());
+
+//                Intent intent = new Intent(BLEConsts.BROADCAST_ACTION);
+//                intent.putExtra(BLEConsts.EXTRA_ACTION, BLEConsts.ACTION_STEP_ENTRY);
+//                intent.putExtra(BLEConsts.EXTRA_DATA, BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_GET_VERSION));
+//                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                break;
+            case BLEConsts.OP_CODE_GET_VERSION:
+                if (data.length >= 2) {
+                    mCurDevice.setHardware(ByteUtil.toInt(data[0]));
+                    mCurDevice.setFirmware(ByteUtil.toInt(data[1]));
+                    mInfoTestTextView.setText(mCurDevice.toString());
+                }
                 break;
         }
     }

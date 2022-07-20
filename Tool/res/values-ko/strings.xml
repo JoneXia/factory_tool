@@ -63,5 +63,7 @@
   <string name="s_spr_bt">냄새 청정기의 배터리가 부족함. 배터리를 교체하여 주십시오</string>
   <string name="s_mten">유지 보수 모드</string>
   <string name="s_mten_i">유지 보수 중, OK를 눌러 나가기 </string>
+  <string name="s_err_hall_o">밀봉 덮개 오류. 확인해 주십시오</string>
+
 
 </resources>

@@ -278,6 +278,7 @@ public class T3TestMainActivity extends BaseActivity implements PetkitSocketInst
             intent.putExtra(T3Utils.EXTRA_T3, mCurDevice);
             intent.putExtra("AutoTest", isAuto);
             intent.putExtra(T3Utils.EXTRA_T3_TESTER, mTester);
+            intent.putExtra("TestType", mTestType);
             intent.putExtra(T3Utils.EXTRA_ERROR_T3, mErrorDevice);
             startActivityForResult(intent, 0x12);
         } else {
@@ -307,6 +308,7 @@ public class T3TestMainActivity extends BaseActivity implements PetkitSocketInst
                     }
                     break;
                 case T3Utils.TYPE_MAINTAIN:
+                case Globals.TYPE_AFTERMARKET:
                     if (!apSsid.toUpperCase().startsWith("PETKIT_TOILET_")) {
                         mInfoTestTextView.setText("请先连接到PETKIT_TOILET_开头的WIFI，再进行测试！");
                         return;
@@ -347,6 +349,7 @@ public class T3TestMainActivity extends BaseActivity implements PetkitSocketInst
                 startActivity(WifiManagerActivity.getIntent(this, "PETKIT_TOILET_B_HW1_"));
                 break;
             case T3Utils.TYPE_MAINTAIN:
+            case Globals.TYPE_AFTERMARKET:
             case T3Utils.TYPE_CHECK:
                 startActivity(WifiManagerActivity.getIntent(this, "PETKIT_TOILET_"));
                 break;
@@ -542,6 +545,7 @@ public class T3TestMainActivity extends BaseActivity implements PetkitSocketInst
             case T3Utils.TYPE_TEST_PARTIALLY:
                 return 1;
             case T3Utils.TYPE_MAINTAIN:
+            case Globals.TYPE_AFTERMARKET:
                 return 2;
             case T3Utils.TYPE_CHECK:
                 return 3;

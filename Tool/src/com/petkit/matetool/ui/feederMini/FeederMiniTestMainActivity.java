@@ -271,6 +271,7 @@ public class FeederMiniTestMainActivity extends BaseActivity implements PetkitSo
             intent.putExtra("Feeder", mCurFeeder);
             intent.putExtra("AutoTest", isAuto);
             intent.putExtra(FeederMiniUtils.EXTRA_FEEDER_MINI_TESTER, mTester);
+            intent.putExtra("TestType", mTestType);
             intent.putExtra(FeederMiniUtils.EXTRA_FEEDER, mErrorFeeder);
             startActivityForResult(intent, 0x12);
         } else {

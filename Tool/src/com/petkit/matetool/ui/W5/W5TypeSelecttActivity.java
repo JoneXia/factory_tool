@@ -53,6 +53,7 @@ public class W5TypeSelecttActivity extends BaseActivity {
         findViewById(R.id.test_case4).setVisibility(View.GONE);
         findViewById(R.id.test_case5).setVisibility(View.GONE);
         findViewById(R.id.test_case5).setVisibility(View.GONE);
+        findViewById(R.id.test_case6).setOnClickListener(this);
 
         ((TextView) findViewById(R.id.test_case1)).setText("智能饮水机（W5）");
         ((TextView) findViewById(R.id.test_case2)).setText("智能饮水机Mini（W5C）");

@@ -66,11 +66,9 @@ public class R2Utils {
             if (type == Globals.TYPE_TEST) {
                 results.add(new R2TestUnit(R2TestModes.TEST_MODE_SN, "写入SN", 98, 2));
             }
-            if (type != Globals.TYPE_TEST_PARTIALLY && type != Globals.TYPE_CHECK) {
-                results.add(new R2TestUnit(R2TestModes.TEST_MODE_PRINT, "打印标签", -1, type == Globals.TYPE_TEST ? 2 : 1));
-            }
 
-            if (type == Globals.TYPE_MAINTAIN) {        //擦除ID选项先关闭，暂不开放
+            if (type == Globals.TYPE_MAINTAIN || type == Globals.TYPE_AFTERMARKET) {        //擦除ID选项先关闭，暂不开放
+                results.add(new R2TestUnit(R2TestModes.TEST_MODE_PRINT, "打印标签", -1, type == Globals.TYPE_TEST ? 2 : 1));
                 if (PERMISSION_ERASE) {
                     results.add(new R2TestUnit(R2TestModes.TEST_MODE_RESET_SN, "重写SN", 97, 1));
                     results.add(new R2TestUnit(R2TestModes.TEST_MODE_RESET_ID, "擦除ID", 98, 1));

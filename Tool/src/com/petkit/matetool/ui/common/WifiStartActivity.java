@@ -58,10 +58,10 @@ public class WifiStartActivity extends BaseActivity {
         findViewById(R.id.test_case3).setOnClickListener(this);
         findViewById(R.id.test_case4).setOnClickListener(this);
         findViewById(R.id.test_case5).setOnClickListener(this);
-        findViewById(R.id.test_case5).setOnClickListener(this);
+        findViewById(R.id.test_case6).setOnClickListener(this);
 
         ((Button) findViewById(R.id.test_case5)).setText("位图生成");
-//        ((Button) findViewById(R.id.test_case5)).setVisibility(View.GONE);
+        findViewById(R.id.test_case5).setVisibility(View.GONE);
         switch (mDeviceType) {
             case Globals.AQH1_500:
             case Globals.AQH1_1000:
@@ -107,6 +107,13 @@ public class WifiStartActivity extends BaseActivity {
                 bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
                 bundle.putInt(DeviceCommonUtils.EXTRA_TEST_TYPE, Globals.TYPE_CHECK);
                 startActivityWithData(T4LanguageActivity.class, bundle, false);
+                break;
+            case R.id.test_case6:
+                bundle = new Bundle();
+                bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
+                bundle.putInt(DeviceCommonUtils.EXTRA_TEST_TYPE, Globals.TYPE_AFTERMARKET);
+                bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
+                startActivityWithData(DeviceCommonUtils.getMainActivityByType(mDeviceType), bundle, false);
                 break;
         }
     }

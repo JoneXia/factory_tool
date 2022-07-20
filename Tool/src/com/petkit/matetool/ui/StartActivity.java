@@ -57,6 +57,7 @@ import static com.petkit.matetool.utils.Versions.TOOL_COZY;
 import static com.petkit.matetool.utils.Versions.TOOL_CTW2_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_D3_1_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_D3_VERSION;
+import static com.petkit.matetool.utils.Versions.TOOL_D4S_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_D4_1_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_D4_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_FEEDER_MINI_VERSION;
@@ -305,6 +306,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
             case R.id.d4_1:
                 testStyle = Globals.D4_1;
                 break;
+            case R.id.d4s:
+                testStyle = Globals.D4S;
+                break;
             //TODO: 新增设备需对应添加
             default:
                 break;
@@ -355,10 +359,10 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
         tempRadioButton.setText(getTextDetail(Globals.W5C, "智能饮水机MINI（W5C）" + " v" + TOOL_W5_VERSION));
 
         tempRadioButton = (RadioButton) findViewById(R.id.t4);
-        tempRadioButton.setText(getTextDetail(Globals.T4, "智能猫厕所SOLO（T4）" + " v" + TOOL_T4_VERSION));
+        tempRadioButton.setText(getTextDetail(Globals.T4, "智能猫厕所MAX（T4）" + " v" + TOOL_T4_VERSION));
 
         tempRadioButton = (RadioButton) findViewById(R.id.t4_p);
-        tempRadioButton.setText(getTextDetail(Globals.T4_p, "智能猫厕所SOLO（T4标配K3）" + " v" + TOOL_T4_VERSION));
+        tempRadioButton.setText(getTextDetail(Globals.T4_p, "智能猫厕所MAX（T4标配K3）" + " v" + TOOL_T4_VERSION));
 
         tempRadioButton = (RadioButton) findViewById(R.id.p3c);
         tempRadioButton.setText(getTextDetail(Globals.P3C, "智能猫牌（P3C）" + " v" + TOOL_P3_VERSION));
@@ -395,11 +399,14 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
 
         tempRadioButton = (RadioButton) findViewById(R.id.d4_1);
         tempRadioButton.setText(getTextDetail(Globals.D4_1, "喂食器SOLO NEW（D4-1）" + " v" + TOOL_D4_1_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.d3_1);
         tempRadioButton.setText(getTextDetail(Globals.D3_1, "行星喂食器NEW（D3-1）" + " v" + TOOL_D3_1_VERSION));
         tempRadioButton.setVisibility(View.GONE);
 
+        tempRadioButton = (RadioButton) findViewById(R.id.d4s);
+        tempRadioButton.setText(getTextDetail(Globals.D4S, "双子星喂食器（D4S）" + " v" + TOOL_D4S_VERSION));
 
         //TODO: 新增设备需对应添加
     }

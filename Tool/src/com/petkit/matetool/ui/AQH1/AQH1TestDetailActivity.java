@@ -52,6 +52,7 @@ import static com.petkit.matetool.ui.AQH1.AQH1Utils.AQH1TestModes.TEST_MODE_TEMP
 import static com.petkit.matetool.ui.utils.PrintUtils.isPrinterConnected;
 import static com.petkit.matetool.utils.Globals.TEST_FAILED;
 import static com.petkit.matetool.utils.Globals.TEST_PASS;
+import static com.petkit.matetool.utils.Globals.TYPE_TEST;
 
 /**
  * Created by Jone on 17/4/24.
@@ -80,6 +81,7 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
     private short offset1, offset2;
     private boolean tempValid = false;
     private boolean isNewSN = false;
+    private int mTestType;
 
 
     @Override
@@ -93,6 +95,7 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
             isAutoTest = savedInstanceState.getBoolean("AutoTest");
             mTester = (Tester) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_TESTER);
             mErrorDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE);
+            mTestType = savedInstanceState.getInt("TestType");
             mDeviceType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE);
         } else {
             mTestUnits = (ArrayList<AQH1TestUnit>) getIntent().getSerializableExtra("TestUnits");
@@ -101,6 +104,7 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
             isAutoTest = getIntent().getBooleanExtra("AutoTest", true);
             mTester = (Tester) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_TESTER);
             mErrorDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE);
+            mTestType = getIntent().getIntExtra("TestType", TYPE_TEST);
             mDeviceType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, 0);
         }
 
@@ -130,6 +134,7 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
         outState.putBoolean("AutoTest", isAutoTest);
         outState.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
         outState.putSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
+        outState.putInt("TestType", mTestType);
         outState.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
     }
 
@@ -508,6 +513,16 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
     }
 
     @Override
+    public void onBackPressed() {
+        if (isNewSN) {
+            showQuitConfirmDialog();
+            return;
+        }
+
+        super.onBackPressed();
+    }
+
+    @Override
     public void onConnected() {
 
     }
@@ -831,8 +846,11 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-                startScanSN(mDeviceType);
-//                generateAndSendSN();
+                if (mTestType == Globals.TYPE_AFTERMARKET) {
+                    generateAndSendSN();
+                } else {
+                    startScanSN(mDeviceType);
+                }
             }
         } else {
             HashMap<String, Object> params = new HashMap<>();
