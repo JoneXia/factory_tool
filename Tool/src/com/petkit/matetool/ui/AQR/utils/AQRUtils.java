@@ -63,7 +63,7 @@ public class AQRUtils {
             results.add(new AQRTestUnit(AQRTestModes.TEST_MODE_SN, "写入SN", 98, 2));
             results.add(new AQRTestUnit(AQRTestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
         } else {
-            if (type == Globals.TYPE_TEST) {
+            if (type == Globals.TYPE_TEST || type == Globals.TYPE_AFTERMARKET) {
                 results.add(new AQRTestUnit(AQRTestModes.TEST_MODE_SN, "写入SN", 98, 2));
             }
 

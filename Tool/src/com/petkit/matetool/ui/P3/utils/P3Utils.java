@@ -69,10 +69,8 @@ public class P3Utils {
                 results.add(new P3TestUnit(P3TestModes.TEST_MODE_AUTO, "自动项测试", 6, 1));
             }
 
-            if (type != Globals.TYPE_TEST_PARTIALLY) {
-                if (type == Globals.TYPE_TEST) {
-                    results.add(new P3TestUnit(P3TestModes.TEST_MODE_SN, "写入SN", 98, 2));
-                }
+            if (type == Globals.TYPE_TEST || type == Globals.TYPE_AFTERMARKET) {
+                results.add(new P3TestUnit(P3TestModes.TEST_MODE_SN, "写入SN", 98, 2));
             }
 
             if (type == Globals.TYPE_MAINTAIN || type == Globals.TYPE_AFTERMARKET) {        //擦除ID选项先关闭，暂不开放

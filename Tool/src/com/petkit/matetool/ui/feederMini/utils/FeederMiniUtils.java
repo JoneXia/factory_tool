@@ -10,6 +10,7 @@ import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.ui.feeder.mode.Feeder;
 import com.petkit.matetool.ui.feeder.mode.FeedersError;
 import com.petkit.matetool.ui.feederMini.mode.FeederMiniTestUnit;
+import com.petkit.matetool.utils.Globals;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import static com.petkit.android.utils.LogcatStorageHelper.getFileName;
 import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_D2;
 import static com.petkit.matetool.utils.Globals.PERMISSION_ERASE;
+import static com.petkit.matetool.utils.Globals.TYPE_AFTERMARKET;
 
 /**
  *
@@ -132,11 +134,11 @@ public class FeederMiniUtils {
             results.add(new FeederMiniTestUnit(FeederMiniTestModes.TEST_MODE_BAT, "电池电压", 10, 1));
             results.add(new FeederMiniTestUnit(FeederMiniTestModes.TEST_MODE_TIME, "时钟测试", 15, 1));
 
-            if (type == TYPE_TEST) {
+            if (type == Globals.TYPE_TEST || type == Globals.TYPE_AFTERMARKET) {
                 results.add(new FeederMiniTestUnit(FeederMiniTestModes.TEST_MODE_SN, "写入SN", 12, 2));
             }
 
-            if (type == TYPE_MAINTAIN) {        //擦除ID选项先关闭，暂不开放
+            if (type == TYPE_MAINTAIN || type == TYPE_AFTERMARKET) {        //擦除ID选项先关闭，暂不开放
                 results.add(new FeederMiniTestUnit(FeederMiniTestModes.TEST_MODE_PRINT, "打印标签", -1, type == TYPE_TEST ? 2 : 1));
                 if (PERMISSION_ERASE) {
                     results.add(new FeederMiniTestUnit(FeederMiniTestModes.TEST_MODE_RESET_SN, "重写SN", 97, 1));
@@ -277,7 +279,7 @@ public class FeederMiniUtils {
      * 获取存储SN的文件，内部实现文件内容的条件限制，文件名自增
      * @return
      */
-    private static String getStoreFeederInfoFilePath() {
+    public static String getStoreFeederInfoFilePath() {
         String fileName = CommonUtils.getSysMap(SHARED_SN_FILE_NAME);
         int fileSnNumber = CommonUtils.getSysIntMap(CommonUtils.getAppContext(), SHARED_SN_FILE_NUMBER, 0);
 

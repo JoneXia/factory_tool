@@ -63,7 +63,7 @@ public class R2Utils {
             if (type == Globals.TYPE_CHECK) {
                 results.add(new R2TestUnit(R2TestModes.TEST_MODE_HEAT_PROTECT, "加热保护", 210, 1));
             }
-            if (type == Globals.TYPE_TEST) {
+            if (type == Globals.TYPE_TEST || type == Globals.TYPE_AFTERMARKET) {
                 results.add(new R2TestUnit(R2TestModes.TEST_MODE_SN, "写入SN", 98, 2));
             }
 

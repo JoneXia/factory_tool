@@ -98,10 +98,8 @@ public class AQH1Utils {
             results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_WATER, "水位检测", 5, 1));
             results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_HOT, "加热测试", 6, 2));
 
-            if (type != Globals.TYPE_TEST_PARTIALLY) {
-                if (type == Globals.TYPE_TEST) {
-                    results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_SN, "写入SN", 12, 2));
-                }
+            if (type == Globals.TYPE_TEST || type == Globals.TYPE_AFTERMARKET) {
+                results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_SN, "写入SN", 12, 2));
             }
 
             if (type == Globals.TYPE_MAINTAIN || type == Globals.TYPE_AFTERMARKET) {        //擦除ID选项先关闭，暂不开放

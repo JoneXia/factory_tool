@@ -173,7 +173,7 @@ public class T3Utils {
             results.add(new T3TestUnit(T3TestModes.TEST_MODE_HOLZER, "滚筒霍尔", 9, 1));
             results.add(new T3TestUnit(T3TestModes.TEST_MODE_COVER_HOLZER, "上盖霍尔", 12, 1));
 
-            if (type == TYPE_TEST) {
+            if (type == Globals.TYPE_TEST || type == Globals.TYPE_AFTERMARKET) {
                 results.add(new T3TestUnit(T3TestModes.TEST_MODE_SN, "写入SN", 12, 2));
             }
 
@@ -275,7 +275,7 @@ public class T3Utils {
      * 获取存储SN的文件，内部实现文件内容的条件限制，文件名自增
      * @return
      */
-    private static String getStoreDeviceInfoFilePath() {
+    public static String getStoreDeviceInfoFilePath() {
         String fileName = CommonUtils.getSysMap(SHARED_SN_FILE_NAME);
         int fileSnNumber = CommonUtils.getSysIntMap(CommonUtils.getAppContext(), SHARED_SN_FILE_NUMBER, 0);
 

@@ -120,7 +120,7 @@ public class T4Utils {
             results.add(new T4TestUnit(T4TestModes.TEST_MODE_PROXIMITY, "接近模组", 6, 1));
             results.add(new T4TestUnit(T4TestModes.TEST_MODE_COVER_HOLZER, "上盖霍尔", 7, 1));
 
-            if (type == Globals.TYPE_TEST) {
+            if (type == Globals.TYPE_TEST || type == Globals.TYPE_AFTERMARKET) {
                 results.add(new T4TestUnit(T4TestModes.TEST_MODE_SN, "写入SN", 12, 2));
             }
 

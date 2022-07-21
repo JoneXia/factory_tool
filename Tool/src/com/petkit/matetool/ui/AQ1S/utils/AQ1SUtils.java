@@ -45,7 +45,7 @@ public class AQ1SUtils {
 //            results.add(new AQ1STestUnit(AQ1STestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
         } else {
 
-            if (type == Globals.TYPE_TEST) {
+            if (type == Globals.TYPE_TEST || type == Globals.TYPE_AFTERMARKET) {
                 results.add(new AQ1STestUnit(AQ1STestModes.TEST_MODE_SN, "写入SN", 98, 2));
             }
 

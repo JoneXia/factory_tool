@@ -17,15 +17,21 @@ import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.AQ1S.AQ1STestMainActivity;
 import com.petkit.matetool.ui.AQH1.AQH1TestMainActivity;
 import com.petkit.matetool.ui.AQR.AQRTestMainActivity;
+import com.petkit.matetool.ui.D3.utils.D3Utils;
+import com.petkit.matetool.ui.D4.utils.D4Utils;
 import com.petkit.matetool.ui.D4S.D4STestMainActivity;
+import com.petkit.matetool.ui.K2.utils.K2Utils;
 import com.petkit.matetool.ui.K3.K3TestMainActivity;
 import com.petkit.matetool.ui.P3.P3TestMainActivity;
 import com.petkit.matetool.ui.R2.R2TestMainActivity;
+import com.petkit.matetool.ui.W5.utils.W5Utils;
 import com.petkit.matetool.ui.W5New.W5NTestMainActivity;
 import com.petkit.matetool.ui.common.BLEErrorListActivity;
 import com.petkit.matetool.ui.common.BLEStartActivity;
 import com.petkit.matetool.ui.common.WifiErrorListActivity;
 import com.petkit.matetool.ui.common.WifiStartActivity;
+import com.petkit.matetool.ui.feederMini.utils.FeederMiniUtils;
+import com.petkit.matetool.ui.t3.utils.T3Utils;
 import com.petkit.matetool.ui.t4.T4TestMainActivity;
 import com.petkit.matetool.utils.Globals;
 
@@ -669,6 +675,55 @@ public class DeviceCommonUtils {
             return true;
         }
 
+    }
+
+    /**
+     * 检查本地SN是否重复
+     *
+     * @param deviceType
+     * @param sn
+     * @return
+     */
+    public static boolean checkSNIsDuplicate(int deviceType, String sn) {
+
+        String filePath = null;
+        if (mDeviceConfigs.get(deviceType) != null) {
+            String fileName = CommonUtils.getSysMap(String.format(SHARED_SN_FILE_NAME, getDeviceKeyByType(deviceType)));
+
+            if(!CommonUtils.isEmpty(fileName)) {
+                filePath = getStorageDirForDevice(deviceType) + fileName;
+            }
+        } else {
+            switch (deviceType) {
+                case Globals.W5C:
+                    filePath = W5Utils.getStoreDeviceInfoFilePath();
+                    break;
+                case Globals.D3:
+                case Globals.D3_1:
+                    filePath = D3Utils.getStoreDeviceInfoFilePath();
+                    break;
+                case Globals.D4:
+                case Globals.D4_1:
+                    filePath = D4Utils.getStoreDeviceInfoFilePath();
+                    break;
+                case Globals.FEEDER_MINI:
+                    filePath = FeederMiniUtils.getStoreFeederInfoFilePath();
+                    break;
+                case Globals.K2:
+                    filePath = K2Utils.getStoreDeviceInfoFilePath();
+                    break;
+                case Globals.T3:
+                    filePath = T3Utils.getStoreDeviceInfoFilePath();
+                    break;
+            }
+        }
+
+        if (!TextUtils.isEmpty(filePath)) {
+            String content = FileUtils.readFileToString(new File(filePath));
+            return content != null && content.contains(sn);
+        }
+
+        return false;
     }
 
 

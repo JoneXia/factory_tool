@@ -45,14 +45,12 @@ public class K3Utils {
             results.add(new K3TestUnit(K3TestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
         } else {
 
-            if (type == Globals.TYPE_TEST) {
+            if (type == Globals.TYPE_TEST || type == Globals.TYPE_AFTERMARKET) {
                 results.add(new K3TestUnit(K3TestModes.TEST_MODE_SN, "写入SN", 98, 2));
-            }
-            if (type != Globals.TYPE_TEST_PARTIALLY && type != Globals.TYPE_CHECK) {
-                results.add(new K3TestUnit(K3TestModes.TEST_MODE_PRINT, "打印标签", -1, type == Globals.TYPE_TEST ? 2 : 1));
             }
 
             if (type == Globals.TYPE_MAINTAIN || type == Globals.TYPE_AFTERMARKET) {        //擦除ID选项先关闭，暂不开放
+                results.add(new K3TestUnit(K3TestModes.TEST_MODE_PRINT, "打印标签", -1, type == Globals.TYPE_TEST ? 2 : 1));
                 if (PERMISSION_ERASE) {
                     results.add(new K3TestUnit(K3TestModes.TEST_MODE_RESET_SN, "重写SN", 97, 1));
                     results.add(new K3TestUnit(K3TestModes.TEST_MODE_RESET_ID, "擦除ID", 98, 1));

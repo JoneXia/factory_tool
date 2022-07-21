@@ -10,6 +10,7 @@ import com.petkit.matetool.model.DevicesError;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.K2.mode.K2TestUnit;
 import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
+import com.petkit.matetool.utils.Globals;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import static com.petkit.android.utils.LogcatStorageHelper.getFileName;
 import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_NEW_K2;
 import static com.petkit.matetool.utils.Globals.PERMISSION_ERASE;
+import static com.petkit.matetool.utils.Globals.TYPE_AFTERMARKET;
 
 /**
  *
@@ -158,11 +160,11 @@ public class K2Utils {
             results.add(new K2TestUnit(K2TestModes.TEST_MODE_HOLZER, "液位霍尔测试", 9, 1));
             results.add(new K2TestUnit(K2TestModes.TEST_MODE_TEMP, "温湿度测试", 8, 1));
 
-            if (type == TYPE_TEST) {
+            if (type == Globals.TYPE_TEST || type == Globals.TYPE_AFTERMARKET) {
                 results.add(new K2TestUnit(K2TestModes.TEST_MODE_SN, "写入SN", 12, 1));
             }
 
-            if (type == TYPE_MAINTAIN) {        //擦除ID选项先关闭，暂不开放
+            if (type == TYPE_MAINTAIN || type == TYPE_AFTERMARKET) {        //擦除ID选项先关闭，暂不开放
                 results.add(new K2TestUnit(K2TestModes.TEST_MODE_PRINT, "打印标签", -1, type == TYPE_TEST ? 2 : 1));
                 if (PERMISSION_ERASE) {
                     results.add(new K2TestUnit(K2TestModes.TEST_MODE_RESET_SN, "重写SN", 97, 1));
@@ -260,7 +262,7 @@ public class K2Utils {
      * 获取存储SN的文件，内部实现文件内容的条件限制，文件名自增
      * @return
      */
-    private static String getStoreDeviceInfoFilePath() {
+    public static String getStoreDeviceInfoFilePath() {
         String fileName = CommonUtils.getSysMap(SHARED_SN_FILE_NAME);
         int fileSnNumber = CommonUtils.getSysIntMap(CommonUtils.getAppContext(), SHARED_SN_FILE_NUMBER, 0);
 

@@ -6,6 +6,7 @@ import com.petkit.matetool.utils.Globals;
 import java.util.ArrayList;
 
 import static com.petkit.matetool.utils.Globals.PERMISSION_ERASE;
+import static com.petkit.matetool.utils.Globals.TYPE_AFTERMARKET;
 
 /**
  *
@@ -62,7 +63,7 @@ public class W5NUtils {
             results.add(new W5NTestUnit(W5NTestModes.TEST_MODE_RESET_SN, "写入SN", 98, 2));
             results.add(new W5NTestUnit(W5NTestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
         } else {
-            if (type == Globals.TYPE_TEST) {
+            if (type == Globals.TYPE_TEST || type == TYPE_AFTERMARKET) {
                 results.add(new W5NTestUnit(W5NTestModes.TEST_MODE_SN, "写入SN", 98, 2));
             }
 

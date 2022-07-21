@@ -2,6 +2,7 @@ package com.petkit.matetool.ui.D4S.utils;
 
 import com.petkit.matetool.model.Device;
 import com.petkit.matetool.ui.D4S.mode.D4STestUnit;
+import com.petkit.matetool.utils.Globals;
 
 import java.util.ArrayList;
 
@@ -87,7 +88,7 @@ public class D4SUtils {
             results.add(new D4STestUnit(D4STestModes.TEST_MODE_BAT, "电池", 5, 1));
             results.add(new D4STestUnit(D4STestModes.TEST_MODE_PROXIMITY, "接近测试", 8, 1 ));
 
-            if (type == TYPE_TEST) {
+            if (type == Globals.TYPE_TEST || type == Globals.TYPE_AFTERMARKET) {
                 results.add(new D4STestUnit(D4STestModes.TEST_MODE_SN, "写入SN", 98, 2));
             }
 

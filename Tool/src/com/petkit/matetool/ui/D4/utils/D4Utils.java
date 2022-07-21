@@ -21,6 +21,7 @@ import static com.petkit.android.utils.LogcatStorageHelper.getFileName;
 import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_NEW_D4;
 import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_NEW_D4_1;
 import static com.petkit.matetool.utils.Globals.PERMISSION_ERASE;
+import static com.petkit.matetool.utils.Globals.TYPE_AFTERMARKET;
 
 /**
  *
@@ -155,11 +156,11 @@ public class D4Utils {
             results.add(new D4TestUnit(D4TestModes.TEST_MODE_MOTOR, "马达测试", 4, 1));
             results.add(new D4TestUnit(D4TestModes.TEST_MODE_BAT, "电池", 5, 1));
 
-            if (type == TYPE_TEST) {
+            if (type == Globals.TYPE_TEST || type == Globals.TYPE_AFTERMARKET) {
                 results.add(new D4TestUnit(D4TestModes.TEST_MODE_SN, "写入SN", 98, 2));
             }
 
-            if (type == TYPE_MAINTAIN) {        //擦除ID选项先关闭，暂不开放
+            if (type == TYPE_MAINTAIN || type == TYPE_AFTERMARKET) {        //擦除ID选项先关闭，暂不开放
                 results.add(new D4TestUnit(D4TestModes.TEST_MODE_PRINT, "打印标签", -1, type == TYPE_TEST ? 2 : 1));
                 if (PERMISSION_ERASE) {
                     results.add(new D4TestUnit(D4TestModes.TEST_MODE_RESET_SN, "重写SN", 97, 1));
@@ -258,7 +259,7 @@ public class D4Utils {
      * 获取存储SN的文件，内部实现文件内容的条件限制，文件名自增
      * @return
      */
-    private static String getStoreDeviceInfoFilePath() {
+    public static String getStoreDeviceInfoFilePath() {
         String fileName = CommonUtils.getSysMap(SHARED_SN_FILE_NAME);
         int fileSnNumber = CommonUtils.getSysIntMap(CommonUtils.getAppContext(), SHARED_SN_FILE_NUMBER, 0);
 

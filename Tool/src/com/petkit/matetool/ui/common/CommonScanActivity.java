@@ -199,7 +199,7 @@ public class CommonScanActivity extends BaseActivity implements ScanListener {
                 e.printStackTrace();
                 showShortToast("非法的SN！");
             }
-        } else if (data.length() <= 16){
+        } else if (data.length() <= 16) {
             sn = data;
         }
 
@@ -210,7 +210,19 @@ public class CommonScanActivity extends BaseActivity implements ScanListener {
 
         if(DeviceCommonUtils.checkSN(sn, mDeviceType)) {
             LogcatStorageHelper.addLog("Scaned sn: " + sn);
-            showConfirmDialog(sn);
+
+            if (DeviceCommonUtils.checkSNIsDuplicate(mDeviceType, sn)) {
+                LogcatStorageHelper.addLog("duplicate sn: " + sn);
+
+                buttonTitleDialogBuilder("温馨提示", "该SN已使用过，是个重复的SN，请检查！", "确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
+            } else {
+                showConfirmDialog(sn);
+            }
         } else {
             showShortToast("SN规则不匹配，请检查！");
         }

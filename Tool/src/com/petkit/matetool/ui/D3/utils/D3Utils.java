@@ -20,6 +20,7 @@ import java.util.HashMap;
 import static com.petkit.android.utils.LogcatStorageHelper.getFileName;
 import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_NEW_D3;
 import static com.petkit.matetool.utils.Globals.PERMISSION_ERASE;
+import static com.petkit.matetool.utils.Globals.TYPE_AFTERMARKET;
 
 /**
  *
@@ -170,13 +171,11 @@ public class D3Utils {
             results.add(new D3TestUnit(D3TestModes.TEST_MODE_PROXIMITY, "接近传感器", 6, 1));
             results.add(new D3TestUnit(D3TestModes.TEST_MODE_BAT, "电池", 7, 1));
 
-            if (type != TYPE_TEST_PARTIALLY) {
-                if (type == TYPE_TEST) {
-                    results.add(new D3TestUnit(D3TestModes.TEST_MODE_SN, "写入SN", 98, 2));
-                }
+            if (type == Globals.TYPE_TEST || type == Globals.TYPE_AFTERMARKET) {
+                results.add(new D3TestUnit(D3TestModes.TEST_MODE_SN, "写入SN", 98, 2));
             }
 
-            if (type == TYPE_MAINTAIN) {        //擦除ID选项先关闭，暂不开放
+            if (type == TYPE_MAINTAIN || type == TYPE_AFTERMARKET) {        //擦除ID选项先关闭，暂不开放
                 results.add(new D3TestUnit(D3TestModes.TEST_MODE_PRINT, "打印标签", -1, type == TYPE_TEST ? 2 : 1));
                 results.add(new D3TestUnit(D3TestModes.TEST_MODE_BAT_SHIP, "电池运输模式", 12, 1));
                 if (PERMISSION_ERASE) {
@@ -276,7 +275,7 @@ public class D3Utils {
      * 获取存储SN的文件，内部实现文件内容的条件限制，文件名自增
      * @return
      */
-    private static String getStoreDeviceInfoFilePath() {
+    public static String getStoreDeviceInfoFilePath() {
         String fileName = CommonUtils.getSysMap(SHARED_SN_FILE_NAME);
         int fileSnNumber = CommonUtils.getSysIntMap(CommonUtils.getAppContext(), SHARED_SN_FILE_NUMBER, 0);
 

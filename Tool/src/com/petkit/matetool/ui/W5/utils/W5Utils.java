@@ -25,6 +25,7 @@ import static com.petkit.android.utils.LogcatStorageHelper.getFileName;
 import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_NEW_W5;
 import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_NEW_W5C;
 import static com.petkit.matetool.utils.Globals.PERMISSION_ERASE;
+import static com.petkit.matetool.utils.Globals.TYPE_AFTERMARKET;
 
 /**
  *
@@ -157,7 +158,7 @@ public class W5Utils {
 //                results.add(new W5TestUnit(W5TestModes.TEST_MODE_AUTO, "自动项测试", 6, 1));
 //            }
 
-            if (type == TYPE_TEST) {
+            if (type == TYPE_TEST || type == TYPE_AFTERMARKET) {
                 results.add(new W5TestUnit(W5TestModes.TEST_MODE_SN, "写入SN", 98, 2));
             }
 
@@ -260,7 +261,7 @@ public class W5Utils {
      * 获取存储SN的文件，内部实现文件内容的条件限制，文件名自增
      * @return
      */
-    private static String getStoreDeviceInfoFilePath() {
+    public static String getStoreDeviceInfoFilePath() {
         String fileName = CommonUtils.getSysMap(SHARED_SN_FILE_NAME);
         int fileSnNumber = CommonUtils.getSysIntMap(CommonUtils.getAppContext(), SHARED_SN_FILE_NUMBER, 0);
 
