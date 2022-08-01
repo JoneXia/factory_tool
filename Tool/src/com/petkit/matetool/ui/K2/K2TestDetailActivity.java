@@ -468,6 +468,11 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
     }
 
     private void gotoNextTestModule() {
+        if (isNewSN) {
+            showQuitConfirmDialog();
+            return;
+        }
+
         if (mCurTestStep == mK2TestUnits.size() - 1 || !isAutoTest) {
             finish();
         } else {

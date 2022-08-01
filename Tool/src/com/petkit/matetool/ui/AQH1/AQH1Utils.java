@@ -21,8 +21,9 @@ public class AQH1Utils {
         TEST_MODE_KEY,  //按键
         TEST_MODE_TEMP,    //温度
         TEST_MODE_WATER,   //水位检测
-        TEST_MODE_TEMP_SET_1,
-        TEST_MODE_TEMP_SET_2,  //温度校准
+        TEST_MODE_TEMP_SET_1,   //温度校准1
+        TEST_MODE_TEMP_SET_2,  //温度校准2
+        TEST_MODE_TEMP_SET,  //温度单位设置
         TEST_MODE_HOT,  //加热
         TEST_MODE_BT,   //蓝牙
         TEST_MODE_MAC,
@@ -103,6 +104,7 @@ public class AQH1Utils {
             }
 
             if (type == Globals.TYPE_MAINTAIN || type == Globals.TYPE_AFTERMARKET) {        //擦除ID选项先关闭，暂不开放
+                results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_TEMP_SET, "温度单位", 8, 1));
                 results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_PRINT, "打印标签", -1, type == Globals.TYPE_TEST ? 2 : 1));
                 if (PERMISSION_ERASE) {
                     results.add(new AQH1TestUnit(AQH1TestModes.TEST_MODE_RESET_SN, "重写SN", 97, 1));

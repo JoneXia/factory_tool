@@ -440,6 +440,11 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
     }
 
     private void gotoNextTestModule() {
+        if (isNewSN) {
+            showQuitConfirmDialog();
+            return;
+        }
+
         if (mCurTestStep == mD4TestUnits.size() - 1 || !isAutoTest) {
             finish();
         } else {

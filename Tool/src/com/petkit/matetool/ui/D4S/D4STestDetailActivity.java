@@ -440,6 +440,11 @@ public class D4STestDetailActivity extends BaseActivity implements PetkitSocketI
     }
 
     private void gotoNextTestModule() {
+        if (isNewSN) {
+            showQuitConfirmDialog();
+            return;
+        }
+
         if (mCurTestStep == mTestUnits.size() - 1 || !isAutoTest) {
             finish();
         } else {
@@ -605,7 +610,8 @@ public class D4STestDetailActivity extends BaseActivity implements PetkitSocketI
                             mTempResult = (mTempResult | 0x10000000);
                             desc.append("，").append("辅助：0");
                         }
-                        desc.append("，步数：").append(""+moduleStateStruct.getSub1());
+                        desc.append("，步数：").append(""+moduleStateStruct.getSub1())
+                                .append("电流："+moduleStateStruct.getSub2());
                         result = mTempResult == 0x11111111;
                         break;
                     case 5:

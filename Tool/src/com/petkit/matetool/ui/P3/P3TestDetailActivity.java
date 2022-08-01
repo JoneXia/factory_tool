@@ -420,6 +420,11 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
     }
 
     private void gotoNextTestModule() {
+        if (isNewSN) {
+            showQuitConfirmDialog();
+            return;
+        }
+
         if (mCurTestStep == mP3TestUnits.size() - 1 || !isAutoTest) {
             finish();
         } else {

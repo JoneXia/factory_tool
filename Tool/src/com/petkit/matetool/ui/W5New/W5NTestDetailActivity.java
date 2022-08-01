@@ -425,6 +425,11 @@ public class W5NTestDetailActivity extends BaseActivity implements PrintResultCa
     }
 
     private void gotoNextTestModule() {
+        if (isNewSN) {
+            showQuitConfirmDialog();
+            return;
+        }
+
         if (mCurTestStep == mTestUnits.size() - 1 || !isAutoTest) {
             finish();
         } else {

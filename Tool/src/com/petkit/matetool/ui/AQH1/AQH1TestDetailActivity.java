@@ -48,8 +48,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static com.petkit.matetool.ui.AQH1.AQH1Utils.AQH1TestModes.TEST_MODE_SN;
 import static com.petkit.matetool.ui.AQH1.AQH1Utils.AQH1TestModes.TEST_MODE_TEMP_SET_1;
 import static com.petkit.matetool.ui.utils.PrintUtils.isPrinterConnected;
+import static com.petkit.matetool.utils.Globals.AQH1_1000;
 import static com.petkit.matetool.utils.Globals.TEST_FAILED;
 import static com.petkit.matetool.utils.Globals.TEST_PASS;
 import static com.petkit.matetool.utils.Globals.TYPE_TEST;
@@ -195,6 +197,9 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
             case TEST_MODE_BT:
                 mPromptTextView.setText("需测试蓝牙正常工作！");
                 break;
+            case TEST_MODE_TEMP_SET:
+                mPromptTextView.setText("温度单位设置，国内使用摄氏度，海外使用华氏度！");
+                break;
             default:
                 break;
         }
@@ -219,6 +224,19 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
             case TEST_MODE_PRINT:
                 mBtn1.setText(R.string.Print);
                 mBtn2.setText(R.string.Set_print);
+                mBtn2.setVisibility(View.VISIBLE);
+                mBtn2.setBackgroundResource(R.drawable.selector_gray);
+                if (mTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
+                    mBtn3.setText(R.string.Succeed);
+                    mBtn3.setBackgroundResource(R.drawable.selector_blue);
+                } else {
+                    mBtn3.setText(R.string.Failure);
+                    mBtn3.setBackgroundResource(R.drawable.selector_red);
+                }
+                break;
+            case TEST_MODE_TEMP_SET:
+                mBtn1.setText("摄氏度");
+                mBtn2.setText("华氏度");
                 mBtn2.setVisibility(View.VISIBLE);
                 mBtn2.setBackgroundResource(R.drawable.selector_gray);
                 if (mTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
@@ -295,11 +313,6 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
                         params.put("mac", mDevice.getMac());
                         PetkitSocketInstance.getInstance().sendString(AQH1Utils.getRequestForKeyAndPayload(162, params));
                         break;
-                    case TEST_MODE_AGEINGRESULT:
-                        params = new HashMap<>();
-                        params.put("mac", mDevice.getMac());
-                        PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(167, params));
-                        break;
                     default:
                         startTestModule();
                         break;
@@ -323,6 +336,12 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
                     case TEST_MODE_AGEINGRESULT:
                         mTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
                         gotoNextTestModule();
+                        break;
+                    case TEST_MODE_TEMP_SET:
+                        params = new HashMap<>();
+                        params.put("module", mTestUnits.get(mCurTestStep).getModule());
+                        params.put("state", 2);
+                        PetkitSocketInstance.getInstance().sendString(AQH1Utils.getRequestForKeyAndPayload(163, params));
                         break;
                 }
                 break;
@@ -433,6 +452,11 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
     }
 
     private void gotoNextTestModule() {
+        if (isNewSN) {
+            showQuitConfirmDialog();
+            return;
+        }
+
         if (mCurTestStep == mTestUnits.size() - 1 || !isAutoTest) {
             finish();
         } else {
@@ -714,6 +738,18 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
                                     .append("，校准后：").append((moduleStateStruct.getSub1()&0xffff)/10f + "℃");
                         }
                         break;
+                    case 8:
+                        if (moduleStateStruct.getState() != 0) {
+                            desc.append("\n").append("温度单位已设置为：")
+                                    .append(moduleStateStruct.getState() == 1 ? "摄氏度" : "华氏度");
+                            result = true;
+
+                            if (mTestUnits.get(mCurTestStep).getType() == TEST_MODE_SN) {
+                                startSetSn();
+                                return;
+                            }
+                        }
+                        break;
                 }
                 mDescTextView.append(desc.toString());
                 new Handler().post(new Runnable() {
@@ -798,6 +834,13 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
                 break;
             case 167:
                 mAgeingResult = data;
+
+                // 先自动写入温度单位，再写入SN
+                HashMap<String, Object> params = new HashMap<>();
+                params.put("module", mTestUnits.get(mCurTestStep).getModule());
+                params.put("state", mDeviceType == AQH1_1000 ? 1 : 2);
+                PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(163, params));
+
                 startSetSn();
                 break;
             case 110:

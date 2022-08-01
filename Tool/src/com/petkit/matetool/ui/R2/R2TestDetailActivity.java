@@ -440,6 +440,11 @@ public class R2TestDetailActivity extends BaseActivity implements PrintResultCal
     }
 
     private void gotoNextTestModule() {
+        if (isNewSN) {
+            showQuitConfirmDialog();
+            return;
+        }
+
         if (mCurTestStep == mTestUnits.size() - 1 || !isAutoTest) {
             finish();
         } else {

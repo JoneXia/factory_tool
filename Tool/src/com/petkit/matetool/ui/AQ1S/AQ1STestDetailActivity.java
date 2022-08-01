@@ -380,6 +380,11 @@ public class AQ1STestDetailActivity extends BaseActivity implements PrintResultC
     }
 
     private void gotoNextTestModule() {
+        if (isNewSN) {
+            showQuitConfirmDialog();
+            return;
+        }
+
         if (mCurTestStep == mAQ1STestUnits.size() - 1 || !isAutoTest) {
             finish();
         } else {

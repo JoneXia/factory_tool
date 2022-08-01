@@ -351,6 +351,11 @@ public class K3TestDetailActivity extends BaseActivity implements PrintResultCal
     }
 
     private void gotoNextTestModule() {
+        if (isNewSN) {
+            showQuitConfirmDialog();
+            return;
+        }
+
         if (mCurTestStep == mK3TestUnits.size() - 1 || !isAutoTest) {
             finish();
         } else {

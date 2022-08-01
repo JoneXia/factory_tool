@@ -470,6 +470,11 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
     }
 
     private void gotoNextTestModule() {
+        if (isNewSN) {
+            showQuitConfirmDialog();
+            return;
+        }
+
         if (mCurTestStep == mT3TestUnits.size() - 1 || !isAutoTest) {
             finish();
         } else {

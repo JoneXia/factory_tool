@@ -426,6 +426,11 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
     }
 
     private void gotoNextTestModule() {
+        if (isNewSN) {
+            showQuitConfirmDialog();
+            return;
+        }
+
         if (mCurTestStep == mW5TestUnits.size() - 1 || !isAutoTest) {
             finish();
         } else {

@@ -424,6 +424,11 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
     }
 
     private void gotoNextTestModule() {
+        if (isNewSN) {
+            showQuitConfirmDialog();
+            return;
+        }
+
         if (mCurTestStep == mAQRTestUnits.size() - 1 || !isAutoTest) {
             finish();
         } else {

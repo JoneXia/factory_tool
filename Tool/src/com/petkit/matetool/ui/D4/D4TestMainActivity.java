@@ -39,6 +39,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static com.petkit.matetool.utils.Globals.TYPE_AFTERMARKET;
+
 /**
  *
  * Created by Jone on 17/4/24.
@@ -97,7 +99,7 @@ public class D4TestMainActivity extends BaseActivity implements PetkitSocketInst
 
     @Override
     protected void setupViews() {
-        setTitle("行星喂食器");
+        setTitle("SOLO喂食器");
 
         mWifiAdminSimple = new WifiAdminSimple(this);
 
@@ -286,6 +288,7 @@ public class D4TestMainActivity extends BaseActivity implements PetkitSocketInst
             intent.putExtra("AutoTest", isAuto);
             intent.putExtra(D4Utils.EXTRA_D4_TESTER, mTester);
             intent.putExtra("TestType", mTestType);
+            intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
             intent.putExtra(D4Utils.EXTRA_ERROR_D4, mErrorDevice);
             startActivityForResult(intent, 0x12);
         } else {
@@ -315,6 +318,7 @@ public class D4TestMainActivity extends BaseActivity implements PetkitSocketInst
                     }
                     break;
                 case D4Utils.TYPE_MAINTAIN:
+                case TYPE_AFTERMARKET:
                     if (!apSsid.toUpperCase().startsWith("PETKIT_FEEDER_4_")) {
                         mInfoTestTextView.setText("请先连接到PETKIT_FEEDER_4_开头的WIFI，再进行测试！");
                         return;
@@ -355,6 +359,7 @@ public class D4TestMainActivity extends BaseActivity implements PetkitSocketInst
                 startActivity(WifiManagerActivity.getIntent(this, "PETKIT_FEEDER_4_B_HW1_"));
                 break;
             case D4Utils.TYPE_MAINTAIN:
+            case TYPE_AFTERMARKET:
             case D4Utils.TYPE_CHECK:
                 startActivity(WifiManagerActivity.getIntent(this, "PETKIT_FEEDER_4_"));
                 break;
@@ -550,6 +555,7 @@ public class D4TestMainActivity extends BaseActivity implements PetkitSocketInst
             case D4Utils.TYPE_TEST_PARTIALLY:
                 return 1;
             case D4Utils.TYPE_MAINTAIN:
+            case TYPE_AFTERMARKET:
                 return 2;
             case D4Utils.TYPE_CHECK:
                 return 3;

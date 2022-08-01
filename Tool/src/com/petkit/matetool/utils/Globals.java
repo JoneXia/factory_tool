@@ -49,6 +49,8 @@ public class Globals {
 	public static final int D3_1 = 27;
 	public static final int D4_1 = 28;
 	public static final int D4S = 29;
+	public static final int AQH1_500_A = 30;
+	public static final int AQH1_1000_A = 31;
 	//TODO: 新增设备时，max值需加一
 	public static final int MAX = 30;
 
