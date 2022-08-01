@@ -209,6 +209,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
                         startActivityWithData(W5TestPrepareActivity.class, bundle, false);
                         break;
                     default:
+                        if (testStyle == Globals.AQH1_500) {
+
+                        }
                         bundle = new Bundle();
                         bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, testStyle);
                         startActivityWithData(TestPrepareActivity.class, bundle, false);
