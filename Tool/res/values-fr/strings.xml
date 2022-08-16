@@ -14,8 +14,8 @@
     <string name="s_cln_i">En cours de nettoyage</string>
     <string name="s_cln_ovr">Nettoyage terminé</string>
     <string name="s_dmp">Vider la litière pour chat</string>
-    <string name="s_dmp_i">En cours de vidange</string>
-    <string name="s_dmp_ovr">Vidange terminée</string>
+    <string name="s_dmp_i">Décharge</string>
+    <string name="s_dmp_ovr">Décharge terminée</string>
     <string name="s_smth">Niveler la litière</string>
     <string name="s_smth_ing">Opération en cours</string>
     <string name="s_smth_ovr">Litière nivelée</string>

@@ -379,8 +379,12 @@ public class Versions {
 	 *
 	 * 1. 支持智能变频加热棒（AQ-H1）产测全功能
 	 *
+	 * 1.2:
+	 * 1. 新增温度单位设置
+	 * 2. 区分国内和海外版本
+	 *
 	 */
-	public static final String TOOL_AQH1_VERSION	= "1.1";
+	public static final String TOOL_AQH1_VERSION	= "1.2";
 
 
 

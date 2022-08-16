@@ -14,8 +14,8 @@
     <string name="s_cln_i">正在清理</string>
     <string name="s_cln_ovr">清理完成</string>
     <string name="s_dmp">清空貓砂</string>
-    <string name="s_dmp_i">正在清空</string>
-    <string name="s_dmp_ovr">清空完成</string>
+    <string name="s_dmp_i">正在傾倒</string>
+    <string name="s_dmp_ovr">傾倒完成</string>
     <string name="s_smth">撫平貓砂</string>
     <string name="s_smth_ing">正在撫平</string>
     <string name="s_smth_ovr">撫平完成</string>

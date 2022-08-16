@@ -1,8 +1,10 @@
 package com.petkit.matetool.ui;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
@@ -30,8 +32,8 @@ import com.petkit.matetool.ui.W5.W5TestPrepareActivity;
 import com.petkit.matetool.ui.W5.utils.W5Utils;
 import com.petkit.matetool.ui.aq.AQTestMainActivity;
 import com.petkit.matetool.ui.base.BaseActivity;
-import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.ui.common.TestPrepareActivity;
+import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.ui.cozy.CozyTestPrepareActivity;
 import com.petkit.matetool.ui.feeder.FeederTestPrepareActivity;
 import com.petkit.matetool.ui.feederMini.FeederMiniTestPrepareActivity;
@@ -209,9 +211,11 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
                         startActivityWithData(W5TestPrepareActivity.class, bundle, false);
                         break;
                     default:
-                        if (testStyle == Globals.AQH1_500) {
-
+                        if (testStyle == Globals.AQH1_500 || testStyle == Globals.AQH1_1000) {
+                            showSelectRegion();
+                            return;
                         }
+
                         bundle = new Bundle();
                         bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, testStyle);
                         startActivityWithData(TestPrepareActivity.class, bundle, false);
@@ -220,6 +224,33 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
                 collapseSoftInputMethod(fixtureNumberEditText);
                 break;
         }
+    }
+
+    private void showSelectRegion() {
+
+        final String[] items = { "中国", "海外"};
+        AlertDialog.Builder listDialog = new AlertDialog.Builder(this);
+        listDialog.setTitle("请选择使用地：");
+        listDialog.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == 1) {
+                    switch (testStyle) {
+                        case Globals.AQH1_500:
+                            testStyle = Globals.AQH1_500_A;
+                            break;
+                        case Globals.AQH1_1000:
+                            testStyle = Globals.AQH1_1000_A;
+                            break;
+                    }
+                }
+                Bundle bundle = new Bundle();
+                bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, testStyle);
+                startActivityWithData(TestPrepareActivity.class, bundle, false);
+            }
+        });
+        listDialog.show();
+
     }
 
     @Override

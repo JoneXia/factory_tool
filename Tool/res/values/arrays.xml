@@ -133,6 +133,8 @@
         <item>s_cln</item>
         <item>s_cln_i</item>
         <item>s_cln_ovr</item>
+        <item>s_dmp_i</item>
+        <item>s_dmp_ovr</item>
         <item>s_smth</item>
         <item>s_smth_ing</item>
         <item>s_smth_ovr</item>

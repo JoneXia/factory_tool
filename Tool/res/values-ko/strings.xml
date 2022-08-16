@@ -13,8 +13,8 @@
   <string name="s_cln_i">청소</string>
   <string name="s_cln_ovr">청소됨</string>
   <string name="s_dmp">빈 캣리터</string>
-  <string name="s_dmp_i">비우는 중</string>
-  <string name="s_dmp_ovr">비우기 완료</string>
+  <string name="s_dmp_i">쏟아버리기</string>
+  <string name="s_dmp_ovr">쏟아버리기 완료</string>
   <string name="s_smth">캣리터 레벨 확인</string>
   <string name="s_smth_ing">레벨 확인 중</string>
   <string name="s_smth_ovr">레벨 확인 완료</string>

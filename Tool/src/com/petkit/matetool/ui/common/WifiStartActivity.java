@@ -64,7 +64,9 @@ public class WifiStartActivity extends BaseActivity {
         findViewById(R.id.test_case5).setVisibility(View.GONE);
         switch (mDeviceType) {
             case Globals.AQH1_500:
+            case Globals.AQH1_500_A:
             case Globals.AQH1_1000:
+            case Globals.AQH1_1000_A:
                 findViewById(R.id.test_case1).setVisibility(View.GONE);
                 break;
         }

@@ -52,6 +52,7 @@ import static com.petkit.matetool.ui.AQH1.AQH1Utils.AQH1TestModes.TEST_MODE_SN;
 import static com.petkit.matetool.ui.AQH1.AQH1Utils.AQH1TestModes.TEST_MODE_TEMP_SET_1;
 import static com.petkit.matetool.ui.utils.PrintUtils.isPrinterConnected;
 import static com.petkit.matetool.utils.Globals.AQH1_1000;
+import static com.petkit.matetool.utils.Globals.AQH1_500;
 import static com.petkit.matetool.utils.Globals.TEST_FAILED;
 import static com.petkit.matetool.utils.Globals.TEST_PASS;
 import static com.petkit.matetool.utils.Globals.TYPE_TEST;
@@ -689,7 +690,7 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
                                 mTempResult = mTempResult | 0x1;
                             }
                         } else if (moduleStateStruct.getState() == 2) {
-                            if (mDeviceType == Globals.AQH1_1000) {
+                            if (mDeviceType == Globals.AQH1_1000 || mDeviceType == Globals.AQH1_1000_A) {
                                 if (moduleStateStruct.getSub0() >= 900 && moduleStateStruct.getSub0() <= 1100) {
                                     if (mTempResult == 0) {
                                         mDescTextView.append("\n加热过程测试完成，开始测试关闭功能");
@@ -745,6 +746,7 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
                             result = true;
 
                             if (mTestUnits.get(mCurTestStep).getType() == TEST_MODE_SN) {
+                                mDescTextView.append(desc.toString());
                                 startSetSn();
                                 return;
                             }
@@ -837,8 +839,8 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
 
                 // 先自动写入温度单位，再写入SN
                 HashMap<String, Object> params = new HashMap<>();
-                params.put("module", mTestUnits.get(mCurTestStep).getModule());
-                params.put("state", mDeviceType == AQH1_1000 ? 1 : 2);
+                params.put("module", 8);
+                params.put("state", mDeviceType == AQH1_1000 || mDeviceType == AQH1_500 ? 1 : 2);
                 PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(163, params));
 
                 startSetSn();

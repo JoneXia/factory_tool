@@ -293,7 +293,7 @@ public abstract class BaseActivity extends Activity implements OnClickListener, 
 			String msg, String positivetext, String negtext,
 			DialogInterface.OnClickListener poslistener,
 			DialogInterface.OnClickListener neglistener) {
-		return button2TitleDialogBuilder(title, msg, positivetext, negtext, poslistener, neglistener);
+		return mBaseUIUtils.button2TitleDialogBuilder(title, msg, positivetext, negtext, poslistener, neglistener);
 	}
 
 	public String getAppCacheDirPath() {

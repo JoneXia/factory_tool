@@ -312,8 +312,8 @@
 	<string name="s_cln_i">Cleaning</string>
 	<string name="s_cln_ovr">Cleaned</string>
 	<string name="s_dmp">Empty cat litter</string>
-	<string name="s_dmp_i">Emptying</string>
-	<string name="s_dmp_ovr">Emptied</string>
+	<string name="s_dmp_i">Dumping</string>
+	<string name="s_dmp_ovr">Dumping completed</string>
 	<string name="s_smth">Level cat litter</string>
 	<string name="s_smth_ing">Leveling</string>
 	<string name="s_smth_ovr">Leveled</string>

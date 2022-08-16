@@ -15,8 +15,8 @@
     <string name="s_cln_i">清掃する</string>
     <string name="s_cln_ovr">清掃されました</string>
     <string name="s_dmp">猫トイレ砂を廃棄する</string>
-    <string name="s_dmp_i">廃棄中</string>
-    <string name="s_dmp_ovr">廃棄されました</string>
+    <string name="s_dmp_i">廃棄</string>
+    <string name="s_dmp_ovr">廃棄完了</string>
     <string name="s_smth">猫トイレ砂をならす</string>
     <string name="s_smth_ing">ならし中</string>
     <string name="s_smth_ovr">ならし終わりました</string>

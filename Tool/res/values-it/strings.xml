@@ -14,8 +14,8 @@
   <string name="s_cln_i">Pulendo</string>
   <string name="s_cln_ovr">Pulito</string>
   <string name="s_dmp">Svuota lettiera per gatti</string>
-  <string name="s_dmp_i">Svuotando…</string>
-  <string name="s_dmp_ovr">Svuotato</string>
+  <string name="s_dmp_i">Scarico dei rifiuti in corso</string>
+  <string name="s_dmp_ovr">Scarico dei rifiuti completato</string>
   <string name="s_smth">Livella lettiera per gatti</string>
   <string name="s_smth_ing">Livellando</string>
   <string name="s_smth_ovr">Livellato</string>

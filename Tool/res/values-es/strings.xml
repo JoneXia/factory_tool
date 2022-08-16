@@ -14,8 +14,8 @@
     <string name="s_cln_i">Limpiar</string>
     <string name="s_cln_ovr">Limpiado</string>
     <string name="s_dmp">Vaciar la arena para Gatos</string>
-    <string name="s_dmp_i">Vaciando</string>
-    <string name="s_dmp_ovr">Vaciado</string>
+    <string name="s_dmp_i">Dumping</string>
+    <string name="s_dmp_ovr">Dumping completado</string>
     <string name="s_smth">Nivel de arena para Gatos</string>
     <string name="s_smth_ing">Nivelando</string>
     <string name="s_smth_ovr">Nivelado</string>

@@ -97,7 +97,7 @@ public class AQH1TestMainActivity extends BaseActivity implements PetkitSocketIn
 
     @Override
     protected void setupViews() {
-        setTitle(mDeviceType == Globals.AQH1_500 ? "AQ-H1 500w测试" : "AQ-H1 1000w测试");
+        setTitle(getTitleDesc());
 
         mWifiAdminSimple = new WifiAdminSimple(this);
 
@@ -700,6 +700,19 @@ public class AQH1TestMainActivity extends BaseActivity implements PetkitSocketIn
 
     }
 
+
+    private String getTitleDesc() {
+        switch (mDeviceType) {
+            case Globals.AQH1_500:
+                return "国内 - 500w测试";
+            case Globals.AQH1_500_A:
+                return "海外 - 500w测试";
+            case Globals.AQH1_1000:
+                return "国内 - 1000w测试";
+            default:
+                return "海外 - 1000w测试";
+        }
+    }
 
 
 }

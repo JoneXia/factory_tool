@@ -14,8 +14,8 @@
     <string name="s_cln_i">A limpar</string>
     <string name="s_cln_ovr">Limpeza concluída</string>
     <string name="s_dmp">Esvaziar areia sanitária</string>
-    <string name="s_dmp_i">A esvaziar</string>
-    <string name="s_dmp_ovr">Vazio</string>
+    <string name="s_dmp_i">Dumping</string>
+    <string name="s_dmp_ovr">Dumping concluído</string>
     <string name="s_smth">Nivelar areia para gato</string>
     <string name="s_smth_ing">A nivelar</string>
     <string name="s_smth_ovr">Nivelado</string>

@@ -14,8 +14,8 @@
     <string name="s_cln_i">Очистка</string>
     <string name="s_cln_ovr">Очищено</string>
     <string name="s_dmp">Опустошение кошачьего лотка</string>
-    <string name="s_dmp_i">Опустошение</string>
-    <string name="s_dmp_ovr">Опустошен</string>
+    <string name="s_dmp_i">Идет сброс отходов</string>
+    <string name="s_dmp_ovr">Сброс отходов завершен</string>
     <string name="s_smth">Выравнивание кошачьего лотка</string>
     <string name="s_smth_ing">Выравнивание</string>
     <string name="s_smth_ovr">Выровнено</string>

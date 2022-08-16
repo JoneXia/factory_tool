@@ -14,8 +14,8 @@
     <string name="s_cln_i">Reinigen</string>
     <string name="s_cln_ovr">Gereinigt</string>
     <string name="s_dmp">Leeren Sie den Katzenstreu</string>
-    <string name="s_dmp_i">Leeren</string>
-    <string name="s_dmp_ovr">Geleert</string>
+    <string name="s_dmp_i">Entsorgung</string>
+    <string name="s_dmp_ovr">Entleerung beendet</string>
     <string name="s_smth">Nivellieren Sie den Katzenstreu</string>
     <string name="s_smth_ing">Nivellierung</string>
     <string name="s_smth_ovr">Nivelliert</string>

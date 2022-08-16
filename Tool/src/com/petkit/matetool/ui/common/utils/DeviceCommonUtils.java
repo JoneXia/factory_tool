@@ -104,6 +104,10 @@ public class DeviceCommonUtils {
                 Globals.DEVICE_TYPE_CODE_NEW_AQH1_500, AQH1TestMainActivity.class));
         mDeviceConfigs.put(Globals.AQH1_1000, new DeviceConfigInfo(false, "AQH1", "AQH1_1000", null,
                 Globals.DEVICE_TYPE_CODE_NEW_AQH1_1000, AQH1TestMainActivity.class));
+        mDeviceConfigs.put(Globals.AQH1_500_A, new DeviceConfigInfo(false, "AQH1", "AQH1_500", null,
+                Globals.DEVICE_TYPE_CODE_NEW_AQH1_500, AQH1TestMainActivity.class));
+        mDeviceConfigs.put(Globals.AQH1_1000_A, new DeviceConfigInfo(false, "AQH1", "AQH1_1000", null,
+                Globals.DEVICE_TYPE_CODE_NEW_AQH1_1000, AQH1TestMainActivity.class));
         mDeviceConfigs.put(Globals.CTW2, new DeviceConfigInfo(true, "W5", "CTW2", new String[]{"Petkit_W5N", "Petkit_W4X", "Petkit_CTW2"},
                 Globals.DEVICE_TYPE_CODE_NEW_CTW2, W5NTestMainActivity.class));
 //        mDeviceConfigs.put(Globals.D3_1, new DeviceConfigInfo(true, "D3_1", "D3_1", null,
@@ -451,7 +455,8 @@ public class DeviceCommonUtils {
             case Globals.R2:
             default:
 //                throw  new RuntimeException("generate SN is forbidden!");
-                return generateSN(CommonUtils.getDateStringByOffset(0), getDeviceFlagByType(deviceType), serializableNumber);
+                return generateSN("00" + day, getDeviceFlagByType(deviceType), serializableNumber);
+//                return generateSN(CommonUtils.getDateStringByOffset(0), getDeviceFlagByType(deviceType), serializableNumber);
         }
     }
 
