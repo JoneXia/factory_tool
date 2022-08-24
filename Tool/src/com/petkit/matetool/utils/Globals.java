@@ -52,7 +52,7 @@ public class Globals {
 	public static final int AQH1_500_A = 30;
 	public static final int AQH1_1000_A = 31;
 	//TODO: 新增设备时，max值需加一
-	public static final int MAX = 30;
+	public static final int MAX = 32;
 
 //	public static int g_testStyle = 0;
 
