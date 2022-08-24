@@ -187,7 +187,7 @@ public class D4Utils {
             return null;
         }
 
-        return DeviceCommonUtils.generateSN(CommonUtils.getDateStringByOffset(0),
+        return DeviceCommonUtils.generateSN("0" + tester.getStation() + day,
                 deviceType == Globals.D4 ? DEVICE_TYPE_CODE_NEW_D4 : DEVICE_TYPE_CODE_NEW_D4_1, serializableNumber);
     }
 

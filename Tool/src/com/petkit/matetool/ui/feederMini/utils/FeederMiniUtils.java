@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.petkit.android.utils.LogcatStorageHelper.getFileName;
-import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_D2;
+import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_NEW_D2;
 import static com.petkit.matetool.utils.Globals.PERMISSION_ERASE;
 import static com.petkit.matetool.utils.Globals.TYPE_AFTERMARKET;
 
@@ -165,7 +165,7 @@ public class FeederMiniUtils {
             return null;
         }
 
-        return DeviceCommonUtils.generateSN(CommonUtils.getDateStringByOffset(0), DEVICE_TYPE_CODE_D2, tester.getStation(), serializableNumber);
+        return DeviceCommonUtils.generateSN("0" + tester.getStation() + day, DEVICE_TYPE_CODE_NEW_D2, serializableNumber);
     }
 
     /**

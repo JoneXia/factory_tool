@@ -191,7 +191,7 @@ public class K2Utils {
             return null;
         }
 
-        return DeviceCommonUtils.generateSN(CommonUtils.getDateStringByOffset(0), DEVICE_TYPE_CODE_NEW_K2, serializableNumber);
+        return DeviceCommonUtils.generateSN("0" + tester.getStation() + day, DEVICE_TYPE_CODE_NEW_K2, serializableNumber);
     }
 
     /**

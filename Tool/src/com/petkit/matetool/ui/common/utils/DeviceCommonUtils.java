@@ -455,7 +455,7 @@ public class DeviceCommonUtils {
             case Globals.R2:
             default:
 //                throw  new RuntimeException("generate SN is forbidden!");
-                return generateSN("00" + day, getDeviceFlagByType(deviceType), serializableNumber);
+                return generateSN("0" + tester.getStation() + day, getDeviceFlagByType(deviceType), serializableNumber);
 //                return generateSN(CommonUtils.getDateStringByOffset(0), getDeviceFlagByType(deviceType), serializableNumber);
         }
     }

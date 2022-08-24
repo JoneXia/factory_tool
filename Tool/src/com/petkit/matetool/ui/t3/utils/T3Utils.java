@@ -204,7 +204,7 @@ public class T3Utils {
             return null;
         }
 
-        return DeviceCommonUtils.generateSN(CommonUtils.getDateStringByOffset(0), DEVICE_TYPE_CODE_NEW_T3, serializableNumber);
+        return DeviceCommonUtils.generateSN("0" + tester.getStation() + day, DEVICE_TYPE_CODE_NEW_T3, serializableNumber);
     }
 
     /**

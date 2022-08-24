@@ -203,7 +203,7 @@ public class D3Utils {
             return null;
         }
 
-        return DeviceCommonUtils.generateSN(CommonUtils.getDateStringByOffset(0),
+        return DeviceCommonUtils.generateSN("0" + tester.getStation() + day,
                 deviceType == Globals.D3 ? DEVICE_TYPE_CODE_NEW_D3 : DEVICE_TYPE_CODE_NEW_D3, serializableNumber);
     }
 

@@ -189,7 +189,7 @@ public class W5Utils {
             return null;
         }
 
-        return DeviceCommonUtils.generateSN(CommonUtils.getDateStringByOffset(0),
+        return DeviceCommonUtils.generateSN("0" + tester.getStation() + day,
                 w5Type == W5_TYPE_MINI ? DEVICE_TYPE_CODE_NEW_W5C : DEVICE_TYPE_CODE_NEW_W5, serializableNumber);
     }
 
