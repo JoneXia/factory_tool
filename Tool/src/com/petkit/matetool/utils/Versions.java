@@ -425,9 +425,9 @@ public class Versions {
 	/**
 	 *
 	 * v1.0
-	 * 1. D3-1废弃，沿用D3即可。
+	 * 1. 支持D4S产测全功能
 	 *
 	 */
-	public static final String TOOL_D4S_VERSION	= "0.1";
+	public static final String TOOL_D4S_VERSION	= "1.0";
 
 }
