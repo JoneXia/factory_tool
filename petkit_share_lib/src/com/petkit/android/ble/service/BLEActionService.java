@@ -651,6 +651,17 @@ public abstract class BLEActionService extends IntentService {
 		}
 	}
 
+	protected void waitIfPausedOrReceivedData() {
+		synchronized (mLock) {
+			try {
+				while (mPaused && !mAborted && mReceivedData == null)
+					mLock.wait();
+			} catch (final InterruptedException e) {
+				loge("Sleeping interrupted", e);
+			}
+		}
+	}
+
 	/** Stores the last progress percent. Used to lower number of calls of {@link #updateProgressNotification(int)}. */
 	protected int mLastProgress = -1;
 	
@@ -810,7 +821,36 @@ public abstract class BLEActionService extends IntentService {
 			throw new DeviceDisconnectedException("Unable to write Op Code", mConnectionState);
 		return mReceivedData;
 	}
-	
+
+	/**
+	 * Waits until the notification will arrive. Returns the data returned by the notification. This method will block the thread if response is not ready or connection state will change from
+	 * . If connection state will change, or an error will occur, an exception will be thrown.
+	 *
+	 * @return the value returned by the Control Point notification
+	 * @throws DeviceDisconnectedException
+	 * @throws BLEErrorException
+	 * @throws BLEAbortedException
+	 */
+	protected byte[] waitNotificationResponseOrStepRawData() throws DeviceDisconnectedException, BLEErrorException, BLEAbortedException {
+		// do not clear the mReceiveData here. The response might already be obtained. Clear it in write request instead.
+		mError = 0;
+		try {
+			synchronized (mLock) {
+				while ((mReceivedData == null && mStepRawData == null && mConnectionState == BLEConsts.STATE_CONNECTED_AND_READY && mError == 0 && !mAborted)
+						|| mPaused)
+					mLock.wait();
+			}
+		} catch (final InterruptedException e) {
+			loge("Sleeping interrupted", e);
+		}
+		if (mAborted)
+			throw new BLEAbortedException();
+		if (mError != 0)
+			throw new BLEErrorException("Unable to write Op Code", mError);
+		if (mConnectionState != BLEConsts.STATE_CONNECTED_AND_READY)
+			throw new DeviceDisconnectedException("Unable to write Op Code", mConnectionState);
+		return mReceivedData;
+	}
 	
 	/**
 	 * Sets number of data packets that will be send before the notification will be received.

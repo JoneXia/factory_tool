@@ -366,7 +366,7 @@ public class AndroidBLEActionService extends BLEActionService {
 			}
             refreshHeartbeatTime();
 
-            PetkitLog.d("onCharacteristicChanged responseType: " + responseType);
+//            PetkitLog.d("onCharacteristicChanged responseType: " + responseType);
 			switch (responseType) {
 			case BLEConsts.OP_CODE_PACKET_RECEIPT_NOTIF_KEY:
 				final BluetoothGattCharacteristic packetCharacteristic = gatt.getService(BLEConsts.DFU_SERVICE_UUID).getCharacteristic(BLEConsts.DFU_PACKET_UUID);
@@ -4653,23 +4653,25 @@ public class AndroidBLEActionService extends BLEActionService {
 
 		mStep = true;
 		while (!mAborted && mError == 0 && mStep && mConnectionState == BLEConsts.STATE_CONNECTED_AND_READY) {
+
+			waitNotificationResponseOrStepRawData();
 			if (mStepRawData != null) {
-				ArrayList<PetkitBleMsg> msgs = new ArrayList<>();
-
 				writeSyncCodeNew(gatt, controlCharacteristic, mStepRawData);
-				byte[] response = readNotificationResponse();
-				PetkitBleMsg msg = P3DataUtils.parseRawData(response);
-				if (msg == null) {
-					throw new UnknownResponseException("Step cmd error", mStepRawData, -1);
-				}
-				msgs.add(msg);
-
-				updateProgressNotification(BLEConsts.PROGRESS_STEP_DATA, msgs);
 				mStepRawData = null;
 			}
+			if (mReceivedData != null) {
+				PetkitBleMsg msg = P3DataUtils.parseRawData(mReceivedData);
+				if (msg == null) {
+					throw new UnknownResponseException("Step cmd error", mReceivedData, -1);
+				}
+				ArrayList<PetkitBleMsg> msgs = new ArrayList<>();
+				msgs.add(msg);
+				updateProgressNotification(BLEConsts.PROGRESS_STEP_DATA, msgs);
+				mReceivedData = null;
+			}
 
-			mPaused = true;
-			waitIfPaused(false);
+//			mPaused = true;
+//			waitIfPausedOrReceivedData();
 		}
 
 		if (mAborted)

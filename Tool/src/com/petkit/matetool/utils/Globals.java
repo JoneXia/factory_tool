@@ -52,8 +52,9 @@ public class Globals {
 	public static final int AQH1_500_A = 30;
 	public static final int AQH1_1000_A = 31;
 	public static final int HG = 32;
+	public static final int HG_110V = 33;
 	//TODO: 新增设备时，max值需加一
-	public static final int MAX = 33;
+	public static final int MAX = 34;
 
 //	public static int g_testStyle = 0;
 
@@ -113,6 +114,8 @@ public class Globals {
 	public static final String DEVICE_TYPE_CODE_NEW_D3_1 = "D3";
 	public static final String DEVICE_TYPE_CODE_NEW_D4_1 = "D4";
 	public static final String DEVICE_TYPE_CODE_NEW_D4S = "D5";
+	public static final String DEVICE_TYPE_CODE_NEW_HG 	= "H2";
+	public static final String DEVICE_TYPE_CODE_NEW_HG_100V 	= "H3";
 
 
 	public static final int TYPE_TEST_PARTIALLY         = 1;

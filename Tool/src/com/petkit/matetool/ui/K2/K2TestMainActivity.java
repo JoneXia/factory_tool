@@ -607,7 +607,7 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
                 testComplete = position >= mK2TestUnits.size();
             } else if (mTestType == K2Utils.TYPE_TEST_PARTIALLY) {
                 testComplete = position >= mK2TestUnits.size();
-            } else if (mTestType == K2Utils.TYPE_TEST) {
+            } else {
                 testComplete = position >= mK2TestUnits.size();
             }
         }

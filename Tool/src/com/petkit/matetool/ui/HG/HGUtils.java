@@ -1,12 +1,12 @@
 package com.petkit.matetool.ui.HG;
 
-import com.petkit.android.ble.BLEConsts;
 import com.petkit.matetool.utils.Globals;
 
 import java.util.ArrayList;
 
 import static com.petkit.matetool.utils.Globals.PERMISSION_ERASE;
 import static com.petkit.matetool.utils.Globals.TYPE_AFTERMARKET;
+import static com.petkit.matetool.utils.Globals.TYPE_MAINTAIN;
 
 /**
  *
@@ -20,8 +20,16 @@ public class HGUtils {
 
     public enum HGTestModes {
         TEST_MODE_DC,   //电压
-        TEST_MODE_LED,
-        TEST_MODE_PUMP,
+        TEST_MODE_SIGNAL,  //通信
+        TEST_MODE_KEY,  //按键
+        TEST_MODE_LED,  //5个8字灯，6个状态指示灯
+        TEST_MODE_FAN,  //风扇
+        TEST_MODE_TEMP_ANT,     //温湿度检测
+        TEST_MODE_TEMP,         //3路温度传感器读取
+        TEST_MODE_TEMP_SET,     //3路温度传感器校准
+        TEST_MODE_PTC,  //PTC加热片
+        TEST_MODE_ANION,    //负离子开关
+        TEST_MODE_LIGHT,    //照明灯
         TEST_MODE_SN,   //写SN
         TEST_MODE_MAC,
         TEST_MODE_RESET_SN, //重置SN
@@ -37,15 +45,15 @@ public class HGUtils {
      */
     public static ArrayList<HGTestUnit> generateAutoTestUnits() {
         ArrayList<HGTestUnit> results = new ArrayList<>();
-
-        results.add(new HGTestUnit(HGTestModes.TEST_MODE_DC, "电量测试", BLEConsts.OP_CODE_BATTERY_KEY, 1));
-
+        results.add(new HGTestUnit(HGTestModes.TEST_MODE_SIGNAL, "通信测试", 242, 0));
+        results.add(new HGTestUnit(HGTestModes.TEST_MODE_DC, "电压测试", 242, 1));
         return results;
     }
 
     /**
      * 获取不同的测试模式对应的测试项
      * @param type 测试类型
+     * @param deviceType 设备类型
      * @return 测试项
      */
     public static ArrayList<HGTestUnit> generateTestUnitsForType(int type, int deviceType) {
@@ -57,7 +65,36 @@ public class HGUtils {
             results.add(new HGTestUnit(HGTestModes.TEST_MODE_RESET_SN, "写入SN", 98, 2));
             results.add(new HGTestUnit(HGTestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
         } else {
-            results.add(new HGTestUnit(HGTestModes.TEST_MODE_LED, "指示灯测试", 1, 1));
+            if (type == TYPE_MAINTAIN || type == TYPE_AFTERMARKET) {
+                results.add(new HGTestUnit(HGTestModes.TEST_MODE_SIGNAL, "通信测试", 242, 0));
+                results.add(new HGTestUnit(HGTestModes.TEST_MODE_DC, "电压测试", 242, 1));
+            } else {
+                results.add(new HGTestUnit(HGTestModes.TEST_MODE_AUTO, "自动测试项", 242, 0));
+            }
+
+            results.add(new HGTestUnit(HGTestModes.TEST_MODE_KEY, "按键测试", 242, 5));
+            results.add(new HGTestUnit(HGTestModes.TEST_MODE_LED, "指示灯测试", 242, 6));
+            results.add(new HGTestUnit(HGTestModes.TEST_MODE_LIGHT, "照明灯测试", 242, 7));
+
+            if (type != Globals.TYPE_TEST_PARTIALLY) {
+                results.add(new HGTestUnit(HGTestModes.TEST_MODE_ANION, "负离子测试", 242, 8));
+            }
+
+            if (type == Globals.TYPE_TEST_PARTIALLY || type == TYPE_MAINTAIN || type == TYPE_AFTERMARKET) {
+                results.add(new HGTestUnit(HGTestModes.TEST_MODE_TEMP_SET, "温度校准", 242, 2));
+            }
+
+            if (type != Globals.TYPE_TEST_PARTIALLY) {
+                results.add(new HGTestUnit(HGTestModes.TEST_MODE_TEMP, "温度读取", 242, 2));
+            }
+
+            results.add(new HGTestUnit(HGTestModes.TEST_MODE_TEMP_ANT, "温湿度测试", 242, 2));
+
+            if (type != Globals.TYPE_TEST_PARTIALLY) {
+                results.add(new HGTestUnit(HGTestModes.TEST_MODE_FAN, "风扇测试", 242, 3));
+                results.add(new HGTestUnit(HGTestModes.TEST_MODE_PTC, "加热片测试", 242, 4));
+            }
+
             if (type == Globals.TYPE_TEST || type == TYPE_AFTERMARKET) {
                 results.add(new HGTestUnit(HGTestModes.TEST_MODE_SN, "写入SN", 98, 2));
             }

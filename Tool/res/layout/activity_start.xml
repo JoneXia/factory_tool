@@ -64,6 +64,12 @@
                 android:text="智能猫牌-P3C"/>
 
             <RadioButton
+                android:id="@+id/hg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip" />
+
+            <RadioButton
                 android:id="@+id/feeder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -214,6 +220,12 @@
 
             <RadioButton
                 android:id="@+id/d4s"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip" />
+
+            <RadioButton
+                android:id="@+id/hg_100v"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dip" />

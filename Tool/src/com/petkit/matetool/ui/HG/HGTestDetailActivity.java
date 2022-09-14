@@ -39,8 +39,8 @@ import com.petkit.matetool.utils.Globals;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static com.petkit.matetool.ui.HG.HGUtils.HGTestModes.TEST_MODE_KEY;
 import static com.petkit.matetool.ui.utils.PrintUtils.isPrinterConnected;
-import static com.petkit.matetool.utils.Globals.PERMISSION_ERASE;
 import static com.petkit.matetool.utils.Globals.TEST_FAILED;
 import static com.petkit.matetool.utils.Globals.TEST_PASS;
 
@@ -68,6 +68,10 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
     private boolean isInAutoUnits = false;
     private int mAutoUnitStep; //有些测试项中会细分成几步
     private boolean isNewSN = false;
+    private short offset1, offset2, offset3;
+    private byte[] mTempData;
+    private int mStep, mTempNumber;
+    private long mPTCStartTime;
 
 
     @Override
@@ -160,6 +164,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
 
         mDescTextView.setText("");
         mPromptTextView.setText("");
+
         switch (mTestUnits.get(mCurTestStep).getType()) {
             case TEST_MODE_PRINT:
                 mDescTextView.setText("mac:" + mDevice.getMac() + "\n" + "sn:" + mDevice.getSn());
@@ -182,11 +187,28 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                 }
                 break;
             case TEST_MODE_LED:
-                mPromptTextView.setText("测试指示灯蓝绿交替闪烁，观察是否正常！");
+                mPromptTextView.setText("测试5个8字灯，6个状态指示灯，观察是否正常！");
                 break;
-            case TEST_MODE_PUMP:
-                mPromptTextView.setText("测试水泵，先测试有水/没水状态，再判定水泵转动是否正常！");
+            case TEST_MODE_FAN:
+                mPromptTextView.setText("测试风扇，观察转速和电流否正常！");
                 break;
+            case TEST_MODE_TEMP_ANT:
+                mPromptTextView.setText("测试温度检测，3路温湿度传感器，观察是否正常！");
+                break;
+            case TEST_MODE_TEMP_SET:
+                mPromptTextView.setText("温度校准，校准后温度应该与正确温度一致！");
+                break;
+            case TEST_MODE_PTC:
+                mPromptTextView.setText("测试PTC加热片，观察是否正常！");
+                break;
+            case TEST_MODE_ANION:
+                mPromptTextView.setText("测试负离子开关，观察是否正常！");
+                break;
+            case TEST_MODE_LIGHT:
+                mPromptTextView.setText("测试照明灯，观察是否正常！");
+                break;
+            case TEST_MODE_TEMP:
+                mPromptTextView.setText("温度读取测试，观察三个温度传感器数据是否正常！");
             default:
                 break;
         }
@@ -197,7 +219,11 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
     private void refershBtnView() {
         switch (mTestUnits.get(mCurTestStep).getType()) {
             case TEST_MODE_LED:
-            case TEST_MODE_PUMP:
+            case TEST_MODE_LIGHT:
+            case TEST_MODE_TEMP_ANT:
+            case TEST_MODE_TEMP_SET:
+            case TEST_MODE_ANION:
+            case TEST_MODE_TEMP:
                 mBtn1.setText(R.string.Start);
                 mBtn2.setText(R.string.Failure);
                 mBtn2.setBackgroundResource(R.drawable.selector_red);
@@ -314,17 +340,27 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                 break;
             case R.id.test_btn_2:
                 switch (mTestUnits.get(mCurTestStep).getType()) {
-                    case TEST_MODE_LED:
-                    case TEST_MODE_PUMP:
+                    case TEST_MODE_LIGHT:
+                    case TEST_MODE_FAN:
+                    case TEST_MODE_ANION:
+                        mTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
                         isWriteEndCmd = true;
+
+                        byte[] data = new byte[2];
+                        data[0] = (byte) mTestUnits.get(mCurTestStep).getState();
+                        data[1] = (byte) 0;
+                        sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule(), data));
+                        break;
+                    case TEST_MODE_PRINT:
+                        startActivity(PrintActivity.class);
+                        break;
+                    default:
                         mTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
 
                         refershBtnView();
                         gotoNextTestModule();
                         break;
-                    case TEST_MODE_PRINT:
-                        startActivity(PrintActivity.class);
-                        break;
+
                 }
                 break;
             case R.id.test_btn_3:
@@ -334,20 +370,44 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                     case TEST_MODE_RESET_SN:
                         gotoNextTestModule();
                         break;
-                    case TEST_MODE_LED:
+                    case TEST_MODE_LIGHT:
+                    case TEST_MODE_FAN:
+                    case TEST_MODE_ANION:
                         mTestUnits.get(mCurTestStep).setResult(TEST_PASS);
-                        gotoNextTestModule();
+                        isWriteEndCmd = true;
+
+                        byte[] data = new byte[2];
+                        data[0] = (byte) mTestUnits.get(mCurTestStep).getState();
+                        data[1] = (byte) 0;
+                        sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule(), data));
                         break;
-                    case TEST_MODE_PUMP:
-                        if (mTempResult != 0x11) {
-                            showShortToast("请先测试有水和没水状态，再观察水泵是否正常转动！");
-                            return;
+                    case TEST_MODE_PTC:
+                        isWriteEndCmd = true;
+                        if (mTestUnits.get(mCurTestStep).getResult() != TEST_PASS) {
+                            mTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
                         }
+                        data = new byte[3];
+                        data[0] = (byte) mTestUnits.get(mCurTestStep).getState();
+                        data[1] = (byte) 0;
+                        data[2] = (byte) 0;
+                        sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule(), data));
+                        break;
+                    case  TEST_MODE_TEMP:
+                        int a, b, c;
+                        a = byteToInt(mTempData, 2, 2);
+                        b = byteToInt(mTempData, 6, 2);
+                        c = byteToInt(mTempData, 10, 2);
+                        if (Math.abs(b-c) > 5 || Math.abs(a-b) > 10 || Math.abs(a-c) > 10) {
+                            showLongToast("左右温差不超过0.5℃，PTC温差不超过1℃，请确认！");
+                            break;
+                        }
+                    case TEST_MODE_TEMP_SET:
+                    case TEST_MODE_LED:
+                    case TEST_MODE_TEMP_ANT:
                         mTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         gotoNextTestModule();
                         break;
                     default:
-                        isWriteEndCmd = true;
                         if (mTestUnits.get(mCurTestStep).getResult() != TEST_PASS) {
                             mTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
                         }
@@ -360,12 +420,51 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
     }
 
     private void startTestModule() {
+        byte[] data = null;
         switch (mTestUnits.get(mCurTestStep).getType()) {
+
             case TEST_MODE_AUTO:
                 startAutoUnitsTest();
                 break;
+            //if cmd need data, add it
+            case TEST_MODE_TEMP_ANT:
+                data = new byte[4];
+                data[0] = (byte) mTestUnits.get(mCurTestStep).getState();
+                data[1] = data[2] = data[3] = 0;
+                sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule(), data));
+                break;
+            case TEST_MODE_FAN:
+                mDescTextView.append(mStep == 0 ? "\n转速设为：50%" : "\n转速设为：100%");
+                data = new byte[2];
+                data[0] = (byte) mTestUnits.get(mCurTestStep).getState();
+                data[1] = (byte) (mStep == 0 ? 50 : 100);
+                sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule(), data));
+                break;
+            case TEST_MODE_LED:
+                data = new byte[2];
+                data[0] = (byte) mTestUnits.get(mCurTestStep).getState();
+                sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule(), data));
+                break;
+            case TEST_MODE_LIGHT:
+            case TEST_MODE_ANION:
+                data = new byte[2];
+                data[0] = (byte) mTestUnits.get(mCurTestStep).getState();
+                data[1] = (byte) (mStep%2 == 0 ? 100 : 0);
+                sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule(), data));
+                mStep++;
+                break;
+            case TEST_MODE_PTC:
+                mPTCStartTime = System.currentTimeMillis();
+                data = new byte[3];
+                data[0] = (byte) mTestUnits.get(mCurTestStep).getState();
+                data[1] = 1;
+                data[2] = 100;
+                sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule(), data));
+                break;
             default:
-                sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule(), mTestUnits.get(mCurTestStep).getState()));
+                data = new byte[1];
+                data[0] = (byte) mTestUnits.get(mCurTestStep).getState();
+                sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule(), data));
                 break;
         }
 
@@ -377,6 +476,10 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
 
     private void startAutoUnitsTest() {
         if (isInAutoUnits) {
+            byte[] data = new byte[1];
+            data[0] = (byte) mAutoTestUnits.get(mAutoUnitStep).getState();
+
+            sendBleData(BaseDataUtils.buildOpCodeBuffer(mAutoTestUnits.get(mAutoUnitStep).getModule(), data));
             return;
         }
 
@@ -395,13 +498,8 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
             mDescTextView.append("\n------");
             mDescTextView.append("\n开始进行：" + mAutoTestUnits.get(mAutoUnitStep).getName());
 
-            HashMap<String, Object> params = new HashMap<>();
-            params.put("module", mAutoTestUnits.get(mAutoUnitStep).getModule());
-            params.put("state", mAutoTestUnits.get(mAutoUnitStep).getState());
-            byte[] data = null;
-            switch (mAutoTestUnits.get(mAutoUnitStep).getType()) {
-                //if cmd need data, add it
-            }
+            byte[] data = new byte[1];
+            data[0] = (byte) mAutoTestUnits.get(mAutoUnitStep).getState();
 
             sendBleData(BaseDataUtils.buildOpCodeBuffer(mAutoTestUnits.get(mAutoUnitStep).getModule(), data));
         } else {
@@ -433,8 +531,18 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
         if (mCurTestStep == mTestUnits.size() - 1 || !isAutoTest) {
             finish();
         } else {
+            switch (mTestUnits.get(mCurTestStep).getType()) {
+                //TODO: 测试项正在测试时，增加相应的提示
+                case TEST_MODE_TEMP_SET:
+                    changeSetViewState(View.GONE);
+                    break;
+            }
             mTempResult = 0;
+            mTempData = null;
+            mStep = 0;
             mCurTestStep++;
+            mPTCStartTime = 0;
+            mTempNumber = 0;
             refreshView();
 
             if (mTestUnits.get(mCurTestStep).getType() != HGUtils.HGTestModes.TEST_MODE_SN
@@ -448,6 +556,18 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
 
     @Override
     public void finish() {
+        switch (mTestUnits.get(mCurTestStep).getType()) {
+            case TEST_MODE_PTC:
+            case TEST_MODE_LIGHT:
+            case TEST_MODE_FAN:
+            case TEST_MODE_ANION:
+                byte[] data = new byte[2];
+                data[0] = (byte) mTestUnits.get(mCurTestStep).getState();
+                data[1] = (byte) 0;
+                sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule(), data));
+                break;
+        }
+
         Intent intent = new Intent();
         intent.putExtra("TestUnits", mTestUnits);
         intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mDevice);
@@ -478,43 +598,135 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
     public void processResponseData(int key, byte[] data) {
         boolean result = false;
         StringBuilder desc = new StringBuilder();
+        PetkitLog.d("processResponseData key: " + key + ", data: " + data);
 
         switch (key) {
-            case BLEConsts.OP_CODE_BATTERY_KEY:
-                if (mTestUnits.get(mCurTestStep).getType() != HGUtils.HGTestModes.TEST_MODE_DC) {
-                    return;
-                }
-
-                if (data.length < 3) {
-                    mDescTextView.append("\n数据错误");
-                } else {
-                    byte[] voltageByte = new byte[2];
-                    System.arraycopy(data, 0, voltageByte, 0, 2);
-                    short voltage = ByteUtil.bytes2Short(voltageByte);
-//                    int battery = ByteUtil.toInt(data[2]);
-                    mDescTextView.append("\n电压：" + voltage);
-//                    mDescTextView.append("，电量：" + battery);
-
-                    if (mTestType == Globals.TYPE_TEST_PARTIALLY) {
-//                        result = voltage >= 2800 && voltage <= 3200;
-                        result = voltage >= 4500 && voltage <= 5500;
-                    } else {
-                        result = voltage >= 4500 && voltage <= 5500;
-                    }
-
-                    if (PERMISSION_ERASE) {
-                        result = true;
-                    }
+            case BLEConsts.OP_CODE_TEST_STEP:
+                if (isWriteEndCmd) {
+                    isWriteEndCmd = false;
+                    gotoNextTestModule();
+                } else if (data.length > 0 && data[0] == 1) {
+                    sendBleData(BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_TEST_INFO), false);
                 }
                 break;
-            case BLEConsts.OP_CODE_TEST_STEP:
-//                if (data.length < 1) {
-//                    mDescTextView.append("\n数据错误");
-//                } else if (data[0] == 0){
-//                    mDescTextView.append("\n写入失败");
-//                } else {
-//                    mDescTextView.append("\n写入成功");
-//                }
+            case BLEConsts.OP_CODE_TEST_INFO:
+                HGUtils.HGTestModes type = mTestUnits.get(mCurTestStep).getType();
+                if (type == HGUtils.HGTestModes.TEST_MODE_AUTO) {
+                    type = mAutoTestUnits.get(mAutoUnitStep).getType();
+                }
+                switch (type) {
+                    case TEST_MODE_SIGNAL:
+                        desc.append("\n通信").append(data[0] == 1 ? "正常" : "异常");
+                        result = data[0] == 1;
+                        break;
+                    case TEST_MODE_KEY:
+                        desc.append("\n按键：").append(getKeyNameByIndex(data[0])).append("， 操作： ").append(getKeyDescByState(data[1]));
+
+                        if (data[1] > 0) {
+                            int index = data[0];
+                            if (index > 6) {
+                                index -= 3;
+                            }
+                            mTempResult = mTempResult | (0x1 << index);
+                        }
+                        result = mTempResult == 0x1ff;
+                        break;
+                    case TEST_MODE_DC:
+                        desc.append("\n电压：").append(byteToInt(data, 0, 2));
+                        result = byteToInt(data, 0, 2) >= 4500 && byteToInt(data, 0, 2) <= 5500;
+                        break;
+                    case TEST_MODE_FAN:
+                        desc.append("\n电流：").append(byteToInt(data, 0, 2)).append("， 转速： ").append(byteToInt(data, 2, 2));
+                        if (mStep == 0) {
+                            if (byteToInt(data, 0, 2) >= 300 && byteToInt(data, 0, 2) <= 500) {
+                                mTempNumber++;
+                            } else {
+                                mTempNumber = 0;
+                            }
+
+                            if (mTempNumber >= 5) {
+                                mStep = 1;
+                                mTempNumber = 0;
+                                mTempResult = (mTempResult | 0x1);
+                                startTestModule();
+                            }
+                        } else {
+                            if (byteToInt(data, 0, 2) >= 1600 && byteToInt(data, 0, 2) <= 3000) {
+                                mTempNumber++;
+                            } else {
+                                mTempNumber = 0;
+                            }
+
+                            if (mTempNumber >= 5) {
+                                mStep = 2;
+                                mTempResult = (mTempResult | 0x10);
+                            }
+                        }
+                        result = mTempResult == 0x11;
+                        break;
+                    case TEST_MODE_TEMP_SET:
+                        mTempData = data;
+                        desc.append("\nPTC-校准前：").append(byteToInt(data, 0, 2)).append("， 校准后： ").append(byteToInt(data, 2, 2));
+
+                        offset1 = (short) (byteToInt(data, 2, 2) - byteToInt(data, 0, 2));
+                        offset2 = (short) (byteToInt(data, 6, 2) - byteToInt(data, 4, 2));
+                        offset3 = (short) (byteToInt(data, 10, 2) - byteToInt(data, 8, 2));
+                        LogcatStorageHelper.addLog("接收数据：" + desc.toString());
+                        LogcatStorageHelper.addLog("offset1: " + offset1 + "，offset2: " + offset2 + "，offset3: " + offset3);
+                        break;
+                    case TEST_MODE_TEMP:
+                        mTempData = data;
+                        int a, b, c;
+                        a = byteToInt(data, 2, 2);
+                        b = byteToInt(data, 6, 2);
+                        c = byteToInt(data, 10, 2);
+                        desc.append("\nPTC：").append(a)
+                                .append("，出风左：").append(b).append("，右：").append(c);
+                        break;
+                    case TEST_MODE_TEMP_ANT:
+                        desc.append("\nAHT-温度：").append(byteToInt(data, 12, 2)).append("， 湿度： ").append(data[14]);
+                        offset1 = (short) (byteToInt(data, 2, 2) - byteToInt(data, 0, 2));
+                        offset2 = (short) (byteToInt(data, 6, 2) - byteToInt(data, 4, 2));
+                        offset3 = (short) (byteToInt(data, 10, 2) - byteToInt(data, 8, 2));
+                        LogcatStorageHelper.addLog("接收数据：" + desc.toString());
+                        LogcatStorageHelper.addLog("offset1: " + offset1 + "offset2: " + offset2 + "offset3: " + offset3);
+                        break;
+                    case TEST_MODE_PTC:
+                        desc.append("\nPTC：").append(byteToInt(data, 0, 2));
+                        if (mTempNumber == 0) {
+                            mTempNumber = byteToInt(data, 0, 2);
+                            if (mTempNumber > 350) {
+                                desc.append("\n起始温度大于35摄氏度，测试无效，请冷却后重新测试");
+                            }
+                        } else {
+                            if (byteToInt(data, 0, 2) - mTempNumber > 50
+                                    && System.currentTimeMillis() - mPTCStartTime <= 20 * 1000) {
+                                result = true;
+                                desc.append("\n加热测试已完成");
+                            } else if (System.currentTimeMillis() - mPTCStartTime > 20 * 1000) {
+                                desc.append("\n加热测试失败，未能在指定时间完成");
+                            }
+                        }
+                        break;
+                    case TEST_MODE_ANION:
+                        desc.append("\n负离子").append(data[0] == 1 ? "已打开" : "已关闭");
+                        if (data[0] == 1) {
+                            mTempResult = (mTempResult | 0x1);
+                        } else {
+                            mTempResult = (mTempResult | 0x10);
+                        }
+                        result = mTempResult == 0x11;
+                        break;
+                    case TEST_MODE_LIGHT:
+                        desc.append("\n照明灯").append(data[0] == 1 ? "已打开" : "已关闭");
+                        if (data[0] == 1) {
+                            mTempResult = (mTempResult | 0x1);
+                        } else {
+                            mTempResult = (mTempResult | 0x10);
+                        }
+                        result = mTempResult == 0x11;
+                        break;
+                }
                 break;
             case BLEConsts.OP_CODE_TEST_RESULT:
 //                if (data.length != 1) {
@@ -539,7 +751,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                     mDescTextView.append("\nSN写入成功，开始校验");
                     sendBleData(BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_GET_INFO), false);
                 }
-                break;
+                return;
             case BLEConsts.OP_CODE_GET_INFO:
                 if (data.length >= 22) {
                     byte[] snRaw = new byte[14];
@@ -580,7 +792,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        sendBleData(BaseDataUtils.buildOpCodeBuffer(mAutoTestUnits.get(mAutoUnitStep).getModule()), false);
+//                        sendBleData(BaseDataUtils.buildOpCodeBuffer(mAutoTestUnits.get(mAutoUnitStep).getModule()), false);
                     }
                 }, 10);
             }
@@ -591,9 +803,9 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                 new Handler().postDelayed(new Runnable() {
                       @Override
                       public void run() {
-//                          if (mAQRTestUnits.get(mCurTestStep).getType() == AQRUtils.AQRTestModes.TEST_MODE_PUMP) {
-//                              sendBleData(BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_AQR_PUMP_DATA), false);
-//                          }
+                          if (mTestUnits.get(mCurTestStep).getType() != TEST_MODE_KEY) {
+                              sendBleData(BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_TEST_INFO), false);
+                          }
                       }
                   }, 1000);
             }
@@ -601,19 +813,155 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
         }
     }
 
+    private String getKeyNameByIndex(int index) {
+        String desc = null;
+        switch (index) {
+            case 0:
+                desc = "START";
+                break;
+            case 1:
+                desc = "LIGHT";
+                break;
+            case 2:
+                desc = "LOCK";
+                break;
+            case 11:
+                desc = "温度-加";
+                break;
+            case 10:
+                desc = "温度-减";
+                break;
+            case 5:
+                desc = "风速-加";
+                break;
+            case 6:
+                desc = "风速-减";
+                break;
+            case 3:
+                desc = "时间-加";
+                break;
+            case 4:
+                desc = "时间-减";
+                break;
+        }
+
+        return desc;
+    }
+
+    private String getKeyDescByState(int state) {
+        String desc = null;
+        switch (state) {
+            case 0:
+                desc = "空";
+                break;
+            case 1:
+                desc = "单击";
+                break;
+            case 2:
+                desc = "长按";
+                break;
+            case 3:
+                desc = "双击";
+                break;
+            case 4:
+                desc = "按下";
+                break;
+            case 5:
+                desc = "松开";
+                break;
+            case 6:
+                desc = "长长按";
+                break;
+            case 7:
+                desc = "按键结束";
+                break;
+        }
+
+        return desc;
+    }
+
+    private void setNewTemp(short offset) {
+
+        int a, b, c;
+        a = byteToInt(mTempData, 0, 2);
+        b = byteToInt(mTempData, 4, 2);
+        c = byteToInt(mTempData, 8, 2);
+
+        if (Math.abs(a-b) > 3 || Math.abs(b-c) > 3 || Math.abs(c-a) > 3) {
+            mDescTextView.append(String.format("\n三个温度传感器温差不在0.3℃以内（ptc：%d，左：%d, 右：%d，请确认！", a, b, c));
+            return;
+        }
+
+        offset1 += offset;
+        int targetTemp = byteToInt(mTempData, 0, 2) + offset1;
+        offset2 = (short) (targetTemp - byteToInt(mTempData, 4, 2));
+        offset3 = (short) (targetTemp - byteToInt(mTempData, 8, 2));
+
+        PetkitLog.d("发送数据: offset1: " + offset1 + "offset2: " + offset2 + "offset3: " + offset3);
+        LogcatStorageHelper.addLog("发送数据: offset1: " + offset1 + "offset2: " + offset2 + "offset3: " + offset3);
+
+        if (Math.abs(offset1) > 30 || Math.abs(offset2) > 30 || Math.abs(offset3) > 30) {
+            mDescTextView.append("校准温度不能超过3℃");
+        } else {
+            byte[] data = new byte[4];
+            data[0] = (byte) mTestUnits.get(mCurTestStep).getState();
+            data[1] = (byte) (100 + offset1);
+            data[2] = (byte) (100 + offset2);
+            data[3] = (byte) (100 + offset3);
+            sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule(), data));
+        }
+    }
+
+    private void changeSetViewState(int state) {
+        if (state == View.VISIBLE) {
+            findViewById(R.id.set_view).setVisibility(View.VISIBLE);
+
+            View.OnClickListener listener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    switch (v.getId()) {
+                        case R.id.set_btn_1:
+                            setNewTemp((short) -1);
+                            break;
+                        case R.id.set_btn_2:
+                            setNewTemp((short) 1);
+                            break;
+                    }
+                }
+            };
+
+            Button btn1 = (Button) findViewById(R.id.set_view).findViewById(R.id.set_btn_1);
+            btn1.setText("-0.1℃");
+            btn1.setOnClickListener(listener);
+            Button btn2 = (Button) findViewById(R.id.set_view).findViewById(R.id.set_btn_2);
+            btn2.setText("+0.1℃");
+            btn2.setOnClickListener(listener);
+        } else {
+            findViewById(R.id.set_view).setVisibility(View.GONE);
+        }
+    }
+
+    private int byteToInt(byte[] data, int srcPos, int len) {
+        if (data.length < srcPos + len) {
+            return 0;
+        }
+        byte[] tempByte = new byte[len];
+        System.arraycopy(data, srcPos, tempByte, 0, len);
+        return ByteUtil.bytes2Short(ByteUtil.reverseBytes(tempByte));
+    }
 
     private void startSetSn() {
         if (isEmpty(mDevice.getSn()) || (mTestUnits.get(mCurTestStep).getState() == 2
                 && mErrorDevice != null && mDevice.getSn().equals(mErrorDevice.getSn()))) {
             boolean result = true;
-            for (HGTestUnit unit : mTestUnits) {
-                if (unit.getType() != HGUtils.HGTestModes.TEST_MODE_SN &&
-                        unit.getType() != HGUtils.HGTestModes.TEST_MODE_PRINT
-                        && unit.getResult() != TEST_PASS) {
-                    result = false;
-                    break;
-                }
-            }
+//            for (HGTestUnit unit : mTestUnits) {
+//                if (unit.getType() != HGUtils.HGTestModes.TEST_MODE_SN &&
+//                        unit.getType() != HGUtils.HGTestModes.TEST_MODE_PRINT
+//                        && unit.getResult() != TEST_PASS) {
+//                    result = false;
+//                    break;
+//                }
+//            }
 
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
@@ -766,6 +1114,13 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
 
         if (showLog) {
             mDescTextView.append("\n指令发送成功！");
+        }
+
+        switch (mTestUnits.get(mCurTestStep).getType()) {
+            //TODO: 测试项正在测试时，增加相应的提示
+            case TEST_MODE_TEMP_SET:
+                changeSetViewState(View.VISIBLE);
+                break;
         }
     }
 

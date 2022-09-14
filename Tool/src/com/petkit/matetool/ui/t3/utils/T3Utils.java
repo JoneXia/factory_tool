@@ -20,6 +20,7 @@ import java.util.HashMap;
 import static com.petkit.android.utils.LogcatStorageHelper.getFileName;
 import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_NEW_T3;
 import static com.petkit.matetool.utils.Globals.PERMISSION_ERASE;
+import static com.petkit.matetool.utils.Globals.TYPE_AFTERMARKET;
 
 /**
  *
@@ -159,7 +160,7 @@ public class T3Utils {
             results.add(new T3TestUnit(T3TestModes.TEST_MODE_KEY, "按键测试", 2, 1));
             results.add(new T3TestUnit(T3TestModes.TEST_MODE_IR, "红外测试", 3, 1));
 
-            if (type == TYPE_TEST) {
+            if (type == TYPE_TEST || type == TYPE_AFTERMARKET) {
                 results.add(new T3TestUnit(T3TestModes.TEST_MODE_BALANCE_SET_2, "秤校准", 5, 1));
             } else if (type != TYPE_CHECK) {
                 results.add(new T3TestUnit(T3TestModes.TEST_MODE_BALANCE_SET, "秤校准", 5, 1));

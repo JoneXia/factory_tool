@@ -287,6 +287,7 @@ public class FeederMiniTestMainActivity extends BaseActivity implements PetkitSo
             case FeederMiniUtils.TYPE_TEST:
                 startActivity(WifiManagerActivity.getIntent(this, "PETKIT_FEEDER_B_HW2_"));
                 break;
+            case Globals.TYPE_AFTERMARKET:
             case FeederMiniUtils.TYPE_MAINTAIN:
                 startActivity(WifiManagerActivity.getIntent(this, "PETKIT_FEEDER_"));
                 break;
@@ -320,6 +321,7 @@ public class FeederMiniTestMainActivity extends BaseActivity implements PetkitSo
                     }
                     break;
                 case FeederMiniUtils.TYPE_MAINTAIN:
+                case Globals.TYPE_AFTERMARKET:
                     if (!apSsid.toUpperCase().startsWith("PETKIT_FEEDER_")) {
                         mInfoTestTextView.setText("请先连接到PETKIT_FEEDER_开头的WIFI，再进行测试！");
                         return;
@@ -516,6 +518,7 @@ public class FeederMiniTestMainActivity extends BaseActivity implements PetkitSo
             case FeederMiniUtils.TYPE_TEST_PARTIALLY:
                 return 1;
             case FeederMiniUtils.TYPE_MAINTAIN:
+            case Globals.TYPE_AFTERMARKET:
                 return 2;
             case FeederMiniUtils.TYPE_CHECK:
                 return 3;
@@ -603,7 +606,7 @@ public class FeederMiniTestMainActivity extends BaseActivity implements PetkitSo
                 testComplete = position >= mFeederMiniTestUnits.size();
             } else if (mTestType == FeederMiniUtils.TYPE_TEST_PARTIALLY) {
                 testComplete = position >= mFeederMiniTestUnits.size();
-            } else if (mTestType == FeederMiniUtils.TYPE_TEST) {
+            } else {
                 testComplete = position >= mFeederMiniTestUnits.size();
             }
         }
