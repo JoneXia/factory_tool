@@ -316,6 +316,7 @@ public class D3TestMainActivity extends BaseActivity implements PetkitSocketInst
                     }
                     break;
                 case D3Utils.TYPE_MAINTAIN:
+                case Globals.TYPE_AFTERMARKET:
                     if (!apSsid.toUpperCase().startsWith("PETKIT_FEEDER_3_")) {
                         mInfoTestTextView.setText("请先连接到PETKIT_FEEDER_3_开头的WIFI，再进行测试！");
                         return;
@@ -551,6 +552,7 @@ public class D3TestMainActivity extends BaseActivity implements PetkitSocketInst
             case D3Utils.TYPE_TEST_PARTIALLY:
                 return 1;
             case D3Utils.TYPE_MAINTAIN:
+            case Globals.TYPE_AFTERMARKET:
                 return 2;
             case D3Utils.TYPE_CHECK:
                 return 3;

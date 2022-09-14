@@ -641,7 +641,6 @@ public class W5NTestDetailActivity extends BaseActivity implements PrintResultCa
         mDevice.setCreation(System.currentTimeMillis());
 
         sendBleData(BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_WRITE_SN, mDevice.getSn().getBytes()));
-
     }
 
     private Bundle getPrintParam() {

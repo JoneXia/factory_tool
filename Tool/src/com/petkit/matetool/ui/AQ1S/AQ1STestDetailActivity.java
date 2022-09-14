@@ -20,6 +20,7 @@ import com.dothantech.printer.IDzPrinter;
 import com.google.gson.Gson;
 import com.petkit.android.ble.BLEConsts;
 import com.petkit.android.ble.data.BaseDataUtils;
+import com.petkit.android.ble.data.K3DataUtils;
 import com.petkit.android.ble.data.PetkitBleMsg;
 import com.petkit.android.utils.ByteUtil;
 import com.petkit.android.utils.LogcatStorageHelper;
@@ -538,6 +539,17 @@ public class AQ1STestDetailActivity extends BaseActivity implements PrintResultC
 
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
+            } else if (mTestType == Globals.TYPE_AFTERMARKET){
+                String sn = DeviceCommonUtils.generateSNForTester(Globals.AQ1S, mTester);
+                if (sn == null) {
+                    showShortToast("今天生成的SN已经达到上限，上传SN再更换账号才可以继续测试哦！");
+                    return;
+                }
+                isNewSN = true;
+                mDevice.setSn(sn);
+                mDevice.setCreation(System.currentTimeMillis());
+
+                sendBleData(K3DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_AQ1S_WRITE_SN, sn.getBytes()));
             } else {
                 startScanSN(mDeviceType);
             }

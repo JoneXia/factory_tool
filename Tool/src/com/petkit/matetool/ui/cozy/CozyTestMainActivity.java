@@ -624,7 +624,7 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
                 CozyUtils.storeCheckInfo(mCurDevice);
             } else if (mTestType == CozyUtils.TYPE_TEST_PARTIALLY) {
                 testComplete = position >= mCozyTestUnits.size();
-            } else if (mTestType == CozyUtils.TYPE_TEST) {
+            } else {
                 testComplete = position >= mCozyTestUnits.size();
             }
         }

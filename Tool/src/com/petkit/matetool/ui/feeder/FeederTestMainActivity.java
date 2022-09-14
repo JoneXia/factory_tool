@@ -625,7 +625,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
                 FeederUtils.storeCheckInfo(mCurFeeder);
             } else if (mTestType == FeederUtils.TYPE_TEST_PARTIALLY) {
                 testComplete = position >= mFeederTestUnits.size();
-            } else if (mTestType == FeederUtils.TYPE_TEST) {
+            } else {
                 testComplete = position >= mFeederTestUnits.size();
             }
         }
