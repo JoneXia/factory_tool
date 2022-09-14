@@ -638,7 +638,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                     case TEST_MODE_FAN:
                         desc.append("\n电流：").append(byteToInt(data, 0, 2)).append("， 转速： ").append(byteToInt(data, 2, 2));
                         if (mStep == 0) {
-                            if (byteToInt(data, 0, 2) >= 300 && byteToInt(data, 0, 2) <= 500) {
+                            if (byteToInt(data, 0, 2) >= 260 && byteToInt(data, 0, 2) <= 480) {
                                 mTempNumber++;
                             } else {
                                 mTempNumber = 0;
