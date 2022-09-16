@@ -344,6 +344,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
             case R.id.hg:
                 testStyle = Globals.HG;
                 break;
+            case R.id.hg_100v:
+                testStyle = Globals.HG_110V;
+                break;
             //TODO: 新增设备需对应添加
             default:
                 break;

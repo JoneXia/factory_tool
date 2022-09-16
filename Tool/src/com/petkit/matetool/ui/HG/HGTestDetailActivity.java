@@ -696,9 +696,10 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                         if (mTempNumber == 0) {
                             mTempNumber = byteToInt(data, 0, 2);
                             if (mTempNumber > 350) {
+                                mTempNumber = -1;
                                 desc.append("\n起始温度大于35摄氏度，测试无效，请冷却后重新测试");
                             }
-                        } else {
+                        } else if (mTempNumber != -1){
                             if (byteToInt(data, 0, 2) - mTempNumber > 50
                                     && System.currentTimeMillis() - mPTCStartTime <= 20 * 1000) {
                                 result = true;
