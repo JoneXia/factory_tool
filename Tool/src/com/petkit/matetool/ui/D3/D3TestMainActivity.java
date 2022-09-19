@@ -357,6 +357,7 @@ public class D3TestMainActivity extends BaseActivity implements PetkitSocketInst
                 startActivity(WifiManagerActivity.getIntent(this, "PETKIT_FEEDER_3_B_HW1_"));
                 break;
             case D3Utils.TYPE_MAINTAIN:
+            case Globals.TYPE_AFTERMARKET:
             case D3Utils.TYPE_CHECK:
                 startActivity(WifiManagerActivity.getIntent(this, "PETKIT_FEEDER_3_"));
                 break;

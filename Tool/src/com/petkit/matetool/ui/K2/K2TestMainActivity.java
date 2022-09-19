@@ -279,6 +279,7 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
                 startActivity(WifiManagerActivity.getIntent(this, "PETKIT_K2_B_HW1_"));
                 break;
             case K2Utils.TYPE_MAINTAIN:
+            case Globals.TYPE_AFTERMARKET:
                 startActivity(WifiManagerActivity.getIntent(this, "PETKIT_K2_"));
                 break;
             case K2Utils.TYPE_CHECK:
@@ -311,6 +312,7 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
                     }
                     break;
                 case K2Utils.TYPE_MAINTAIN:
+                case Globals.TYPE_AFTERMARKET:
                     if (!apSsid.toUpperCase().startsWith("PETKIT_K2_")) {
                         mInfoTestTextView.setText("请先连接到PETKIT_K2_开头的WIFI，再进行测试！");
                         return;
@@ -520,6 +522,7 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
             case K2Utils.TYPE_TEST_PARTIALLY:
                 return 1;
             case K2Utils.TYPE_MAINTAIN:
+            case Globals.TYPE_AFTERMARKET:
                 return 2;
             case K2Utils.TYPE_CHECK:
                 return 3;

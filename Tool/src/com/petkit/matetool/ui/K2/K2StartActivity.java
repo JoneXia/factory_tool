@@ -8,6 +8,7 @@ import com.petkit.matetool.R;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.K2.utils.K2Utils;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.utils.Globals;
 
 /**
  * K2测试，选择工站
@@ -87,6 +88,12 @@ public class K2StartActivity extends BaseActivity {
                 bundle = new Bundle();
                 bundle.putSerializable(K2Utils.EXTRA_K2_TESTER, mTester);
                 startActivityWithData(K2StorageActivity.class, bundle, false);
+                break;
+            case R.id.test_case6:
+                bundle = new Bundle();
+                bundle.putSerializable(K2Utils.EXTRA_K2_TESTER, mTester);
+                bundle.putInt("TestType", Globals.TYPE_AFTERMARKET);
+                startActivityWithData(K2TestMainActivity.class, bundle, false);
                 break;
         }
     }
