@@ -622,11 +622,11 @@ public class P3TestDetailActivity extends BaseActivity implements PrintResultCal
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-                if (mTestType == Globals.TYPE_AFTERMARKET) {
+                if (mTestType == Globals.TYPE_AFTERMARKET || mTestType == Globals.TYPE_DUPLICATE_SN) {
                     generateAndSendSN();
                 } else {
                     startScanSN(mDeviceType);
-                };
+                }
             }
         } else {
             sendBleData(P3DataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_P3_WRITE_SN, mDevice.getSn().getBytes()));

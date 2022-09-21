@@ -71,7 +71,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
     private short offset1, offset2, offset3;
     private byte[] mTempData;
     private int mStep, mTempNumber;
-    private long mPTCStartTime;
+    private long mPTCStartTime, mTempTimestamp;
 
 
     @Override
@@ -542,6 +542,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
             mStep = 0;
             mCurTestStep++;
             mPTCStartTime = 0;
+            mTempTimestamp = 0;
             mTempNumber = 0;
             refreshView();
 
@@ -620,14 +621,15 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                         result = data[0] == 1;
                         break;
                     case TEST_MODE_KEY:
-                        desc.append("\n按键：").append(getKeyNameByIndex(data[0])).append("， 操作： ").append(getKeyDescByState(data[1]));
-
-                        if (data[1] > 0) {
+                        if (data[1] > 0 && data[1] < 7) {
                             int index = data[0];
                             if (index > 6) {
                                 index -= 3;
                             }
-                            mTempResult = mTempResult | (0x1 << index);
+                            if ((mTempResult & (0x1 << index)) == 0) {
+                                desc.append("\n按键：").append(getKeyNameByIndex(data[0])).append("， 检测完成");
+                                mTempResult = mTempResult | (0x1 << index);
+                            }
                         }
                         result = mTempResult == 0x1ff;
                         break;
@@ -804,7 +806,9 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                 new Handler().postDelayed(new Runnable() {
                       @Override
                       public void run() {
-                          if (mTestUnits.get(mCurTestStep).getType() != TEST_MODE_KEY) {
+                          if (mTestUnits.get(mCurTestStep).getType() != TEST_MODE_KEY
+                                        && System.currentTimeMillis() - mTempTimestamp > 0.9 * 1000) {
+                              mTempTimestamp = System.currentTimeMillis();
                               sendBleData(BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_TEST_INFO), false);
                           }
                       }
@@ -967,7 +971,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-                if (mTestType == Globals.TYPE_AFTERMARKET) {
+                if (mTestType == Globals.TYPE_AFTERMARKET || mTestType == Globals.TYPE_DUPLICATE_SN) {
                     generateAndSendSN();
                 } else {
                     startScanSN(mDeviceType);

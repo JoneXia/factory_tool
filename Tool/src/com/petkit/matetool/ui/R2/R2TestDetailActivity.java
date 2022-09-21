@@ -725,7 +725,7 @@ public class R2TestDetailActivity extends BaseActivity implements PrintResultCal
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-                if (mTestType == Globals.TYPE_AFTERMARKET) {
+                if (mTestType == Globals.TYPE_AFTERMARKET || mTestType == Globals.TYPE_DUPLICATE_SN) {
                     generateAndSendSN();
                 } else {
                     startScanSN(mDeviceType);
