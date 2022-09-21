@@ -65,6 +65,7 @@ import static com.petkit.matetool.utils.Versions.TOOL_D4_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_FEEDER_MINI_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_FEEDER_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_GO_VERSION;
+import static com.petkit.matetool.utils.Versions.TOOL_HG_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_K2_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_K3_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_MATE_VERSION;
@@ -340,8 +341,11 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
             case R.id.d4_1:
                 testStyle = Globals.D4_1;
                 break;
-            case R.id.d4s:
-                testStyle = Globals.D4S;
+            case R.id.hg:
+                testStyle = Globals.HG;
+                break;
+            case R.id.hg_100v:
+                testStyle = Globals.HG_110V;
                 break;
             //TODO: 新增设备需对应添加
             default:
@@ -442,6 +446,11 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
         tempRadioButton = (RadioButton) findViewById(R.id.d4s);
         tempRadioButton.setText(getTextDetail(Globals.D4S, "双子星喂食器（D4S）" + " v" + TOOL_D4S_VERSION));
 
+        tempRadioButton = (RadioButton) findViewById(R.id.hg);
+        tempRadioButton.setText(getTextDetail(Globals.HG, "烘干箱200V（HG）" + " v" + TOOL_HG_VERSION));
+
+        tempRadioButton = (RadioButton) findViewById(R.id.hg_100v);
+        tempRadioButton.setText(getTextDetail(Globals.HG_110V, "烘干箱110V（HG）" + " v" + TOOL_HG_VERSION));
         //TODO: 新增设备需对应添加
     }
 

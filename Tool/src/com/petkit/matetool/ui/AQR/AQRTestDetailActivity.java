@@ -633,11 +633,27 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-                startScanSN(mDeviceType);
+                if (mTestType == Globals.TYPE_AFTERMARKET || mTestType == Globals.TYPE_DUPLICATE_SN) {
+                    generateAndSendSN();
+                } else {
+                    startScanSN(mDeviceType);
+                }
             }
         } else {
             sendBleData(AQRDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_WRITE_SN, mDevice.getSn().getBytes()));
         }
+    }
+
+    private void generateAndSendSN() {
+        String sn = DeviceCommonUtils.generateSNForTester(mDeviceType, mTester);
+        if (sn == null) {
+            showShortToast("今天生成的SN已经达到上限，上传git coSN再更换账号才可以继续测试哦！");
+            return;
+        }
+        isNewSN = true;
+        mDevice.setSn(sn);
+        mDevice.setCreation(System.currentTimeMillis());
+        sendBleData(AQRDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_WRITE_SN, mDevice.getSn().getBytes()));
     }
 
     private Bundle getPrintParam() {

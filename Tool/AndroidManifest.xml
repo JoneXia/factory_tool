@@ -442,6 +442,14 @@
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
 
+        <!-- HG -->
+        <activity android:name=".ui.HG.HGTestMainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".ui.HG.HGTestDetailActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+
         <meta-data
             android:name="UMENG_APPKEY"
             android:value="5637205067e58e76b6001e76"/>

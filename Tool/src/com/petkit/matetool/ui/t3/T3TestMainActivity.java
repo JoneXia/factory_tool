@@ -631,8 +631,6 @@ public class T3TestMainActivity extends BaseActivity implements PetkitSocketInst
                 mCurDevice.setInspectStatus(1);
                 T3Utils.storeCheckInfo(mCurDevice);
                 testComplete = position >= mT3TestUnits.size();
-            } else if (mTestType == T3Utils.TYPE_TEST_PARTIALLY) {
-                testComplete = position >= mT3TestUnits.size();
             } else {
                 testComplete = position >= mT3TestUnits.size();
             }

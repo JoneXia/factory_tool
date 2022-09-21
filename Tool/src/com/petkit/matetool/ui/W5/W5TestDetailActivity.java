@@ -636,7 +636,7 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-                if (mTestType == Globals.TYPE_AFTERMARKET) {
+                if (mTestType == Globals.TYPE_AFTERMARKET || mTestType == Globals.TYPE_DUPLICATE_SN) {
                     generateAndSendSN();
                 } else {
                     startScanSN(mW5Type == W5_TYPE_MINI ? Globals.W5C : Globals.W5);

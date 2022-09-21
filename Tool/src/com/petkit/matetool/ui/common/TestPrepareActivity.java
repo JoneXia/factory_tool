@@ -248,6 +248,7 @@ public class TestPrepareActivity extends BaseActivity {
 
                             AsyncHttpUtil.addHttpHeader("F-Session", token);
                             testerInfoTextView.setText("当前用户名：" + mTester.getName());
+                            updateView();
 
                             if(DeviceCommonUtils.checkHasSnCache(mDeviceType)) {
                                 isLogining = true;

@@ -287,6 +287,7 @@ public class FeederMiniTestMainActivity extends BaseActivity implements PetkitSo
             case FeederMiniUtils.TYPE_TEST:
                 startActivity(WifiManagerActivity.getIntent(this, "PETKIT_FEEDER_B_HW2_"));
                 break;
+            case Globals.TYPE_AFTERMARKET:
             case FeederMiniUtils.TYPE_MAINTAIN:
                 startActivity(WifiManagerActivity.getIntent(this, "PETKIT_FEEDER_"));
                 break;

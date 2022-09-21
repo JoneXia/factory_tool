@@ -27,14 +27,17 @@ public class BaseDataUtils {
 
 
     public static byte[] buildOpCodeBuffer(int cmd) {
+        PetkitLog.d("buildOpCodeBuffer cmd: " + cmd);
         return buildOpCodeBuffer(cmd, TYPE_PETKIT_BLE_REQUEST, null, generateSendSequence());
     }
 
     public static byte[] buildOpCodeBuffer(int cmd, int data) {
+        PetkitLog.d("buildOpCodeBuffer cmd: " + cmd + ", data: " + data);
         return buildOpCodeBuffer(cmd, TYPE_PETKIT_BLE_REQUEST, new byte[] {(byte) data}, generateSendSequence());
     }
 
     public static byte[] buildOpCodeBuffer(int cmd, byte[] data) {
+        PetkitLog.d("buildOpCodeBuffer cmd: " + cmd + ", data: " + parse(data));
         return buildOpCodeBuffer(cmd, TYPE_PETKIT_BLE_REQUEST, data, generateSendSequence());
     }
 

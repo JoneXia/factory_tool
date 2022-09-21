@@ -39,6 +39,7 @@ public class BLEConsts {
 	public static final String K3_DISPLAY_NAME = "Petkit_K3";
 	public static final String AQR_DISPLAY_NAME = "Petkit_AQR";
 	public static final String AQ1S_DISPLAY_NAME = "Petkit_AQ1S";
+	public static final String HG_DISPLAY_NAME = "Petkit_HG";
 
 
 //	public static final String[] DeviceFilter = new String[]{"PETKIT", "PETKIT2", PET_FIT_DISPLAY_NAME, PET_FIT2_DISPLAY_NAME,
@@ -574,6 +575,7 @@ public class BLEConsts {
 
 	/** Common cmd **/
 	public static final int OP_CODE_AQR_TEST_START					= 240;
+	public static final int OP_CODE_TEST_INFO 						= 241;
 	public static final int OP_CODE_TEST_STEP 						= 242;
 	public static final int OP_CODE_TEST_RESULT 					= 243;
 	public static final int OP_CODE_WRITE_SN 						= 244;

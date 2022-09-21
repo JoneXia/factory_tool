@@ -430,4 +430,13 @@ public class Versions {
 	 */
 	public static final String TOOL_D4S_VERSION	= "1.0";
 
+
+	/**
+	 *
+	 * v1.0
+	 * 1. 支持HG产测全功能
+	 *
+	 */
+	public static final String TOOL_HG_VERSION	= "1.0";
+
 }
