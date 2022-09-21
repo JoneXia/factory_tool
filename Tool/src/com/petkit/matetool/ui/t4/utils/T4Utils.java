@@ -108,9 +108,9 @@ public class T4Utils {
             results.add(new T4TestUnit(T4TestModes.TEST_MODE_KEY, "按键测试", 2, 1));
             results.add(new T4TestUnit(T4TestModes.TEST_MODE_MOTOR_2, "集便盒电机测试", 3, 1));
 
-            if (type == Globals.TYPE_TEST) {
+            if (type == Globals.TYPE_TEST) {        //4-8kg
                 results.add(new T4TestUnit(T4TestModes.TEST_MODE_BALANCE_SET_2, "秤校准", 5, 1));
-            } else if (type != Globals.TYPE_CHECK) {
+            } else if (type != Globals.TYPE_CHECK) {    //10-20kg
                 results.add(new T4TestUnit(T4TestModes.TEST_MODE_BALANCE_SET, "秤校准", 5, 1));
             } else {
                 results.add(new T4TestUnit(T4TestModes.TEST_MODE_BALANCE, "秤读取", 5, 3));
