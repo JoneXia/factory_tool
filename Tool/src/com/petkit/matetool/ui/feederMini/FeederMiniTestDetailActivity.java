@@ -662,7 +662,7 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
             if (!result) {
                 showShortToast("还有未完成的测试项，不能写入SN！");
             } else {
-                if (mTestType == Globals.TYPE_AFTERMARKET) {
+                if (mTestType == Globals.TYPE_AFTERMARKET || mTestType == Globals.TYPE_DUPLICATE_SN) {
                     generateAndSendSN();
                 } else {
                     startScanSN(Globals.FEEDER_MINI);
