@@ -516,9 +516,9 @@ public class FeederMiniTestMainActivity extends BaseActivity implements PetkitSo
         switch (mTestType) {
             case FeederMiniUtils.TYPE_TEST:
             case FeederMiniUtils.TYPE_TEST_PARTIALLY:
+            case Globals.TYPE_AFTERMARKET:
                 return 1;
             case FeederMiniUtils.TYPE_MAINTAIN:
-            case Globals.TYPE_AFTERMARKET:
                 return 2;
             case FeederMiniUtils.TYPE_CHECK:
                 return 3;

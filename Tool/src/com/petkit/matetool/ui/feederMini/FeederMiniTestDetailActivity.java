@@ -723,6 +723,9 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
         mFeeder.setCreation(System.currentTimeMillis());
 
         isNewSN = true;
+        //写入设备前先存储到临时数据区，写入成功后需删除
+        FeederMiniUtils.storeTempFeederInfo(mFeeder);
+
         HashMap<String, Object> payload = new HashMap<>();
         payload.put("mac", mFeeder.getMac());
         payload.put("sn", sn);
