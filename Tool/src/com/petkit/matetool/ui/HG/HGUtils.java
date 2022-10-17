@@ -80,6 +80,8 @@ public class HGUtils {
                 results.add(new HGTestUnit(HGTestModes.TEST_MODE_ANION, "负离子测试", 242, 8));
             }
 
+            results.add(new HGTestUnit(HGTestModes.TEST_MODE_TEMP_ANT, "温湿度测试", 242, 2));
+
             if (type == Globals.TYPE_TEST_PARTIALLY || type == TYPE_MAINTAIN || type == TYPE_AFTERMARKET) {
                 results.add(new HGTestUnit(HGTestModes.TEST_MODE_TEMP_SET, "温度校准", 242, 2));
             }
@@ -87,8 +89,6 @@ public class HGUtils {
             if (type != Globals.TYPE_TEST_PARTIALLY) {
                 results.add(new HGTestUnit(HGTestModes.TEST_MODE_TEMP, "温度读取", 242, 2));
             }
-
-            results.add(new HGTestUnit(HGTestModes.TEST_MODE_TEMP_ANT, "温湿度测试", 242, 2));
 
             if (type != Globals.TYPE_TEST_PARTIALLY) {
                 results.add(new HGTestUnit(HGTestModes.TEST_MODE_FAN, "风扇测试", 242, 3));

@@ -199,7 +199,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                 mPromptTextView.setText("温度校准，校准后温度应该与正确温度一致！");
                 break;
             case TEST_MODE_PTC:
-                mPromptTextView.setText("测试PTC加热片，观察是否正常！");
+                mPromptTextView.setText("测试NTC加热片，观察是否正常！");
                 break;
             case TEST_MODE_ANION:
                 mPromptTextView.setText("测试负离子开关，观察是否正常！");
@@ -398,7 +398,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                         b = byteToInt(mTempData, 6, 2);
                         c = byteToInt(mTempData, 10, 2);
                         if (Math.abs(b-c) > 5 || Math.abs(a-b) > 10 || Math.abs(a-c) > 10) {
-                            showLongToast("左右温差不超过0.5℃，PTC温差不超过1℃，请确认！");
+                            showLongToast("左右温差不超过0.5℃，NTC温差不超过1℃，请确认！");
                             break;
                         }
                     case TEST_MODE_TEMP_SET:
@@ -668,7 +668,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                         break;
                     case TEST_MODE_TEMP_SET:
                         mTempData = data;
-                        desc.append("\nPTC-校准前：").append(byteToInt(data, 0, 2)).append("， 校准后： ").append(byteToInt(data, 2, 2));
+                        desc.append("\nNTC-校准前：").append(byteToInt(data, 0, 2)).append("， 校准后： ").append(byteToInt(data, 2, 2));
 
                         offset1 = (short) (byteToInt(data, 2, 2) - byteToInt(data, 0, 2));
                         offset2 = (short) (byteToInt(data, 6, 2) - byteToInt(data, 4, 2));
@@ -682,7 +682,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                         a = byteToInt(data, 2, 2);
                         b = byteToInt(data, 6, 2);
                         c = byteToInt(data, 10, 2);
-                        desc.append("\nPTC：").append(a)
+                        desc.append("\nNTC：").append(a)
                                 .append("，出风左：").append(b).append("，右：").append(c);
                         break;
                     case TEST_MODE_TEMP_ANT:
@@ -694,7 +694,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                         LogcatStorageHelper.addLog("offset1: " + offset1 + "offset2: " + offset2 + "offset3: " + offset3);
                         break;
                     case TEST_MODE_PTC:
-                        desc.append("\nPTC：").append(byteToInt(data, 0, 2));
+                        desc.append("\nNTC：").append(byteToInt(data, 0, 2));
                         if (mTempNumber == 0) {
                             mTempNumber = byteToInt(data, 0, 2);
                             if (mTempNumber > 350) {
@@ -893,7 +893,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
         c = byteToInt(mTempData, 8, 2);
 
         if (Math.abs(a-b) > 3 || Math.abs(b-c) > 3 || Math.abs(c-a) > 3) {
-            mDescTextView.append(String.format("\n三个温度传感器温差不在0.3℃以内（ptc：%d，左：%d, 右：%d，请确认！", a, b, c));
+            mDescTextView.append(String.format("\n三个温度传感器温差不在0.3℃以内（ntc：%d，左：%d, 右：%d，请确认！", a, b, c));
             return;
         }
 
