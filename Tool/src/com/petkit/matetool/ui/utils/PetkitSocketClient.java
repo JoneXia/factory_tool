@@ -166,22 +166,26 @@ public class PetkitSocketClient {
             this.localSocketClient.registerSocketClientReceiveDelegate(new SocketClientReceivingDelegate() {
                 @Override
                 public void onReceivePacketBegin(SocketClient client, SocketResponsePacket packet) {
-                    Logger.log("onReceive", "SocketClient: onReceivePacketBegin: " + packet.hashCode());
+                    if (packet != null)
+                        Logger.log("onReceive", "SocketClient: onReceivePacketBegin: " + packet.hashCode());
                 }
 
                 @Override
                 public void onReceivePacketEnd(SocketClient client, SocketResponsePacket packet) {
-                    Logger.log("onReceive", "SocketClient: onReceivePacketEnd: " + packet.hashCode());
+                    if (packet != null)
+                        Logger.log("onReceive", "SocketClient: onReceivePacketEnd: " + packet.hashCode());
                 }
 
                 @Override
                 public void onReceivePacketCancel(SocketClient client, SocketResponsePacket packet) {
-                    Logger.log("onReceive", "SocketClient: onReceivePacketCancel: " + packet.hashCode());
+                    if (packet != null)
+                        Logger.log("onReceive", "SocketClient: onReceivePacketCancel: " + packet.hashCode());
                 }
 
                 @Override
                 public void onReceivingPacketInProgress(SocketClient client, SocketResponsePacket packet, float progress, int receivedLength) {
-                    Logger.log("onReceive", "SocketClient: onReceivingPacketInProgress: " + packet.hashCode() + " : " + progress + " : " + receivedLength);
+                    if (packet != null)
+                        Logger.log("onReceive", "SocketClient: onReceivingPacketInProgress: " + packet.hashCode() + " : " + progress + " : " + receivedLength);
                 }
             });
         }

@@ -652,20 +652,24 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         desc.append("\n").append("秤").append("-").append("实际克数").append("-").append(moduleStateStruct.getSub0()).append("克");
                         break;
                     case 6:
-                        int leftState = moduleStateStruct.getState() & 0x1;
-                        desc.append("\n接近： ").append(leftState == 1 ? "已靠近 " : "未靠近 ").append("，数值：").append(moduleStateStruct.getSub1());
+//                        int leftState = moduleStateStruct.getState() & 0x1;
+                        int rightState = (moduleStateStruct.getState() >> 1) & 0x1;
+                        desc.append("\n接近传感器： ").append(rightState == 1 ? "已靠近" : "未靠近");
 
-                        if (leftState > 0) {
-                            mTempResult = mTempResult | 0x1;
-                        } else {
-                            mTempResult = mTempResult | 0x10;
-                        }
-//                        if (rightState > 0) {
-//                            mTempResult = mTempResult | 0x100;
+//                        desc.append("\n").append("左侧读取数值：").append(moduleStateStruct.getSub1());
+                        desc.append("\n").append("读取数值：").append(moduleStateStruct.getSub2());
+
+//                        if (leftState > 0) {
+//                            mTempResult = mTempResult | 0x1;
 //                        } else {
-//                            mTempResult = mTempResult | 0x1000;
+//                            mTempResult = mTempResult | 0x10;
 //                        }
-                        result = mTempResult == 0x11;
+                        if (rightState > 0) {
+                            mTempResult = mTempResult | 0x100;
+                        } else {
+                            mTempResult = mTempResult | 0x1000;
+                        }
+                        result = mTempResult == 0x1100;
                         break;
                     case 7:
                         if (moduleStateStruct.getState() > 0) {

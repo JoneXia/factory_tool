@@ -702,11 +702,11 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                                 desc.append("\n起始温度大于35摄氏度，测试无效，请冷却后重新测试");
                             }
                         } else if (mTempNumber != -1){
-                            if (byteToInt(data, 0, 2) - mTempNumber > 50
-                                    && System.currentTimeMillis() - mPTCStartTime <= 20 * 1000) {
+                            if (byteToInt(data, 0, 2) - mTempNumber > 100
+                                    && System.currentTimeMillis() - mPTCStartTime <= 90 * 1000) {
                                 result = true;
                                 desc.append("\n加热测试已完成");
-                            } else if (System.currentTimeMillis() - mPTCStartTime > 20 * 1000) {
+                            } else if (System.currentTimeMillis() - mPTCStartTime > 90 * 1000) {
                                 desc.append("\n加热测试失败，未能在指定时间完成");
                             }
                         }
