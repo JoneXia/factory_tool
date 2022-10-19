@@ -437,7 +437,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                 mDescTextView.append(mStep == 0 ? "\n转速设为：50%" : "\n转速设为：100%");
                 data = new byte[2];
                 data[0] = (byte) mTestUnits.get(mCurTestStep).getState();
-                data[1] = (byte) (mStep == 0 ? 50 : 100);
+                data[1] = (byte) (mStep == 0 ? 60 : 100);
                 sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule(), data));
                 break;
             case TEST_MODE_LED:
@@ -640,7 +640,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                     case TEST_MODE_FAN:
                         desc.append("\n电流：").append(byteToInt(data, 0, 2)).append("， 转速： ").append(byteToInt(data, 2, 2));
                         if (mStep == 0) {
-                            if (byteToInt(data, 0, 2) >= 260 && byteToInt(data, 0, 2) <= 480) {
+                            if (byteToInt(data, 0, 2) >= 350 && byteToInt(data, 0, 2) <= 700) {
                                 mTempNumber++;
                             } else {
                                 mTempNumber = 0;
@@ -653,7 +653,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                                 startTestModule();
                             }
                         } else {
-                            if (byteToInt(data, 0, 2) >= 1600 && byteToInt(data, 0, 2) <= 3000) {
+                            if (byteToInt(data, 0, 2) >= 1500 && byteToInt(data, 0, 2) <= 2500) {
                                 mTempNumber++;
                             } else {
                                 mTempNumber = 0;
@@ -887,15 +887,15 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
 
     private void setNewTemp(short offset) {
 
-        int a, b, c;
-        a = byteToInt(mTempData, 0, 2);
-        b = byteToInt(mTempData, 4, 2);
-        c = byteToInt(mTempData, 8, 2);
+//        int a, b, c;
+//        a = byteToInt(mTempData, 0, 2);
+//        b = byteToInt(mTempData, 4, 2);
+//        c = byteToInt(mTempData, 8, 2);
 
-        if (Math.abs(a-b) > 3 || Math.abs(b-c) > 3 || Math.abs(c-a) > 3) {
-            mDescTextView.append(String.format("\n三个温度传感器温差不在0.3℃以内（ntc：%d，左：%d, 右：%d，请确认！", a, b, c));
-            return;
-        }
+//        if (Math.abs(a-b) > 20 || Math.abs(b-c) > 20 || Math.abs(c-a) > 20) {
+//            mDescTextView.append(String.format("\n三个温度传感器温差不在3℃以内（ntc：%d，左：%d, 右：%d，请确认！", a, b, c));
+//            return;
+//        }
 
         offset1 += offset;
         int targetTemp = byteToInt(mTempData, 0, 2) + offset1;
