@@ -450,7 +450,7 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
         tempRadioButton.setText(getTextDetail(Globals.D4S, "双子星喂食器（D4S）" + " v" + TOOL_D4S_VERSION));
 
         tempRadioButton = (RadioButton) findViewById(R.id.hg);
-        tempRadioButton.setText(getTextDetail(Globals.HG, "烘干箱200V（HG）" + " v" + TOOL_HG_VERSION));
+        tempRadioButton.setText(getTextDetail(Globals.HG, "烘干箱220V（HG）" + " v" + TOOL_HG_VERSION));
 
         tempRadioButton = (RadioButton) findViewById(R.id.hg_100v);
         tempRadioButton.setText(getTextDetail(Globals.HG_110V, "烘干箱110V（HG）" + " v" + TOOL_HG_VERSION));

@@ -209,6 +209,10 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                 break;
             case TEST_MODE_TEMP:
                 mPromptTextView.setText("温度读取测试，观察三个温度传感器数据是否正常！");
+                break;
+            case TEST_MODE_LOCK:
+                mPromptTextView.setText("设置激活状态！");
+                break;
             default:
                 break;
         }
@@ -243,6 +247,13 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                     mBtn3.setText(R.string.Failure);
                     mBtn3.setBackgroundResource(R.drawable.selector_red);
                 }
+                break;
+            case TEST_MODE_LOCK:
+                mBtn1.setText("激活");
+                mBtn1.setBackgroundResource(R.drawable.selector_red);
+                mBtn2.setVisibility(View.INVISIBLE);
+                mBtn3.setText("锁定");
+                mBtn3.setBackgroundResource(R.drawable.selector_blue);
                 break;
             case TEST_MODE_SN:
                 mBtn1.setText(R.string.Write);
@@ -323,6 +334,11 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                         break;
                     case TEST_MODE_SN:
                         startSetSn();
+                        break;
+                    case TEST_MODE_LOCK:
+                        byte[] data = new byte[2];
+                        data[0] = 1;
+                        sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule(), data));
                         break;
                     case TEST_MODE_RESET_ID:
                         //TODO:
@@ -407,6 +423,11 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                         mTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         gotoNextTestModule();
                         break;
+                    case TEST_MODE_LOCK:
+                        data = new byte[2];
+                        data[0] = 0;
+                        sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule(), data));
+                        break;
                     default:
                         if (mTestUnits.get(mCurTestStep).getResult() != TEST_PASS) {
                             mTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
@@ -460,6 +481,8 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                 data[1] = 1;
                 data[2] = 100;
                 sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule(), data));
+                break;
+            case TEST_MODE_LOCK:
                 break;
             default:
                 data = new byte[1];
@@ -776,6 +799,15 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                     mDescTextView.append("\nSN校验失败，未写入成功");
                 }
                 result = true;
+                break;
+            case 'A':
+                if (data.length != 1) {
+                    mDescTextView.append("\n数据错误，处理失败");
+                } else if (data[0] != 1){
+                    mDescTextView.append("\n指令写入失败");
+                } else {
+                    mDescTextView.append("\n指令写入成功");
+                }
                 break;
         }
         mDescTextView.append(desc.toString());

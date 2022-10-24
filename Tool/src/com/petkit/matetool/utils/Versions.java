@@ -436,7 +436,10 @@ public class Versions {
 	 * v1.0
 	 * 1. 支持HG产测全功能
 	 *
+	 * v1.1
+	 * 1. 新增激活状态测试项
+	 * 2. HG220v中新增抽检功能
 	 */
-	public static final String TOOL_HG_VERSION	= "1.0";
+	public static final String TOOL_HG_VERSION	= "1.1";
 
 }

@@ -30,6 +30,7 @@ public class HGUtils {
         TEST_MODE_PTC,  //PTC加热片
         TEST_MODE_ANION,    //负离子开关
         TEST_MODE_LIGHT,    //照明灯
+        TEST_MODE_LOCK,    //激活状态
         TEST_MODE_SN,   //写SN
         TEST_MODE_MAC,
         TEST_MODE_RESET_SN, //重置SN
@@ -96,6 +97,9 @@ public class HGUtils {
 
             if (type != Globals.TYPE_TEST_PARTIALLY) {
                 results.add(new HGTestUnit(HGTestModes.TEST_MODE_PTC, "加热片测试", 242, 4));
+            }
+            if (type == Globals.TYPE_CHECK || type == TYPE_MAINTAIN || type == TYPE_AFTERMARKET) {
+                results.add(new HGTestUnit(HGTestModes.TEST_MODE_LOCK, "激活状态", 'A', 0));
             }
 
             if (type == Globals.TYPE_TEST || type == TYPE_AFTERMARKET) {
