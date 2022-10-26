@@ -635,7 +635,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                 break;
             case BLEConsts.OP_CODE_TEST_INFO:
                 HGUtils.HGTestModes type = mTestUnits.get(mCurTestStep).getType();
-                if (type == HGUtils.HGTestModes.TEST_MODE_AUTO) {
+                if (type == HGUtils.HGTestModes.TEST_MODE_AUTO && isInAutoUnits) {
                     type = mAutoTestUnits.get(mAutoUnitStep).getType();
                 }
                 switch (type) {
