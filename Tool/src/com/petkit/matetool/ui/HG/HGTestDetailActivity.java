@@ -73,6 +73,8 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
     private int mStep, mTempNumber;
     private long mPTCStartTime, mTempTimestamp;
 
+    private AgeingResult mAgeingResult;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -212,6 +214,9 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                 break;
             case TEST_MODE_LOCK:
                 mPromptTextView.setText("设置激活状态！");
+                break;
+            case TEST_MODE_AGEINGRESULT:
+                mPromptTextView.setText("查看老化数据！");
                 break;
             default:
                 break;
@@ -754,15 +759,9 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                         break;
                 }
                 break;
-            case BLEConsts.OP_CODE_TEST_RESULT:
-//                if (data.length != 1) {
-//                    mDescTextView.append("\n数据错误，处理失败");
-//                } else if (data[0] != 1){
-//                    mDescTextView.append("\n数据写入失败");
-//                } else {
-//                    mDescTextView.append("\n数据写入成功");
-//                    result = true;
-//                }
+            case BLEConsts.OP_CODE_AGEING_RESULT:       //老化数据
+                mAgeingResult = new AgeingResult(data);
+                mDescTextView.append("\n" + mAgeingResult.toDisplayString());
                 break;
             case BLEConsts.OP_CODE_WRITE_SN:
                 if (mTestUnits.get(mCurTestStep).getType() != HGUtils.HGTestModes.TEST_MODE_SN &&
@@ -789,7 +788,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                             mDescTextView.append("\nSN校验成功");
                             if (isNewSN) {
                                 isNewSN = false;
-                                DeviceCommonUtils.storeSucceedDeviceInfo(mDeviceType, mDevice, null);
+                                DeviceCommonUtils.storeSucceedDeviceInfo(mDeviceType, mDevice, mAgeingResult == null ? null : mAgeingResult.toString());
                             }
                         }
                     } else {

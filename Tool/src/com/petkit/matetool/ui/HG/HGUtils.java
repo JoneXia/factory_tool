@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import static com.petkit.matetool.utils.Globals.PERMISSION_ERASE;
 import static com.petkit.matetool.utils.Globals.TYPE_AFTERMARKET;
 import static com.petkit.matetool.utils.Globals.TYPE_MAINTAIN;
+import static com.petkit.matetool.utils.Globals.TYPE_TEST;
 
 /**
  *
@@ -36,6 +37,7 @@ public class HGUtils {
         TEST_MODE_RESET_SN, //重置SN
         TEST_MODE_RESET_ID, //清除ID
         TEST_MODE_AUTO,
+        TEST_MODE_AGEINGRESULT, //老化数据
         TEST_MODE_PRINT     //打印标签
     }
 
@@ -66,6 +68,10 @@ public class HGUtils {
             results.add(new HGTestUnit(HGTestModes.TEST_MODE_RESET_SN, "写入SN", 98, 2));
             results.add(new HGTestUnit(HGTestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
         } else {
+            if (type == TYPE_TEST) {
+                results.add(new HGTestUnit(HGTestModes.TEST_MODE_AGEINGRESULT, "老化测试", 245, 0));
+            }
+
             if (type == TYPE_MAINTAIN || type == TYPE_AFTERMARKET) {
                 results.add(new HGTestUnit(HGTestModes.TEST_MODE_SIGNAL, "通信测试", 242, 0));
                 results.add(new HGTestUnit(HGTestModes.TEST_MODE_DC, "电压测试", 242, 1));
@@ -77,25 +83,25 @@ public class HGUtils {
             results.add(new HGTestUnit(HGTestModes.TEST_MODE_LED, "指示灯测试", 242, 6));
             results.add(new HGTestUnit(HGTestModes.TEST_MODE_LIGHT, "照明灯测试", 242, 7));
 
-            if (type != Globals.TYPE_TEST_PARTIALLY) {
+            if (type != Globals.TYPE_TEST_MAINBOARD) {
                 results.add(new HGTestUnit(HGTestModes.TEST_MODE_ANION, "负离子测试", 242, 8));
             }
 
-            if (type != Globals.TYPE_TEST_PARTIALLY) {
+            if (type != Globals.TYPE_TEST_MAINBOARD) {
                 results.add(new HGTestUnit(HGTestModes.TEST_MODE_FAN, "风扇测试", 242, 3));
             }
 
             results.add(new HGTestUnit(HGTestModes.TEST_MODE_TEMP_ANT, "温湿度测试", 242, 2));
 
-            if (type == Globals.TYPE_TEST_PARTIALLY || type == TYPE_MAINTAIN || type == TYPE_AFTERMARKET) {
+            if (type == Globals.TYPE_TEST_MAINBOARD || type == TYPE_MAINTAIN || type == TYPE_AFTERMARKET) {
                 results.add(new HGTestUnit(HGTestModes.TEST_MODE_TEMP_SET, "温度校准", 242, 2));
             }
 
-            if (type != Globals.TYPE_TEST_PARTIALLY) {
+            if (type != Globals.TYPE_TEST_MAINBOARD) {
                 results.add(new HGTestUnit(HGTestModes.TEST_MODE_TEMP, "温度读取", 242, 2));
             }
 
-            if (type != Globals.TYPE_TEST_PARTIALLY) {
+            if (type != Globals.TYPE_TEST_MAINBOARD) {
                 results.add(new HGTestUnit(HGTestModes.TEST_MODE_PTC, "加热片测试", 242, 4));
             }
             if (type == Globals.TYPE_CHECK || type == TYPE_MAINTAIN || type == TYPE_AFTERMARKET) {

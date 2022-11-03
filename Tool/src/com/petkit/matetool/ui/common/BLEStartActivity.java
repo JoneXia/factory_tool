@@ -55,6 +55,8 @@ public class BLEStartActivity extends BaseActivity {
         TextView testInfo = (TextView) findViewById(R.id.test_info);
         testInfo.setText(getString(R.string.Feeder_test_info_format));
 
+        findViewById(R.id.test_case0).setOnClickListener(this);
+        findViewById(R.id.test_case0).setVisibility(View.GONE);
         findViewById(R.id.test_case1).setOnClickListener(this);
         findViewById(R.id.test_case1).setVisibility(View.GONE);
 
@@ -79,8 +81,10 @@ public class BLEStartActivity extends BaseActivity {
             case Globals.HG:
             case Globals.HG_110V:
                 findViewById(R.id.test_case1).setVisibility(View.VISIBLE);
+                findViewById(R.id.test_case0).setVisibility(View.VISIBLE);
 //                findViewById(R.id.test_case4).setVisibility(View.GONE);
                 findViewById(R.id.test_case5).setVisibility(View.GONE);
+                break;
             default:
                 break;
         }
@@ -93,6 +97,13 @@ public class BLEStartActivity extends BaseActivity {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
                 bundle.putInt(DeviceCommonUtils.EXTRA_TEST_TYPE, Globals.TYPE_TEST_PARTIALLY);
+                bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
+                startActivityWithData(BLEScanActivity.class, bundle, false);
+                break;
+            case R.id.test_case0:
+                bundle = new Bundle();
+                bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
+                bundle.putInt(DeviceCommonUtils.EXTRA_TEST_TYPE, Globals.TYPE_TEST_MAINBOARD);
                 bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
                 startActivityWithData(BLEScanActivity.class, bundle, false);
                 break;

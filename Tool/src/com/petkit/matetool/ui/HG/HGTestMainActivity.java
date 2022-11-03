@@ -140,6 +140,8 @@ public class HGTestMainActivity extends BaseActivity {
             return "半成品测试";
         } else if (mTestType == Globals.TYPE_CHECK) {
             return "抽检";
+        } else if (mTestType == Globals.TYPE_TEST_MAINBOARD){
+            return "主板测试";
         } else {
             return "维修";
         }
@@ -408,8 +410,6 @@ public class HGTestMainActivity extends BaseActivity {
                 testComplete = position >= mTestUnits.size();
             } else if (mTestType == Globals.TYPE_CHECK) {
                 DeviceCommonUtils.storeCheckInfo(mDeviceType, mCurDevice);
-                testComplete = position >= mTestUnits.size();
-            } else if (mTestType == Globals.TYPE_TEST_PARTIALLY) {
                 testComplete = position >= mTestUnits.size();
             } else {
                 testComplete = position >= mTestUnits.size();

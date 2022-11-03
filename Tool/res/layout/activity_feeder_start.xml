@@ -25,6 +25,15 @@
             android:visibility="visible" >
 
             <Button
+                android:id="@+id/test_case0"
+                style="@style/Text_Large_Black"
+                android:layout_width="match_parent"
+                android:layout_height="70dip"
+                android:layout_marginTop="10dip"
+                android:visibility="gone"
+                android:text="@string/feeder_test_case0" />
+
+            <Button
                 android:id="@+id/test_case1"
                 style="@style/Text_Large_Black"
                 android:layout_width="match_parent"

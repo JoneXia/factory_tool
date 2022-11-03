@@ -125,6 +125,7 @@ public class Globals {
 	public static final int TYPE_AFTERMARKET           	= 7;
 	public static final int TYPE_DUPLICATE_MAC          = 5;
 	public static final int TYPE_DUPLICATE_SN           = 6;
+	public static final int TYPE_TEST_MAINBOARD         = 8;
 
 
 

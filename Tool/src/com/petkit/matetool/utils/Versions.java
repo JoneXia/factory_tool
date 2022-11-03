@@ -439,7 +439,10 @@ public class Versions {
 	 * v1.1
 	 * 1. 新增激活状态测试项
 	 * 2. HG220v中新增抽检功能
+	 *
+	 * v1.2
+	 * 1. 新增老化测试
 	 */
-	public static final String TOOL_HG_VERSION	= "1.1";
+	public static final String TOOL_HG_VERSION	= "1.2";
 
 }

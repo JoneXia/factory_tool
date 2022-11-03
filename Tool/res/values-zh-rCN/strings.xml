@@ -220,6 +220,7 @@
 
     <!-- Feeder test -->
     <string name="Feeder">喂食器</string>
+    <string name="feeder_test_case0">主板测试</string>
     <string name="feeder_test_case1">半成品测试</string>
     <string name="feeder_test_case2">成品测试</string>
     <string name="feeder_test_case3">维修</string>

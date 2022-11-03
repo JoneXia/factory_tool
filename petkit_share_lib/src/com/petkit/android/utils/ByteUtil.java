@@ -524,4 +524,17 @@ public class ByteUtil {
         return (byte) (i & 0xff);
     }
 
+    public static int byteToInt(byte[] data, int srcPos, int len) {
+        if (data.length < srcPos + len) {
+            return 0;
+        }
+        if (len == 1) {
+            return data[srcPos];
+        }
+        byte[] tempByte = new byte[len];
+        System.arraycopy(data, srcPos, tempByte, 0, len);
+        return ByteUtil.bytes2Short(ByteUtil.reverseBytes(tempByte));
+    }
+
+
 }
