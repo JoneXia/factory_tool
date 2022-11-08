@@ -246,6 +246,8 @@
 
     <string name="Feeder_test_info_format">请选择工站</string>
 
+    <string name="back_to_check">返回检查</string>
+
     <string-array name="Feeder_test_items">
         <item>门马达</item>
         <item>叶轮马达</item>
@@ -367,5 +369,6 @@
     <string name="s_mten">维护模式</string>
     <string name="s_mten_i">维护中，点击OK键退出</string>
     <string name="s_err_hall_o">集便盒上盖异常，请检查</string>
+
 
 </resources>

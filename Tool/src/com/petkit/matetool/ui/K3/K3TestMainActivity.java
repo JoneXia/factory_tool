@@ -83,6 +83,9 @@ public class K3TestMainActivity extends BaseActivity {
 
         setContentView(R.layout.activity_feeder_main_test);
 
+        if (mTestType == Globals.TYPE_TEST || mTestType == Globals.TYPE_TEST_PARTIALLY) {
+            showRemindDialog();
+        }
         registerBoradcastReceiver();
     }
 

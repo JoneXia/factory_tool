@@ -51,7 +51,7 @@ public class AgeingResult {
 
     public AgeingResult(byte[] ageingData) {
 
-        if (ageingData == null || ageingData.length < 35) {
+        if (ageingData == null || ageingData.length < 37) {
             return;
         }
 
@@ -65,15 +65,15 @@ public class AgeingResult {
         ntcPtcCurTemp = ByteUtil.byteToInt(ageingData, 14, 2) / 10f;
         ahtAverageTemp = ByteUtil.byteToInt(ageingData, 16, 2) / 10f;
         ahtCurTemp = ByteUtil.byteToInt(ageingData, 18, 2) / 10f;
-        ahtAverageHumi = ByteUtil.byteToInt(ageingData, 20, 1);
-        aht1CurHumi = ByteUtil.byteToInt(ageingData, 21, 1);
-        powerAverageCurr = ByteUtil.byteToInt(ageingData, 22, 2);
-        powerCurCurr = ByteUtil.byteToInt(ageingData, 24, 2);
-        powerAverageSpeed = ByteUtil.byteToInt(ageingData, 26, 2);
-        powerCurSpeed = ByteUtil.byteToInt(ageingData, 28, 2);
-        errCode = ByteUtil.byteToInt(ageingData, 30, 2);
-        errDetail = ByteUtil.byteToInt(ageingData, 32, 2);
-        ageResult = ByteUtil.byteToInt(ageingData, 34, 1);
+        ahtAverageHumi = ByteUtil.byteToInt(ageingData, 20, 2);
+        aht1CurHumi = ByteUtil.byteToInt(ageingData, 22, 2);
+        powerAverageCurr = ByteUtil.byteToInt(ageingData, 24, 2);
+        powerCurCurr = ByteUtil.byteToInt(ageingData, 26, 2);
+        powerAverageSpeed = ByteUtil.byteToInt(ageingData, 28, 2);
+        powerCurSpeed = ByteUtil.byteToInt(ageingData, 30, 2);
+        errCode = ByteUtil.byteToInt(ageingData, 32, 2);
+        errDetail = ByteUtil.byteToInt(ageingData, 34, 2);
+        ageResult = ByteUtil.byteToInt(ageingData, 36, 1);
 
     }
 
@@ -106,7 +106,7 @@ public class AgeingResult {
     public String toDisplayString() {
         return "老化数据: " +
                 "\n目标温度=" + targetTemp +
-                "\n老化时间=" + ageingDuration +
+                "\n老化时间=" + convertAgeingDuration(ageingDuration) +
                 "\nNTC1平均温度=" + ntc1AverageTemp +
                 "\nNTC1当前温度=" + ntc1CurTemp +
                 "\nNTC2平均温度=" + ntc2AverageTemp +
@@ -123,8 +123,44 @@ public class AgeingResult {
                 "\n电机当前速度=" + powerCurSpeed +
                 "\n故障码=" + errCode +
                 "\n故障明细=" + errDetail +
-                "\n老化结果=" + ageResult;
+                "\n老化结果=" + convertAgeingResult();
     }
 
+    private String convertAgeingDuration(int duration) {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (duration / 3600 > 0) {
+            stringBuilder.append(duration / 3600 + "小时");
+        }
+
+        if ((duration % 3600) / 60 > 0) {
+            stringBuilder.append((duration % 3600) / 60 + "分钟");
+        }
+
+        if ((duration % 60) > 0) {
+            stringBuilder.append((duration % 60) + "秒");
+        }
+
+        return stringBuilder.toString();
+    }
+
+
+    /**
+     * 老化结果：0-未老化； 1-老化时间小于15分钟； 2-老化失败； 3-老化成功；
+     * @return
+     */
+    private String convertAgeingResult() {
+        switch (ageResult) {
+            case 0:
+                return "未老化";
+            case 1:
+                return "老化时间小于15分钟";
+            case 2:
+                return "老化失败";
+            case 3:
+                return "老化成功";
+        }
+
+        return "未知";
+    }
 
 }

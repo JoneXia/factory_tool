@@ -429,4 +429,28 @@ public abstract class BaseActivity extends Activity implements OnClickListener, 
 		}).show();
 	}
 
+
+	protected void showRemindDialog() {
+
+		new AlertDialog.Builder(this)
+				.setCancelable(false)
+				.setTitle("PETKIT质量提醒您")
+				.setMessage("请确认您是否已对产品完成全面的检查，\n" +
+						"确认外观没有脏污刮花，漏缺零件，间隙段差等不良。\n")
+				.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+					}
+				})
+				.setNegativeButton(R.string.back_to_check,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								dialog.dismiss();
+								finish();
+							}
+						}).show();
+
+	}
+
 }

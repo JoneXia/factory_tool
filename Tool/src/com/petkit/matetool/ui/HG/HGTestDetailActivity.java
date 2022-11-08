@@ -233,6 +233,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
             case TEST_MODE_TEMP_SET:
             case TEST_MODE_ANION:
             case TEST_MODE_TEMP:
+            case TEST_MODE_AGEINGRESULT:
                 mBtn1.setText(R.string.Start);
                 mBtn2.setText(R.string.Failure);
                 mBtn2.setBackgroundResource(R.drawable.selector_red);
@@ -375,6 +376,10 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                     case TEST_MODE_PRINT:
                         startActivity(PrintActivity.class);
                         break;
+                    case TEST_MODE_AGEINGRESULT:
+                        mTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
+                        gotoNextTestModule();
+                        break;
                     default:
                         mTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
 
@@ -425,6 +430,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                     case TEST_MODE_TEMP_SET:
                     case TEST_MODE_LED:
                     case TEST_MODE_TEMP_ANT:
+                    case TEST_MODE_AGEINGRESULT:
                         mTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         gotoNextTestModule();
                         break;

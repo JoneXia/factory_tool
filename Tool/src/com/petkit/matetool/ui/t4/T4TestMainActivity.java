@@ -84,6 +84,9 @@ public class T4TestMainActivity extends BaseActivity implements PetkitSocketInst
 
         setContentView(R.layout.activity_feeder_main_test);
 
+        if (mTestType == Globals.TYPE_TEST || mTestType == Globals.TYPE_TEST_PARTIALLY) {
+            showRemindDialog();
+        }
         registerBoradcastReceiver();
     }
 

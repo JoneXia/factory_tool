@@ -87,6 +87,10 @@ public class HGTestMainActivity extends BaseActivity {
         setContentView(R.layout.activity_feeder_main_test);
 
         registerBoradcastReceiver();
+
+        if (mTestType == Globals.TYPE_TEST || mTestType == Globals.TYPE_TEST_PARTIALLY) {
+            showRemindDialog();
+        }
     }
 
     @Override

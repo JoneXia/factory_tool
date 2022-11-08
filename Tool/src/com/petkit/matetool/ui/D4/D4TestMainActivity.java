@@ -39,8 +39,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.petkit.matetool.utils.Globals.TYPE_AFTERMARKET;
-
 /**
  *
  * Created by Jone on 17/4/24.
@@ -84,6 +82,9 @@ public class D4TestMainActivity extends BaseActivity implements PetkitSocketInst
 
         setContentView(R.layout.activity_feeder_main_test);
 
+        if (mTestType == Globals.TYPE_TEST || mTestType == Globals.TYPE_TEST_PARTIALLY) {
+            showRemindDialog();
+        }
         registerBoradcastReceiver();
     }
 
