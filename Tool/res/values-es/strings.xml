@@ -65,6 +65,7 @@
     <string name="s_mten">Modo de mantenimiento</string>
     <string name="s_mten_i">En mantenimiento, clic en OK para salir</string>
     <string name="s_err_hall_o">Tapa protectora anormal, por favor compruebe</string>
+    <string name="s_pet_s">Sensor en uso, mantén "OK" pulsado para reanudar.</string>
 
 
 </resources>

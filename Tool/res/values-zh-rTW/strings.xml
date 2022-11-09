@@ -66,5 +66,6 @@
     <string name="s_mten">保養/維護模式</string>
     <string name="s_mten_i">在保養/維護模式下，點擊OK退出</string>
     <string name="s_err_hall_o">集便盒上蓋異常，請檢查</string>
+    <string name="s_pet_s">已觸發感測器，長按「OK」鍵恢復作業</string>
 
 </resources>

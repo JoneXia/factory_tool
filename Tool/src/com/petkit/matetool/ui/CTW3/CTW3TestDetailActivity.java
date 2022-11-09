@@ -204,6 +204,7 @@ public class CTW3TestDetailActivity extends BaseActivity implements PrintResultC
         switch (mTestUnits.get(mCurTestStep).getType()) {
             case TEST_MODE_LED:
             case TEST_MODE_PUMP:
+            case TEST_MODE_PROXIMITY:
                 mBtn1.setText(R.string.Start);
                 mBtn2.setText(R.string.Failure);
                 mBtn2.setBackgroundResource(R.drawable.selector_red);
@@ -529,6 +530,7 @@ public class CTW3TestDetailActivity extends BaseActivity implements PrintResultC
                         } else {
                             mTempResult = (mTempResult | 0x10);
                         }
+                        result = mTempResult == 0x11;
                         break;
                 }
                 break;

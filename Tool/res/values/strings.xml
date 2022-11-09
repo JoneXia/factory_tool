@@ -370,5 +370,6 @@
 	<string name="s_mten_i">Under maintenance, click OK to exit</string>
 
 	<string name="s_err_hall_o">Sealing cover error, please check</string>
+	<string name="s_pet_s">Sensor triggered, long press "OK" to resume</string>
 
 </resources>

@@ -183,6 +183,7 @@
         <item>s_mten</item>
         <item>s_mten_i</item>
         <item>s_err_hall_o</item>
+        <item>s_pet_s</item>
     </string-array>
 
 </resources>

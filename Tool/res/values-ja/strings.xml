@@ -66,6 +66,7 @@
     <string name="s_mten">メンテナンスモード</string>
     <string name="s_mten_i">メンテナンス中に OKをクリックすると終了します</string>
     <string name="s_err_hall_o">密閉カバーエラーです。確認してください</string>
+    <string name="s_pet_s">センサーがトリガされました、"OK"を長押しして再開してください</string>
 
 
 </resources>

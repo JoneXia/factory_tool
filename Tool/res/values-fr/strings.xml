@@ -65,5 +65,6 @@
     <string name="s_mten">Mode de Maintenance</string>
     <string name="s_mten_i">Sous maintenance, cliquez sur OK pour quitter</string>
     <string name="s_err_hall_o">Erreur du couvercle d\'étanchéité, veuillez vérifier</string>
+    <string name="s_pet_s">Déclenchement du capteur, appuyez longuement sur "OK" pour recommencer</string>
 
 </resources>
