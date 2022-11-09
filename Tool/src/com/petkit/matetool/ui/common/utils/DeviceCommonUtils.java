@@ -17,6 +17,7 @@ import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.AQ1S.AQ1STestMainActivity;
 import com.petkit.matetool.ui.AQH1.AQH1TestMainActivity;
 import com.petkit.matetool.ui.AQR.AQRTestMainActivity;
+import com.petkit.matetool.ui.CTW3.CTW3TestMainActivity;
 import com.petkit.matetool.ui.D3.utils.D3Utils;
 import com.petkit.matetool.ui.D4.utils.D4Utils;
 import com.petkit.matetool.ui.D4S.D4STestMainActivity;
@@ -121,6 +122,8 @@ public class DeviceCommonUtils {
                 Globals.DEVICE_TYPE_CODE_NEW_HG, HGTestMainActivity.class));
         mDeviceConfigs.put(Globals.HG_110V, new DeviceConfigInfo(true, "HG", "HG_110V", new String[]{"Petkit_HG"},
                 Globals.DEVICE_TYPE_CODE_NEW_HG_100V, HGTestMainActivity.class));
+        mDeviceConfigs.put(Globals.CTW3, new DeviceConfigInfo(true, "CTW3", "CTW3", new String[]{"Petkit_CTW3"},
+                Globals.DEVICE_TYPE_CODE_NEW_CTW3, CTW3TestMainActivity.class));
     }
 
     /**

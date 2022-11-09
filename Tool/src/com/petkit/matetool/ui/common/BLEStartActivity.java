@@ -85,6 +85,9 @@ public class BLEStartActivity extends BaseActivity {
 //                findViewById(R.id.test_case4).setVisibility(View.GONE);
                 findViewById(R.id.test_case5).setVisibility(View.GONE);
                 break;
+            case Globals.CTW3:
+                findViewById(R.id.test_case1).setVisibility(View.VISIBLE);
+                break;
             default:
                 break;
         }

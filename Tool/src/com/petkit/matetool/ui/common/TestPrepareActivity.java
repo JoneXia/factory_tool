@@ -91,10 +91,10 @@ public class TestPrepareActivity extends BaseActivity {
         findViewById(R.id.logout).setOnClickListener(this);
 
         mTester = TesterManagerUtils.getCurrentTesterForType(mDeviceType);
-//        mTester = new Tester();
-//        mTester.setCode("00");
-//        mTester.setName("写死的账号");
-//        mTester.setStation("1");
+        mTester = new Tester();
+        mTester.setCode("00");
+        mTester.setName("写死的账号");
+        mTester.setStation("1");
         if (mTester != null) {
             if (!isEmpty(mTester.getName())) {
                 testerInfoTextView.setText("当前用户名：" + mTester.getName());

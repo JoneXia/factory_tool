@@ -445,4 +445,13 @@ public class Versions {
 	 */
 	public static final String TOOL_HG_VERSION	= "1.2";
 
+
+	/**
+	 *
+	 * v1.0
+	 * 1. 支持CTW3产测全功能
+	 *
+	 */
+	public static final String TOOL_CTW3_VERSION	= "0.1";
+
 }

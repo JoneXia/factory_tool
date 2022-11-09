@@ -1008,8 +1008,7 @@ public abstract class BLEActionService extends IntentService {
 	
 	protected boolean deviceInfoExists(String address) {
 		for (int i = 0; i < mDeviceInfoList.size(); i++) {
-			if (mDeviceInfoList.get(i).getAddress()
-					.equals(address)) {
+			if (address.equals(mDeviceInfoList.get(i).getAddress())) {
 				return true;
 			}
 		}

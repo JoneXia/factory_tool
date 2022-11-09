@@ -58,6 +58,7 @@ public class DeviceInfo implements Serializable {
 	public static final int DEVICE_TYPE_AQR = 14;
 	public static final int DEVICE_TYPE_AQ1S = 15;
 	public static final int DEVICE_TYPE_HG = 16;
+	public static final int DEVICE_TYPE_CTW3	 = 17;
 
 
 	private String address;
@@ -272,6 +273,9 @@ public class DeviceInfo implements Serializable {
 			case 0xDE:
 				deviceType = DEVICE_TYPE_HG;
 				return BLEConsts.HG_DISPLAY_NAME;
+			case 0xDF:
+				deviceType = DEVICE_TYPE_CTW3;
+				return BLEConsts.CTW3_DISPLAY_NAME;
 			default:
 				return null;
 		}
@@ -319,6 +323,9 @@ public class DeviceInfo implements Serializable {
 				break;
 			case BLEConsts.HG_DISPLAY_NAME:
 				deviceType = DEVICE_TYPE_HG;
+				break;
+			case BLEConsts.CTW3_DISPLAY_NAME:
+				deviceType = DEVICE_TYPE_CTW3;
 				break;
 		}
 	}

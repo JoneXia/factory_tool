@@ -369,6 +369,7 @@
     <string name="s_mten">维护模式</string>
     <string name="s_mten_i">维护中，点击OK键退出</string>
     <string name="s_err_hall_o">集便盒上盖异常，请检查</string>
+    <string name="s_pet_s">传感器已触发，长按“OK”键恢复工作</string>
 
 
 </resources>
