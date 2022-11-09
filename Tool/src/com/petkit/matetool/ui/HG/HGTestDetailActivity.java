@@ -466,10 +466,10 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                 sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule(), data));
                 break;
             case TEST_MODE_FAN:
-                mDescTextView.append(mStep == 0 ? "\n转速设为：50%" : "\n转速设为：100%");
+                mDescTextView.append(mStep == 0 ? "\n转速设为：88%" : "\n转速设为：100%");
                 data = new byte[2];
                 data[0] = (byte) mTestUnits.get(mCurTestStep).getState();
-                data[1] = (byte) (mStep == 0 ? 60 : 100);
+                data[1] = (byte) (mStep == 0 ? 88 : 100);
                 sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule(), data));
                 break;
             case TEST_MODE_LED:
@@ -674,7 +674,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                     case TEST_MODE_FAN:
                         desc.append("\n电流：").append(byteToInt(data, 0, 2)).append("， 转速： ").append(byteToInt(data, 2, 2));
                         if (mStep == 0) {
-                            if (byteToInt(data, 0, 2) >= 350 && byteToInt(data, 0, 2) <= 700) {
+                            if (byteToInt(data, 0, 2) >= 1100 && byteToInt(data, 0, 2) <= 1700) {
                                 mTempNumber++;
                             } else {
                                 mTempNumber = 0;
@@ -684,7 +684,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                                 mStep = 1;
                                 mTempNumber = 0;
                                 mTempResult = (mTempResult | 0x1);
-                                startTestModule();
+//                                startTestModule();
                             }
                         } else {
                             if (byteToInt(data, 0, 2) >= 1500 && byteToInt(data, 0, 2) <= 2500) {
