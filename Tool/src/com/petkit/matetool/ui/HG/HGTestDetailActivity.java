@@ -70,7 +70,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
     private boolean isNewSN = false;
     private short offset1, offset2, offset3;
     private byte[] mTempData;
-    private int mStep, mTempNumber;
+    private int mStep = 0, mTempNumber;
     private long mPTCStartTime, mTempTimestamp;
 
     private AgeingResult mAgeingResult;
@@ -233,6 +233,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
             case TEST_MODE_TEMP_SET:
             case TEST_MODE_ANION:
             case TEST_MODE_TEMP:
+            case TEST_MODE_FAN:
             case TEST_MODE_AGEINGRESULT:
                 mBtn1.setText(R.string.Start);
                 mBtn2.setText(R.string.Failure);
@@ -396,8 +397,12 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                     case TEST_MODE_RESET_SN:
                         gotoNextTestModule();
                         break;
-                    case TEST_MODE_LIGHT:
                     case TEST_MODE_FAN:
+                        if (mTempResult != 0x111) {
+                            showLongToast("自动检测条件未通过，请检查");
+                            return;
+                        }
+                    case TEST_MODE_LIGHT:
                     case TEST_MODE_ANION:
                         mTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         isWriteEndCmd = true;
@@ -466,10 +471,14 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                 sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule(), data));
                 break;
             case TEST_MODE_FAN:
-                mDescTextView.append(mStep == 0 ? "\n转速设为：88%" : "\n转速设为：100%");
+                if (mStep == 0 || (mStep == 1 && mTempResult == 0x1) || (mStep == 2 && mTempResult == 0x11)) {
+                    mStep++;
+                }
+                mTempNumber = 0;
+                mDescTextView.append(mStep == 1 ? "\n转速设为：84%" : (mStep == 2 ? "\n转速设为：88%" : "\n转速设为：100%"));
                 data = new byte[2];
                 data[0] = (byte) mTestUnits.get(mCurTestStep).getState();
-                data[1] = (byte) (mStep == 0 ? 88 : 100);
+                data[1] = (byte) (mStep == 1 ? 84 : (mStep == 2 ? 88 : 100));
                 sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule(), data));
                 break;
             case TEST_MODE_LED:
@@ -673,7 +682,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                         break;
                     case TEST_MODE_FAN:
                         desc.append("\n电流：").append(byteToInt(data, 0, 2)).append("， 转速： ").append(byteToInt(data, 2, 2));
-                        if (mStep == 0) {
+                        if (mStep == 1) {
                             if (byteToInt(data, 0, 2) >= 1100 && byteToInt(data, 0, 2) <= 1700) {
                                 mTempNumber++;
                             } else {
@@ -681,10 +690,19 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                             }
 
                             if (mTempNumber >= 5) {
-                                mStep = 1;
-                                mTempNumber = 0;
                                 mTempResult = (mTempResult | 0x1);
-//                                startTestModule();
+                                desc.append("，可进入下一步");
+                            }
+                        } else if (mStep == 2) {
+                            if (byteToInt(data, 0, 2) >= 1100 && byteToInt(data, 0, 2) <= 1700) {
+                                mTempNumber++;
+                            } else {
+                                mTempNumber = 0;
+                            }
+
+                            if (mTempNumber >= 5) {
+                                mTempResult = (mTempResult | 0x10);
+                                desc.append("，可进入下一步");
                             }
                         } else {
                             if (byteToInt(data, 0, 2) >= 1500 && byteToInt(data, 0, 2) <= 2500) {
@@ -694,11 +712,10 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                             }
 
                             if (mTempNumber >= 5) {
-                                mStep = 2;
-                                mTempResult = (mTempResult | 0x10);
+                                mTempResult = (mTempResult | 0x100);
+                                desc.append("，自动检测已完成");
                             }
                         }
-                        result = mTempResult == 0x11;
                         break;
                     case TEST_MODE_TEMP_SET:
                         mTempData = data;

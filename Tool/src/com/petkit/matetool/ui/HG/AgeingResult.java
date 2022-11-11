@@ -1,5 +1,6 @@
 package com.petkit.matetool.ui.HG;
 
+import com.google.gson.Gson;
 import com.petkit.android.utils.ByteUtil;
 
 public class AgeingResult {
@@ -79,27 +80,7 @@ public class AgeingResult {
 
     @Override
     public String toString() {
-        return "AgeingResult{" +
-                "targetTemp=" + targetTemp +
-                ", ageingDuration=" + ageingDuration +
-                ", ntc1AverageTemp=" + ntc1AverageTemp +
-                ", ntc1CurTemp=" + ntc1CurTemp +
-                ", ntc2AverageTemp=" + ntc2AverageTemp +
-                ", ntc2CurTemp=" + ntc2CurTemp +
-                ", ntcPtcAverageTemp=" + ntcPtcAverageTemp +
-                ", ntcPtcCurTemp=" + ntcPtcCurTemp +
-                ", ahtAverageTemp=" + ahtAverageTemp +
-                ", ahtCurTemp=" + ahtCurTemp +
-                ", ahtAverageHumi=" + ahtAverageHumi +
-                ", aht1CurHumi=" + aht1CurHumi +
-                ", powerAverageCurr=" + powerAverageCurr +
-                ", powerCurCurr=" + powerCurCurr +
-                ", powerAverageSpeed=" + powerAverageSpeed +
-                ", powerCurSpeed=" + powerCurSpeed +
-                ", errCode=" + errCode +
-                ", errDetail=" + errDetail +
-                ", ageResult=" + ageResult +
-                '}';
+        return new Gson().toJson(this);
     }
 
 
