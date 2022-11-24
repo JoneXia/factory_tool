@@ -323,6 +323,7 @@ public class CTW3TestDetailActivity extends BaseActivity implements PrintResultC
                 switch (mTestUnits.get(mCurTestStep).getType()) {
                     case TEST_MODE_LED:
                     case TEST_MODE_PUMP:
+                    case TEST_MODE_PROXIMITY:
                         isWriteEndCmd = true;
                         mTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
 
@@ -342,6 +343,7 @@ public class CTW3TestDetailActivity extends BaseActivity implements PrintResultC
                         gotoNextTestModule();
                         break;
                     case TEST_MODE_LED:
+                    case TEST_MODE_PROXIMITY:
                         mTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         gotoNextTestModule();
                         break;
