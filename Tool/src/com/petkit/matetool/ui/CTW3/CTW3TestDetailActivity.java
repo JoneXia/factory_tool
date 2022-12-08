@@ -176,10 +176,11 @@ public class CTW3TestDetailActivity extends BaseActivity implements PrintResultC
                 }
                 break;
             case TEST_MODE_DC:
+            case TEST_MODE_AUTO:
                 mPromptTextView.setText("正常电压范围（单位mV）：[4500, 5500]，BAT电压范围：【3500， 4300】");
                 break;
             case TEST_MODE_LED:
-                mPromptTextView.setText("测试指示灯蓝绿依次闪烁，观察是否正常！");
+                mPromptTextView.setText("测试指示灯《蓝红绿》依次闪烁，观察是否正常！");
                 break;
             case TEST_MODE_KEY:
                 mPromptTextView.setText("按键测试，观察是否正常！");
