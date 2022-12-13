@@ -136,7 +136,7 @@ public class D4Utils {
         if(type == TYPE_DUPLICATE_MAC) {
             results.add(new D4TestUnit(D4TestModes.TEST_MODE_MAC, "设置重复", 99, 1));
         } else if(type == TYPE_DUPLICATE_SN){
-            results.add(new D4TestUnit(D4TestModes.TEST_MODE_SN, "写入SN", 98, 2));
+            results.add(new D4TestUnit(D4TestModes.TEST_MODE_RESET_SN, "重写SN", 98, 2));
             results.add(new D4TestUnit(D4TestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
         } else {
             if (type == TYPE_MAINTAIN) {

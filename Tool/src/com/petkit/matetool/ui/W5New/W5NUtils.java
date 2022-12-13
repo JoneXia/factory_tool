@@ -1,7 +1,6 @@
 package com.petkit.matetool.ui.W5New;
 
 import com.petkit.android.ble.BLEConsts;
-import com.petkit.matetool.ui.D4.mode.D4TestUnit;
 import com.petkit.matetool.utils.Globals;
 
 import java.util.ArrayList;
@@ -61,7 +60,7 @@ public class W5NUtils {
         if(type == Globals.TYPE_DUPLICATE_MAC) {
             results.add(new W5NTestUnit(W5NTestModes.TEST_MODE_MAC, "MAC重复", 97, 1));
         } else if(type == Globals.TYPE_DUPLICATE_SN){
-            results.add(new W5NTestUnit(W5NTestModes.TEST_MODE_RESET_SN, "写入SN", 98, 2));
+            results.add(new W5NTestUnit(W5NTestModes.TEST_MODE_RESET_SN, "重写SN", 98, 2));
             results.add(new W5NTestUnit(W5NTestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
         } else {
             results.add(new W5NTestUnit(W5NTestModes.TEST_MODE_LED, "指示灯测试", 1, 1));

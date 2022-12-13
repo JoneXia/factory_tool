@@ -41,7 +41,7 @@ public class K3Utils {
         if(type == Globals.TYPE_DUPLICATE_MAC) {
             results.add(new K3TestUnit(K3TestModes.TEST_MODE_MAC, "MAC重复", 97, 1));
         } else if(type == Globals.TYPE_DUPLICATE_SN){
-            results.add(new K3TestUnit(K3TestModes.TEST_MODE_SN, "写入SN", 98, 2));
+            results.add(new K3TestUnit(K3TestModes.TEST_MODE_RESET_SN, "重写SN", 98, 2));
             results.add(new K3TestUnit(K3TestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
         } else {
 
