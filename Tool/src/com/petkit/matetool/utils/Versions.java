@@ -442,7 +442,11 @@ public class Versions {
 	 *
 	 * v1.2
 	 * 1. 新增老化测试
+	 *
+	 * v1.3
+	 * 1. 新增HG-p
+	 *
 	 */
-	public static final String TOOL_HG_VERSION	= "1.2";
+	public static final String TOOL_HG_VERSION	= "1.3";
 
 }

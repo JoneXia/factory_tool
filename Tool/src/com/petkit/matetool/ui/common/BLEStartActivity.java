@@ -80,6 +80,8 @@ public class BLEStartActivity extends BaseActivity {
                 break;
             case Globals.HG:
             case Globals.HG_110V:
+            case Globals.HG_P:
+            case Globals.HG_P_110V:
                 findViewById(R.id.test_case1).setVisibility(View.VISIBLE);
                 findViewById(R.id.test_case0).setVisibility(View.VISIBLE);
 //                findViewById(R.id.test_case4).setVisibility(View.GONE);

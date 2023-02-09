@@ -30,6 +30,7 @@ public class HGUtils {
         TEST_MODE_TEMP_SET,     //3路温度传感器校准
         TEST_MODE_PTC,  //PTC加热片
         TEST_MODE_ANION,    //负离子开关
+        TEST_MODE_O3,    //臭氧开关
         TEST_MODE_LIGHT,    //照明灯
         TEST_MODE_LOCK,    //激活状态
         TEST_MODE_SN,   //写SN
@@ -85,6 +86,10 @@ public class HGUtils {
 
             if (type != Globals.TYPE_TEST_MAINBOARD) {
                 results.add(new HGTestUnit(HGTestModes.TEST_MODE_ANION, "负离子测试", 242, 8));
+            }
+
+            if (type != Globals.TYPE_TEST_MAINBOARD && (deviceType == Globals.HG_P || deviceType == Globals.HG_P_110V) ) {
+                results.add(new HGTestUnit(HGTestModes.TEST_MODE_O3, "臭氧测试", 242, 9));
             }
 
             if (type != Globals.TYPE_TEST_MAINBOARD) {

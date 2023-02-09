@@ -206,6 +206,9 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
             case TEST_MODE_ANION:
                 mPromptTextView.setText("测试负离子开关，观察是否正常！");
                 break;
+            case TEST_MODE_O3:
+                mPromptTextView.setText("测试臭氧开关，观察是否正常！");
+                break;
             case TEST_MODE_LIGHT:
                 mPromptTextView.setText("测试照明灯，观察是否正常！");
                 break;
@@ -232,6 +235,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
             case TEST_MODE_TEMP_ANT:
             case TEST_MODE_TEMP_SET:
             case TEST_MODE_ANION:
+            case TEST_MODE_O3:
             case TEST_MODE_TEMP:
             case TEST_MODE_FAN:
             case TEST_MODE_AGEINGRESULT:
@@ -366,6 +370,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                     case TEST_MODE_LIGHT:
                     case TEST_MODE_FAN:
                     case TEST_MODE_ANION:
+                    case TEST_MODE_O3:
                         mTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
                         isWriteEndCmd = true;
 
@@ -404,6 +409,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                         }
                     case TEST_MODE_LIGHT:
                     case TEST_MODE_ANION:
+                    case TEST_MODE_O3:
                         mTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         isWriteEndCmd = true;
 
@@ -493,6 +499,12 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                 data[1] = (byte) (mStep%2 == 0 ? 100 : 0);
                 sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule(), data));
                 mStep++;
+                break;
+            case TEST_MODE_O3:
+                data = new byte[2];
+                data[0] = (byte) mTestUnits.get(mCurTestStep).getState();
+                data[1] = (byte) (1);
+                sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule(), data));
                 break;
             case TEST_MODE_PTC:
                 mPTCStartTime = System.currentTimeMillis();
@@ -605,6 +617,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
             case TEST_MODE_LIGHT:
             case TEST_MODE_FAN:
             case TEST_MODE_ANION:
+            case TEST_MODE_O3:
                 byte[] data = new byte[2];
                 data[0] = (byte) mTestUnits.get(mCurTestStep).getState();
                 data[1] = (byte) 0;
@@ -764,6 +777,15 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                         break;
                     case TEST_MODE_ANION:
                         desc.append("\n负离子").append(data[0] == 1 ? "已打开" : "已关闭");
+                        if (data[0] == 1) {
+                            mTempResult = (mTempResult | 0x1);
+                        } else {
+                            mTempResult = (mTempResult | 0x10);
+                        }
+                        result = mTempResult == 0x11;
+                        break;
+                    case TEST_MODE_O3:
+                        desc.append("\n臭氧").append(data[0] == 1 ? "已打开" : "已关闭");
                         if (data[0] == 1) {
                             mTempResult = (mTempResult | 0x1);
                         } else {

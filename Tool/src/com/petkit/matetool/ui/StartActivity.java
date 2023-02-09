@@ -350,6 +350,12 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
             case R.id.hg_100v:
                 testStyle = Globals.HG_110V;
                 break;
+            case R.id.hg_p:
+                testStyle = Globals.HG_P;
+                break;
+            case R.id.hg_p_100v:
+                testStyle = Globals.HG_P_110V;
+                break;
             //TODO: 新增设备需对应添加
             default:
                 break;
@@ -454,6 +460,12 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
 
         tempRadioButton = (RadioButton) findViewById(R.id.hg_100v);
         tempRadioButton.setText(getTextDetail(Globals.HG_110V, "烘干箱110V（HG）" + " v" + TOOL_HG_VERSION));
+
+        tempRadioButton = (RadioButton) findViewById(R.id.hg_p);
+        tempRadioButton.setText(getTextDetail(Globals.HG_P, "烘干箱活氧版220V（HG_p）" + " v" + TOOL_HG_VERSION));
+
+        tempRadioButton = (RadioButton) findViewById(R.id.hg_p_100v);
+        tempRadioButton.setText(getTextDetail(Globals.HG_P_110V, "烘干箱活氧版110V（HG_p）" + " v" + TOOL_HG_VERSION));
 
         //TODO: 新增设备需对应添加
     }
