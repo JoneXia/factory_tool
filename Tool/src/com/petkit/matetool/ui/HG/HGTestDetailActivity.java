@@ -209,6 +209,9 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
             case TEST_MODE_O3:
                 mPromptTextView.setText("测试臭氧开关，观察是否正常！");
                 break;
+            case TEST_MODE_O3_TEST:
+                mPromptTextView.setText("模拟App开关臭氧的指令！");
+                break;
             case TEST_MODE_LIGHT:
                 mPromptTextView.setText("测试照明灯，观察是否正常！");
                 break;
@@ -236,6 +239,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
             case TEST_MODE_TEMP_SET:
             case TEST_MODE_ANION:
             case TEST_MODE_O3:
+            case TEST_MODE_O3_TEST:
             case TEST_MODE_TEMP:
             case TEST_MODE_FAN:
             case TEST_MODE_AGEINGRESULT:
@@ -379,6 +383,14 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                         data[1] = (byte) 0;
                         sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule(), data));
                         break;
+                    case TEST_MODE_O3_TEST:
+                        mTestUnits.get(mCurTestStep).setResult(TEST_FAILED);
+                        isWriteEndCmd = true;
+
+                        data = new byte[1];
+                        data[0] = (byte) mTestUnits.get(mCurTestStep).getState();
+                        sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule(), data));
+                        break;
                     case TEST_MODE_PRINT:
                         startActivity(PrintActivity.class);
                         break;
@@ -410,6 +422,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                     case TEST_MODE_LIGHT:
                     case TEST_MODE_ANION:
                     case TEST_MODE_O3:
+                    case TEST_MODE_O3_TEST:
                         mTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         isWriteEndCmd = true;
 
@@ -618,6 +631,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
             case TEST_MODE_FAN:
             case TEST_MODE_ANION:
             case TEST_MODE_O3:
+            case TEST_MODE_O3_TEST:
                 byte[] data = new byte[2];
                 data[0] = (byte) mTestUnits.get(mCurTestStep).getState();
                 data[1] = (byte) 0;
