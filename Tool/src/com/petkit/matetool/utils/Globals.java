@@ -121,7 +121,6 @@ public class Globals {
 	public static final String DEVICE_TYPE_CODE_NEW_HG_P 	= "H4";
 	public static final String DEVICE_TYPE_CODE_NEW_HG_P_100V 	= "H5";
 
-
 	public static final int TYPE_TEST_PARTIALLY         = 1;
 	public static final int TYPE_TEST                   = 2;
 	public static final int TYPE_MAINTAIN               = 3;

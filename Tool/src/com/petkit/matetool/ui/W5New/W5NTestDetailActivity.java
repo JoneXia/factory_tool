@@ -293,7 +293,7 @@ public class W5NTestDetailActivity extends BaseActivity implements PrintResultCa
                         }
                         break;
                     case TEST_MODE_RESET_SN:
-                        showSNSetDialog();
+                        startScanSN(mDeviceType);
                         break;
                     case TEST_MODE_SN:
                         startSetSn();
