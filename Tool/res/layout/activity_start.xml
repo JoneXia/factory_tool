@@ -76,6 +76,13 @@
                 android:layout_marginTop="5dip" />
 
             <RadioButton
+                android:id="@+id/w4x_uv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip"
+                android:text="智能鱼缸-AQ1S"/>
+
+            <RadioButton
                 android:id="@+id/feeder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

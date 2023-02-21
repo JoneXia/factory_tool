@@ -356,6 +356,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
             case R.id.hg_p_100v:
                 testStyle = Globals.HG_P_110V;
                 break;
+            case R.id.w4x_uv:
+                testStyle = Globals.W4X_UV;
+                break;
             //TODO: 新增设备需对应添加
             default:
                 break;
@@ -467,6 +470,8 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
         tempRadioButton = (RadioButton) findViewById(R.id.hg_p_100v);
         tempRadioButton.setText(getTextDetail(Globals.HG_P_110V, "烘干箱活氧版110V（HG_p）" + " v" + TOOL_HG_VERSION));
 
+        tempRadioButton = (RadioButton) findViewById(R.id.w4x_uv);
+        tempRadioButton.setText(getTextDetail(Globals.W4X_UV, "无线智能饮水机-不锈钢-UV杀菌（W4X-UV）" + " v" + TOOL_W5N_VERSION));
         //TODO: 新增设备需对应添加
     }
 

@@ -55,8 +55,9 @@ public class Globals {
 	public static final int HG_110V = 33;
 	public static final int HG_P = 34;
 	public static final int HG_P_110V = 35;
+	public static final int W4X_UV = 36;
 	//TODO: 新增设备时，max值需加一
-	public static final int MAX = 36;
+	public static final int MAX = 37;
 
 //	public static int g_testStyle = 0;
 
@@ -120,6 +121,7 @@ public class Globals {
 	public static final String DEVICE_TYPE_CODE_NEW_HG_100V 	= "H3";
 	public static final String DEVICE_TYPE_CODE_NEW_HG_P 	= "H4";
 	public static final String DEVICE_TYPE_CODE_NEW_HG_P_100V 	= "H5";
+	public static final String DEVICE_TYPE_CODE_NEW_W4X_UV 	= "W4";
 
 	public static final int TYPE_TEST_PARTIALLY         = 1;
 	public static final int TYPE_TEST                   = 2;

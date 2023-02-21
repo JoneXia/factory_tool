@@ -225,9 +225,11 @@ public class Versions {
 	 * 1. W5/W5C使用独立账号
 	 * 2. 移除W5产测功能
 	 *
-		 v2.2说明：
-		 1. 写入SN改成扫码
-		 2. 修改SN规则
+	 *
+	 * v2.2说明：
+	 * 1. 写入SN改成扫码
+	 * 2. 修改SN规则
+	 *
 	 */
 	public static final String TOOL_W5_VERSION	= "2.2";
 
@@ -370,8 +372,11 @@ public class Versions {
 	 * 		 3. 增加版本号显示
 	 * 		 4. 增加SN写入校验
 	 *
+	 *
+	 * v1.3说明：
+	 * 1. 支持W4X-UV
 	 */
-	public static final String TOOL_W5N_VERSION	= "1.2";
+	public static final String TOOL_W5N_VERSION	= "1.3";
 
 
 	/**

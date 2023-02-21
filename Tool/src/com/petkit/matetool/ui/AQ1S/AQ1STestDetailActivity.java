@@ -562,7 +562,6 @@ public class AQ1STestDetailActivity extends BaseActivity implements PrintResultC
         }
     }
 
-<<<<<<< HEAD
     private void generateAndSendSN() {
         String sn = DeviceCommonUtils.generateSNForTester(mDeviceType, mTester);
         if (sn == null) {
@@ -574,8 +573,6 @@ public class AQ1STestDetailActivity extends BaseActivity implements PrintResultC
         mDevice.setCreation(System.currentTimeMillis());
         sendBleData(BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_WRITE_SN, mDevice.getSn().getBytes()));
     }
-=======
->>>>>>> 792716e97641ef65fb6b89c5f15d87bdc632904b
 
     private Bundle getPrintParam() {
         Bundle param = new Bundle();

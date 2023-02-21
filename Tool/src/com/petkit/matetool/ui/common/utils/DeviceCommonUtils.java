@@ -125,6 +125,8 @@ public class DeviceCommonUtils {
                 Globals.DEVICE_TYPE_CODE_NEW_HG_100V, HGTestMainActivity.class));
         mDeviceConfigs.put(Globals.HG_P_110V, new DeviceConfigInfo(true, "HG", "HG_P_110", new String[]{"Petkit_HG", "Petkit_HG_P"},
                 Globals.DEVICE_TYPE_CODE_NEW_HG_P_100V, HGTestMainActivity.class));
+        mDeviceConfigs.put(Globals.W4X_UV, new DeviceConfigInfo(true, "W5", "W4X-UV", new String[]{"Petkit_W5N", "Petkit_W4X", "Petkit_W4X_UV"},
+                Globals.DEVICE_TYPE_CODE_NEW_W4X_UV, W5NTestMainActivity.class));
     }
 
     /**
