@@ -64,6 +64,7 @@
   <string name="s_mten">유지 보수 모드</string>
   <string name="s_mten_i">유지 보수 중, OK를 눌러 나가기 </string>
   <string name="s_err_hall_o">밀봉 덮개 오류. 확인해 주십시오</string>
+  <string name="s_pet_s">센서가 작동했습니다. "OK"를 길게 눌러 재시작해 주십시오</string>
 
 
 </resources>

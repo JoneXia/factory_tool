@@ -17,7 +17,7 @@ public class Globals {
 	public static final String EXTRA_PERMISSION_CONTENT      = "com.petkit.android.EXTRA_PERMISSION_CONTENT";
 	public static final String BROADCAST_PERMISSION_FINISHED = "com.petkit.android.BROADCAST_PERMISSION_FINISHED";
 
-	public static final boolean PERMISSION_ERASE = false;
+	public static final boolean PERMISSION_ERASE = true;
 	
 	//test style  1--mate style , 2---mate pro
 	public static final int MATE_STYLE = 1;
@@ -56,11 +56,12 @@ public class Globals {
 	public static final int HG_P = 34;
 	public static final int HG_P_110V = 35;
 	public static final int W4X_UV = 36;
+	public static final int CTW3 = 37;
+
+
 	//TODO: 新增设备时，max值需加一
-	public static final int MAX = 37;
-
-//	public static int g_testStyle = 0;
-
+	public static final int MAX = 38;
+	//	public static int g_testStyle = 0;
 	/**
 	 * SN中的设备类型标记位定义
 	 */
@@ -121,6 +122,7 @@ public class Globals {
 	public static final String DEVICE_TYPE_CODE_NEW_HG_100V 	= "H3";
 	public static final String DEVICE_TYPE_CODE_NEW_HG_P 	= "H4";
 	public static final String DEVICE_TYPE_CODE_NEW_HG_P_100V 	= "H5";
+	public static final String DEVICE_TYPE_CODE_NEW_CTW3 	= "W3";
 	public static final String DEVICE_TYPE_CODE_NEW_W4X_UV 	= "W4";
 
 	public static final int TYPE_TEST_PARTIALLY         = 1;

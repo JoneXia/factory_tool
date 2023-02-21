@@ -52,7 +52,7 @@ public class R2Utils {
         if(type == Globals.TYPE_DUPLICATE_MAC) {
             results.add(new R2TestUnit(R2TestModes.TEST_MODE_MAC, "MAC重复", 97, 2));
         } else if(type == Globals.TYPE_DUPLICATE_SN){
-            results.add(new R2TestUnit(R2TestModes.TEST_MODE_RESET_SN, "写入SN", 98, 2));
+            results.add(new R2TestUnit(R2TestModes.TEST_MODE_RESET_SN, "重写SN", 98, 2));
             results.add(new R2TestUnit(R2TestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
         } else {
             results.add(new R2TestUnit(R2TestModes.TEST_MODE_AUTO, "自动测试项", 98, 2));

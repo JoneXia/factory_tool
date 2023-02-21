@@ -41,6 +41,7 @@ public class BLEConsts {
 	public static final String AQ1S_DISPLAY_NAME = "Petkit_AQ1S";
 	public static final String HG_DISPLAY_NAME = "Petkit_HG";
 	public static final String HG_P_DISPLAY_NAME = "Petkit_HG_P";
+	public static final String CTW3_DISPLAY_NAME = "Petkit_CTW3";
 
 
 //	public static final String[] DeviceFilter = new String[]{"PETKIT", "PETKIT2", PET_FIT_DISPLAY_NAME, PET_FIT2_DISPLAY_NAME,

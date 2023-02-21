@@ -65,6 +65,7 @@
   <string name="s_mten">Modalità di Manutenzione</string>
   <string name="s_mten_i">In manutenzione, fare clic su OK per uscire</string>
   <string name="s_err_hall_o">Errore del coperchio di tenuta, controllare</string>
+  <string name="s_pet_s">Sensore attivo, premi a lungo "OK" per riprendere</string>
 
 
 </resources>

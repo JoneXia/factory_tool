@@ -145,7 +145,7 @@ public class W5Utils {
         if(type == TYPE_DUPLICATE_MAC) {
             results.add(new W5TestUnit(W5TestModes.TEST_MODE_MAC, "MAC重复", 97, 1));
         } else if(type == TYPE_DUPLICATE_SN){
-            results.add(new W5TestUnit(W5TestModes.TEST_MODE_SN, "写入SN", 98, 2));
+            results.add(new W5TestUnit(W5TestModes.TEST_MODE_RESET_SN, "重写SN", 98, 2));
             results.add(new W5TestUnit(W5TestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
         } else {
 //            results.add(new W5TestUnit(W5TestModes.TEST_MODE_LED, "LED灯测试", BLEConsts.OP_CODE_W5_TEST_STEP, 0));

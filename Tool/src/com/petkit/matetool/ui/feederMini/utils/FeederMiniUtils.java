@@ -119,7 +119,7 @@ public class FeederMiniUtils {
         if(type == TYPE_DUPLICATE_MAC) {
             results.add(new FeederMiniTestUnit(FeederMiniTestModes.TEST_MODE_MAC, "设置重复", 99, 1));
         } else if(type == TYPE_DUPLICATE_SN){
-            results.add(new FeederMiniTestUnit(FeederMiniTestModes.TEST_MODE_SN, "写入SN", 12, 2));
+            results.add(new FeederMiniTestUnit(FeederMiniTestModes.TEST_MODE_RESET_SN, "重写SN", 12, 2));
             results.add(new FeederMiniTestUnit(FeederMiniTestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
         } else {
             if (type != TYPE_TEST_PARTIALLY) {

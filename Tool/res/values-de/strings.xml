@@ -65,6 +65,7 @@
     <string name="s_mten">Wartungsmodus</string>
     <string name="s_mten_i">Unter Wartung, klicken Sie zum Abbrechen</string>
     <string name="s_err_hall_o">Fehler am Dichtungsdeckel, bitte überprüfen</string>
+    <string name="s_pet_s">Sensor ausgelöst, langes Drücken auf "OK" zum Fortfahren</string>
 
 
 </resources>
