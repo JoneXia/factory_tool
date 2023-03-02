@@ -82,6 +82,7 @@ public class D4STestDetailActivity extends BaseActivity implements PetkitSocketI
     private boolean isNewSN = false;
     private int mDeviceType;
     private int mTestType;
+    private int leftLow, leftTop, rightLow, rightTop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -207,7 +208,7 @@ public class D4STestDetailActivity extends BaseActivity implements PetkitSocketI
                 mPromptTextView.setText("自动测试项包括：电压、时钟、蓝牙，点击开始后程序自动完成检测。");
                 break;
             case TEST_MODE_PROXIMITY:
-                mPromptTextView.setText("测试接近传感器，包括左右各一个");
+                mPromptTextView.setText("测试接近传感器，接近最大值和最小值之差大于100则测试成功。");
             default:
                 break;
         }
@@ -638,21 +639,21 @@ public class D4STestDetailActivity extends BaseActivity implements PetkitSocketI
                         desc.append("\n").append("左数值：").append(moduleStateStruct.getSub1())
                                 .append("，右数值：").append(moduleStateStruct.getSub2());
 
-                        if ((moduleStateStruct.getState() & 0x1) == 1) {
+                        leftLow = (leftLow == 0 || moduleStateStruct.getSub1() < leftLow) ? moduleStateStruct.getSub1() : leftLow;
+                        leftTop = (leftTop == 0 || moduleStateStruct.getSub1() > leftTop) ? moduleStateStruct.getSub1() : leftTop;
+                        rightLow = (rightLow == 0 ||  moduleStateStruct.getSub2() < rightLow) ? moduleStateStruct.getSub2() : rightLow;
+                        rightTop = (rightTop == 0 || moduleStateStruct.getSub2() > rightTop) ? moduleStateStruct.getSub2() : rightTop;
+
+                        if (leftTop - leftLow >= 80 && leftLow < 350 && leftLow > 0) {
                             mTempResult = (mTempResult | 0x1);
-                            desc.append("\n").append("左接近：触发");
-                        } else {
-                            desc.append("\n").append("左接近：未触发");
+                            desc.append("\n").append("左接近：测试成功");
+                        }
+
+                        if (rightTop - rightLow >= 80 && rightLow < 350 && rightLow > 0) {
+                            desc.append("\n").append("右接近：测试成功");
                             mTempResult = (mTempResult | 0x10);
                         }
-                        if ((moduleStateStruct.getState() & 0x2) == 0x2) {
-                            mTempResult = (mTempResult | 0x100);
-                            desc.append("；").append("右接近：触发");
-                        } else {
-                            desc.append("；").append("右接近：未触发");
-                            mTempResult = (mTempResult | 0x1000);
-                        }
-                        result = mTempResult == 0x1111;
+                        result = mTempResult == 0x11;
                         break;
                 }
                 mDescTextView.append(desc.toString());
