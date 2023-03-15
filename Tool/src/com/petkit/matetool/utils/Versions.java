@@ -463,4 +463,15 @@ public class Versions {
 	 */
 	public static final String TOOL_CTW3_VERSION	= "0.1";
 
+
+
+	/**
+	 *
+	 * v1.0
+	 * 1. 支持D4SH产测全功能
+	 *
+	 */
+	public static final String TOOL_D4SH_VERSION	= "0.1";
+
+
 }
