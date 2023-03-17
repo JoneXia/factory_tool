@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -83,6 +84,9 @@ public class D4STestDetailActivity extends BaseActivity implements PetkitSocketI
     private int mDeviceType;
     private int mTestType;
     private int leftLow, leftTop, rightLow, rightTop;
+
+    //正在写入SN时，过滤重复的点击
+    private boolean isWritingSN = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -292,12 +296,20 @@ public class D4STestDetailActivity extends BaseActivity implements PetkitSocketI
                         showSNSetDialog();
                         break;
                     case TEST_MODE_SN:
-                        HashMap<String, Object> params = new HashMap<>();
-                        params.put("mac", mDevice.getMac());
-                        PetkitSocketInstance.getInstance().sendString(DeviceCommonUtils.getRequestForKeyAndPayload(167, params));
+                        if (!isWritingSN) {
+                            if (TextUtils.isEmpty(mAgeingResult)) {
+                                HashMap<String, Object> params = new HashMap<>();
+                                params.put("mac", mDevice.getMac());
+                                PetkitSocketInstance.getInstance().sendString(DeviceCommonUtils.getRequestForKeyAndPayload(167, params));
+                            } else {
+                                startSetSn();
+                            }
+                        } else {
+                            showShortToast("正在写入SN，请稍后！");
+                        }
                         break;
                     case TEST_MODE_MAC:
-                        params = new HashMap<>();
+                        HashMap<String, Object> params = new HashMap<>();
                         params.put("mac", mDevice.getMac());
                         PetkitSocketInstance.getInstance().sendString(DeviceCommonUtils.getRequestForKeyAndPayload(165, params));
                         break;
@@ -741,7 +753,7 @@ public class D4STestDetailActivity extends BaseActivity implements PetkitSocketI
                 mAgeingResult = data;
                 if (mTestUnits.get(mCurTestStep).getType() == TEST_MODE_AGEINGRESULT) {
                     mDescTextView.setText(mAgeingResult);
-                } else {
+                } else if (!isWritingSN){
                     startSetSn();
                 }
                 break;
@@ -772,6 +784,8 @@ public class D4STestDetailActivity extends BaseActivity implements PetkitSocketI
                 } catch (JSONException e) {
                     mDescTextView.append("\n读取校验失败");
                 }
+
+                isWritingSN = false;
                 break;
         }
     }
@@ -824,6 +838,8 @@ public class D4STestDetailActivity extends BaseActivity implements PetkitSocketI
                 if (mDevice.getSn() == null || !mDevice.getSn().equals(sn)) {
                     isNewSN = true;
                 }
+
+                isWritingSN = true;
                 mDevice.setSn(sn);
                 mDevice.setCreation(System.currentTimeMillis());
                 LogcatStorageHelper.addLog("write SN: " + sn);
@@ -851,6 +867,7 @@ public class D4STestDetailActivity extends BaseActivity implements PetkitSocketI
         mDevice.setCreation(System.currentTimeMillis());
 
         isNewSN = true;
+        isWritingSN = true;
         HashMap<String, Object> payload = new HashMap<>();
         payload.put("mac", mDevice.getMac());
         payload.put("sn", sn);
@@ -940,6 +957,7 @@ public class D4STestDetailActivity extends BaseActivity implements PetkitSocketI
                 }
                 mDevice.setSn(sn);
                 isNewSN =true;
+                isWritingSN = true;
 
                 HashMap<String, Object> payload = new HashMap<>();
                 payload.put("mac", mac);
