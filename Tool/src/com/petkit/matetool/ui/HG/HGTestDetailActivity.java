@@ -697,7 +697,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                     case TEST_MODE_FAN:
                         desc.append("\n电流：").append(byteToInt(data, 0, 2)).append("， 转速： ").append(byteToInt(data, 2, 2));
                         if (mStep == 1) {
-                            if (byteToInt(data, 0, 2) >= 1100 && byteToInt(data, 0, 2) <= 1700) {
+                            if (byteToInt(data, 0, 2) >= 990 && byteToInt(data, 0, 2) <= 1450) {
                                 mTempNumber++;
                             } else {
                                 mTempNumber = 0;
@@ -708,7 +708,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                                 desc.append("，可进入下一步");
                             }
                         } else if (mStep == 2) {
-                            if (byteToInt(data, 0, 2) >= 1100 && byteToInt(data, 0, 2) <= 1700) {
+                            if (byteToInt(data, 0, 2) >= 1040 && byteToInt(data, 0, 2) <= 1590) {
                                 mTempNumber++;
                             } else {
                                 mTempNumber = 0;
@@ -719,7 +719,7 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                                 desc.append("，可进入下一步");
                             }
                         } else {
-                            if (byteToInt(data, 0, 2) >= 1500 && byteToInt(data, 0, 2) <= 2500) {
+                            if (byteToInt(data, 0, 2) >= 1670 && byteToInt(data, 0, 2) <= 2300) {
                                 mTempNumber++;
                             } else {
                                 mTempNumber = 0;

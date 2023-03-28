@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -86,6 +87,8 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
     private boolean isNewSN = false;
     private int mTestType;
 
+    //正在写入SN时，过滤重复的点击
+    private boolean isWritingSN = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -300,12 +303,20 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
                         showSNSetDialog();
                         break;
                     case TEST_MODE_SN:
-                        HashMap<String, Object> params = new HashMap<>();
-                        params.put("mac", mDevice.getMac());
-                        PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(167, params));
+                        if (!isWritingSN) {
+                            if (TextUtils.isEmpty(mAgeingResult)) {
+                                HashMap<String, Object> params = new HashMap<>();
+                                params.put("mac", mDevice.getMac());
+                                PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(167, params));
+                            } else {
+                                startSetSn();
+                            }
+                        } else {
+                            showShortToast("正在写入SN，请稍后！");
+                        }
                         break;
                     case TEST_MODE_MAC:
-                        params = new HashMap<>();
+                        HashMap<String, Object> params = new HashMap<>();
                         params.put("mac", mDevice.getMac());
                         PetkitSocketInstance.getInstance().sendString(AQH1Utils.getRequestForKeyAndPayload(165, params));
                         break;
@@ -576,6 +587,8 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
                 if (mDevice.getSn() == null || !mDevice.getSn().equals(sn)) {
                     isNewSN = true;
                 }
+
+                isWritingSN = true;
                 mDevice.setSn(sn);
                 mDevice.setCreation(System.currentTimeMillis());
                 LogcatStorageHelper.addLog("write SN: " + sn);
@@ -843,7 +856,9 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
                 params.put("state", mDeviceType == AQH1_1000 || mDeviceType == AQH1_500 ? 1 : 2);
                 PetkitSocketInstance.getInstance().sendString(CozyUtils.getRequestForKeyAndPayload(163, params));
 
-                startSetSn();
+                if (!isWritingSN){
+                    startSetSn();
+                }
                 break;
             case 110:
                 try {
@@ -871,6 +886,8 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
                 } catch (JSONException e) {
                     mDescTextView.append("\n读取校验失败");
                 }
+
+                isWritingSN = false;
                 break;
         }
     }
@@ -913,6 +930,7 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
             return;
         }
         isNewSN = true;
+        isWritingSN = true;
         mDevice.setSn(sn);
         mDevice.setCreation(System.currentTimeMillis());
 
