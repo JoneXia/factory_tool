@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#b3000000">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal">
+
+        <TextView
+            style="@style/New_Style_Content_16_Light_White"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="开通云服务，查看完整视频" />
+
+        <TextView
+            android:id="@+id/open_immediately"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:background="@drawable/gradient_gold_corners_20_btn_bg"
+            android:textSize="14sp"
+            android:textColor="#FF713006"
+            android:textStyle="bold"
+            android:paddingLeft="22dp"
+            android:paddingRight="22dp"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp"
+            android:text="立即开通"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

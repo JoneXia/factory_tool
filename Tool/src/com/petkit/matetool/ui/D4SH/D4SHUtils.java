@@ -31,6 +31,7 @@ public class D4SHUtils {
         TEST_MODE_MOTOR,    //电机
         TEST_MODE_PROXIMITY, //接近传感器
         TEST_MODE_BAT, //电池
+        TEST_MODE_VIDEO,   //视频
         TEST_MODE_MAC,
         TEST_MODE_SN,   //写SN
         TEST_MODE_RESET_SN, //重置SN
@@ -68,7 +69,7 @@ public class D4SHUtils {
             results.add(new D4SHTestUnit(D4SHTestModes.TEST_MODE_RESET_SN, "重写SN", 98, 2));
             results.add(new D4SHTestUnit(D4SHTestModes.TEST_MODE_PRINT, "打印标签", -1, 1));
         } else {
-
+            results.add(new D4SHTestUnit(D4SHTestModes.TEST_MODE_VIDEO, "视频测试", -1, 1));
 
             if (type == Globals.TYPE_TEST || type == Globals.TYPE_AFTERMARKET) {
                 results.add(new D4SHTestUnit(D4SHTestModes.TEST_MODE_SN, "写入SN", 98, 2));

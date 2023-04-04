@@ -126,4 +126,14 @@
         <!-- View background -->
         <attr name="android:background"/>
     </declare-styleable>
+
+    <declare-styleable name="PetkitLogoLoadingView">
+        <attr name="pllv_icon_width" format="dimension"/>
+        <attr name="pllv_icon_height" format="dimension"/>
+        <attr name="pllv_src" format="reference"/>
+        <attr name="pllv_loading_src" format="reference"/>
+        <attr name="pllv_text" format="string"/>
+        <attr name="pllv_text_style" format="reference"/>
+        <attr name="pllv_text_margin_top" format="dimension"/>
+    </declare-styleable>
 </resources>

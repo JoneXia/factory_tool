@@ -1,32 +1,85 @@
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 
 dependencies {
-    compile fileTree(include: '*.jar', dir: 'libs')
-    compile project(':socketclient')
-    compile 'com.github.vilyever:AndroidLogger:1.0.9'
-    compile files('libs/DzPrinter-2017-05-11.jar')
-    compile project(':zxingsupport')
-    compile 'com.android.support:multidex:1.0.1'
-    compile project(':petkit_share_lib')
-    compile('com.github.gzu-liyujiang.AndroidPicker:FilePicker:1.5.5') {
+    implementation fileTree(include: '*.jar', dir: 'libs')
+    implementation project(':socketclient')
+    implementation 'com.github.vilyever:AndroidLogger:1.0.9'
+    implementation files('libs/DzPrinter-2017-05-11.jar')
+    implementation project(':zxingsupport')
+    implementation 'com.android.support:multidex:1.0.1'
+    implementation('com.github.gzu-liyujiang.AndroidPicker:FilePicker:1.5.5') {
+        exclude group: 'com.android.support'
+        exclude module: 'support-annotations'
+    }
+
+    implementation "com.google.code.gson:gson:2.8.0"
+    implementation 'cz.msebera.android:httpclient:4.4.1.1'
+    implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+    implementation 'com.umeng.analytics:umeng-analytics:5.4.1'
+    implementation 'com.github.satyan:sugar:1.4'
+
+    //ijk
+    implementation 'com.tencent.iot.thirdparty.android:ijkplayer-java:1.0.7'
+    implementation 'com.tencent.iot.thirdparty.android:ijkplayer-armv7a:1.0.7'
+    implementation 'com.tencent.iot.thirdparty.android:ijkplayer-arm64:1.0.7'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    implementation 'javax.annotation:jsr250-api:1.0'
+    implementation 'com.jakewharton:butterknife:10.0.0'
+    implementation('com.zhy:autolayout:1.4.5') {
         exclude group: 'com.android.support'
     }
-//    compile(name: 'blufi-2.3.0', ext: 'aar')
+    implementation 'org.simple:androideventbus:1.0.5.1'
+}
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
 }
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion '25.0.0'
+    compileSdkVersion 29
+    buildToolsVersion '30.0.2'
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    dexOptions {
+        jumboMode = true
+        javaMaxHeapSize "12g"
+//        incremental true
+    }
 
     defaultConfig {
+        applicationId "com.petkit.matetool"
         multiDexEnabled true
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode 5940
+        versionName "5.9.4"
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        flavorDimensions "versionCode"
+        ndk {
+            abiFilters "armeabi-v7a", "arm64-v8a"
+        }
+
+
+        //gradle3.0.0报错 加入下面代码
+        javaCompileOptions {
+
+            annotationProcessorOptions {
+                arguments = ["javax.annotation.processing.SupportedOptions": "androidManifestFile"]
+            }
+
+        }
+
+        manifestPlaceholders = [qqappid: "1104243077"]
+
     }
-    lintOptions {
-        checkReleaseBuilds false
-        // Or, if you prefer, you can continue to check for errors in release builds,
-        // but continue the build even when errors are found:
-        abortOnError false
-    }
+
     packagingOptions {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/NOTICE'
@@ -44,17 +97,19 @@ android {
             jniLibs.srcDirs = ['libs']
         }
 
-        // Move the tests to tests/java, tests/res, etc...
-        instrumentTest.setRoot('tests')
-
         // Move the build types to build-types/<type>
         // For instance, build-types/debug/java, build-types/debug/AndroidManifest.xml, ...
         // This moves them out of them default location under src/<type>/... which would
         // conflict with src/ being used by the main source set.
         // Adding new build types or product flavors should be accompanied
         // by a similar customization.
-        debug.setRoot('build-types/debug')
+//        debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
     }
 
     signingConfigs {
@@ -85,9 +140,5 @@ android {
 
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
-    }
 
 }

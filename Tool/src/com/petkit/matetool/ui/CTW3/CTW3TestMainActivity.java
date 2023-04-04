@@ -10,7 +10,6 @@ import android.location.LocationManager;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +32,8 @@ import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.utils.Globals;
 
 import java.util.ArrayList;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 /**
  *

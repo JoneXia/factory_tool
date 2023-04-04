@@ -9,7 +9,6 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -51,6 +50,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import static com.petkit.matetool.ui.t3.utils.T3Utils.T3TestModes.TEST_MODE_AGEINGRESULT;
 import static com.petkit.matetool.ui.t3.utils.T3Utils.T3TestModes.TEST_MODE_AUTO;

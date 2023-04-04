@@ -1,9 +1,10 @@
 package com.petkit.matetool.ui.t3.utils;
 
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
 
 import java.nio.ByteBuffer;
+
+import androidx.annotation.NonNull;
 
 /**
  * Project : bitmapconverter

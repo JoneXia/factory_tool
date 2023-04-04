@@ -10,9 +10,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.content.PermissionChecker;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +29,10 @@ import com.petkit.matetool.utils.Globals;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.PermissionChecker;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 
 public class PermissionDialogActivity extends Activity implements OnClickListener, IPermissionDialogView {

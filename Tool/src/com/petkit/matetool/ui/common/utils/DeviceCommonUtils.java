@@ -2,7 +2,6 @@ package com.petkit.matetool.ui.common.utils;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
@@ -41,6 +40,8 @@ import com.petkit.matetool.utils.Globals;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import static com.petkit.android.utils.LogcatStorageHelper.getFileName;
 

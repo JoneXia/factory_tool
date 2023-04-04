@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -27,6 +26,8 @@ import com.petkit.matetool.widget.LoadDialog;
 
 import java.util.Timer;
 import java.util.TimerTask;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 
 /**

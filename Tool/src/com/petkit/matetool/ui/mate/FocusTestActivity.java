@@ -9,7 +9,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.widget.Button;
@@ -29,6 +28,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 public class FocusTestActivity extends BaseActivity {
 	private ImageView image;

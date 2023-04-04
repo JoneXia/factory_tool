@@ -3,8 +3,6 @@ package com.vilyever.socketclient.server;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.annotation.WorkerThread;
 
 import com.vilyever.socketclient.SocketClient;
 import com.vilyever.socketclient.helper.SocketClientAddress;
@@ -21,6 +19,10 @@ import java.lang.ref.WeakReference;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.WorkerThread;
+
 
 /**
  * SocketServer

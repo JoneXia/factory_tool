@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.petkit.matetool.widget.PetkitLogoLoadingView
+    android:id="@+id/pllv"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
+    app:pllv_icon_width="44dp"
+    app:pllv_icon_height="44dp"
+    app:pllv_src="@drawable/petkit_circle_gray_logo"
+    app:pllv_loading_src="@drawable/circle_gray_loading_icon"
+    app:pllv_text="@string/Loading"
+    app:pllv_text_margin_top="11dp"
+    app:pllv_text_style="@style/New_Style_Content_12_Gray"
+    android:visibility="gone"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" />

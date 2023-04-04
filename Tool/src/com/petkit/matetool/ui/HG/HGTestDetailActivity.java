@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,6 +37,8 @@ import com.petkit.matetool.utils.Globals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import static com.petkit.matetool.ui.HG.HGUtils.HGTestModes.TEST_MODE_KEY;
 import static com.petkit.matetool.ui.utils.PrintUtils.isPrinterConnected;

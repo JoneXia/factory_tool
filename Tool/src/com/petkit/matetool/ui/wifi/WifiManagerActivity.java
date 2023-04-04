@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.ScanResult;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +27,8 @@ import com.petkit.matetool.widget.pulltorefresh.PullToRefreshBase;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 public class WifiManagerActivity extends BaseListActivity {
 

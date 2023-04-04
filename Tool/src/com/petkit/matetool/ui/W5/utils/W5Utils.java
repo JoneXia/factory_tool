@@ -2,7 +2,6 @@ package com.petkit.matetool.ui.W5.utils;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.content.LocalBroadcastManager;
 
 import com.google.gson.Gson;
 import com.petkit.android.ble.BLEConsts;
@@ -20,6 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import static com.petkit.android.utils.LogcatStorageHelper.getFileName;
 import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_NEW_W5;

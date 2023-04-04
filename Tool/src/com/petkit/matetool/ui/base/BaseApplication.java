@@ -2,13 +2,14 @@ package com.petkit.matetool.ui.base;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.multidex.MultiDex;
 import android.util.DisplayMetrics;
 
 import com.orm.SugarApp;
 import com.petkit.android.utils.CommonUtils;
 import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.utils.CrashHandler;
+
+import androidx.multidex.MultiDex;
 
 public class BaseApplication extends SugarApp {
 

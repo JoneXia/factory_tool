@@ -12,7 +12,6 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
@@ -38,6 +37,8 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 public abstract class BaseActivity extends Activity implements OnClickListener, InputMethodRelativeLayout.OnSizeChangedListener {
 

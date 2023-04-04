@@ -161,4 +161,599 @@
         <item name="android:textColor">@color/red</item>
         <item name="android:textIsSelectable">false</item>
     </style>
+
+
+
+    // New Parent Style （新字体大小父类型）（尽量都为双数）
+    <style name="New_Style_Size_46">
+        <item name="android:textSize">46dip</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="New_Style_Size_34">
+        <item name="android:textSize">34dip</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="New_Style_Size_32">
+        <item name="android:textSize">32dip</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="New_Style_Size_26">
+        <item name="android:textSize">26dip</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="New_Style_Size_24">
+        <item name="android:textSize">24dip</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="New_Style_Size_20">
+        <item name="android:textSize">20dip</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="New_Style_Size_18">
+        <item name="android:textSize">18dip</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="New_Style_Size_16">
+        <item name="android:textSize">16dip</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="New_Style_Size_14">
+        <item name="android:textSize">14dip</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="New_Style_Size_12">
+        <item name="android:textSize">12dip</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="New_Style_Size_10">
+        <item name="android:textSize">10dip</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="New_Style_Size_36">
+        <item name="android:textSize">36dip</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+
+    <style name="New_Style_Size_15">
+        <item name="android:textSize">15dip</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="New_Style_Size_28">
+        <item name="android:textSize">28dip</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="New_Style_Size_30">
+        <item name="android:textSize">30dip</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="New_Style_Size_13">
+        <item name="android:textSize">13dip</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="New_Style_Size_11">
+        <item name="android:textSize">11dip</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+    <style name="New_Style_Size_22">
+        <item name="android:textSize">22dip</item>
+        <item name="android:textIsSelectable">false</item>
+    </style>
+
+
+    // New Style （新字体类型）
+    // style名称规范：New_Style_(Title，Content)_字号_颜色 （Title字体自带加粗)（Content字体加粗需添加_With_Bold）
+
+    <style name="New_Style_Title_34_Dark_Black" parent="New_Style_Size_34">
+        <item name="android:textColor">@color/w5_home_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Title_46_Dark_Black" parent="New_Style_Size_46">
+        <item name="android:textColor">@color/w5_home_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Title_32_Dark_Black" parent="New_Style_Size_32">
+        <item name="android:textColor">@color/w5_home_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Title_26_Dark_Black" parent="New_Style_Size_26">
+        <item name="android:textColor">@color/w5_home_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Title_24_Dark_Black" parent="New_Style_Size_24">
+        <item name="android:textColor">@color/w5_home_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Title_20_Dark_Black" parent="New_Style_Size_20">
+        <item name="android:textColor">@color/w5_home_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Title_18_Dark_Black" parent="New_Style_Size_18">
+        <item name="android:textColor">@color/w5_home_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Title_16_Dark_Black" parent="New_Style_Size_16">
+        <item name="android:textColor">@color/w5_home_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Title_22_Dark_Black" parent="New_Style_Size_22">
+        <item name="android:textColor">@color/w5_home_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Title_30_Dark_Black" parent="New_Style_Size_30">
+        <item name="android:textColor">@color/w5_home_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Title_14_Dark_Black" parent="New_Style_Size_14">
+        <item name="android:textColor">@color/w5_home_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
+    <style name="New_Style_Content_12_Dark_Black" parent="New_Style_Size_12">
+        <item name="android:textColor">@color/w5_home_black</item>
+    </style>
+
+    <style name="New_Style_Content_12_Dark_Black_With_Bold" parent="New_Style_Size_12">
+        <item name="android:textColor">@color/w5_home_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Title_10_Dark_Black" parent="New_Style_Size_10">
+        <item name="android:textColor">@color/w5_home_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Title_28_Dark_Black" parent="New_Style_Size_28">
+        <item name="android:textColor">@color/w5_home_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Title_13_Dark_Black" parent="New_Style_Size_13">
+        <item name="android:textColor">@color/w5_home_black</item>
+    </style>
+
+    <style name="New_Style_Title_13_Dark_Black_With_Bold" parent="New_Style_Size_13">
+        <item name="android:textColor">@color/w5_home_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    //Light Black
+
+    <style name="New_Style_Content_14_Light_Black" parent="New_Style_Size_14">
+        <item name="android:textColor">@color/light_black</item>
+    </style>
+
+
+    <style name="New_Style_Content_15_Light_Black" parent="New_Style_Size_15">
+        <item name="android:textColor">@color/light_black</item>
+    </style>
+
+    <style name="New_Style_Content_16_Light_Black" parent="New_Style_Size_16">
+        <item name="android:textColor">@color/light_black</item>
+    </style>
+
+    <style name="New_Style_Content_46_Light_Black_With_Bold" parent="New_Style_Size_46">
+        <item name="android:textColor">@color/light_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_12_Light_Black" parent="New_Style_Size_12">
+        <item name="android:textColor">@color/light_black</item>
+    </style>
+
+    <style name="New_Style_Content_10_Light_Black" parent="New_Style_Size_10">
+        <item name="android:textColor">@color/light_black</item>
+    </style>
+
+    <style name="New_Style_Content_10_Dark_Black" parent="New_Style_Size_10">
+        <item name="android:textColor">@color/w5_home_black</item>
+    </style>
+
+    <style name="New_Style_Content_36_Light_Black" parent="New_Style_Size_36">
+        <item name="android:textColor">@color/light_black</item>
+    </style>
+
+    <style name="New_Style_Content_28_Light_Black" parent="New_Style_Size_28">
+        <item name="android:textColor">@color/light_black</item>
+    </style>
+
+    <style name="New_Style_Content_11_Todo_Light_Black" parent="New_Style_Size_11">
+        <item name="android:textColor">@color/todo_light_black</item>
+    </style>
+
+    //bold
+
+    <style name="New_Style_Content_32_Light_Black_With_Bold" parent="New_Style_Size_32">
+        <item name="android:textColor">@color/light_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_16_Light_Black_With_Bold" parent="New_Style_Size_16">
+        <item name="android:textColor">@color/light_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_18_Light_Black_With_Bold" parent="New_Style_Size_18">
+        <item name="android:textColor">@color/light_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_14_Light_Black_With_Bold" parent="New_Style_Size_14">
+        <item name="android:textColor">@color/light_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_12_Light_Black_With_Bold" parent="New_Style_Size_12">
+        <item name="android:textColor">@color/light_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    //White
+
+    <style name="New_Style_Content_16_Light_White" parent="New_Style_Size_16">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="New_Style_Content_12_Light_White" parent="New_Style_Size_12">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="New_Style_Content_10_Light_White" parent="New_Style_Size_10">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="New_Style_Content_11_White" parent="New_Style_Size_11">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="New_Style_Content_14_White" parent="New_Style_Size_14">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="New_Style_Content_16_Light_White_With_Bold" parent="New_Style_Size_16">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_16_Red_With_Bold" parent="New_Style_Size_16">
+        <item name="android:textColor">@color/red</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_20_Light_White_With_Bold" parent="New_Style_Size_20">
+        <item name="android:textSize">20dip</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textIsSelectable">false</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_26_Light_White_With_Bold" parent="New_Style_Size_26">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
+    <style name="New_Style_Content_12_Gray" parent="New_Style_Size_12">
+        <item name="android:textColor">@color/t4_text_gray</item>
+    </style>
+
+    <style name="New_Style_Content_12_Light_Gray" parent="New_Style_Size_12">
+        <item name="android:textColor">@color/light_gray</item>
+    </style>
+
+    <style name="New_Style_Content_12_Gray_With_Bold" parent="New_Style_Size_12">
+        <item name="android:textColor">@color/t4_text_gray</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_14_Gray" parent="New_Style_Size_14">
+        <item name="android:textColor">@color/t4_text_gray</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="New_Style_Content_14_D4_Desiccant_Warn_Red" parent="New_Style_Size_14">
+        <item name="android:textColor">@color/d4_desiccant_warn_red</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="New_Style_Content_14_Dark_Gray" parent="New_Style_Size_14">
+        <item name="android:textColor">@color/dark_gray</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="New_Style_Content_16_Gray" parent="New_Style_Size_16">
+        <item name="android:textColor">@color/t4_text_gray</item>
+    </style>
+
+    <style name="New_Style_Content_10_Gray" parent="New_Style_Size_10">
+        <item name="android:textColor">@color/t4_text_gray</item>
+    </style>
+
+    <style name="New_Style_Content_11_Gray" parent="New_Style_Size_11">
+        <item name="android:textColor">@color/t4_text_gray</item>
+    </style>
+
+    <style name="New_Style_Content_14_light_Gray" parent="New_Style_Size_14">
+        <item name="android:textColor">@color/food_rate_4</item>
+    </style>
+
+    <style name="New_Style_Content_14_light_Gray_With_Bold" parent="New_Style_Size_14">
+        <item name="android:textColor">@color/food_rate_4</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_12_light_Gray" parent="New_Style_Size_12">
+        <item name="android:textColor">@color/food_rate_4</item>
+    </style>
+
+
+    //Blue
+
+    <style name="New_Style_Content_10_Blue" parent="New_Style_Size_10">
+        <item name="android:textColor">@color/login_new_blue</item>
+    </style>
+
+    <style name="New_Style_Content_12_Blue" parent="New_Style_Size_12">
+        <item name="android:textColor">@color/login_new_blue</item>
+    </style>
+
+    <style name="New_Style_Content_14_Blue" parent="New_Style_Size_14">
+        <item name="android:textColor">@color/login_new_blue</item>
+    </style>
+
+    <style name="New_Style_Content_16_Blue" parent="New_Style_Size_16">
+        <item name="android:textColor">@color/login_new_blue</item>
+    </style>
+
+    <style name="New_Style_Content_12_W5_Main_Blue" parent="New_Style_Size_12">
+        <item name="android:textColor">@color/w5_main_blue</item>
+    </style>
+
+    <style name="New_Style_Content_16_Blue_With_Bold" parent="New_Style_Size_16">
+        <item name="android:textColor">@color/login_new_blue</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_12_Home_Page_Blue" parent="New_Style_Size_12">
+        <item name="android:textColor">@color/home_page_blue</item>
+    </style>
+
+    <style name="New_Style_Content_15_Blue" parent="New_Style_Size_15">
+        <item name="android:textColor">@color/login_new_blue</item>
+    </style>
+
+    <style name="New_Style_Content_14_Dark_Orange" parent="New_Style_Size_14">
+        <item name="android:textColor">@color/weight_point_dark_orange</item>
+    </style>
+
+    <style name="New_Style_Content_10_Dark_Orange" parent="New_Style_Size_10">
+        <item name="android:textColor">@color/weight_point_dark_orange</item>
+    </style>
+
+    <style name="New_Style_Content_14_Dark_Orange_With_Blod" parent="New_Style_Size_14">
+        <item name="android:textColor">@color/weight_point_dark_orange</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_14_D4_Yellow_With_Blod" parent="New_Style_Size_14">
+        <item name="android:textColor">@color/d4_main_yellow</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_14_D3_Green_With_Blod" parent="New_Style_Size_14">
+        <item name="android:textColor">@color/d3_main_green</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
+    <style name="New_Style_Content_12_Light_Yellow_With_Bold" parent="New_Style_Size_12">
+        <item name="android:textColor">@color/warranty_light_yellow</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_12_Gold_With_Bold" parent="New_Style_Size_12">
+        <item name="android:textColor">@color/warranty_gold</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Title_18_Black_With_Bold" parent="New_Style_Size_18">
+        <item name="android:textColor">@color/dark_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="D4_setting_divider_line_style_height_1">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/feeder_activate_background</item>
+    </style>
+
+    <style name="New_Style_Title_14_T4_New_Blue" parent="New_Style_Size_14">
+        <item name="android:textColor">@color/new_t4_blue</item>
+    </style>
+
+    <style name="New_Style_Content_12_Light_White_With_Bold" parent="New_Style_Size_12">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_12_Blue_With_Bold" parent="New_Style_Size_12">
+        <item name="android:textColor">@color/login_new_blue</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_14_Black" parent="New_Style_Size_14">
+        <item name="android:textColor">@color/dark_black</item>
+    </style>
+
+    <style name="New_Style_Content_16_T4_Btn_Gray_With_Bold" parent="New_Style_Size_16">
+        <item name="android:textColor">@color/t4_btn_gray</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_12_T4_Btn_Gray_With_Bold" parent="New_Style_Size_12">
+        <item name="android:textColor">@color/t4_btn_gray</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Title_20_Remind_Dark_Black_With_Bold" parent="New_Style_Size_20">
+        <item name="android:textColor">@color/remind_dark_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_14_Blue_With_Bold" parent="New_Style_Size_14">
+        <item name="android:textColor">@color/login_new_blue</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Title_14_Remind_Dark_Black" parent="New_Style_Size_14">
+        <item name="android:textColor">@color/remind_dark_black</item>
+    </style>
+
+    <style name="New_Style_Title_28_Light_Black_With_Bold" parent="New_Style_Size_28">
+        <item name="android:textColor">@color/light_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Title_22_Light_Black" parent="New_Style_Size_22">
+        <item name="android:textColor">@color/light_black</item>
+    </style>
+
+    <style name="New_Style_Title_22_Light_Gray" parent="New_Style_Size_22">
+        <item name="android:textColor">@color/food_rate_4</item>
+    </style>
+
+    <style name="New_Style_Title_22_Light_Black_With_Bold" parent="New_Style_Size_22">
+        <item name="android:textColor">@color/light_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Title_15_Gray" parent="New_Style_Size_15">
+        <item name="android:textColor">@color/gray</item>
+    </style>
+
+    <style name="New_Style_Title_14_Remind_Dark_Black_With_Bold" parent="New_Style_Size_14">
+        <item name="android:textColor">@color/remind_dark_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Title_10_D4s_Gray" parent="New_Style_Size_10">
+        <item name="android:textColor">@color/d4s_prompt_gray</item>
+    </style>
+
+    <style name="New_Style_Content_26_Light_Black_With_Bold" parent="New_Style_Size_26">
+        <item name="android:textColor">@color/light_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_16_Orange_With_Bold" parent="New_Style_Size_16">
+        <item name="android:textColor">@color/d4_main_yellow</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_20_Light_Black_With_Bold" parent="New_Style_Size_20">
+        <item name="android:textColor">@color/light_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_36_Feed_Light_Black_With_Bold" parent="New_Style_Size_36">
+        <item name="android:textColor">@color/feed_light_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_32_Feed_Light_Black_With_Bold" parent="New_Style_Size_32">
+        <item name="android:textColor">@color/feed_light_black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_14_Light_White" parent="New_Style_Size_14">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="New_Style_Content_14_Light_White_With_Bold" parent="New_Style_Size_14">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_14_D4sh_Bucket_Name_Green_With_Bold" parent="New_Style_Size_14">
+        <item name="android:textColor">@color/d4sh_bucket_1_name_green</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_14_D4sh_Text_Main_Orange_With_Bold" parent="New_Style_Size_14">
+        <item name="android:textColor">@color/d4sh_text_main_orange</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_16_D4sh_Text_Main_Orange_With_Bold" parent="New_Style_Size_16">
+        <item name="android:textColor">@color/d4sh_text_main_orange</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_16_D4sh_Device_Record_Type_Name_Gray_With_Bold" parent="New_Style_Size_16">
+        <item name="android:textColor">@color/k2_set_gray</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_14_D4sh_Device_Record_Type_Number_Gray_With_Bold" parent="New_Style_Size_14">
+        <item name="android:textColor">@color/k2_set_gray</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_16_D4sh_Device_Record_Type_Name_Orange_With_Bold" parent="New_Style_Size_16">
+        <item name="android:textColor">@color/d4sh_text_main_orange</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_12_Tosv_Select_White" parent="New_Style_Size_12">
+        <item name="android:textColor">@color/tosv_select_text_white</item>
+    </style>
+
+    <style name="New_Style_Content_12_Tosv_Unselect_White" parent="New_Style_Size_12">
+        <item name="android:textColor">@color/tosv_unselect_text_white</item>
+    </style>
+
+    <style name="New_Style_Content_12_D4sh_Light_White" parent="New_Style_Size_12">
+        <item name="android:textColor">@color/d4sh_light_white</item>
+    </style>
+
+    <style name="New_Style_Content_12_D4sh_Light_White_With_Bold" parent="New_Style_Size_12">
+        <item name="android:textColor">@color/d4sh_light_white</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="New_Style_Content_12_D4sh_Main_Orange" parent="New_Style_Size_12">
+        <item name="android:textColor">@color/d4sh_main_orange</item>
+    </style>
+
+    <style name="New_Style_Content_16_D4sh_Main_Orange_With_Bold" parent="New_Style_Size_16">
+        <item name="android:textColor">@color/d4sh_main_orange</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>

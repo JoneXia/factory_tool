@@ -1,24 +1,23 @@
 package com.petkit.matetool.utils;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.petkit.matetool.R;
 import com.petkit.matetool.service.DatagramConsts;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.net.DatagramSocket;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 public class Utils {
     private static final String LOG_TAG = "Utils.java";

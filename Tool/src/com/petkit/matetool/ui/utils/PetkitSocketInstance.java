@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
-import android.support.annotation.NonNull;
 
 import com.petkit.android.utils.CommonUtils;
 import com.petkit.android.utils.LogcatStorageHelper;
@@ -21,6 +20,8 @@ import org.json.JSONObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 /**
  * Socket实例
@@ -124,7 +125,8 @@ public class PetkitSocketInstance implements SocketClientDelegate {
         final long interval = 20;
         String ssidAscii = ssid;
 
-        @SuppressLint("WifiManagerLeak") WifiManager wifiManager = (WifiManager) CommonUtils.getAppContext().getSystemService(Context.WIFI_SERVICE);
+        @SuppressLint("WifiManagerLeak")
+        WifiManager wifiManager = (WifiManager) CommonUtils.getAppContext().getSystemService(Context.WIFI_SERVICE);
         wifiManager.startScan();
 
         boolean isBreak = false;

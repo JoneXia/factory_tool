@@ -10,8 +10,6 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.content.PermissionChecker;
 import android.text.SpannableStringBuilder;
 import android.view.View;
 import android.widget.EditText;
@@ -50,6 +48,9 @@ import com.petkit.matetool.utils.Utils;
 import com.petkit.matetool.widget.LoadDialog;
 
 import java.util.ArrayList;
+
+import androidx.core.content.PermissionChecker;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import static com.petkit.matetool.utils.Versions.TOOL_AQ1S_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_AQH1_VERSION;

@@ -1,8 +1,10 @@
 package com.vilyever.socketclient.helper;
 
-import android.support.annotation.NonNull;
 
 import com.vilyever.socketclient.SocketClient;
+
+import androidx.annotation.NonNull;
+
 
 /**
  * SocketClientDelegate

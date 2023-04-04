@@ -1,7 +1,6 @@
 package com.petkit.matetool.ui.utils;
 
 import android.os.Handler;
-import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.vilyever.logger.Logger;
@@ -21,6 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+
+import androidx.annotation.NonNull;
 
 /**
  * TestClient

@@ -1,16 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- common -->
-    <color name="black">#ff000000</color>
-    <color name="white">#ffffffff</color>
-    <color name="gray">#70000000</color>
-    <color name="red">#fffb608f</color>
-    <color name="blue">#ff0091f6</color>
-    <color name="green">#ff14cfeb</color>
-    <color name="transparent">@android:color/transparent</color>
-    <color name="gray_pool">#33000000</color>
-    <color name="gray_bg">#ffebeae4</color>
-    <color name="yellow">#ffff9900</color>
 
     <color name="red_pressed">#ffed525e</color>
     <color name="blue_pressed">#ff1b89c2</color>
@@ -22,5 +11,660 @@
     <color name="background_light">#ffffffff</color>
     <color name="foreground_on_dark">#ffffffff</color>
     <color name="border_color_on_light">#ff3bb3c3</color>
+
+    <!-- common -->
+    <color name="black">#ff3c3c3c</color>
+    <color name="light_black">#ff333333</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="light_white">#ffffdcba</color>
+    <color name="gray">#ff999999</color>
+    <color name="light_gray">#40000000</color>
+    <color name="red">#ffe95d6e</color>
+    <color name="blue">#ff3ea4de</color>
+    <color name="light_blue">#ff1f9bdb</color>
+    <color name="orange">#ffff6100</color>
+    <color name="yellow">#ffff9630</color>
+    <color name="bright_yellow">#ffffe88b</color>
+    <color name="orange_hl">#ffe46317</color>
+    <color name="dark_black">#ff000000</color>
+    <color name="dark_gray">#99000000</color>
+    <color name="hblack">#7f000000</color>
+    <color name="translucent_white">#f3ffffff</color>
+    <color name="transparent">@android:color/transparent</color>
+    <color name="translucent">#88000000</color>
+    <color name="gray_pool">#33000000</color>
+    <color name="light_gray_pool">#22000000</color>
+    <color name="gray_bg">#fff1f1f1</color>
+    <color name="mate_bg">#ffeaeaea</color>
+    <color name="window_start_color">#cc333333</color>
+    <color name="window_end_color">#33333333</color>
+
+    <color name="text_content_color">#cc000000</color>
+    <color name="gap_line_color">#d2d2d2</color>
+
+    <!-- characteristic detail bg -->
+    <color name="calorie_detail_bg">#fff67d1b</color>
+    <color name="calorie_detail_gradient_start">#fff67d1b</color>
+    <color name="calorie_detail_gradient_end">#ffffffff</color>
+    <color name="petkit_detail_gradient_start">#ffff5400</color>
+    <color name="petkit_detail_gradient_end">#ffffc000</color>
+    <color name="calorie_detail_compare_color_today">#aaff9900</color>
+    <color name="calorie_detail_compare_color_yesterday">#22000000</color>
+    <color name="mood_detail_bg">#ffda414d</color>
+    <color name="mood_detail_gradient_start">#fffdb6bb</color>
+    <color name="mood_detail_gradient_end">#ffffffff</color>
+    <color name="rest_detail_bg">#ff132b52</color>
+    <color name="rest_detail_gradient_start">#ff76d1ff</color>
+    <color name="rest_detail_gradient_end">#ffffffff</color>
+    <color name="consume_detail_bg">#ffe2aa00</color>
+    <color name="consume_detail_gradient_start">#ffe2aa00</color>
+    <color name="consume_detail_gradient_end">#ffffffff</color>
+
+    <color name="comment_bg">#fff5f5f5</color>
+    <color name="comment_gap">#ffdddddd</color>
+    <color name="classify_pop_bg">#bb000000</color>
+    <color name="btn_change_device_bg">#ff229d59</color>
+    <color name="medical">#fff5ac56</color>
+
+    <color name="filter_little">#55000000</color>
+    <color name="filter_middle">#aa000000</color>
+    <color name="filter_lot">#bb000000</color>
+
+    <color name="food_rate_1">#fff43907</color>
+    <color name="food_rate_2">#fffb7e03</color>
+    <color name="food_rate_3">#fffdc913</color>
+    <color name="food_rate_4">#ff666666</color>
+    <color name="food_detail_bg">#ffff7e00</color>
+    <color name="vaccine_bg">#ff6dde63</color>
+    <color name="petkit_check_color">#ffbe6cf7</color>
+
+    <color name="charact_detail_circle_1">#ffc0b5a6</color>
+    <color name="charact_detail_circle_2">#ff707aab</color>
+    <color name="charact_detail_circle_3">#ff0fd4d2</color>
+    <color name="charact_detail_circle_4">#ffffb400</color>
+    <color name="charact_detail_circle_5">#fffc607a</color>
+    <color name="charact_detail_text_color">#ffb9b9b9</color>
+
+    <color name="charact_detail_indictor_bg">#32ffffff</color>
+
+    <color name="yellow_stroke">#ffdcb746</color>
+    <color name="wathet">#ffcef8ff</color>
+    <color name="post_favor_color">#fff23353</color>
+
+    <color name="select_white">#fff3f3f3</color>
+    <color name="select_green">#ff48a2b5</color>
+    <color name="petkit_null_bg">#ff494f53</color>
+    <color name="personal_header_default">#ff00a6ca</color>
+
+    <color name="pinned_header_bg">#fff2f2f2</color>
+    <color name="petkit_scan_bg">#ff494f53</color>
+    <color name="petkit_check_bg">#ff26bf51</color>
+    <color name="petkit_ota_bg">#ff494f53</color>
+
+    <color name="manage_cell_color_petkit">#ffff7200</color>
+    <color name="manage_cell_color_doctor">#ff309dd0</color>
+    <color name="manage_cell_color_medical">#ff30c7b7</color>
+    <color name="manage_cell_color_remind">#ffffb414</color>
+
+    <color name="pet_view_bg">#cc1b7bd1</color>
+    <color name="sleep_light_color">#ff76d1ff</color>
+    <color name="sleep_deep_color">#ff1f9bdb</color>
+    <color name="graph_view_gray_pool">#ffcecece</color>
+
+    <color name="title_divider_line_color">#ffb4b4b4</color>
+    <color name="divider_line_color">#ffe7e7e7</color>
+    <color name="remind_finish_text_color">#ff00687d</color>
+    <color name="remind_finish_bg_color">#ffd5f8ff</color>
+
+    <color name="rest_light_bg_color">#ff60c0f1</color>
+    <color name="rest_deep_bg_color">#ff338acd</color>
+
+    <color name="activity_rank_first">#ffda561b</color>
+    <color name="activity_rank_second">#ffff9c00</color>
+    <color name="activity_rank_third">#ffffc600</color>
+
+    <color name="consumption_detail_bg">#fffff0dd</color>
+    <color name="score_bg">#ffe1e1e1</color>
+    <color name="score_mood_bg">#ffff525f</color>
+    <color name="score_health_bg">#ff4dcda8</color>
+
+    <color name="publish_state_bg">#f8ffffff</color>
+    <color name="latest_comment_bg">#ffeeeeee</color>
+    <color name="add_image_bg">#ffeeeeee</color>
+    <color name="search_gray_bg">#ffcfd2d6</color>
+
+    <color name="manage_petkit_color">#ffffa200</color>
+    <color name="manage_doctor_color">#ff3ea4e2</color>
+    <color name="manage_remind_color">#ff02c4af</color>
+    <color name="manage_mate_color">#ff47b1e3</color>
+    <color name="manage_feed_color">#fff6c846</color>
+
+    <color name="topic_text_color">#ff59b9e6</color>
+    <color name="topic_bg_color">#FFE3F1FF</color>
+    <color name="select_img_bg">#bb000000</color>
+    <color name="register_text_color">#ff006ba2</color>
+
+    <color name="mate_title_color">#eeffffff</color>
+    <color name="mate_red">#ffff0000</color>
+    <color name="mate_device_color">#ffa7aeaf</color>
+
+    <color name="mate_main_video_color">#ffea7e64</color>
+    <color name="mate_main_mic_color">#ffffbb2a</color>
+    <color name="mate_main_laser_color">#ffb08ab9</color>
+    <color name="notify_gray_bg">#fff4f4f4</color>
+
+    <color name="petkit_syncing_mask">#7f000000</color>
+    <color name="topic_banner_bg">#7f000000</color>
+    <color name="fit_bind_waiting_bg">#ff5b6165</color>
+
+    <color name="community_switch_color_hl">#24a7e3</color>
+    <color name="community_switch_color_nm">@color/black</color>
+
+    <!-- camera record -->
+    <color name="camera_bg">#ffc7cfd1</color>
+    <color name="camera_progress_split">#ffa5acad</color>
+    <color name="camera_progress_delete">#fff68b2b</color>
+    <color name="camera_progress_three">#ffa5acad</color>
+    <color name="camera_progress_overflow">#ff3ea4de</color>
+
+    <color name="red_hint_dot">#ff00</color>
+    <color name="progress_dialog_bg">#aaf7f7f7</color>
+
+    <color name="feed_bg">#ff3ea4de</color>
+    <color name="emotion_type_bg">#ffeef1f4</color>
+
+    <color name="birth_avatar_color_user">#ffffdb74</color>
+    <color name="birth_avatar_color_pet">#ffffc2c7</color>
+    <color name="birth_text_color_user">#ff84462a</color>
+    <color name="birth_text_color_pet">@color/white</color>
+    <color name="little_circle_white">#ffdfe3e4</color>
+
+    <color name="pet_state_bg_color">#5db3e5</color>
+    <color name="pet_lable_bg_color">#885ddde5</color>
+    <color name="pet_state_divider_line_color">#65b6e5</color>
+    <color name="pet_state_disabled_color">#65b6e5</color>
+    <color name="pet_lable_text_color">#93ccec</color>
+
+    <color name="Private_Brand_text_color">#FFa9adb0</color>
+    <color name="Private_Brand_text_background">#FFe3e3e3</color>
+    <color name="feed_bottom_text_color">#56afe2</color>
+    <color name="feed_advise_text_color">#ffc108</color>
+
+    <color name="feed_plan_btn_color">#f4b700</color>
+    <color name="feed_plan_time_color">#83898a</color>
+    <color name="pet_register_ignore_backgroud_color">#ffebf6fc</color>
+
+    <color name="blue_bg_normal">#ff1f9bdb</color>
+    <color name="blue_bg_hl">#ff1b89c2</color>
+    <color name="green_bg_normal">#ff2dacbb</color>
+    <color name="green_bg_hl">#ff2799a7</color>
+    <color name="yellow_bg_normal">#fff59e2d</color>
+    <color name="yellow_bg_hl">#ffe1932d</color>
+
+    <color name="go_header_color_start">#ff7f4bf6</color>
+    <color name="go_header_color_end">#ff3899f1</color>
+
+    <color name="map_line_color">#ff20c0fc</color>
+    <color name="go_ota_bg">#ff2e2e2e</color>
+    <color name="go_map_count_color">#B3000000</color>
+
+    <color name="video_record_btn_bg">#e9e9e9</color>
+    <color name="import_video_thumb_mask">#FF151515</color>
+    <color name="translucent_background_75">#BF000000</color>
+    <color name="import_video_thumb_bg">#FF515154</color>
+
+    <color name="feeder_header_color_start">#fff99e53</color>
+    <color name="feeder_header_color_end">#fff74721</color>
+    <color name="feeder_main_color">#ff72be43</color>
+    <color name="feeder_main_color_hl">#aa73bf44</color>
+    <color name="feeder_activate_background">#ffF6F6F6</color>
+
+    <!-- cozy -->
+    <color name="cozy_cool">#ff43cb55</color>
+    <color name="cozy_hot">#ffff7b00</color>
+    <color name="cozy_main_color">#FF726aa5</color>
+    <color name="cozy_home_color">#FF444454</color>
+    <color name="cozy_main_color_hl">#FF806aa5</color>
+    <color name="cozy_background_color">#FF677186</color>
+    <color name="cozy_main_color_bg">#FFf0effe</color>
+    <color name="cozy_progress_color">#FF8d82ed</color>
+    <color name="cozy_blue_color">#FF8475eb</color>
+    <color name="cozy_rest_bar">#FF8273ea</color>
+    <color name="cozy_calendar">#33848cac</color>
+    <color name="cozy_weekpager">#FFa2a8c4</color>
+    <color name="cozy_state">#FFd0d0d0</color>
+    <color name="cozy_wave_color_gray">#FFE2E2E2</color>
+    <color name="cozy_delete_button">#FF9b9b9b</color>
+    <color name="line_color">#FFececec</color>
+    <color name="cozy_wave_color">#FF8273ea</color>
+    <color name="cozy_circle_light">#FF62656d</color>
+    <color name="cozy_circle_color">#89FFFFFF</color>
+    <color name="cozy_tempbar_dew">#fff5a623</color>
+
+    <color name="time_zone_warn">#fff19441</color>
+    <!-- d2-->
+    <color name="d2_main_color">#ff72be43</color>
+    <color name="d2_text_color">#ff818181</color>
+    <color name="d2_plan_gray_color">#ff9b9b9b</color>
+    <color name="d2_main_color_bg">#FFe7f3dd</color>
+    <color name="state_delay_color">#FF72be43</color>
+
+    <color name="device_error">#FFFF3102</color>
+    <color name="device_normal">#FF2A9DD9</color>
+
+
+    <color name="pet_state">#451B2A37</color>
+    <color name="pet_state_text">#C8FFFFFF</color>
+    <color name="device_card_shadow">#1f004073</color>
+
+    <color name="device_state_offline">#ffc6c6c6</color>
+    <color name="shop_black">#575D6A</color>
+
+    <color name="light_blue_bg_normal">#FFA0D7EF</color>
+    <color name="new_year_red">#FFE23146</color>
+
+
+    <color name="walk_score_process">#FF1CA37E</color>
+    <color name="walk_text">#9397A2</color>
+    <color name="walk_target_point">#54C89E</color>
+    <color name="walk_translucent">#4d000000</color>
+
+    <color name="remind_blue">#1E9ADC</color>
+    <color name="remind_red">#F1493F</color>
+
+    <color name="tip_gray">#A8A8A8</color>
+    <color name="feeder_tag_gray">#D6D6D6</color>
+    <color name="feeder_scale_gray">#D8D8D8</color>
+    <color name="feeder_recommended_daily_gray">#9397A2</color>
+    <color name="feeder_recommended_daily_tip_gray">#BABABA</color>
+    <color name="feeder_change_gray">#2F2F2F</color>
+
+    <color name="feed_item_gray">#F6F6F6</color>
+    <color name="edit_text">#ffdcdcdc</color>
+
+    <color name="feeder_plan_save_black">#ff4a4a4a</color>
+
+    <color name="pet_list_name_black">#212d38</color>
+    <color name="device_feeder_plan_gray">#c5c5c5</color>
+    <color name="healthy_feed_black">#323232</color>
+
+    <color name="t3_main_blue">#5EA4F7</color>
+    <color name="t3_progress_blue">#E4F0FF</color>
+    <color name="t3_home_line_gray">#9C9C9C</color>
+    <color name="t3_home_text_gray">#b0b0b0</color>
+    <color name="t3_text_blue">#5595F2</color>
+    <color name="t3_mask_white">#BBFFFFFF</color>
+    <color name="t3_point_gray">#F0F0F0</color>
+    <color name="t3_line_gray">#EBEBEB</color>
+    <color name="t3_bg_gray">#FBFBFB</color>
+    <color name="t3_alpha_white">#BBFFFFFF</color>
+    <color name="t3_mask_gray">#BCBCBC</color>
+    <color name="t3_mask_block_gray">#E2E2E2</color>
+
+
+    <color name="k2_main_green">#54B4A0</color>
+    <color name="k2_progress_green">#E2F5F0</color>
+    <color name="k2_warn_red">#F74742</color>
+    <color name="k2_home_gray">#E4E4E4</color>
+    <color name="k2_bind_pet_skip_gray">#AAAAAA</color>
+    <color name="k2_bind_bg_gray">#FCFCFC</color>
+    <color name="k2_home_bg_gray">#F8F8F8</color>
+    <color name="k2_set_gray">#A7A7A7</color>
+    <color name="k2_time_bg_gray">#EEF3F5</color>
+    <color name="k2_time_hour_gray">#AEB1BB</color>
+    <color name="k2_time_off_bg_gray">#F5F4F7</color>
+
+    <color name="t3_record_gray">#C8C8C8</color>
+    <color name="t3_warn_orange">#FF9B4E</color>
+    <color name="t3_light_blue">#BADAFF</color>
+    <color name="t3_home_gray">#C4C6CC</color>
+    <color name="t3_home_yellow">#FFCA3D</color>
+    <color name="t3_home_center_gray">#B0B3BA</color>
+    <color name="t3_prompt_gray">#C8CACF</color>
+    <color name="t3_into_time_gray">#949494</color>
+
+    <color name="scan_progress_background_blue">#1A3EA4DE</color>
+    <color name="pop_ble_pw_gray">#F7F7F7</color>
+    <color name="t3_home_data_blue">#0391FF</color>
+    <color name="bind_btn_gray">#C0C0C0</color>
+    <color name="bind_help_gray">#8A8A8A</color>
+    <color name="notification_prompt_gray">#9E9E9E</color>
+    <color name="t3_home_bg_gray">#1A909090</color>
+
+    <color name="aq_main_purple">#585FDE</color>
+    <color name="aq_ota_purple">#BFC2DD</color>
+    <color name="aq_main_indicator_white">#B3FFFFFF</color>
+    <color name="aq_close_black">#3B3F4B</color>
+    <color name="aq_home_white_light_color">#87706C</color>
+    <color name="aq_home_vertical_white">#33FFFFFF</color>
+    <color name="aq_home_white_offline">#99FFFFFF</color>
+
+    <color name="d3_main_green">#26B798</color>
+    <color name="d3_feed_gray">#E6E6E6</color>
+    <color name="d3_home_orange">#F5A623</color>
+    <color name="d3_home_progress_bg_green">#1A26B798</color>
+    <color name="d3_home_progress_bg_yellow">#1AF5A623</color>
+    <color name="d3_home_progress_red">#F54423</color>
+    <color name="d3_home_progress_orange">#F58323</color>
+    <color name="d3_home_progress_yellow">#FCB642</color>
+    <color name="d3_circle_gray">#AFAFAF</color>
+    <color name="d3_chart_line_gray">#E5E5E5</color>
+    <color name="d3_chart_green">#D9F7F1</color>
+    <color name="d3_bg_gray">#F9F9F9</color>
+    <color name="d3_offline_progress_gray">#D9DADE</color>
+    <color name="d3_record_gray">#808080</color>
+    <color name="d3_record_black">#131313</color>
+    <color name="d3_record_time_black">#171717</color>
+
+    <color name="d4_main_green">#26B798</color>
+    <color name="d4_chart_tomorrow_green">#F6FCFA</color>
+    <color name="d4_chart_dash_green">#B7E3DA</color>
+    <color name="d4_plan_close_red">#D81E06</color>
+
+    <color name="login_mask_black">#80000000</color>
+    <color name="login_white">#CFCFCF</color>
+    <color name="login_gray">#939393</color>
+    <color name="login_blue">#98B9F9</color>
+    <color name="login_btn_blue">#4A80EB</color>
+    <color name="login_btn_light_blue">#A4BFF5</color>
+    <color name="login_code_dark_gray">#696969</color>
+
+    <color name="p3_main_orange">#F17E2D</color>
+    <color name="p3_click_red">#CB2828</color>
+    <color name="p3_ota_orange">#FFDAC0</color>
+
+    <color name="p3_center_bg_light_orange">#FFD68F</color>
+    <color name="p3_center_bg_dark_orange">#FEAE34</color>
+    <color name="p3_center_bg_orange">#33FEAE34</color>
+    <color name="p3_text_gray">#A9A9A9</color>
+    <color name="p3_chart_light_orange">#12F17E2D</color>
+    <color name="p3_chart_line_orange">#FF6101</color>
+    <color name="p3_light_yellow">#FFE4B4</color>
+    <color name="p3_consumption_orange">#FD7F35</color>
+    <color name="p3_light_green">#C2E4B4</color>
+    <color name="p3_green">#72C03E</color>
+    <color name="p3_dark_purple">#6E4BE3</color>
+    <color name="p3_light_purple">#D1C2FF</color>
+    <color name="p3_light_orange">#FFD68F</color>
+    <color name="p3_line_gray">#D9D9D9</color>
+    <color name="p3_dark_orange">#FF6C0F</color>
+    <color name="find_pet_black">#565656</color>
+    <color name="p3_scan_point_yellow">#FFE99B</color>
+    <color name="p3_line_light_gray">#EFEFEF</color>
+
+    <color name="common_bg">#f0f0f3</color>
+    <color name="dark_bg_70p">#bb000000</color>
+    <color name="common_sub_text">#888888</color>
+    <color name="source_detection_btn_color">#48a9fb</color>
+    <color name="viewfinder_frame">#929292</color>
+    <color name="quality_focused_color">#448cf3</color>
+    <color name="ez_c1">#1E90FF</color>
+    <color name="c1">#f37f4c</color>
+    <color name="common_hint_text">#adadad</color>
+    <color name="more_color">#3ea6ef</color>
+    <color name="remotelist_item_select">#249bff</color>
+    <color name="remotelist_item_duration_text_color">#c6c6c6</color>
+    <color name="common_text">#333333</color>
+    <color name="common_line">#c8c7cc</color>
+    <color name="h2_light_black">#343434</color>
+    <color name="h2_light_blue">#08B2FF</color>
+    <color name="h2_line_blue">#7AC5FF</color>
+    <color name="h2_ota_blue">#4CA0FF</color>
+
+    <color name="w5_main_blue">#4CA0FF</color>
+    <color name="w5_home_black">#111111</color>
+    <color name="w5_main_green">#ff72be43</color>
+    <color name="w5_home_red">#E00505</color>
+    <color name="w5_line_gray">#DFDFDF</color>
+    <color name="w5_line_blue">#DDEDFF</color>
+
+    <color name="home_card_blue">#FF4097FD</color>
+    <color name="home_bg_gray">#F6F7F9</color>
+    <color name="home_p3_line_gray">#CCCCCC</color>
+    <color name="home_p3_line_orange">#FFFD7E35</color>
+    <color name="home_go_blue">#FF5BA3F6</color>
+    <color name="home_feeder_bg_gray">#D5D5D5</color>
+    <color name="home_offline_gray">#E0E0E0</color>
+    <color name="To_to_bg_gray">#F8F9FC</color>
+    <color name="feed_bar_green">#02CED1</color>
+    <color name="t4_time_selector_background_gray">#F5F6FA</color>
+    <color name="feed_start_green">#C8F1F3</color>
+    <color name="feed_end_green">#EAf7f8</color>
+    <color name="feed_bg_gray">#FAFAFA</color>
+    <color name="toilet_start_blue">#FFC8D9F3</color>
+    <color name="toilet_end_blue">#EBF1F8</color>
+    <color name="sleep_start_purple">#E5DAFF</color>
+    <color name="sleep_end_purple">#F9F7FE</color>
+    <color name="Drop_red">#F43434</color>
+    <color name="Rise_green">#42CD24</color>
+    <color name="activity_start_yellow">#FFFFE7BD</color>
+    <color name="activity_end_yellow">#FFFBF8F3</color>
+    <color name="activity_light_green">#A4E07A</color>
+    <color name="activity_deep_green">#6BCE24</color>
+
+    <color name="t4_start_black">#ff181515</color>
+    <color name="t4_end_black">#ff494949</color>
+    <color name="t4_mask_white">#1AFFFFFF</color>
+    <color name="t4_main_blue">#4CA0FF</color>
+    <color name="t4_line_gray">#E0E0E0</color>
+    <color name="t4_text_gray">#999999</color>
+
+    <color name="t4_btn_gray">#CCCCCC</color>
+    <color name="t4_bottom_layout_bg_gray">#E7E7E7</color>
+    <color name="t4_home_menu_gray">#BCBDC0</color>
+    <color name="t4_rl_record_gray">#F7F8FC</color>
+
+    <color name="t4_home_status_green">#E4F5DB</color>
+    <color name="t4_home_status_red">#F5E3DB</color>
+    <color name="t4_home_status_blue">#D4ECFA</color>
+    <color name="t4_home_status_gray">#DEDEDE</color>
+    <color name="t4_history_record_gradient_start_color">#FFF2F7FF</color>
+    <color name="t4_history_record_gradient_end_color">#00F2F7FF</color>
+    <color name="t4_dividing_line_gray">#FFDBDBDB</color>
+
+    <color name="k3_main_blue">#4CA0FF</color>
+    <color name="k3_home_black">#111111</color>
+    <color name="k3_home_gray">#999999</color>
+    <color name="k3_text_blue">#5595F2</color>
+    <color name="k3_state_online_blue">#4CA0FF</color>
+
+    <color name="k3_history_record_gradient_start_color">#FFF1FBF7</color>
+    <color name="k3_history_record_gradient_end_color">#00F2FFF4</color>
+    <color name="k3_barchart_main_green">#FF66BC86</color>
+    <color name="k3_barchart_light_green">#FFD2EDDC</color>
+
+    <color name="k3_line_gray">#80E0E0E0</color>
+
+    <color name="t3_ad_red">#FFE00505</color>
+    <color name="t3_ad_orange">#FFF2810C</color>
+    <color name="register_gray">#FFCBCBCB</color>
+
+    <color name="p3_light_gray">#FAFAFA</color>
+    <color name="p3_consumption_deep_orange">#FEA834</color>
+    <color name="p3_today_line_orange">#FD7E35</color>
+    <color name="p3_today_trend_dotted_line_gray">#E0E0E0</color>
+    <color name="p3_today_trend_text_gray">#ff999999</color>
+    <color name="p3_outer_progress_color">#6BCE24</color>
+    <color name="p3_outer_background_color">#A3DE78</color>
+    <color name="p3_inner_progress_color">#6E4BE3</color>
+    <color name="p3_inner_background_color">#A58FEA</color>
+    <color name="p3_circle_progress_init_color">#D1D1D1</color>
+    <color name="p3_orange_day_selected">#FE8434</color>
+    <color name="p3_battery_title_black">#2F2F2F</color>
+
+    <color name="compare_green">#00BD2C</color>
+    <color name="compare_orange">#FA6400</color>
+    <color name="activity_green">#61C811</color>
+    <color name="activity_yellow">#F8B130</color>
+    <color name="activity_light_yellow">#FFD46F</color>
+    <color name="activity_deep_yellow">#FEA834</color>
+    <color name="toilet_bg_white">#61FFFFFF</color>
+    <color name="home_card_cozy_red">#EF4E89</color>
+    <color name="sleep_dark_purple">#8B6DF0</color>
+    <color name="sleep_light_purple">#D1C2FF</color>
+    <color name="aq1s_home_menu_not_connected_gray">#65676E</color>
+
+    <color name="home_card_aqr_orange">#FFFF7F32</color>
+
+    <color name="weight_light_orange">#FFFFF4ED</color>
+    <color name="weight_blue">#FF5397F5</color>
+    <color name="weight_green">#FF40BB68</color>
+    <color name="weight_yellow">#FFFCC842</color>
+    <color name="weight_orange">#FFFE872B</color>
+    <color name="weight_btn_orange">#FF984C</color>
+
+    <color name="weight_point_light_orange">#FFCFB3</color>
+    <color name="weight_point_dark_orange">#F68231</color>
+    <color name="weight_state_orange">#FDEAE4</color>
+    <color name="weight_del_red">#FF5639</color>
+    <color name="walk_start_green">#FFC8EFE7</color>
+    <color name="walk_end_green">#FFF6FFFD</color>
+    <color name="walk_view_green">#2AC7A8</color>
+    <color name="walk_time_gray">#A2A2A2</color>
+
+    <color name="r2_chart_text_choosed_color">#6E9DFF</color>
+    <color name="r2_chart_text_color">#AFC1E4</color>
+    <color name="r2_chart_axis_line_color">#E2ECFF</color>
+    <color name="r2_chart_line_blue">#ADC6FD</color>
+    <color name="r2_chart_line_point_bg_white">#FFFFFF</color>
+    <color name="r2_chart_line_point_bg_blue">#407CFF</color>
+    <color name="r2_chart_line_point_shade_blue">#6495FF</color>
+    <color name="r2_chart_line_target_circle_blue">#B8CEFD</color>
+    <color name="r2_chart_line_target_circle_orange">#FF9669</color>
+    <color name="r2_popwindow_bg_blue">#E8EFFF</color>
+    <color name="r2_bg_gray">#A0A0A0</color>
+    <color name="r2_warning_dialog_title_black">#4A4A4A</color>
+    <color name="r2_warning_dialog_line_color">#718FA3</color>
+
+    <color name="t4_tips_gray">#FFE3E3E3</color>
+    <color name="t4_tips_blue">#FFE7F5FF</color>
+    <color name="login_dark_blue">#EBF3FE</color>
+    <color name="login_light_blue">#4AEAF8FE</color>
+    <color name="login_new_blue">#FF3378F8</color>
+    <color name="login_new_dark_blue">#FF3566E5</color>
+    <color name="weight_80a_white">#CCFFFFFF</color>
+    <color name="walk_time_yellow">#FF9612</color>
+    <color name="error_icon_gray">#FCFBFB</color>
+    <color name="home_card_error_icon_red">#FFF34848</color>
+    <color name="toilet_record_del_red">#FFEA4D3E</color>
+    <color name="manual_add_water_orange">#FFFB7C3D</color>
+    <color name="d4s_orange_three">#FB8540</color>
+
+    <color name="d4s_progress_gray">#DAD8D7</color>
+    <color name="d3_light_green">#D6F4ED</color>
+    <color name="d3_orange">#FBAE3D</color>
+    <color name="d3_light_orange">#F8E8CE</color>
+
+    <color name="home_tip_blue">#FF3378F8</color>
+    <color name="d3_state_orange">#FFFFE2B7</color>
+
+    <color name="home_blue">#FF3378F8</color>
+    <color name="home_gray">#FFEEEEEE</color>
+
+    <color name="pet_create_gray">#FFECECF0</color>
+    <color name="pet_create_blue">#1A0065FF</color>
+    <color name="pet_create_text_blue">#FF0065FF</color>
+    <color name="pet_create_light_black">#FF1B1B1B</color>
+    <color name="pet_weight_invalid_color">#FFFFA08A</color>
+    <color name="bottom_menu_blue">#FF007AFF</color>
+    <color name="pet_create_gray_bg">#fff6f6f6</color>
+
+    <color name="new_bind_blue">#3378F8</color>
+    <color name="new_scan_progress_bg">#EEEEEE</color>
+    <color name="aqh1_custom_size_edittext_gray">#FFFAFAFC</color>
+    <color name="aqh1_chart_axis_line_color">#A8A2E3FF</color>
+    <color name="aqh1_chart_line_blue">#CFEDFF</color>
+    <color name="aqh1_chart_line_target_point_color">#FFCC89</color>
+    <color name="aqh1_chart_text_color">#C2D3F9</color>
+    <color name="aqh1_chart_line_point_bg_white">#1AFFFFFF</color>
+    <color name="aqh1_cure_chart_line_blue">#FF4784FF</color>
+    <color name="aqh1_constant_text_color">#FFEEFFFE</color>
+    <color name="aqh1_heating_text_color">#FFFFF6A3</color>
+    <color name="aqh1_cooling_text_color">#FFBDEFFF</color>
+    <color name="aqh1_limit_state_color">#FF9AF8FF</color>
+
+
+    <color name="toilet_chart_color_unknown">#FFCCCCCC</color>
+    <color name="toilet_chart_color_one">#FF3378F8</color>
+    <color name="toilet_chart_color_two">#FFF8B130</color>
+    <color name="toilet_chart_color_three">#FF61C811</color>
+    <color name="toilet_chart_color_four">#FFEF4E89</color>
+    <color name="toilet_chart_color_five">#FF02CED1</color>
+    <color name="toilet_chart_color_six">#FFF68231</color>
+    <color name="toilet_chart_color_seven">#FF9872ED</color>
+    <color name="toilet_chart_color_eight">#FF526EFF</color>
+    <color name="toilet_chart_color_nine">#FFFF59FD</color>
+    <color name="toilet_chart_color_ten">#FF6DD6FF</color>
+
+    <color name="d4s_orange">#FFFECC5B</color>
+    <color name="d4s_orange_two">#FFFB7C3D</color>
+
+
+
+
+    <color name="mate_download_blue">#1d99d7</color>
+    <color name="d4_main_yellow">#FFFFAB34</color>
+    <color name="d4_main_light_yellow">#F9EAD1</color>
+    <color name="d4_light_yellow">#FFD073</color>
+    <color name="d4_light_green">#FF21D0BB</color>
+    <color name="d3_main_yellow">#FFFF8C2B</color>
+    <color name="d3_progress_light_green">#FF32E1B4</color>
+    <color name="d3_see_more_light_green">#FF21C09E</color>
+    <color name="d3_line_gray">#FF979797</color>
+    <color name="d4s_light_yellow">#FFDBC2</color>
+
+
+    <color name="topic_new_bg">#FFE3F1FF</color>
+    <color name="newyear_red">#FB2831</color>
+    <color name="aqh1_light_purple">#F1F5FF</color>
+
+    <color name="home_page_blue">#FF187DE5</color>
+    <color name="to_do_transparent_gray">#333F3D52</color>
+    <color name="todo_light_black">#80333333</color>
+
+    <color name="warranty_light_yellow">#FFF3DA90</color>
+    <color name="warranty_gold">#FFFFD476</color>
+    <color name="warranty_orange">#FFFB7C3D</color>
+    <color name="d4_desiccant_warn_red">#FFFF2B2B</color>
+
+    <color name="new_t4_blue">#FF3276F6</color>
+
+    <color name="remind_dark_black">#FF323643</color>
+    <color name="remind_pet_light_orange">#FFFFDFBC</color>
+    <color name="remind_device_light_blue">#FFD5E8FF</color>
+    <color name="remind_warn_red">#FFF44343</color>
+    <color name="green">#70C160</color>
+    <color name="slide_bar_hint_color">#CCCCCC</color>
+    <color name="light_purple">#B1B7CC</color>
+
+
+    <color name="big_thin_gradient_light_color">#00F8F0E0</color>
+    <color name="big_thin_gradient_dark_color">#FFFFAF29</color>
+    <color name="small_thin_gradient_light_color">#00F9E1D1</color>
+    <color name="small_thin_gradient_dark_color">#FFFF9F57</color>
+    <color name="d4s_prompt_gray">#9D9D9D</color>
+    <color name="home_card_red">#FFFFE6E6</color>
+    <color name="t4_home_status_dark_green">#4D8AEAB3</color>
+    <color name="t4_green">#50B804</color>
+    <color name="home_device_card_gray">#B1B1B1</color>
+    <color name="home_device_card_red">#FF6060</color>
+    <color name="device_home_bg_gray">#F5f6F7</color>
+    <color name="new_login_light_blue">#1A3378F8</color>
+
+    <color name="hg_home_green">#00BAAE</color>
+
+
+    <color name="feed_light_black">#313131</color>
+    <color name="orange_cat_identification">#F36E00</color>
+
+
+    <color name="d4sh_main_orange">#FFFB7C3D</color>
+    <color name="d4sh_text_main_orange">#FFF95300</color>
+    <color name="d4sh_bucket_1_name_green">#FF00AA86</color>
+    <color name="d4sh_device_record_item_feed_state_gray">#FFFAF9F9</color>
+    <color name="d4sh_device_record_item_feed_state_orange">#FFFEF9F7</color>
+    <color name="tosv_select_text_white">#CCFFFFFF</color>
+    <color name="tosv_unselect_text_white">#70FFFFFF</color>
+    <color name="d4sh_light_white">#80ffffff</color>
 
 </resources>

@@ -1,41 +1,42 @@
 package com.petkit.matetool.ui.mate;
 
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.nio.ByteBuffer;
-import java.util.Arrays;
-
-import com.android.petkit.Jni;
-import com.petkit.android.utils.PetkitLog;
-import com.petkit.matetool.service.DatagramConsts;
-import com.petkit.matetool.ui.base.BaseActivity;
-import com.petkit.matetool.utils.Globals;
-import com.petkit.matetool.utils.Utils;
-import com.petkit.matetool.R;
-import com.petkit.matetool.widget.LoadDialog;
-
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
-import android.graphics.Bitmap.Config;
-import android.support.v4.content.LocalBroadcastManager;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
+
+import com.android.petkit.Jni;
+import com.petkit.android.utils.PetkitLog;
+import com.petkit.matetool.R;
+import com.petkit.matetool.service.DatagramConsts;
+import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.utils.Globals;
+import com.petkit.matetool.utils.Utils;
+import com.petkit.matetool.widget.LoadDialog;
+
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 public class PlayActivity extends BaseActivity {
 

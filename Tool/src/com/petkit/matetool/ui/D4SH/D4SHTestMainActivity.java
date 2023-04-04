@@ -259,9 +259,9 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
 
     private void startTestDetail(boolean isAuto, int pos) {
         if(mTestState == TEST_STATE_CONNECTED) {
-            if(mCurDevice == null) {
-                return;
-            }
+//            if(mCurDevice == null) {
+//                return;
+//            }
 
             if(isAuto) {
                 int position = 0;
@@ -280,7 +280,32 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
                 pos = position;
             }
 
-            Intent intent = new Intent(D4SHTestMainActivity.this, D4SHTestDetailActivity.class);
+            if (mD4TestUnits.get(pos).getType() == D4SHUtils.D4SHTestModes.TEST_MODE_VIDEO) {
+                Intent intent = new Intent(D4SHTestMainActivity.this, D4SHVideoPlayActivity.class);
+                intent.putExtra("TestUnits", mD4TestUnits);
+                intent.putExtra("CurrentTestStep", pos);
+                intent.putExtra("AutoTest", isAuto);
+                intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mCurDevice);
+                intent.putExtra(DeviceCommonUtils.EXTRA_TESTER, mTester);
+                intent.putExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
+                intent.putExtra("TestType", mTestType);
+                intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
+                startActivityForResult(intent, 0x12);
+            } else {
+                Intent intent = new Intent(D4SHTestMainActivity.this, D4SHTestDetailActivity.class);
+                intent.putExtra("TestUnits", mD4TestUnits);
+                intent.putExtra("CurrentTestStep", pos);
+                intent.putExtra("AutoTest", isAuto);
+                intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mCurDevice);
+                intent.putExtra(DeviceCommonUtils.EXTRA_TESTER, mTester);
+                intent.putExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
+                intent.putExtra("TestType", mTestType);
+                intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
+                startActivityForResult(intent, 0x12);
+            }
+        } else {
+            showShortToast(mInfoTestTextView.getText().toString());
+            Intent intent = new Intent(D4SHTestMainActivity.this, D4SHVideoPlayActivity.class);
             intent.putExtra("TestUnits", mD4TestUnits);
             intent.putExtra("CurrentTestStep", pos);
             intent.putExtra("AutoTest", isAuto);
@@ -290,8 +315,6 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
             intent.putExtra("TestType", mTestType);
             intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
             startActivityForResult(intent, 0x12);
-        } else {
-            showShortToast(mInfoTestTextView.getText().toString());
         }
     }
 

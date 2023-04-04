@@ -4,8 +4,6 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
 
 import com.vilyever.socketclient.helper.SocketClientAddress;
 import com.vilyever.socketclient.helper.SocketClientDelegate;
@@ -23,6 +21,10 @@ import java.lang.ref.WeakReference;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
+
 
 /**
  * SocketClient

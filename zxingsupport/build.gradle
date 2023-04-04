@@ -5,7 +5,7 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '26.0.2'
+    buildToolsVersion '30.0.2'
 
     defaultConfig {
         minSdkVersion 8
@@ -23,7 +23,6 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
     compile 'com.google.zxing:android-core:3.2.1'
     compile 'com.google.zxing:core:3.2.1'
 }

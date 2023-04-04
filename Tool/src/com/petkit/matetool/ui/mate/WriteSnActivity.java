@@ -1,27 +1,14 @@
 package com.petkit.matetool.ui.mate;
 
-import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.widget.EditText;
 
-import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.service.DatagramConsts;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.utils.Globals;
-import com.petkit.matetool.utils.Utils;
-import com.petkit.matetool.widget.LoadDialog;
-
-import java.net.SocketException;
-import java.net.UnknownHostException;
 
 public class WriteSnActivity extends BaseActivity {
 

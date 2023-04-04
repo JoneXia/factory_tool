@@ -15,12 +15,13 @@
  *******************************************************************************/
 package com.petkit.matetool.widget.pulltorefresh;
 
+import android.content.Context;
+import android.util.AttributeSet;
+
 import com.petkit.matetool.widget.InterceptViewPager;
 
-import android.content.Context;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.util.AttributeSet;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 public class PullToRefreshViewPager extends PullToRefreshBase<InterceptViewPager> {
 

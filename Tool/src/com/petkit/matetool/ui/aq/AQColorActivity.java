@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.SeekBar;
@@ -18,6 +17,8 @@ import com.petkit.android.ble.DeviceInfo;
 import com.petkit.android.utils.CommonUtils;
 import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.R;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 public class AQColorActivity extends Activity implements View.OnClickListener {
 
