@@ -23,11 +23,12 @@ import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.Tester;
+import com.petkit.matetool.model.UDPDevice;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.ui.utils.PetkitSocketInstance;
 import com.petkit.matetool.ui.utils.WifiAdminSimple;
-import com.petkit.matetool.ui.wifi.WifiManagerActivity;
+import com.petkit.matetool.ui.wifi.UDPManagerActivity;
 import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.JSONUtils;
 
@@ -60,6 +61,8 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
     private TextView mInfoTestTextView;
     private boolean testComplete = false;
     private int mDeviceType;
+
+    private UDPDevice mDevice;
 
 
 
@@ -253,15 +256,19 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
                     checkTestComplete();
                     refreshBottomButton();
                     break;
+                case 0x111:
+                    mDevice = (UDPDevice) data.getSerializableExtra("UDPDevice");
+                    connectAp(mDevice.getIp());
+                    break;
             }
         }
     }
 
     private void startTestDetail(boolean isAuto, int pos) {
         if(mTestState == TEST_STATE_CONNECTED) {
-//            if(mCurDevice == null) {
-//                return;
-//            }
+            if(mCurDevice == null) {
+                return;
+            }
 
             if(isAuto) {
                 int position = 0;
@@ -305,16 +312,6 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
             }
         } else {
             showShortToast(mInfoTestTextView.getText().toString());
-            Intent intent = new Intent(D4SHTestMainActivity.this, D4SHVideoPlayActivity.class);
-            intent.putExtra("TestUnits", mD4TestUnits);
-            intent.putExtra("CurrentTestStep", pos);
-            intent.putExtra("AutoTest", isAuto);
-            intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mCurDevice);
-            intent.putExtra(DeviceCommonUtils.EXTRA_TESTER, mTester);
-            intent.putExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
-            intent.putExtra("TestType", mTestType);
-            intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
-            startActivityForResult(intent, 0x12);
         }
     }
 
@@ -323,51 +320,7 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
         if(apSsid == null) {
             mInfoTestTextView.setText("请先连接到特定的WIFI，再进行测试！");
         } else {
-            connectAp();
-            switch (mTestType) {
-//                case Globals.TYPE_TEST_PARTIALLY:
-//                    if (!apSsid.toUpperCase().startsWith("PETKIT_FEEDER_4S_A_HW1_")) {
-//                        mInfoTestTextView.setText("请先连接到PETKIT_FEEDER_4S_A_HW1_开头的WIFI，再进行测试！");
-//                    } else {
-//                        connectAp();
-//                    }
-//                    break;
-//                case Globals.TYPE_TEST:
-//                    if (!apSsid.toUpperCase().startsWith("PETKIT_FEEDER_4S_B_HW1_")) {
-//                        mInfoTestTextView.setText("请先连接到PETKIT_FEEDER_4S_B_HW1_开头的WIFI，再进行测试！");
-//                        return;
-//                    } else {
-//                        connectAp();
-//                    }
-//                    break;
-//                case Globals.TYPE_MAINTAIN:
-//                case Globals.TYPE_AFTERMARKET:
-//                    if (!apSsid.toUpperCase().startsWith("PETKIT_FEEDER_4S_")) {
-//                        mInfoTestTextView.setText("请先连接到PETKIT_FEEDER_4S_开头的WIFI，再进行测试！");
-//                        return;
-//                    } else {
-//                        connectAp();
-//                    }
-//                    break;
-//                case Globals.TYPE_CHECK:
-//                    if (!apSsid.toUpperCase().startsWith("PETKIT_FEEDER_4S_HW1_")
-//                            || (apSsid.toUpperCase().startsWith("PETKIT_FEEDER_4S_A_") || apSsid.toUpperCase().startsWith("PETKIT_FEEDER_4S_B_"))) {
-//                        mInfoTestTextView.setText("请先连接到<PETKIT_FEEDER_4S_HW1_>开头的WIFI，再进行测试！");
-//                        return;
-//                    } else {
-//                        connectAp();
-//                    }
-//                    break;
-//                case Globals.TYPE_DUPLICATE_MAC:
-//                case Globals.TYPE_DUPLICATE_SN:
-//                    if (!apSsid.toUpperCase().startsWith("PETKIT_FEEDER_4S_HW1_")) {
-//                        mInfoTestTextView.setText("请先连接到PETKIT_FEEDER_4S_HW1_开头的WIFI，再进行测试！");
-//                        return;
-//                    } else {
-//                        connectAp();
-//                    }
-//                    break;
-            }
+            showWifiManager();
         }
 
         mAdapter.notifyDataSetChanged();
@@ -376,19 +329,13 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
     private void showWifiManager() {
         switch (mTestType) {
             case Globals.TYPE_TEST_PARTIALLY:
-                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_FEEDER_4S_A_HW1_"));
-                break;
             case Globals.TYPE_TEST:
-                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_FEEDER_4S_B_HW1_"));
-                break;
             case Globals.TYPE_MAINTAIN:
             case Globals.TYPE_AFTERMARKET:
             case Globals.TYPE_CHECK:
-                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_FEEDER_4S_"));
-                break;
             case Globals.TYPE_DUPLICATE_MAC:
             case Globals.TYPE_DUPLICATE_SN:
-                startActivity(WifiManagerActivity.getIntent(this, "PETKIT_FEEDER_4S_HW1_"));
+                startActivityForResult(UDPManagerActivity.getIntent(this, "D4SH"), 0x111);
                 break;
         }
     }
@@ -397,9 +344,9 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
         ((TextView) findViewById(R.id.test_auto)).setText(testComplete ? "测试完成" : "自动模式");
     }
 
-    private void connectAp() {
+    private void connectAp(String remoteIp) {
         if(mTestState != TEST_STATE_CONNECTED && !PetkitSocketInstance.getInstance().isConnected()) {
-            String remoteIp = "192.168.33.105";   //mWifiAdminSimple.getCurrentApHostIp();
+//            String remoteIp = "192.168.33.105";   //mWifiAdminSimple.getCurrentApHostIp();
             if(isEmpty(remoteIp)) {
                 mInfoTestTextView.setText("获取设备IP失败！");
                 mTestState = TEST_STATE_INVALID;
@@ -716,7 +663,5 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
                         }).show();
 
     }
-
-
 
 }
