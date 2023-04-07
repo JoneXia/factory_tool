@@ -470,6 +470,9 @@ public class D4STestDetailActivity extends BaseActivity implements PetkitSocketI
 
     @Override
     public void finish() {
+        if (isNewSN) {
+            mDevice.setSn(null);
+        }
         Intent intent = new Intent();
         intent.putExtra("TestUnits", mTestUnits);
         intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mDevice);
@@ -705,10 +708,12 @@ public class D4STestDetailActivity extends BaseActivity implements PetkitSocketI
                                     payload.put("sn", mDevice.getSn());
                                     payload.put("opt", 1);
                                     PetkitSocketInstance.getInstance().sendString(DeviceCommonUtils.getRequestForKeyAndPayload(161, payload));
+                                    return;
                                 } else if (opt == 1) {
                                     mDescTextView.append("\n进行读取校验");
 
                                     PetkitSocketInstance.getInstance().sendString(DeviceCommonUtils.getDefaultRequestForKey(110));
+                                    return;
                                 } else {
                                     mDescTextView.append("\n opt参数错误！值为：" + opt);
                                 }
@@ -724,6 +729,7 @@ public class D4STestDetailActivity extends BaseActivity implements PetkitSocketI
                         e.printStackTrace();
                     }
                 }
+                isWritingSN = false;
                 break;
             case 165:
                 jsonObject = JSONUtils.getJSONObject(data);

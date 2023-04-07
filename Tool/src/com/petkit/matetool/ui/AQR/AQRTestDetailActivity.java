@@ -448,6 +448,9 @@ public class AQRTestDetailActivity extends BaseActivity implements PrintResultCa
 
     @Override
     public void finish() {
+        if (isNewSN) {
+            mDevice.setSn(null);
+        }
         Intent intent = new Intent();
         intent.putExtra("TestUnits", mAQRTestUnits);
         intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mDevice);

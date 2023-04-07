@@ -391,6 +391,9 @@ public class FeederMiniTestDetailActivity extends BaseActivity implements Petkit
 
     @Override
     public void finish() {
+        if (isNewSN) {
+            mFeeder.setSn(null);
+        }
         Intent intent = new Intent();
         intent.putExtra("TestUnits", mFeederMiniTestUnits);
         intent.putExtra("Feeder", mFeeder);

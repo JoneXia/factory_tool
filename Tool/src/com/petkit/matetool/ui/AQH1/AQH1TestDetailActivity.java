@@ -541,6 +541,9 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
 
     @Override
     public void finish() {
+        if (isNewSN) {
+            mDevice.setSn(null);
+        }
         Intent intent = new Intent();
         intent.putExtra("TestUnits", mTestUnits);
         intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mDevice);
@@ -803,10 +806,12 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
                                     payload.put("sn", mDevice.getSn());
                                     payload.put("opt", 1);
                                     PetkitSocketInstance.getInstance().sendString(K2Utils.getRequestForKeyAndPayload(161, payload));
+                                    return;
                                 } else if (opt == 1) {
                                     mDescTextView.append("\n进行读取校验");
 
                                     PetkitSocketInstance.getInstance().sendString(K2Utils.getDefaultRequestForKey(110));
+                                    return;
                                 } else {
                                     mDescTextView.append("\n opt参数错误！值为：" + opt);
                                 }
@@ -822,6 +827,7 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
                         e.printStackTrace();
                     }
                 }
+                isWritingSN = false;
                 break;
             case 165:
                 jsonObject = JSONUtils.getJSONObject(data);

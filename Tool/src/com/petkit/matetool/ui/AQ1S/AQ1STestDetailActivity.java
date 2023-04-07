@@ -404,6 +404,9 @@ public class AQ1STestDetailActivity extends BaseActivity implements PrintResultC
 
     @Override
     public void finish() {
+        if (isNewSN) {
+            mDevice.setSn(null);
+        }
         Intent intent = new Intent();
         intent.putExtra("TestUnits", mAQ1STestUnits);
         intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mDevice);

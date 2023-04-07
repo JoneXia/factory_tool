@@ -625,6 +625,9 @@ public class HGTestDetailActivity extends BaseActivity implements PrintResultCal
                 sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule(), data));
                 break;
         }
+        if (isNewSN) {
+            mDevice.setSn(null);
+        }
 
         Intent intent = new Intent();
         intent.putExtra("TestUnits", mTestUnits);

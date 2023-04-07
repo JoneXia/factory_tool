@@ -416,6 +416,9 @@ public class CozyTestDetailActivity extends BaseActivity implements PetkitSocket
 
     @Override
     public void finish() {
+        if (isNewSN) {
+            mDevice.setSn(null);
+        }
         Intent intent = new Intent();
         intent.putExtra("TestUnits", mDeviceTestUnits);
         intent.putExtra("Device", mDevice);

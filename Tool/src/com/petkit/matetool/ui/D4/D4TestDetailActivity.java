@@ -469,6 +469,9 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
 
     @Override
     public void finish() {
+        if (isNewSN) {
+            mDevice.setSn(null);
+        }
         Intent intent = new Intent();
         intent.putExtra("TestUnits", mD4TestUnits);
         intent.putExtra(D4Utils.EXTRA_D4, mDevice);

@@ -374,6 +374,9 @@ public class K3TestDetailActivity extends BaseActivity implements PrintResultCal
 
     @Override
     public void finish() {
+        if (isNewSN) {
+            mDevice.setSn(null);
+        }
         Intent intent = new Intent();
         intent.putExtra("TestUnits", mK3TestUnits);
         intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mDevice);

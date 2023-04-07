@@ -504,6 +504,9 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
 
     @Override
     public void finish() {
+        if (isNewSN) {
+            mDevice.setSn(null);
+        }
         Intent intent = new Intent();
         intent.putExtra("TestUnits", mK2TestUnits);
         intent.putExtra(K2Utils.EXTRA_K2, mDevice);
@@ -698,10 +701,12 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                                     payload.put("sn", mDevice.getSn());
                                     payload.put("opt", 1);
                                     PetkitSocketInstance.getInstance().sendString(K2Utils.getRequestForKeyAndPayload(161, payload));
+                                    return;
                                 } else if (opt == 1) {
                                     mDescTextView.append("\n进行读取校验");
 
                                     PetkitSocketInstance.getInstance().sendString(K2Utils.getDefaultRequestForKey(110));
+                                    return;
                                 } else {
                                     mDescTextView.append("\n opt参数错误！值为：" + opt);
                                 }
@@ -717,6 +722,7 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         e.printStackTrace();
                     }
                 }
+                isWritingSN = false;
                 break;
             case 165:
                 jsonObject = JSONUtils.getJSONObject(data);
