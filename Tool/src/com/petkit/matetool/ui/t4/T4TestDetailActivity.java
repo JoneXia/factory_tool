@@ -817,11 +817,11 @@ public class T4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         mDescTextView.append("\n写入SN成功");
                         if (isNewSN) {
                             isNewSN = false;
-                            if (mDeviceType == Globals.T4_p) {
-                                DeviceCommonUtils.storeSucceedDeviceInfo(mDeviceType, mDevice, mAgeingResult, 1);
-                            } else {
-                                DeviceCommonUtils.storeSucceedDeviceInfo(mDeviceType, mDevice, mAgeingResult);
-                            }
+                        }
+                        if (mDeviceType == Globals.T4_p) {
+                            DeviceCommonUtils.storeSucceedDeviceInfo(mDeviceType, mDevice, mAgeingResult, 1);
+                        } else {
+                            DeviceCommonUtils.storeSucceedDeviceInfo(mDeviceType, mDevice, mAgeingResult);
                         }
 
                         mT4TestUnits.get(mCurTestStep).setResult(TEST_PASS);

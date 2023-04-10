@@ -773,8 +773,8 @@ public class K2TestDetailActivity extends BaseActivity implements PetkitSocketIn
 //                        K2Utils.removeTempDeviceInfo(mDevice);
                         if (isNewSN) {
                             isNewSN = false;
-                            K2Utils.storeSucceedDeviceInfo(mDevice, mAgeingResult);
                         }
+                        K2Utils.storeSucceedDeviceInfo(mDevice, mAgeingResult);
 
                         mK2TestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         refershBtnView();

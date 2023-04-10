@@ -898,8 +898,8 @@ public class T3TestDetailActivity extends BaseActivity implements PetkitSocketIn
 //                        T3Utils.removeTempDeviceInfo(mDevice);
                         if (isNewSN) {
                             isNewSN = false;
-                            T3Utils.storeSucceedDeviceInfo(mDevice, mAgeingResult);
                         }
+                        T3Utils.storeSucceedDeviceInfo(mDevice, mAgeingResult);
 
                         mT3TestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         refershBtnView();

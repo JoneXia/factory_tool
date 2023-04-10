@@ -266,9 +266,14 @@ public class D3Utils {
         if(device == null || !device.checkValid()) {
             throw  new RuntimeException("store D3 failed, " + (device == null ? "D3 is null !" : device.toString()));
         }
+        //去重
+        if (FileUtils.isFileContainsString(getStoreDeviceInfoFilePath(), device.getSn())) {
+            return;
+        }
 
-        PetkitLog.d("store D3 info: " + device.generateMainJson(ageingResult));
-        FileUtils.writeStringToFile(getStoreDeviceInfoFilePath(), device.generateMainJson(ageingResult) + ",", true);
+        String content = device.generateMainJson(ageingResult);
+        PetkitLog.d("store D3 info: " + content);
+        FileUtils.writeStringToFile(getStoreDeviceInfoFilePath(), content + ",", true);
     }
 
     /**

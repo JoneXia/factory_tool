@@ -266,6 +266,10 @@ public class T3Utils {
         if(device == null || !device.checkValid()) {
             throw  new RuntimeException("store T3 failed, " + (device == null ? "T3 is null !" : device.toString()));
         }
+        //去重
+        if (FileUtils.isFileContainsString(getStoreDeviceInfoFilePath(), device.getSn())) {
+            return;
+        }
 
         PetkitLog.d("store T3 info: " + device.generateMainJson(ageingResult));
         FileUtils.writeStringToFile(getStoreDeviceInfoFilePath(), device.generateMainJson(ageingResult) + ",", true);

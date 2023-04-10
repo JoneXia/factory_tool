@@ -250,6 +250,10 @@ public class D4Utils {
         if(device == null || !device.checkValid()) {
             throw  new RuntimeException("store D4 failed, " + (device == null ? "D4 is null !" : device.toString()));
         }
+        //去重
+        if (FileUtils.isFileContainsString(getStoreDeviceInfoFilePath(), device.getSn())) {
+            return;
+        }
 
         PetkitLog.d("store D4 info: " + device.generateMainJson(ageingResult));
         FileUtils.writeStringToFile(getStoreDeviceInfoFilePath(), device.generateMainJson(ageingResult) + ",", true);

@@ -571,8 +571,14 @@ public class DeviceCommonUtils {
             throw  new RuntimeException("storeSucceedDeviceInfo failed, " + (device == null ? "device is null !" : device.toString()));
         }
 
-        LogcatStorageHelper.addLog("storeSucceedDeviceInfo info: " + device.generateMainJson(ageingResult));
-        FileUtils.writeStringToFile(getStoreDeviceInfoFilePath(deviceType), device.generateMainJson(ageingResult) + ",", true);
+        //去重
+        if (FileUtils.isFileContainsString(getStoreDeviceInfoFilePath(deviceType), device.getSn())) {
+            return;
+        }
+
+        String content = device.generateMainJson(ageingResult);
+        LogcatStorageHelper.addLog("storeSucceedDeviceInfo info: " + content);
+        FileUtils.writeStringToFile(getStoreDeviceInfoFilePath(deviceType), content + ",", true);
     }
 
     /**
@@ -586,12 +592,15 @@ public class DeviceCommonUtils {
         if(device == null || !device.checkValid()) {
             throw  new RuntimeException("storeSucceedDeviceInfo failed, " + (device == null ? "device is null !" : device.toString()));
         }
-//        if(deviceType != Globals.T4_p) {
-//            throw  new RuntimeException("storeSucceedDeviceInfo failed, " + "device type must be device with K3");
-//        }
 
-        LogcatStorageHelper.addLog("storeSucceedDeviceInfo info: " + device.generateMainJson(ageingResult, withK3));
-        FileUtils.writeStringToFile(getStoreDeviceInfoFilePath(deviceType), device.generateMainJson(ageingResult, withK3) + ",", true);
+        //去重
+        String content = device.generateMainJson(ageingResult, withK3);
+        if (FileUtils.isFileContainsString(getStoreDeviceInfoFilePath(deviceType), content)) {
+            return;
+        }
+
+        LogcatStorageHelper.addLog("storeSucceedDeviceInfo info: " + content);
+        FileUtils.writeStringToFile(getStoreDeviceInfoFilePath(deviceType), content + ",", true);
     }
 
     /**

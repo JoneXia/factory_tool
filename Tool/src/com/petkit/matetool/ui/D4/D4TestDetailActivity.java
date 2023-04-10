@@ -734,8 +734,8 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         mDescTextView.append("\n写入SN成功");
                         if (isNewSN) {
                             isNewSN = false;
-                            D4Utils.storeSucceedDeviceInfo(mDevice, mAgeingResult);
                         }
+                        D4Utils.storeSucceedDeviceInfo(mDevice, mAgeingResult);
 
                         mD4TestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         refershBtnView();

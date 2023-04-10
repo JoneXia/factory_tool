@@ -1,6 +1,8 @@
 package com.petkit.android.utils;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -8,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -233,4 +236,25 @@ public class FileUtils {
 			file.delete();
 		}
 	}
+
+	@TargetApi(Build.VERSION_CODES.KITKAT)
+	public static boolean isFileContainsString(String filePath, String searchStr) {
+
+		boolean contains = false;
+
+		try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+			String line;
+			while ((line = br.readLine()) != null) {
+				if (line.contains(searchStr)) {
+					contains = true;
+					break;
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return contains;
+	}
+
 }

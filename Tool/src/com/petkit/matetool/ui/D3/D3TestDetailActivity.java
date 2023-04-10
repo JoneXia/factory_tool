@@ -858,8 +858,8 @@ public class D3TestDetailActivity extends BaseActivity implements PetkitSocketIn
 //                        D3Utils.removeTempDeviceInfo(mDevice);
                         if (isNewSN) {
                             isNewSN = false;
-                            D3Utils.storeSucceedDeviceInfo(mDevice, mAgeingResult);
                         }
+                        D3Utils.storeSucceedDeviceInfo(mDevice, mAgeingResult);
 
                         mD3TestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         refershBtnView();

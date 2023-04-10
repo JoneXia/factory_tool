@@ -881,9 +881,9 @@ public class AQH1TestDetailActivity extends BaseActivity implements PetkitSocket
                             mDevice.getSn() != null && mDevice.getSn().equalsIgnoreCase(sn)) {
                         mDescTextView.append("\n写入SN成功");
                         if (isNewSN) {
-                            DeviceCommonUtils.storeSucceedDeviceInfo(mDeviceType, mDevice, mAgeingResult);
                             isNewSN = false;
                         }
+                        DeviceCommonUtils.storeSucceedDeviceInfo(mDeviceType, mDevice, mAgeingResult);
                         mTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         refershBtnView();
                     } else {
