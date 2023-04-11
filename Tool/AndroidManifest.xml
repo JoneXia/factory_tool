@@ -469,6 +469,9 @@
         <activity android:name=".ui.D4SH.D4SHVideoPlayActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".ui.common.TimezonesListActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
 
         <service
             android:name="com.petkit.matetool.service.DatagramProcessService"
