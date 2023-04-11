@@ -10,11 +10,15 @@ import com.petkit.matetool.model.DeviceTestUnit;
  */
 public class D4SHTestUnit extends DeviceTestUnit<D4SHUtils.D4SHTestModes> {
 
+    private boolean isContainVideo;
 
-    public D4SHTestUnit(D4SHUtils.D4SHTestModes type, String name, int module, int state) {
+    public D4SHTestUnit(D4SHUtils.D4SHTestModes type, String name, int module, int state, boolean isContainVideo) {
         super(type, name, module, state);
 
+        this.isContainVideo = isContainVideo;
     }
 
-
+    public boolean isContainVideo() {
+        return isContainVideo;
+    }
 }

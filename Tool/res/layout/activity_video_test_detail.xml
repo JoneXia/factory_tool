@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/test_prompt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Text_Middle_Black"
+        android:padding="5dip" />
+
+    <LinearLayout
+        android:id="@+id/video_parent_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:orientation="vertical">
+
+        <com.petkit.matetool.ui.D4SH.D4shPlayer
+            android:id="@+id/d4sh_player"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="6dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"/>
+
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/test_scrllview"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/test_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Text_Middle_Black"
+                android:singleLine="false"
+                android:padding="5dip" />
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/set_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:gravity="center_horizontal"
+        android:padding="10dip">
+        <Button
+            android:id="@+id/set_btn_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Text_Small_White"
+            />
+
+        <Button
+            android:id="@+id/set_btn_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dip"
+            style="@style/Text_Small_White"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dip">
+
+        <Button
+            android:id="@+id/test_btn_1"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="@style/Text_Small_White"
+            android:background="@drawable/selector_gray"
+            />
+
+        <Button
+            android:id="@+id/test_btn_2"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dip"
+            style="@style/Text_Small_White"
+            />
+
+        <Button
+            android:id="@+id/test_btn_3"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dip"
+            style="@style/Text_Small_White"
+            />
+        <Button
+            android:id="@+id/test_btn_4"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dip"
+            android:visibility="gone"
+            style="@style/Text_Small_White"
+            />
+    </LinearLayout>
+</LinearLayout>

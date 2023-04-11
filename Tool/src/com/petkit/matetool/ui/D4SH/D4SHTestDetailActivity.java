@@ -29,6 +29,8 @@ import com.petkit.matetool.R;
 import com.petkit.matetool.model.Device;
 import com.petkit.matetool.model.DeviceModuleStateStruct;
 import com.petkit.matetool.model.Tester;
+import com.petkit.matetool.model.UDPDevice;
+import com.petkit.matetool.player.BasePetkitPlayerListener;
 import com.petkit.matetool.ui.D4S.mode.D4STestUnit;
 import com.petkit.matetool.ui.D4S.utils.D4SUtils;
 import com.petkit.matetool.ui.base.BaseActivity;
@@ -40,6 +42,7 @@ import com.petkit.matetool.ui.utils.PrintUtils;
 import com.petkit.matetool.utils.DateUtil;
 import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.JSONUtils;
+import com.petkit.matetool.utils.UiUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,8 +53,10 @@ import java.util.HashMap;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import static com.petkit.matetool.ui.D4S.utils.D4SUtils.D4STestModes.TEST_MODE_AGEINGRESULT;
-import static com.petkit.matetool.ui.D4S.utils.D4SUtils.D4STestModes.TEST_MODE_AUTO;
+import static com.petkit.matetool.ui.D4SH.D4SHUtils.D4SHTestModes.TEST_MODE_AGEINGRESULT;
+import static com.petkit.matetool.ui.D4SH.D4SHUtils.D4SHTestModes.TEST_MODE_AUTO;
+import static com.petkit.matetool.ui.D4SH.D4SHUtils.D4SHTestModes.TEST_MODE_PRINT;
+import static com.petkit.matetool.ui.D4SH.D4SHUtils.D4SHTestModes.TEST_MODE_SN;
 import static com.petkit.matetool.ui.utils.PrintUtils.isPrinterConnected;
 import static com.petkit.matetool.utils.Globals.TEST_FAILED;
 import static com.petkit.matetool.utils.Globals.TEST_PASS;
@@ -60,11 +65,11 @@ import static com.petkit.matetool.utils.Globals.TYPE_TEST;
 /**
  * Created by Jone on 17/4/24.
  */
-public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocketInstance.IPetkitSocketListener, PrintResultCallback {
+public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocketInstance.IPetkitSocketListener, PrintResultCallback, BasePetkitPlayerListener {
 
     private Tester mTester;
     private int mCurTestStep;
-    private ArrayList<D4STestUnit> mTestUnits;
+    private ArrayList<D4SHTestUnit> mTestUnits;
     private int mTempResult;
     private Device mDevice, mErrorDevice;
     private boolean isWriteEndCmd = false;
@@ -85,12 +90,15 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
     private int mTestType;
     private int leftLow, leftTop, rightLow, rightTop;
 
+    private UDPDevice mUDPDevice;
+    private View mPlayerParentView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState != null) {
-            mTestUnits = (ArrayList<D4STestUnit>) savedInstanceState.getSerializable("TestUnits");
+            mTestUnits = (ArrayList<D4SHTestUnit>) savedInstanceState.getSerializable("TestUnits");
             mCurTestStep = savedInstanceState.getInt("CurrentTestStep");
             isAutoTest = savedInstanceState.getBoolean("AutoTest");
             mDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_DEVICE);
@@ -98,8 +106,9 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
             mTestType = savedInstanceState.getInt("TestType");
             mErrorDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE);
             mDeviceType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE);
+            mUDPDevice = (UDPDevice) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_UDPDEVICE);
         } else {
-            mTestUnits = (ArrayList<D4STestUnit>) getIntent().getSerializableExtra("TestUnits");
+            mTestUnits = (ArrayList<D4SHTestUnit>) getIntent().getSerializableExtra("TestUnits");
             mCurTestStep = getIntent().getIntExtra("CurrentTestStep", 0);
             isAutoTest = getIntent().getBooleanExtra("AutoTest", true);
             mDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_DEVICE);
@@ -107,6 +116,7 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
             mTestType = getIntent().getIntExtra("TestType", TYPE_TEST);
             mErrorDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE);
             mDeviceType = getIntent().getIntExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, 0);
+            mUDPDevice = (UDPDevice) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_UDPDEVICE);
         }
 
         setContentView(R.layout.activity_feeder_test_detail);
@@ -137,6 +147,7 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
         outState.putSerializable(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
         outState.putInt("TestType", mTestType);
         outState.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
+        outState.putSerializable(DeviceCommonUtils.EXTRA_UDPDEVICE, mUDPDevice);
     }
 
     @Override
@@ -151,7 +162,9 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
         mBtn2 = (Button) findViewById(R.id.test_btn_2);
         mBtn3 = (Button) findViewById(R.id.test_btn_3);
         mDescScrollView = (ScrollView) findViewById(R.id.test_scrllview);
+        mPlayerParentView = findViewById(R.id.video_parent_view);
 
+        initPlayer();
         refreshView();
     }
 
@@ -182,7 +195,7 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
                 mPromptTextView.setText("需要分别测试手动喂食键和WiFi设置键！");
                 break;
             case TEST_MODE_DC:
-                mPromptTextView.setText("正常电压范围（单位mV）：[5000, 7000]");
+                mPromptTextView.setText("正常电压范围（单位mV）：[4750, 6250]");
                 break;
             case TEST_MODE_LED:
                 mPromptTextView.setText("测试指示灯和蜂鸣器，观察是否正常！");
@@ -197,7 +210,7 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
                 mPromptTextView.setText("测试马达，需要分别测正转和反转，门位置都需要能关闭！");
                 break;
             case TEST_MODE_BAT:
-                mPromptTextView.setText("测试电池功能，观察电池电压！");
+                mPromptTextView.setText("测试电池功能，观察电池电压（单位mV）：[5750, 6250]");
                 break;
             case TEST_MODE_BT:
                 mPromptTextView.setText("测试蓝牙功能，检测蓝牙信号强度，需大于-70！");
@@ -205,22 +218,46 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
             case TEST_MODE_TIME:
                 mPromptTextView.setText("测试设备时钟！");
                 break;
-            case TEST_MODE_AUTO:
-                mPromptTextView.setText("自动测试项包括：电压、时钟、蓝牙，点击开始后程序自动完成检测。");
+            case TEST_MODE_VIDEO:
+                mPromptTextView.setText("观察镜头对焦、色彩、清晰度、反光光斑等是否正常！");
                 break;
-            case TEST_MODE_PROXIMITY:
-                mPromptTextView.setText("测试接近传感器，接近最大值和最小值之差大于100则测试成功。");
+            case TEST_MODE_IR_cut:
+                mPromptTextView.setText("切换白片、红片观察视频效果！");
+                break;
+            case TEST_MODE_IR_light:
+                mPromptTextView.setText("将摄像头置于暗箱，切换补光灯开关观察视频效果！");
+                break;
+            case TEST_MODE_SPEAK:
+                mPromptTextView.setText("根据摄像头语音播报效果，判定是否正常！");
+                break;
+            case TEST_MODE_MIC:
+                mPromptTextView.setText("按住录音后，根据摄像头播放判定是否正常！");
+                break;
+            case TEST_MODE_AUTO:
+                mPromptTextView.setText("自动测试项包括：电压、串口、时钟、蓝牙，点击开始后程序自动完成检测。");
+                break;
             default:
                 break;
+        }
+
+        mPlayerParentView.setVisibility(mTestUnits.get(mCurTestStep).isContainVideo() ? View.VISIBLE : View.GONE);
+        if (mTestUnits.get(mCurTestStep).isContainVideo()) {
+            startPlay();
         }
 
         refershBtnView();
     }
 
     private void refershBtnView() {
+
         switch (mTestUnits.get(mCurTestStep).getType()) {
             case TEST_MODE_AGEINGRESULT:  // 人工判定结果
             case TEST_MODE_LED:
+            case TEST_MODE_VIDEO:
+            case TEST_MODE_IR_cut:
+            case TEST_MODE_IR_light:
+            case TEST_MODE_SPEAK:
+            case TEST_MODE_MIC:
                 mBtn1.setText(R.string.Start);
                 mBtn2.setText(R.string.Failure);
                 mBtn2.setBackgroundResource(R.drawable.selector_red);
@@ -561,26 +598,42 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
                         result = mTempResult == 0x111;
                         break;
                     case 3:
-                        desc.append("\n").append("红外").append("-").append(Integer.toBinaryString(moduleStateStruct.getState())).append("-");
-
-                        if (moduleStateStruct.getState() == 0) {
+                        desc.append("\n").append("粮道");
+                        if (moduleStateStruct.getSub0() == 0) {
                             mTempResult = mTempResult | 0x1;
                             desc.append("-未遮挡！");
-                        } else if (moduleStateStruct.getState() == 1) {
+                        } else if (moduleStateStruct.getSub0() == 1) {
                             mTempResult = mTempResult | 0x10;
                             desc.append("-遮挡！");
                         } else {
                             desc.append("-异常！");
                         }
 
-                        result = mTempResult == 0x11;
+                        desc.append("\n").append("桶内左");
+                        if (moduleStateStruct.getSub1() == 0) {
+                            mTempResult = mTempResult | 0x100;
+                            desc.append("-未遮挡！");
+                        } else if (moduleStateStruct.getSub1() == 1) {
+                            mTempResult = mTempResult | 0x1000;
+                            desc.append("-遮挡！");
+                        } else {
+                            desc.append("-异常！");
+                        }
+
+                        desc.append("\n").append("桶内右");
+                        if (moduleStateStruct.getSub2() == 0) {
+                            mTempResult = mTempResult | 0x10000;
+                            desc.append("-未遮挡！");
+                        } else if (moduleStateStruct.getSub2() == 1) {
+                            mTempResult = mTempResult | 0x100000;
+                            desc.append("-遮挡！");
+                        } else {
+                            desc.append("-异常！");
+                        }
+
+                        result = mTempResult == 0x111111;
                         break;
                     case 4:
-//                        desc.append("\n").append("电机").append(": ").append(moduleStateStruct.getState() == 1 ? "正常" : "异常")
-//                                .append("\n门位置").append("：").append((moduleStateStruct.getSub0() & 0x1) == 1 ? "关闭" :"打开")
-//                                .append("\n方向").append("：").append(((moduleStateStruct.getSub0() >> 1) & 0x1) == 1 ? "反转" :"正转")
-//                                .append("\n电流").append("：").append((moduleStateStruct.getSub2()) == 1 ? "正常" : "异常");
-
                         if ((moduleStateStruct.getSub0() & 0x1) == 1) {
                             mTempResult = (mTempResult | 0x1);
                             desc.append("\n").append("关门：1");
@@ -781,9 +834,9 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
         if (isEmpty(mDevice.getSn()) || (mTestUnits.get(mCurTestStep).getState() == 2
                 && mErrorDevice != null && mDevice.getSn().equals(mErrorDevice.getSn()))) {
             boolean result = true;
-            for (D4STestUnit unit : mTestUnits) {
-                if (unit.getType() != D4SUtils.D4STestModes.TEST_MODE_SN &&
-                        unit.getType() != D4SUtils.D4STestModes.TEST_MODE_PRINT
+            for (D4SHTestUnit unit : mTestUnits) {
+                if (unit.getType() != TEST_MODE_SN &&
+                        unit.getType() != TEST_MODE_PRINT
                         && unit.getResult() != TEST_PASS) {
                     result = false;
                     break;
@@ -884,25 +937,25 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
                 desc = "按下";
                 break;
             case 2:
-                desc = "短按";
+                desc = "松开";
                 break;
             case 3:
-                desc = "短按释放";
+                desc = "单机";
                 break;
             case 4:
-                desc = "长按";
+                desc = "空";
                 break;
             case 5:
-                desc = "长按释放";
+                desc = "长按";
                 break;
             case 6:
                 desc = "双击";
                 break;
             case 7:
-                desc = "短长按";
+                desc = "半长按";
                 break;
-            case 8:
-                desc = "双击释放";
+            default:
+                desc = "空";
                 break;
         }
 
@@ -1127,5 +1180,87 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
         Intent intent = new Intent(BLEConsts.BROADCAST_ACTION);
         intent.putExtra(BLEConsts.EXTRA_ACTION, BLEConsts.ACTION_ABORT);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
+
+
+
+    private D4shPlayer player;
+    private boolean isPlayerInited = false;
+    private boolean isWaitingInit  = false;
+
+    private void initPlayer() {
+        player = findViewById(R.id.d4sh_player);
+        player.setPlayerListener(this);
+        player.post(() -> {
+            int videoPlayerHeight = Math.round((player.getWidth() - UiUtils.dip2px(this, 32))* 9f / 16);
+            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) player.getLayoutParams();
+            layoutParams.height = videoPlayerHeight;
+            player.setLayoutParams(layoutParams);
+        });
+
+    }
+
+    private void startPlay() {
+        if (isPlayerInited) {
+            player.startVideo(String.format("http://%s", mUDPDevice.getIp()));
+            isWaitingInit = false;
+        } else {
+            isWaitingInit = true;
+        }
+    }
+
+
+    @Override
+    public void onFastBackwardResult(boolean switchVideo) {
+
+    }
+
+    @Override
+    public void onFastForwardResult(boolean switchVideo) {
+
+    }
+
+    @Override
+    public void onStartPlay() {
+
+    }
+
+    @Override
+    public void onCompleted() {
+
+    }
+
+    @Override
+    public void onInitSuccess() {
+        isPlayerInited = true;
+        if (isWaitingInit) {
+            startPlay();
+        }
+    }
+
+    @Override
+    public void playing(String videoTime, long position) {
+
+    }
+
+    @Override
+    public void onVideoClick() {
+
+    }
+
+    @Override
+    public void onSeekCompleted() {
+
+    }
+
+    @Override
+    public void preparedVideo(String videoTime, int start, int max) {
+
+    }
+
+    @Override
+    public void onPrepared() {
+
     }
 }

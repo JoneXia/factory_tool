@@ -58,6 +58,7 @@ public class DeviceCommonUtils {
     public static final String EXTRA_DEVICE_TYPE   = "EXTRA_DEVICE_TYPE";
     public static final String EXTRA_DEVICE   = "EXTRA_DEVICE";
     public static final String EXTRA_ERROR_DEVICE   = "EXTRA_ERROR_DEVICE";
+    public static final String EXTRA_UDPDEVICE   = "EXTRA_UDPDEVICE";
     public static final String EXTRA_TEST_TYPE = "TestType";
     public static final String EXTRA_DEVICE_SN = "EXTRA_DEVICE_SN";
 

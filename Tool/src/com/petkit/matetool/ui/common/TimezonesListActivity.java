@@ -14,13 +14,12 @@ import com.petkit.matetool.ui.base.BaseListActivity;
 import com.petkit.matetool.widget.pulltorefresh.PullToRefreshBase;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.TimeZone;
-
-import static java.util.TimeZone.SHORT;
 
 public class TimezonesListActivity  extends BaseListActivity {
 
-    ArrayList<TimeZoneWrap> mList;
+    ArrayList<String> mList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,18 +56,29 @@ public class TimezonesListActivity  extends BaseListActivity {
     }
 
 
-    private ArrayList<TimeZoneWrap> getTimeZones() {
+    private ArrayList<String> getTimeZones() {
 
-        ArrayList<TimeZoneWrap> list = new ArrayList<>();
-        String[] ids = TimeZone.getAvailableIDs();
-        for (String id : ids) {
-            TimeZone timeZone = TimeZone.getTimeZone(id);
-            TimeZoneWrap timeZoneWrap = new TimeZoneWrap(timeZone, timeZone.getDisplayName() + ": " + timeZone.getDisplayName(false, SHORT)) ;
-            if (!list.contains(timeZoneWrap)) {
-                list.add(timeZoneWrap);
-            }
+//        ArrayList<TimeZoneWrap> list = new ArrayList<>();
+//        String[] ids = TimeZone.getAvailableIDs();
+//        for (String id : ids) {
+//            TimeZone timeZone = TimeZone.getTimeZone(id);
+//            TimeZoneWrap timeZoneWrap = new TimeZoneWrap(timeZone, timeZone.getDisplayName() + ": " + timeZone.getDisplayName(false, SHORT)) ;
+//            if (!list.contains(timeZoneWrap)) {
+//                list.add(timeZoneWrap);
+//            }
+//        }
+//        return list;
+
+        HashSet<String> uniqueTimezones = new HashSet<>();
+        String[] availableTimezones = TimeZone.getAvailableIDs();
+
+        for (String timezone : availableTimezones) {
+            TimeZone tz = TimeZone.getTimeZone(timezone);
+            uniqueTimezones.add(tz.getID() + " (" + tz.getDisplayName() + ")");
         }
-        return list;
+
+        return new ArrayList<>(uniqueTimezones);
+
     }
 
 
@@ -81,7 +91,7 @@ public class TimezonesListActivity  extends BaseListActivity {
         }
 
         @Override
-        public TimeZoneWrap getItem(int position) {
+        public String getItem(int position) {
             return mList.get(position);
         }
 
@@ -103,7 +113,7 @@ public class TimezonesListActivity  extends BaseListActivity {
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            holder.name.setText(getItem(position).getName());
+            holder.name.setText(getItem(position));
 
             return convertView;
         }

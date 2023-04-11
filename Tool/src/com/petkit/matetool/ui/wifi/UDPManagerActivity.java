@@ -79,7 +79,7 @@ public class UDPManagerActivity extends BaseListActivity {
         mAdapter = new IPsListAdapter();
         mListView.setAdapter(mAdapter);
 
-        setListViewEmpty(0, "未找到有用设备，请将手机连接到名称为 " + mFlterString + "的热点再试。", R.string.Tap_to_refresh, new View.OnClickListener() {
+        setListViewEmpty(0, "未找到有用设备，请将手机连接到指定热点后再试。", R.string.Tap_to_refresh, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 refreshWifiList();
@@ -133,10 +133,8 @@ public class UDPManagerActivity extends BaseListActivity {
             if (mServer == null) {
                 mServer = new UDPServer();
                 mServer.setListener((device) -> {
-                    PetkitLog.d("find new d4sh: " + device.toString());
-                    //TODO: device.getDeviceType().contains(mFlterString)
-                    //                            &&
-                    if (!mList.contains(device)) {
+                    PetkitLog.d("find new device: " + device.toString());
+                    if (!mList.contains(device) && device.getDeviceType().contains(mFlterString)) {
                         mList.add(device);
 
                         runOnUiThread(() -> {

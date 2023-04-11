@@ -62,7 +62,7 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
     private boolean testComplete = false;
     private int mDeviceType;
 
-    private UDPDevice mDevice;
+    private UDPDevice mUDPDevice;
 
 
 
@@ -257,8 +257,8 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
                     refreshBottomButton();
                     break;
                 case 0x111:
-                    mDevice = (UDPDevice) data.getSerializableExtra("UDPDevice");
-                    connectAp(mDevice.getIp());
+                    mUDPDevice = (UDPDevice) data.getSerializableExtra("UDPDevice");
+                    connectAp(mUDPDevice.getIp());
                     break;
             }
         }
@@ -287,29 +287,17 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
                 pos = position;
             }
 
-            if (mD4TestUnits.get(pos).getType() == D4SHUtils.D4SHTestModes.TEST_MODE_VIDEO) {
-                Intent intent = new Intent(D4SHTestMainActivity.this, D4SHVideoPlayActivity.class);
-                intent.putExtra("TestUnits", mD4TestUnits);
-                intent.putExtra("CurrentTestStep", pos);
-                intent.putExtra("AutoTest", isAuto);
-                intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mCurDevice);
-                intent.putExtra(DeviceCommonUtils.EXTRA_TESTER, mTester);
-                intent.putExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
-                intent.putExtra("TestType", mTestType);
-                intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
-                startActivityForResult(intent, 0x12);
-            } else {
-                Intent intent = new Intent(D4SHTestMainActivity.this, D4SHTestDetailActivity.class);
-                intent.putExtra("TestUnits", mD4TestUnits);
-                intent.putExtra("CurrentTestStep", pos);
-                intent.putExtra("AutoTest", isAuto);
-                intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mCurDevice);
-                intent.putExtra(DeviceCommonUtils.EXTRA_TESTER, mTester);
-                intent.putExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
-                intent.putExtra("TestType", mTestType);
-                intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
-                startActivityForResult(intent, 0x12);
-            }
+            Intent intent = new Intent(D4SHTestMainActivity.this, D4SHTestDetailActivity.class);
+            intent.putExtra("TestUnits", mD4TestUnits);
+            intent.putExtra("CurrentTestStep", pos);
+            intent.putExtra("AutoTest", isAuto);
+            intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE, mCurDevice);
+            intent.putExtra(DeviceCommonUtils.EXTRA_TESTER, mTester);
+            intent.putExtra(DeviceCommonUtils.EXTRA_ERROR_DEVICE, mErrorDevice);
+            intent.putExtra("TestType", mTestType);
+            intent.putExtra(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
+            intent.putExtra(DeviceCommonUtils.EXTRA_UDPDEVICE, mUDPDevice);
+            startActivityForResult(intent, 0x12);
         } else {
             showShortToast(mInfoTestTextView.getText().toString());
         }
@@ -317,8 +305,8 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
 
     private void refreshView() {
         String apSsid = mWifiAdminSimple.getWifiConnectedSsid();
-        if(apSsid == null) {
-            mInfoTestTextView.setText("请先连接到特定的WIFI，再进行测试！");
+        if(apSsid == null || !apSsid.equalsIgnoreCase("PETKIT_PT_WIFI")) {
+            mInfoTestTextView.setText("请先连接到特定的WIFI《PETKIT_PT_WIFI》，再进行测试！");
         } else {
             showWifiManager();
         }
