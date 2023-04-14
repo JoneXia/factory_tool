@@ -11,22 +11,13 @@
         style="@style/Text_Middle_Black"
         android:padding="5dip" />
 
-    <LinearLayout
-        android:id="@+id/video_parent_view"
+    <com.petkit.matetool.ui.D4SH.D4shPlayer
+        android:id="@+id/d4sh_player"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:orientation="vertical">
-
-        <com.petkit.matetool.ui.D4SH.D4shPlayer
-            android:id="@+id/d4sh_player"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="6dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"/>
-
-    </LinearLayout>
+        android:layout_height="match_parent"
+        android:layout_marginTop="6dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"/>
 
     <ScrollView
         android:id="@+id/test_scrllview"

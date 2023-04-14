@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -53,8 +54,11 @@ import java.util.HashMap;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_UP;
 import static com.petkit.matetool.ui.D4SH.D4SHUtils.D4SHTestModes.TEST_MODE_AGEINGRESULT;
 import static com.petkit.matetool.ui.D4SH.D4SHUtils.D4SHTestModes.TEST_MODE_AUTO;
+import static com.petkit.matetool.ui.D4SH.D4SHUtils.D4SHTestModes.TEST_MODE_MIC;
 import static com.petkit.matetool.ui.D4SH.D4SHUtils.D4SHTestModes.TEST_MODE_PRINT;
 import static com.petkit.matetool.ui.D4SH.D4SHUtils.D4SHTestModes.TEST_MODE_SN;
 import static com.petkit.matetool.ui.utils.PrintUtils.isPrinterConnected;
@@ -119,7 +123,7 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
             mUDPDevice = (UDPDevice) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_UDPDEVICE);
         }
 
-        setContentView(R.layout.activity_feeder_test_detail);
+        setContentView(R.layout.activity_video_test_detail);
 
         registerBoradcastReceiver();
     }
@@ -162,7 +166,7 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
         mBtn2 = (Button) findViewById(R.id.test_btn_2);
         mBtn3 = (Button) findViewById(R.id.test_btn_3);
         mDescScrollView = (ScrollView) findViewById(R.id.test_scrllview);
-        mPlayerParentView = findViewById(R.id.video_parent_view);
+//        mPlayerParentView = findViewById(R.id.video_parent_view);
 
         initPlayer();
         refreshView();
@@ -240,7 +244,7 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
                 break;
         }
 
-        mPlayerParentView.setVisibility(mTestUnits.get(mCurTestStep).isContainVideo() ? View.VISIBLE : View.GONE);
+        player.setVisibility(mTestUnits.get(mCurTestStep).isContainVideo() ? View.VISIBLE : View.GONE);
         if (mTestUnits.get(mCurTestStep).isContainVideo()) {
             startPlay();
         }
@@ -257,13 +261,43 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
             case TEST_MODE_IR_cut:
             case TEST_MODE_IR_light:
             case TEST_MODE_SPEAK:
-            case TEST_MODE_MIC:
                 mBtn1.setText(R.string.Start);
                 mBtn2.setText(R.string.Failure);
                 mBtn2.setBackgroundResource(R.drawable.selector_red);
                 mBtn2.setVisibility(View.VISIBLE);
                 mBtn3.setText(R.string.Succeed);
                 mBtn3.setBackgroundResource(R.drawable.selector_blue);
+                break;
+            case TEST_MODE_MIC:
+                mBtn1.setText("按住说话");
+                mBtn2.setText(R.string.Failure);
+                mBtn2.setBackgroundResource(R.drawable.selector_red);
+                mBtn2.setVisibility(View.VISIBLE);
+                mBtn3.setText(R.string.Succeed);
+                mBtn3.setBackgroundResource(R.drawable.selector_blue);
+
+                mBtn1.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        if (mTestUnits.get(mCurTestStep).getType() == TEST_MODE_MIC) {
+                            switch (event.getAction()) {
+                                case ACTION_DOWN:
+                                    HashMap<String, Object> params = new HashMap<>();
+                                    params.put("module", mTestUnits.get(mCurTestStep).getModule());
+                                    params.put("state", 1);
+                                    PetkitSocketInstance.getInstance().sendString(DeviceCommonUtils.getRequestForKeyAndPayload(163, params));
+                                    break;
+                                case ACTION_UP:
+                                    params = new HashMap<>();
+                                    params.put("module", mTestUnits.get(mCurTestStep).getModule());
+                                    params.put("state", 0);
+                                    PetkitSocketInstance.getInstance().sendString(DeviceCommonUtils.getRequestForKeyAndPayload(163, params));
+                                    break;
+                            }
+                        }
+                        return false;
+                    }
+                });
                 break;
             case TEST_MODE_PRINT:
                 mBtn1.setText(R.string.Print);
@@ -349,6 +383,8 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
                         params.put("mac", mDevice.getMac());
                         PetkitSocketInstance.getInstance().sendString(DeviceCommonUtils.getRequestForKeyAndPayload(167, params));
                         break;
+                    case TEST_MODE_MIC:
+                        break;
                     default:
                         startTestModule();
                         break;
@@ -413,13 +449,20 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
             case TEST_MODE_AUTO:
                 startAutoUnitsTest();
                 return;
+            case TEST_MODE_VIDEO:
+            case TEST_MODE_IR_cut:
+            case TEST_MODE_IR_light:
+            case TEST_MODE_SPEAK:
+            case TEST_MODE_MIC:
+                params.put("state", mTempStep %2 == 0 ? 1 : 0);
+                mTempStep++;
+                break;
 
             default:
                 params.put("state", mTestUnits.get(mCurTestStep).getState());
                 break;
         }
 
-        mTempStep = 0;
         PetkitSocketInstance.getInstance().sendString(DeviceCommonUtils.getRequestForKeyAndPayload(163, params));
 
         if (mTestUnits.get(mCurTestStep).getResult() == TEST_PASS) {
@@ -545,7 +588,7 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
                                 }
                                 break;
                             default:
-                                mDescTextView.append("\n指令处理失败！");
+                                mDescTextView.append("\n指令发送成功！");
                                 break;
                         }
                     } catch (JSONException e) {

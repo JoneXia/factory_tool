@@ -323,7 +323,7 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
             case Globals.TYPE_CHECK:
             case Globals.TYPE_DUPLICATE_MAC:
             case Globals.TYPE_DUPLICATE_SN:
-                startActivityForResult(UDPManagerActivity.getIntent(this, "D4SH"), 0x111);
+                startActivityForResult(UDPManagerActivity.getIntent(this, "D6"), 0x111);
                 break;
         }
     }
