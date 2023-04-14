@@ -72,6 +72,7 @@ public class TesterManagerUtils {
                     break;
                 case Globals.D4:
                 case Globals.D4_1:
+                case Globals.D4_2:
                     testerString = CommonUtils.getSysMap(D4Utils.SHARED_D4_TESTER);
                     break;
                 default:
@@ -122,6 +123,7 @@ public class TesterManagerUtils {
                 break;
             case Globals.D4:
             case Globals.D4_1:
+            case Globals.D4_2:
                 CommonUtils.addSysMap(D4Utils.SHARED_D4_TESTER, testerString);
                 break;
 //            case Globals.W5:
@@ -177,6 +179,7 @@ public class TesterManagerUtils {
                         break;
                     case Globals.D4:
                     case Globals.D4_1:
+                    case Globals.D4_2:
                         CommonUtils.addSysMap(D4Utils.SHARED_D4_TESTER, "");
                         break;
 //                    case Globals.W5:

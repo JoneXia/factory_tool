@@ -463,4 +463,14 @@ public class Versions {
 	 */
 	public static final String TOOL_CTW3_VERSION	= "0.1";
 
+
+	/**
+	 * 1.0说明：
+	 *
+	 * 1. 支持小佩智能喂食器SOLO NEW（D4-2）产测全功能
+	 *
+	 *
+	 */
+	public static final String TOOL_D4_2_VERSION	= "1.0";
+
 }

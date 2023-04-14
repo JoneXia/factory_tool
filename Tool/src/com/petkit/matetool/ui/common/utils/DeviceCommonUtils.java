@@ -19,6 +19,7 @@ import com.petkit.matetool.ui.AQH1.AQH1TestMainActivity;
 import com.petkit.matetool.ui.AQR.AQRTestMainActivity;
 import com.petkit.matetool.ui.CTW3.CTW3TestMainActivity;
 import com.petkit.matetool.ui.D3.utils.D3Utils;
+import com.petkit.matetool.ui.D4.D4TestMainActivity;
 import com.petkit.matetool.ui.D4.utils.D4Utils;
 import com.petkit.matetool.ui.D4S.D4STestMainActivity;
 import com.petkit.matetool.ui.HG.HGTestMainActivity;
@@ -130,6 +131,8 @@ public class DeviceCommonUtils {
                 Globals.DEVICE_TYPE_CODE_NEW_W4X_UV, W5NTestMainActivity.class));
         mDeviceConfigs.put(Globals.CTW3, new DeviceConfigInfo(true, "CTW3", "CTW3", new String[]{"Petkit_CTW3"},
                 Globals.DEVICE_TYPE_CODE_NEW_CTW3, CTW3TestMainActivity.class));
+        mDeviceConfigs.put(Globals.D4_2, new DeviceConfigInfo(true, "D4_2", "D4_2", null,
+                Globals.DEVICE_TYPE_CODE_NEW_D4_2, D4TestMainActivity.class));
     }
 
     /**
@@ -732,6 +735,7 @@ public class DeviceCommonUtils {
                     break;
                 case Globals.D4:
                 case Globals.D4_1:
+                case Globals.D4_2:
                     filePath = D4Utils.getStoreDeviceInfoFilePath();
                     break;
                 case Globals.FEEDER_MINI:

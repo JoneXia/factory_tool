@@ -574,19 +574,38 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         result = mTempResult == 0x111;
                         break;
                     case 3:
-                        desc.append("\n").append("红外").append("-").append(Integer.toBinaryString(moduleStateStruct.getState())).append("-");
+                        desc.append("\n").append("红外").append(moduleStateStruct.getState()+"");
 
-                        if (moduleStateStruct.getState() == 0) {
-                            mTempResult = mTempResult | 0x1;
-                            desc.append("\n").append("红外-未遮挡！");
-                        } else if (moduleStateStruct.getState() == 1) {
-                            mTempResult = mTempResult | 0x10;
-                            desc.append("\n").append("红外-遮挡！");
+                        if (mDeviceType == Globals.D4_2) {
+                            if ((moduleStateStruct.getState() & 0x1) == 1) {
+                                mTempResult = (mTempResult | 0x10);
+                                desc.append("-粮道：遮挡！");
+                            }
+                            if ((moduleStateStruct.getState() & 0x1) == 0) {
+                                mTempResult = (mTempResult | 0x1);
+                                desc.append("-粮道：未遮挡！");
+                            }
+                            if (((moduleStateStruct.getState() >> 1) & 0x1) == 1) {
+                                mTempResult = (mTempResult | 0x1000);
+                                desc.append("-桶内：遮挡！");
+                            }
+                            if (((moduleStateStruct.getState() >> 1) & 0x1) == 0) {
+                                mTempResult = (mTempResult | 0x100);
+                                desc.append("-桶内：未遮挡！");
+                            }
+                            result = mTempResult == 0x1111;
                         } else {
-                            desc.append("\n").append("红外-异常！");
+                            if (moduleStateStruct.getState() == 0) {
+                                mTempResult = mTempResult | 0x1;
+                                desc.append("-未遮挡！");
+                            } else if (moduleStateStruct.getState() == 1) {
+                                mTempResult = mTempResult | 0x10;
+                                desc.append("-遮挡！");
+                            } else {
+                                desc.append("-异常！");
+                            }
+                            result = mTempResult == 0x11;
                         }
-
-                        result = mTempResult == 0x11;
                         break;
                     case 4:
                         desc.append("\n").append("电机").append(": ").append(moduleStateStruct.getState() == 1 ? "正常" : "异常")
