@@ -450,6 +450,9 @@ public class W5TestDetailActivity extends BaseActivity implements PrintResultCal
 
     @Override
     public void finish() {
+        if (isNewSN) {
+            mDevice.setSn(null);
+        }
         Intent intent = new Intent();
         intent.putExtra("TestUnits", mW5TestUnits);
         intent.putExtra(W5Utils.EXTRA_W5, mDevice);

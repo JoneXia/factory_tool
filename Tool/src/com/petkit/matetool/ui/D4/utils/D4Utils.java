@@ -20,6 +20,7 @@ import java.util.HashMap;
 import static com.petkit.android.utils.LogcatStorageHelper.getFileName;
 import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_NEW_D4;
 import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_NEW_D4_1;
+import static com.petkit.matetool.utils.Globals.DEVICE_TYPE_CODE_NEW_D4_2;
 import static com.petkit.matetool.utils.Globals.PERMISSION_ERASE;
 import static com.petkit.matetool.utils.Globals.TYPE_AFTERMARKET;
 
@@ -188,7 +189,8 @@ public class D4Utils {
         }
 
         return DeviceCommonUtils.generateSN("0" + tester.getStation() + day,
-                deviceType == Globals.D4 ? DEVICE_TYPE_CODE_NEW_D4 : DEVICE_TYPE_CODE_NEW_D4_1, serializableNumber);
+                deviceType == Globals.D4 ? DEVICE_TYPE_CODE_NEW_D4 :
+                        (deviceType == Globals.D4_1 ? DEVICE_TYPE_CODE_NEW_D4_1 : DEVICE_TYPE_CODE_NEW_D4_2), serializableNumber);
     }
 
     /**
@@ -249,6 +251,10 @@ public class D4Utils {
     public static void storeSucceedDeviceInfo(Device device, String ageingResult) {
         if(device == null || !device.checkValid()) {
             throw  new RuntimeException("store D4 failed, " + (device == null ? "D4 is null !" : device.toString()));
+        }
+        //去重
+        if (FileUtils.isFileContainsString(getStoreDeviceInfoFilePath(), device.getSn())) {
+            return;
         }
 
         PetkitLog.d("store D4 info: " + device.generateMainJson(ageingResult));

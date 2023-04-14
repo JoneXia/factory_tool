@@ -58,10 +58,11 @@ public class Globals {
 	public static final int W4X_UV = 36;
 	public static final int CTW3 = 37;
 	public static final int D4SH = 38;
+	public static final int D4_2 = 39;
 
 
 	//TODO: 新增设备时，max值需加一
-	public static final int MAX = 39;
+	public static final int MAX = 40;
 	//	public static int g_testStyle = 0;
 	/**
 	 * SN中的设备类型标记位定义
@@ -127,6 +128,7 @@ public class Globals {
 	public static final String DEVICE_TYPE_CODE_NEW_W4X_UV 	= "W4";
 	public static final String DEVICE_TYPE_CODE_NEW_D4SH 	= "D6";
 	public static final String DEVICE_TYPE_CODE_NEW_D4H 	= "D7";
+	public static final String DEVICE_TYPE_CODE_NEW_D4_2 	= "D8";
 
 	public static final int TYPE_TEST_PARTIALLY         = 1;
 	public static final int TYPE_TEST                   = 2;

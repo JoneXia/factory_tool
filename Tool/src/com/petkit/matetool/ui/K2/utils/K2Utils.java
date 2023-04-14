@@ -253,6 +253,10 @@ public class K2Utils {
         if(device == null || !device.checkValid()) {
             throw  new RuntimeException("store K2 failed, " + (device == null ? "K2 is null !" : device.toString()));
         }
+        //去重
+        if (FileUtils.isFileContainsString(getStoreDeviceInfoFilePath(), device.getSn())) {
+            return;
+        }
 
         PetkitLog.d("store K2 info: " + device.generateMainJson(ageingResult));
         FileUtils.writeStringToFile(getStoreDeviceInfoFilePath(), device.generateMainJson(ageingResult) + ",", true);
