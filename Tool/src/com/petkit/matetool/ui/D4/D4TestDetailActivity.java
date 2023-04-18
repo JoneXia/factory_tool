@@ -595,10 +595,10 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                             }
                             result = mTempResult == 0x1111;
                         } else {
-                            if (moduleStateStruct.getState() == 0) {
+                            if ((moduleStateStruct.getState() & 0x1) == 0) {
                                 mTempResult = mTempResult | 0x1;
                                 desc.append("-未遮挡！");
-                            } else if (moduleStateStruct.getState() == 1) {
+                            } else if ((moduleStateStruct.getState() & 0x1) == 1) {
                                 mTempResult = mTempResult | 0x10;
                                 desc.append("-遮挡！");
                             } else {
