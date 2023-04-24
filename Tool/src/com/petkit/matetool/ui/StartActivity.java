@@ -526,6 +526,8 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
             permissionBeens.add(new PermissionBean(Manifest.permission.ACCESS_WIFI_STATE, R.string.Permission_phone_state, R.drawable.permission_read_phone));
             permissionBeens.add(new PermissionBean(Manifest.permission.ACCESS_COARSE_LOCATION, R.string.Permission_location, R.drawable.permission_location));
             permissionBeens.add(new PermissionBean(Manifest.permission.ACCESS_FINE_LOCATION, R.string.Permission_location, R.drawable.permission_location));
+            permissionBeens.add(new PermissionBean(Manifest.permission.ACCESS_NETWORK_STATE, R.string.Permission_location, R.drawable.permission_location));
+            permissionBeens.add(new PermissionBean(Manifest.permission.CHANGE_NETWORK_STATE, R.string.Permission_location, R.drawable.permission_location));
 
             bundle.putSerializable(Globals.EXTRA_PERMISSION_CONTENT, permissionBeens);
             startActivityWithData(PermissionDialogActivity.class, bundle, false);

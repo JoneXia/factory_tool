@@ -2,6 +2,7 @@ package com.petkit.matetool.ui.wifi;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Network;
 import android.net.wifi.ScanResult;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -21,13 +22,13 @@ import com.petkit.matetool.R;
 import com.petkit.matetool.ui.base.BaseApplication;
 import com.petkit.matetool.ui.base.BaseListActivity;
 import com.petkit.matetool.utils.WifiUtils;
-import com.petkit.matetool.widget.LoadDialog;
 import com.petkit.matetool.widget.pulltorefresh.PullToRefreshBase;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class WifiManagerActivity extends BaseListActivity {
@@ -104,29 +105,25 @@ public class WifiManagerActivity extends BaseListActivity {
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-        LoadDialog.show(this, "连接中...");
-
-        new Thread() {
+        mWifiUtils.connectToWifi(mAdapter.getItem(position).SSID, "", new WifiUtils.iWifiStateListener() {
             @Override
-            public void run() {
-                super.run();
-                final boolean result = mWifiUtils.connectWifiTest(mAdapter.getItem(position).SSID, "");
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        LoadDialog.dismissDialog();
-                        if (result) {
-                            PetkitToast.showToast("连接成功");
-                            finish();
-                        } else {
-                            PetkitToast.showToast("连接失败");
-                        }
-                    }
+            public void onAvailable() {
+                runOnUiThread(() -> {
+                    PetkitToast.showToast("连接成功");
+                    finish();
                 });
             }
-        }.start();
 
+            @Override
+            public void onUnavailable() {
+                runOnUiThread(() -> PetkitToast.showToast("连接失败"));
+            }
+
+            @Override
+            public void onLosing(@NonNull Network network, int maxMsToLive) {
+                PetkitToast.showToast("连接失败");
+            }
+        });
     }
 
     @Override
