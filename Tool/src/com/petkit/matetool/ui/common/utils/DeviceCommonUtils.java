@@ -20,6 +20,7 @@ import com.petkit.matetool.ui.CTW3.CTW3TestMainActivity;
 import com.petkit.matetool.ui.D3.utils.D3Utils;
 import com.petkit.matetool.ui.D4.D4TestMainActivity;
 import com.petkit.matetool.ui.D4.utils.D4Utils;
+import com.petkit.matetool.ui.D4H.D4HTestMainActivity;
 import com.petkit.matetool.ui.D4S.D4STestMainActivity;
 import com.petkit.matetool.ui.D4SH.D4SHTestMainActivity;
 import com.petkit.matetool.ui.HG.HGTestMainActivity;
@@ -138,8 +139,9 @@ public class DeviceCommonUtils {
                 Globals.DEVICE_TYPE_CODE_NEW_D4_2, D4TestMainActivity.class));
         mDeviceConfigs.put(Globals.D4SH, new DeviceConfigInfo(false, "D4SH", "D4SH", new String[]{"Petkit_D4SH"},
                 Globals.DEVICE_TYPE_CODE_NEW_D4SH, D4SHTestMainActivity.class));
+        mDeviceConfigs.put(Globals.D4H, new DeviceConfigInfo(false, "D4H", "D4H", new String[]{"Petkit_D4H"},
+                Globals.DEVICE_TYPE_CODE_NEW_D4H, D4HTestMainActivity.class));
     }
-
     /**
      *
      * @param deviceType

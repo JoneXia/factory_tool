@@ -1,26 +1,32 @@
 package com.petkit.matetool.model;
 
+import com.google.gson.Gson;
+
 import java.io.Serializable;
 import java.util.Objects;
 
 public class UDPDevice implements Serializable {
 
-    private String deviceType;
+    private UDPScanRecord scanRecord;
     private String ip;
     private int port;
 
-    public UDPDevice(String deviceType, String ip, int port) {
-        this.deviceType = deviceType;
+    public UDPDevice(String sentence, String ip, int port) {
+        try {
+            this.scanRecord = new Gson().fromJson(sentence, UDPScanRecord.class);
+        } catch (Exception e) {
+            this.scanRecord = new UDPScanRecord();
+        }
         this.ip = ip;
         this.port = port;
     }
 
-    public String getDeviceType() {
-        return deviceType;
+    public UDPScanRecord getScanRecord() {
+        return scanRecord;
     }
 
-    public void setDeviceType(String deviceType) {
-        this.deviceType = deviceType;
+    public void setScanRecord(UDPScanRecord scanRecord) {
+        this.scanRecord = scanRecord;
     }
 
     public String getIp() {
@@ -42,7 +48,7 @@ public class UDPDevice implements Serializable {
     @Override
     public String toString() {
         return "UDPDevice{" +
-                "deviceType='" + deviceType + '\'' +
+                "deviceType='" + scanRecord + '\'' +
                 ", ip='" + ip + '\'' +
                 ", port=" + port +
                 '}';
@@ -53,11 +59,11 @@ public class UDPDevice implements Serializable {
         if (this == o) return true;
         if (!(o instanceof UDPDevice)) return false;
         UDPDevice device = (UDPDevice) o;
-        return getPort() == device.getPort() && getDeviceType().equals(device.getDeviceType()) && getIp().equals(device.getIp());
+        return getPort() == device.getPort() && getScanRecord().equals(device.getScanRecord()) && getIp().equals(device.getIp());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getDeviceType(), getIp(), getPort());
+        return Objects.hash(getScanRecord(), getIp(), getPort());
     }
 }

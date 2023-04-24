@@ -101,7 +101,7 @@ public class WifiAdminSimple {
 		NetworkInfo mWiFiNetworkInfo = getWifiNetworkInfo();
 		boolean isWifiConnected = false;
 		if (mWiFiNetworkInfo != null) {
-			isWifiConnected = mWiFiNetworkInfo.isConnected();
+			isWifiConnected = true;//mWiFiNetworkInfo.isConnected();
 		}
 		return isWifiConnected;
 	}

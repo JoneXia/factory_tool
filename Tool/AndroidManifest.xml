@@ -24,6 +24,8 @@
     <uses-permission android:name="android.hardware.usb.accessory"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
     <application
         android:name=".ui.base.BaseApplication"
         android:allowBackup="true"
@@ -466,10 +468,15 @@
         <activity android:name=".ui.D4SH.D4SHTestDetailActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".ui.D4SH.D4SHVideoPlayActivity"
+        <activity android:name=".ui.common.TimezonesListActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".ui.common.TimezonesListActivity"
+
+        <!-- D4H -->
+        <activity android:name=".ui.D4H.D4HTestMainActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity android:name=".ui.D4H.D4HTestDetailActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
 

@@ -61,6 +61,7 @@ import static com.petkit.matetool.utils.Versions.TOOL_CTW2_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_CTW3_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_D3_1_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_D3_VERSION;
+import static com.petkit.matetool.utils.Versions.TOOL_D4H_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_D4SH_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_D4S_VERSION;
 import static com.petkit.matetool.utils.Versions.TOOL_D4_1_VERSION;
@@ -373,6 +374,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
             case R.id.d4_2:
                 testStyle = Globals.D4_2;
                 break;
+            case R.id.d4h:
+                testStyle = Globals.D4H;
+                break;
             //TODO: 新增设备需对应添加
             default:
                 break;
@@ -495,6 +499,9 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
 
         tempRadioButton = (RadioButton) findViewById(R.id.d4_2);
         tempRadioButton.setText(getTextDetail(Globals.D4_2, "喂食器SOLO NEW（D4-2）" + " v" + TOOL_D4_2_VERSION));
+
+        tempRadioButton = (RadioButton) findViewById(R.id.d4h);
+        tempRadioButton.setText(getTextDetail(Globals.D4H, "喂食器SOLO视频版（D4H）" + " v" + TOOL_D4H_VERSION));
 
         //TODO: 新增设备需对应添加
     }

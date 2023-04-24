@@ -1,4 +1,4 @@
-package com.petkit.matetool.ui.D4SH;
+package com.petkit.matetool.ui.D4H;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -57,11 +57,11 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
-import static com.petkit.matetool.ui.D4SH.D4SHUtils.D4SHTestModes.TEST_MODE_AGEINGRESULT;
-import static com.petkit.matetool.ui.D4SH.D4SHUtils.D4SHTestModes.TEST_MODE_AUTO;
-import static com.petkit.matetool.ui.D4SH.D4SHUtils.D4SHTestModes.TEST_MODE_MIC;
-import static com.petkit.matetool.ui.D4SH.D4SHUtils.D4SHTestModes.TEST_MODE_PRINT;
-import static com.petkit.matetool.ui.D4SH.D4SHUtils.D4SHTestModes.TEST_MODE_SN;
+import static com.petkit.matetool.ui.D4H.D4HUtils.D4HTestModes.TEST_MODE_AGEINGRESULT;
+import static com.petkit.matetool.ui.D4H.D4HUtils.D4HTestModes.TEST_MODE_AUTO;
+import static com.petkit.matetool.ui.D4H.D4HUtils.D4HTestModes.TEST_MODE_MIC;
+import static com.petkit.matetool.ui.D4H.D4HUtils.D4HTestModes.TEST_MODE_PRINT;
+import static com.petkit.matetool.ui.D4H.D4HUtils.D4HTestModes.TEST_MODE_SN;
 import static com.petkit.matetool.ui.utils.PrintUtils.isPrinterConnected;
 import static com.petkit.matetool.utils.Globals.TEST_FAILED;
 import static com.petkit.matetool.utils.Globals.TEST_PASS;
@@ -70,11 +70,11 @@ import static com.petkit.matetool.utils.Globals.TYPE_TEST;
 /**
  * Created by Jone on 17/4/24.
  */
-public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocketInstance.IPetkitSocketListener, PrintResultCallback, BasePetkitPlayerListener {
+public class D4HTestDetailActivity extends BaseActivity implements PetkitSocketInstance.IPetkitSocketListener, PrintResultCallback, BasePetkitPlayerListener {
 
     private Tester mTester;
     private int mCurTestStep;
-    private ArrayList<D4SHTestUnit> mTestUnits;
+    private ArrayList<D4HTestUnit> mTestUnits;
     private int mTempResult;
     private Device mDevice, mErrorDevice;
     private boolean isWriteEndCmd = false;
@@ -96,13 +96,14 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
     private int leftLow, leftTop, rightLow, rightTop;
 
     private UDPDevice mUDPDevice;
+    private View mPlayerParentView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState != null) {
-            mTestUnits = (ArrayList<D4SHTestUnit>) savedInstanceState.getSerializable("TestUnits");
+            mTestUnits = (ArrayList<D4HTestUnit>) savedInstanceState.getSerializable("TestUnits");
             mCurTestStep = savedInstanceState.getInt("CurrentTestStep");
             isAutoTest = savedInstanceState.getBoolean("AutoTest");
             mDevice = (Device) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_DEVICE);
@@ -112,7 +113,7 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
             mDeviceType = savedInstanceState.getInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE);
             mUDPDevice = (UDPDevice) savedInstanceState.getSerializable(DeviceCommonUtils.EXTRA_UDPDEVICE);
         } else {
-            mTestUnits = (ArrayList<D4SHTestUnit>) getIntent().getSerializableExtra("TestUnits");
+            mTestUnits = (ArrayList<D4HTestUnit>) getIntent().getSerializableExtra("TestUnits");
             mCurTestStep = getIntent().getIntExtra("CurrentTestStep", 0);
             isAutoTest = getIntent().getBooleanExtra("AutoTest", true);
             mDevice = (Device) getIntent().getSerializableExtra(DeviceCommonUtils.EXTRA_DEVICE);
@@ -160,12 +161,13 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
         findViewById(R.id.test_btn_2).setOnClickListener(this);
         findViewById(R.id.test_btn_3).setOnClickListener(this);
 
-        mDescTextView = findViewById(R.id.test_detail);
-        mPromptTextView = findViewById(R.id.test_prompt);
-        mBtn1 = findViewById(R.id.test_btn_1);
-        mBtn2 = findViewById(R.id.test_btn_2);
-        mBtn3 = findViewById(R.id.test_btn_3);
-        mDescScrollView = findViewById(R.id.test_scrllview);
+        mDescTextView = (TextView) findViewById(R.id.test_detail);
+        mPromptTextView = (TextView) findViewById(R.id.test_prompt);
+        mBtn1 = (Button) findViewById(R.id.test_btn_1);
+        mBtn2 = (Button) findViewById(R.id.test_btn_2);
+        mBtn3 = (Button) findViewById(R.id.test_btn_3);
+        mDescScrollView = (ScrollView) findViewById(R.id.test_scrllview);
+//        mPlayerParentView = findViewById(R.id.video_parent_view);
 
         initPlayer();
         refreshView();
@@ -670,7 +672,7 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
                             desc.append("-异常！");
                         }
 
-                        desc.append("\n").append("桶内左");
+                        desc.append("\n").append("桶内");
                         if (moduleStateStruct.getSub1() == 0) {
                             mTempResult = mTempResult | 0x100;
                             desc.append("-未遮挡！");
@@ -681,18 +683,7 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
                             desc.append("-异常！");
                         }
 
-                        desc.append("\n").append("桶内右");
-                        if (moduleStateStruct.getSub2() == 0) {
-                            mTempResult = mTempResult | 0x10000;
-                            desc.append("-未遮挡！");
-                        } else if (moduleStateStruct.getSub2() == 1) {
-                            mTempResult = mTempResult | 0x100000;
-                            desc.append("-遮挡！");
-                        } else {
-                            desc.append("-异常！");
-                        }
-
-                        result = mTempResult == 0x111111;
+                        result = mTempResult == 0x1111;
                         break;
                     case 4:
                         if ((moduleStateStruct.getSub0() & 0x1) == 1) {
@@ -895,7 +886,7 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
         if (isEmpty(mDevice.getSn()) || (mTestUnits.get(mCurTestStep).getState() == 2
                 && mErrorDevice != null && mDevice.getSn().equals(mErrorDevice.getSn()))) {
             boolean result = true;
-            for (D4SHTestUnit unit : mTestUnits) {
+            for (D4HTestUnit unit : mTestUnits) {
                 if (unit.getType() != TEST_MODE_SN &&
                         unit.getType() != TEST_MODE_PRINT
                         && unit.getResult() != TEST_PASS) {

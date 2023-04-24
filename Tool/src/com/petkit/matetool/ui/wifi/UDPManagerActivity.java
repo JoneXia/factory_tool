@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.model.UDPDevice;
+import com.petkit.matetool.model.UDPScanRecord;
 import com.petkit.matetool.ui.base.BaseApplication;
 import com.petkit.matetool.ui.base.BaseListActivity;
 import com.petkit.matetool.ui.utils.UDPServer;
@@ -29,25 +30,25 @@ import androidx.annotation.Nullable;
 
 public class UDPManagerActivity extends BaseListActivity {
 
-    private String mFlterString;
+    private UDPScanRecord mFlterScanRecord;
     private List<UDPDevice> mList;
 
     private IPsListAdapter mAdapter;
     private UDPServer mServer;
 
 
-    public static Intent getIntent(Context context, String deviceFilterString) {
+    public static Intent  getIntent(Context context, UDPScanRecord scanRecord) {
         Intent intent = new Intent(context, UDPManagerActivity.class);
-        intent.putExtra("deviceFilterString", deviceFilterString);
+        intent.putExtra("mFlterScanRecord", scanRecord);
         return  intent;
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         if (savedInstanceState == null) {
-            mFlterString = getIntent().getStringExtra("deviceFilterString");
+            mFlterScanRecord = (UDPScanRecord) getIntent().getSerializableExtra("mFlterScanRecord");
         } else {
-            mFlterString = savedInstanceState.getString("deviceFilterString");
+            mFlterScanRecord = (UDPScanRecord) savedInstanceState.getSerializable("mFlterScanRecord");
         }
 
         super.onCreate(savedInstanceState);
@@ -57,7 +58,7 @@ public class UDPManagerActivity extends BaseListActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("ssidFilterString", mFlterString);
+        outState.putSerializable("ssidFilterString", mFlterScanRecord);
     }
 
     @Override
@@ -79,7 +80,7 @@ public class UDPManagerActivity extends BaseListActivity {
         mAdapter = new IPsListAdapter();
         mListView.setAdapter(mAdapter);
 
-        setListViewEmpty(0, "未找到有用设备，请将手机连接到指定热点后再试。", R.string.Tap_to_refresh, new View.OnClickListener() {
+        setListViewEmpty(0, "未找到有用设备，请将手机连接到热点《PETKIT_PT_WIFI》后再试。", R.string.Tap_to_refresh, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 refreshWifiList();
@@ -134,7 +135,7 @@ public class UDPManagerActivity extends BaseListActivity {
                 mServer = new UDPServer();
                 mServer.setListener((device) -> {
                     PetkitLog.d("find new device: " + device.toString());
-                    if (!mList.contains(device) && device.getDeviceType().contains(mFlterString)) {
+                    if (!mList.contains(device) && device.getScanRecord().equals(mFlterScanRecord)) {
                         mList.add(device);
 
                         runOnUiThread(() -> {
@@ -211,7 +212,7 @@ public class UDPManagerActivity extends BaseListActivity {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
 
-            viewHolder.name.setText(mList.get(position).getDeviceType() + ": " + mList.get(position).getIp());
+            viewHolder.name.setText("ip=" + mList.get(position).getIp() + ", " +  mList.get(position).getScanRecord().toString());
 //            switch (mWifiList.get(position).level) {
 //                case 1:
 //                    viewHolder.rssi.setImageResource(R.drawable.ic_wifi_1);

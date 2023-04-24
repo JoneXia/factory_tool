@@ -11,7 +11,7 @@
         style="@style/Text_Middle_Black"
         android:padding="5dip" />
 
-    <com.petkit.matetool.ui.D4SH.D4shPlayer
+    <com.petkit.matetool.widget.PetkitPlayer
         android:id="@+id/d4sh_player"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

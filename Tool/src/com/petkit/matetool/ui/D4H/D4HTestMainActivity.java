@@ -1,4 +1,4 @@
-package com.petkit.matetool.ui.D4SH;
+package com.petkit.matetool.ui.D4H;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -43,7 +43,7 @@ import java.util.HashMap;
  *
  * Created by Jone on 17/4/24.
  */
-public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketInstance.IPetkitSocketListener {
+public class D4HTestMainActivity extends BaseActivity implements PetkitSocketInstance.IPetkitSocketListener {
 
     private static final int TEST_STATE_INVALID      = 0;
     private static final int TEST_STATE_CONNECTING      = 1;
@@ -56,7 +56,7 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
     private int mTestState;
     private Device mCurDevice, mErrorDevice;
 
-    private ArrayList<D4SHTestUnit> mD4TestUnits;
+    private ArrayList<D4HTestUnit> mD4TestUnits;
     private TestItemAdapter mAdapter;
 
     private TextView mInfoTestTextView;
@@ -111,7 +111,7 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
         findViewById(R.id.connect_dev).setOnClickListener(this);
         findViewById(R.id.test_auto).setOnClickListener(this);
 
-        mD4TestUnits = D4SHUtils.generateTestUnitsForType(mTestType);
+        mD4TestUnits = D4HUtils.generateTestUnitsForType(mTestType);
 
         GridView gridView =(GridView) findViewById(R.id.gridView);
         mAdapter = new TestItemAdapter(this);
@@ -137,7 +137,7 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
     public void finish() {
 
         int position = 0;
-        for (D4SHTestUnit unit : mD4TestUnits) {
+        for (D4HTestUnit unit : mD4TestUnits) {
             if(unit.getResult() == 1) {
                 position++;
             } else {
@@ -197,7 +197,7 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
                     .setNegativeButton(R.string.OK, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            LoadDialog.show(D4SHTestMainActivity.this);
+                            LoadDialog.show(D4HTestMainActivity.this);
                             HashMap<String, Object> params = new HashMap<>();
                             params.put("mac", mCurDevice.getMac());
                             params.put("state", getTestTypeCode());
@@ -210,7 +210,7 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
                     .show();
         } else if (mCurDevice != null && mTestType == Globals.TYPE_CHECK) {
             boolean hasError = false;
-            for (D4SHTestUnit unit : mD4TestUnits) {
+            for (D4HTestUnit unit : mD4TestUnits) {
                 if(unit.getResult() == Globals.TEST_FAILED) {
                     hasError = true;
                     break;
@@ -251,7 +251,7 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
         if(resultCode == RESULT_OK) {
             switch (requestCode) {
                 case 0x12:
-                    mD4TestUnits = (ArrayList<D4SHTestUnit>) data.getSerializableExtra("TestUnits");
+                    mD4TestUnits = (ArrayList<D4HTestUnit>) data.getSerializableExtra("TestUnits");
                     mCurDevice = (Device) data.getSerializableExtra(DeviceCommonUtils.EXTRA_DEVICE);
                     mAdapter.notifyDataSetChanged();
                     checkTestComplete();
@@ -274,7 +274,7 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
             if(isAuto) {
                 int position = 0;
 
-                for (D4SHTestUnit unit : mD4TestUnits) {
+                for (D4HTestUnit unit : mD4TestUnits) {
                     if (unit.getResult() == 1) {
                         position++;
                     } else {
@@ -288,7 +288,7 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
                 pos = position;
             }
 
-            Intent intent = new Intent(D4SHTestMainActivity.this, D4SHTestDetailActivity.class);
+            Intent intent = new Intent(D4HTestMainActivity.this, D4HTestDetailActivity.class);
             intent.putExtra("TestUnits", mD4TestUnits);
             intent.putExtra("CurrentTestStep", pos);
             intent.putExtra("AutoTest", isAuto);
@@ -390,7 +390,7 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
     public void onConnected() {
         mInfoTestTextView.setText("设备已连接");
         mTestState = TEST_STATE_CONNECTED;
-        mD4TestUnits = D4SHUtils.generateTestUnitsForType(mTestType);
+        mD4TestUnits = D4HUtils.generateTestUnitsForType(mTestType);
         mAdapter.notifyDataSetChanged();
 
         PetkitSocketInstance.getInstance().sendString(DeviceCommonUtils.getDefaultRequestForKey(110));
@@ -538,7 +538,7 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
         }
 
         @Override
-        public D4SHTestUnit getItem(int position) {
+        public D4HTestUnit getItem(int position) {
             return mD4TestUnits.get(position);
         }
 
@@ -559,7 +559,7 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            D4SHTestUnit item = getItem(position);
+            D4HTestUnit item = getItem(position);
 
             holder.name.setText(item.getName());
 
@@ -586,7 +586,7 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
 
     private void checkTestComplete() {
         int position = 0;
-        for (D4SHTestUnit unit : mD4TestUnits) {
+        for (D4HTestUnit unit : mD4TestUnits) {
             if(unit.getResult() == 1) {
                 position++;
             } else {

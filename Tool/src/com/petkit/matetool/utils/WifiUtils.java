@@ -2,12 +2,16 @@ package com.petkit.matetool.utils;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.NetworkInfo.State;
+import android.net.NetworkRequest;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.net.wifi.WifiNetworkSpecifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,44 +116,55 @@ public class WifiUtils {
 		boolean isSuccess = false;
 		int flag = 5;
 //		mWifiManager.disconnect();
-		int netId = getExistingNetworkId(ssid);
+//		int netId = getExistingNetworkId(ssid);
+		String ssid2 = "petkit5g";
+		String pw = "olab+petkit";
 
-		boolean addSucess;
-		if (netId > 0) {
-			addSucess = mWifiManager.enableNetwork(netId, true);
+		WifiNetworkSpecifier specifier = null;
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+			specifier = new WifiNetworkSpecifier.Builder()
+					.setSsid(ssid2)
+					.setWpa2Passphrase(pw)
+					.build();
+
+			NetworkRequest request = new NetworkRequest.Builder()
+					.addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+					.removeCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED)
+					.setNetworkSpecifier(specifier)
+					.build();
+
+			ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+			connectivityManager.requestNetwork(request, new ConnectivityManager.NetworkCallback() {
+				@Override
+				public void onAvailable(Network network) {
+					super.onAvailable(network);
+					connectivityManager.bindProcessToNetwork(network);
+				}
+			});
+
+
+
 		} else {
-			WifiConfiguration configuration = CreateWifiInfo(ssid, pwd, 1);
-			addSucess = addNetwork(configuration);
+			WifiConfiguration wifiConfig = new WifiConfiguration();
+			wifiConfig.SSID = ssid;
+			wifiConfig.preSharedKey = pwd;
+			wifiConfig.status = WifiConfiguration.Status.ENABLED;
+			wifiConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+
+
+			WifiManager wifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
+			int networkId = wifiManager.addNetwork(wifiConfig);
+			isSuccess = wifiManager.enableNetwork(networkId, true);
 
 		}
-		if (addSucess) {
-			while (flag > 0 && !isSuccess) {
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e1) {
-					e1.printStackTrace();
-				}
-
-				String currSSID = getCurrentWifiInfo().getSSID();
-				if (currSSID != null) {
-					currSSID = currSSID.replace("\"", "");
-				}
-
-				int currIp = getCurrentWifiInfo().getIpAddress();
-				if (currSSID != null && currSSID.equals(ssid) && currIp != 0) {
-					isSuccess = true;
-				} else {
-					flag--;
-				}
-			}
-		}
+		
 		return isSuccess;
 
 	}
 
 	/**
 	 * 创建WifiConfiguration对象 分为三种情况：1没有密码;2用wep加密;3用wpa加密
-	 * 
+	 *
 	 * @param ssid
 	 * @param password
 	 * @param type

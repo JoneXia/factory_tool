@@ -53,6 +53,7 @@ public class WifiStartActivity extends BaseActivity {
         TextView testInfo = (TextView) findViewById(R.id.test_info);
         testInfo.setText(getString(R.string.Feeder_test_info_format));
 
+        findViewById(R.id.test_case0).setOnClickListener(this);
         findViewById(R.id.test_case1).setOnClickListener(this);
         findViewById(R.id.test_case2).setOnClickListener(this);
         findViewById(R.id.test_case3).setOnClickListener(this);
@@ -62,12 +63,17 @@ public class WifiStartActivity extends BaseActivity {
 
         ((Button) findViewById(R.id.test_case5)).setText("位图生成");
         findViewById(R.id.test_case5).setVisibility(View.GONE);
+
         switch (mDeviceType) {
             case Globals.AQH1_500:
             case Globals.AQH1_500_A:
             case Globals.AQH1_1000:
             case Globals.AQH1_1000_A:
                 findViewById(R.id.test_case1).setVisibility(View.GONE);
+                break;
+            case Globals.D4SH:
+            case Globals.D4H:
+                findViewById(R.id.test_case0).setVisibility(View.VISIBLE);
                 break;
         }
     }
@@ -114,6 +120,13 @@ public class WifiStartActivity extends BaseActivity {
                 bundle = new Bundle();
                 bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
                 bundle.putInt(DeviceCommonUtils.EXTRA_TEST_TYPE, Globals.TYPE_AFTERMARKET);
+                bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
+                startActivityWithData(DeviceCommonUtils.getMainActivityByType(mDeviceType), bundle, false);
+                break;
+            case R.id.test_case0:
+                bundle = new Bundle();
+                bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
+                bundle.putInt(DeviceCommonUtils.EXTRA_TEST_TYPE, Globals.TYPE_TEST_BOARD);
                 bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
                 startActivityWithData(DeviceCommonUtils.getMainActivityByType(mDeviceType), bundle, false);
                 break;
