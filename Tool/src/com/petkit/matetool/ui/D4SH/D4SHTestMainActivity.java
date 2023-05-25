@@ -309,8 +309,8 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
         String apSsid = mWifiAdminSimple.getWifiConnectedSsid();
         if(apSsid == null || !apSsid.equalsIgnoreCase("PETKIT_PT_WIFI")) {
             mInfoTestTextView.setText("请先连接到特定的WIFI《PETKIT_PT_WIFI》，再进行测试！");
-        } else {
-            showWifiManager();
+//        } else {
+//            showWifiManager();
         }
 
         mAdapter.notifyDataSetChanged();

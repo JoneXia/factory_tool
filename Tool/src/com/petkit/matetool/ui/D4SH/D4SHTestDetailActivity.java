@@ -43,7 +43,6 @@ import com.petkit.matetool.ui.utils.PrintUtils;
 import com.petkit.matetool.utils.DateUtil;
 import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.JSONUtils;
-import com.petkit.matetool.utils.UiUtils;
 import com.petkit.matetool.widget.PetkitPlayer;
 
 import org.json.JSONException;
@@ -1254,7 +1253,7 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
         player = findViewById(R.id.d4sh_player);
         player.setPlayerListener(this);
         player.post(() -> {
-            int videoPlayerHeight = Math.round((player.getWidth() - UiUtils.dip2px(this, 32))* 9f / 16);
+            int videoPlayerHeight = Math.round(player.getWidth()* 10f / 16);
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) player.getLayoutParams();
             layoutParams.height = videoPlayerHeight;
             player.setLayoutParams(layoutParams);

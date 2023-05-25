@@ -648,17 +648,13 @@ public class D4HTestDetailActivity extends BaseActivity implements PetkitSocketI
                     case 2:
                         if (moduleStateStruct.getSub0() > 0) {
                             mTempResult = mTempResult | 0x1;
-                            desc.append("\n").append("按键").append("-").append("喂食键2").append("-").append(getKeyDescByState(moduleStateStruct.getSub0()));
-                        }
-                        if (moduleStateStruct.getSub1() > 0) {
-                            mTempResult = mTempResult | 0x10;
-                            desc.append("\n").append("按键").append("-").append("WiFi设置键").append("-").append(getKeyDescByState(moduleStateStruct.getSub1()));
+                            desc.append("\n").append("按键").append("-").append("WiFi设置键").append("-").append(getKeyDescByState(moduleStateStruct.getSub0()));
                         }
                         if (moduleStateStruct.getSub2() > 0) {
                             mTempResult = mTempResult | 0x100;
-                            desc.append("\n").append("按键").append("-").append("喂食键1").append("-").append(getKeyDescByState(moduleStateStruct.getSub2()));
+                            desc.append("\n").append("按键").append("-").append("喂食键").append("-").append(getKeyDescByState(moduleStateStruct.getSub2()));
                         }
-                        result = mTempResult == 0x111;
+                        result = mTempResult == 0x101;
                         break;
                     case 3:
                         desc.append("\n").append("粮道");
@@ -1245,7 +1241,7 @@ public class D4HTestDetailActivity extends BaseActivity implements PetkitSocketI
         player = findViewById(R.id.d4sh_player);
         player.setPlayerListener(this);
         player.post(() -> {
-            int videoPlayerHeight = Math.round((player.getWidth() - UiUtils.dip2px(this, 32))* 9f / 16);
+            int videoPlayerHeight = Math.round((player.getWidth() - UiUtils.dip2px(this, 32))* 10f / 16);
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) player.getLayoutParams();
             layoutParams.height = videoPlayerHeight;
             player.setLayoutParams(layoutParams);

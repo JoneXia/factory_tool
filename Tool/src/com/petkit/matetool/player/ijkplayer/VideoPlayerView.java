@@ -174,7 +174,7 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
         super.onLayout(changed, l, t, r, b);
         mDefaultParams = getLayoutParams();
         if (mDefaultParams.height == ViewGroup.LayoutParams.MATCH_PARENT){
-            mDefaultParams.height = Math.round(getMeasuredWidth()*9f/16);
+            mDefaultParams.height = Math.round(getMeasuredWidth()*10f/16);
         }
     }
 

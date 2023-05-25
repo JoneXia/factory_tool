@@ -309,8 +309,8 @@ public class D4HTestMainActivity extends BaseActivity implements PetkitSocketIns
         String apSsid = mWifiAdminSimple.getWifiConnectedSsid();
         if(apSsid == null || !apSsid.equalsIgnoreCase("PETKIT_PT_WIFI")) {
             mInfoTestTextView.setText("请先连接到特定的WIFI《PETKIT_PT_WIFI》，再进行测试！");
-        } else {
-            showWifiManager();
+//        } else {
+//            showWifiManager();
         }
 
         mAdapter.notifyDataSetChanged();
@@ -319,20 +319,20 @@ public class D4HTestMainActivity extends BaseActivity implements PetkitSocketIns
     private void showWifiManager() {
         switch (mTestType) {
             case Globals.TYPE_TEST_BOARD:
-                startActivityForResult(UDPManagerActivity.getIntent(this, new UDPScanRecord(DeviceCommonUtils.getDeviceKeyByType(mDeviceType), 0)), 0x111);
+                startActivityForResult(UDPManagerActivity.getIntent(this, new UDPScanRecord("D4SH", 0)), 0x111);
                 break;
             case Globals.TYPE_TEST_PARTIALLY:
-                startActivityForResult(UDPManagerActivity.getIntent(this, new UDPScanRecord(DeviceCommonUtils.getDeviceKeyByType(mDeviceType), 1)), 0x111);
+                startActivityForResult(UDPManagerActivity.getIntent(this, new UDPScanRecord("D4SH", 1)), 0x111);
                 break;
             case Globals.TYPE_TEST:
-                startActivityForResult(UDPManagerActivity.getIntent(this, new UDPScanRecord(DeviceCommonUtils.getDeviceKeyByType(mDeviceType), 2)), 0x111);
+                startActivityForResult(UDPManagerActivity.getIntent(this, new UDPScanRecord("D4SH", 2)), 0x111);
                 break;
             case Globals.TYPE_MAINTAIN:
             case Globals.TYPE_AFTERMARKET:
             case Globals.TYPE_CHECK:
             case Globals.TYPE_DUPLICATE_MAC:
             case Globals.TYPE_DUPLICATE_SN:
-                startActivityForResult(UDPManagerActivity.getIntent(this, new UDPScanRecord(DeviceCommonUtils.getDeviceKeyByType(mDeviceType), 3)), 0x111);
+                startActivityForResult(UDPManagerActivity.getIntent(this, new UDPScanRecord("D4SH", 3)), 0x111);
                 break;
         }
     }

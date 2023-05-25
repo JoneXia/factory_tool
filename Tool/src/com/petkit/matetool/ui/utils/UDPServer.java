@@ -76,7 +76,7 @@ public class UDPServer {
 
     public void setAbort(boolean abort) {
         isAbort = abort;
-        if (isAbort) {
+        if (isAbort && serverSocket != null) {
             serverSocket.close();
             serverSocket = null;
         }

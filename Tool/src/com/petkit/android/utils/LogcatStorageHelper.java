@@ -2,9 +2,11 @@ package com.petkit.android.utils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -69,7 +71,13 @@ public class LogcatStorageHelper {
         this.logPostUrl = logPostUrl;
         this.qiNiuUrl = qiNiuUrl;
         this.context = context;
+
         PATH_LOGCAT = CommonUtils.getAppCacheDirPath() + "/logs/";
+
+//        ContextWrapper cw = new ContextWrapper(CommonUtils.getAppContext());
+//        File directory = cw.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+//
+//        PATH_LOGCAT = directory.getAbsolutePath() + "/logs/";
         File file = new File(PATH_LOGCAT);
         if (!file.exists()) {
             file.mkdirs();
