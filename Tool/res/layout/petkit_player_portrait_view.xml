@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/video_tag_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/solid_half_transparent_black_corners_12"
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="12dp"
+        android:visibility="invisible"
+        android:orientation="horizontal">
+
+        <com.petkit.matetool.widget.SmallCircleDotView
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            app:bg_color="@color/d4sh_main_orange"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="4dp"/>
+
+        <TextView
+            android:id="@+id/video_tag"
+            style="@style/New_Style_Content_10_Light_White"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Broadcast_room"/>
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/bowl"
+        android:src="@drawable/bowl_d4h"/>
+
+    <ImageView
+        android:id="@+id/iv_volume"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="12dp"
+        android:layout_marginBottom="12dp"
+        android:visibility="invisible"
+        android:src="@drawable/petkit_player_portrait_black_background_volume_icon"/>
+
+    <ImageView
+        android:id="@+id/privacy_mode_play_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:src="@drawable/d4sh_home_privacy_mode_player_play_icon"/>
+
+</merge>

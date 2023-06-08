@@ -4,15 +4,17 @@ public interface BasePetkitPlayerLandscapeViewClickListener {
 
     void onExitFullScreenBtnClick();
 
-    void onLandscapeQualityBtnClick();
+    void onLandscapeQualityBtnClick(int qualityType);
 
-    void onLandscapeTimeSpeedBtnClick();
+    void onLandscapeTimeSpeedBtnClick(int timesSpeed);
 
     void onLandscapeVolumeBtnClick();
 
     void onLandscapeTripodHeadBtnClick();
 
     void onLandscapeCcvlBtnClick(boolean push, int orientation);
+
+    void onLandscapePlayBtnClick();
 
     void onLandscapeScreenShotBtnClick();
 
@@ -21,5 +23,27 @@ public interface BasePetkitPlayerLandscapeViewClickListener {
     void onLandscapeIntercomBtnTouchDown();
 
     void onLandscapeIntercomBtnTouchUp();
+
+    void onLandscapeExtraMealBtnClick();
+
+    void onLandscapeEatVideoBtnClick();
+
+    void onLandscapeDatePickerBtnClick();
+
+    void onVideoRecordClick(Integer videoType, String shortVideoUrl, String fullVideoUrl, Float timesSpeed, Long expire);
+
+    void onBackLiveBtnClick();
+
+    void onDeleteEatVideoBtnClick(String eventId, int endTime, int startTime, int position);
+
+    void onDownloadFullVideo(Long startTime, Long mark);
+
+    void onSeekbarProgressChanged(int progress);
+
+    void onPreviewVideoDownload();
+
+    void onFullVideoDownload();
+
+    void onEventDelete();
 
 }

@@ -1,23 +1,27 @@
 package com.petkit.matetool.player;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.petkit.android.utils.Consts;
+import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.R;
+import com.petkit.matetool.http.ApiTools;
 import com.petkit.matetool.player.ijkplayer.VideoData;
 import com.petkit.matetool.player.ijkplayer.VideoListener;
 import com.petkit.matetool.player.ijkplayer.VideoPlayerView;
-import com.petkit.matetool.ui.base.BaseApplication;
+import com.petkit.matetool.player.ijkplayer.VideoUtils;
 import com.petkit.matetool.utils.DataHelper;
+import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.UiUtils;
 import com.petkit.matetool.widget.PetkitLogoLoadingView;
 import com.petkit.matetool.widget.TextureVideoViewOutlineProvider;
@@ -41,6 +45,9 @@ public abstract class BasePetkitPlayer extends RelativeLayout implements VideoLi
     private PetkitLogoLoadingView pllv;
     protected Context mContext;
     protected BasePetkitPlayerListener playerListener;
+    private LinearLayout.LayoutParams portraitLayoutParams;
+    private View coverView;
+    private boolean loading;
 
     public BasePetkitPlayer(Context context) {
         this(context, null);
@@ -67,7 +74,7 @@ public abstract class BasePetkitPlayer extends RelativeLayout implements VideoLi
     private void initPlayerView(Context context){
         LayoutInflater.from(context).inflate(R.layout.base_petkit_player,this);
         playerView = findViewById(R.id.video_player);
-        int playSpeed = DataHelper.getIntergerSF(context, Consts.H3_VIDEO_PLAY_SPEED,1);
+        int playSpeed = DataHelper.getIntergerSF(context, Globals.H3_VIDEO_PLAY_SPEED,1);
         playerView.setSpeed(playSpeed == 3 ? 2 : 1);
         playerView.setVideoListener(this);
     }
@@ -76,9 +83,13 @@ public abstract class BasePetkitPlayer extends RelativeLayout implements VideoLi
         this.playerListener = playerListener;
     }
 
+    public void setDefaultVideoWidthHeight(int defaultVideoWidth, int defaultVideoHeight){
+        playerView.setDefaultVideoWidthHeight(defaultVideoWidth, defaultVideoHeight);
+    }
+
     /*
-            初始化圆角效果
-             */
+                初始化圆角效果
+                 */
     protected abstract void initCorners();
 
     /*
@@ -104,26 +115,86 @@ public abstract class BasePetkitPlayer extends RelativeLayout implements VideoLi
         }
     }
 
+    public void startVideo(String url, boolean appendBaseUrl){
+        if (appendBaseUrl){
+            url = VideoUtils.getVideoUrl(url);
+        }
+        startVideo(new VideoData("", url, 0, 0));
+    }
+
+    public void startVideo(String url, boolean appendBaseUrl, float timesSpeed){
+        if (appendBaseUrl){
+            url = VideoUtils.getVideoUrl(url);
+        }
+        playerView.setPlaySpeed(timesSpeed);
+        startVideo(new VideoData("", url, 0, 0));
+    }
+
     public void startVideo(String url){
-        playerView.startVideo(new VideoData("", url, 0, 0),true);
+        startVideo(url, false);
+    }
+
+    public void startVideo(VideoData videoData){
+        boolean isLive = false;
+        boolean shortVideo = true;
+        if (videoData.getPath() != null){
+
+        } else {
+            isLive = !videoData.getUrl().contains(ApiTools.getApiHTTPUri());
+            shortVideo = videoData.getUrl().contains("EVENT_VIDEO");
+        }
+        if (shortVideo){
+            playerView.setPlaySpeed(1);
+        }
+        playerView.startVideo(videoData, isLive);
     }
 
     public boolean isRecording(){
         return playerView.isRecording();
     }
 
-    public void onConfigurationChanged(Configuration newConfig){
+    public void setConfiguration(Configuration newConfig){
         if (playerView != null) {
             playerView.onConfigChanged(newConfig);
         }
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            setPortraitLayoutParams((LinearLayout.LayoutParams) getLayoutParams());
+
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) getLayoutParams();
             layoutParams.height = LinearLayout.LayoutParams.MATCH_PARENT;
+            layoutParams.setMargins(0,0,0,0);
             setLayoutParams(layoutParams);
-        } else {
-            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) getLayoutParams();
-            layoutParams.height =  Math.round(BaseApplication.getDisplayMetrics((Activity) mContext).widthPixels *9f/16);
-            setLayoutParams(layoutParams);
+
+            getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    if (landscapeView != null) {
+                        ViewGroup.LayoutParams layoutParams1 = landscapeView.getLayoutParams();
+                        layoutParams1.width = getMeasuredWidth();
+                        layoutParams1.height = getMeasuredHeight();
+                        landscapeView.setLayoutParams(layoutParams1);
+                    }
+
+                    if (coverView != null){
+                        ViewGroup.LayoutParams layoutParams2 = coverView.getLayoutParams();
+                        layoutParams2.width = getMeasuredWidth();
+                        layoutParams2.height = getMeasuredHeight();
+                        coverView.setLayoutParams(layoutParams2);
+                    }
+
+                    getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+            });
+        } else if (portraitLayoutParams != null){
+            setLayoutParams(portraitLayoutParams);
+        }
+    }
+
+    public void playerStatusSwitch(){
+        if (isPlayerPlayingState()){
+            playerView.pausePlay();
+        }else if (isPlayerPauseState() || isPlayerCompleteState()){
+            playerView.continuePlay();
         }
     }
 
@@ -192,23 +263,45 @@ public abstract class BasePetkitPlayer extends RelativeLayout implements VideoLi
         return playerView.stopRecord();
     }
 
-    public void setPlaySpeed(float speed) {
-        playerView.setPlaySpeed(speed);
-    }
-
     public void showLoadingView(){
         playerView.pausePlay();
         pllv.setVisibility(View.VISIBLE);
         pllv.startLoadingAnimation();
+        loading = true;
     }
 
     public void hideLoadingView(){
         pllv.setVisibility(View.GONE);
         pllv.cancelLoadingAnimation();
+        loading = false;
+    }
+
+    public boolean isLoading() {
+        return loading;
     }
 
     public void pausePlay(){
         playerView.pausePlay();
+    }
+
+    public void continuePlay(){
+        playerView.continuePlay();
+    }
+
+    public void seekCompletePlay(long position){
+        playerView.seekCompletePlay(position);
+    }
+
+    public boolean isMute(){
+        return playerView.isMute();
+    }
+
+    public int getVolume(boolean isMax) {
+        return playerView.getVolume(isMax);
+    }
+
+    public void switchMuteVolume(){
+        playerView.switchMuteVolume();
     }
 
     public void addPowerOffView(OnClickListener l){
@@ -218,9 +311,143 @@ public abstract class BasePetkitPlayer extends RelativeLayout implements VideoLi
         });
     }
 
+    public String getRecordFilePath(){
+        return playerView.getRecordFilePath();
+    }
+
+    public Bitmap getCurrentBitmap() {
+        return playerView.getCurrentBitmap();
+    }
+
+    private void setPortraitLayoutParams(LinearLayout.LayoutParams playerPortraitLayoutParams){
+        portraitLayoutParams = new LinearLayout.LayoutParams(playerPortraitLayoutParams.width, playerPortraitLayoutParams.height);
+        ((LinearLayout.LayoutParams)portraitLayoutParams).setMargins(((LinearLayout.LayoutParams)playerPortraitLayoutParams).leftMargin,
+                ((LinearLayout.LayoutParams)playerPortraitLayoutParams).topMargin,
+                ((LinearLayout.LayoutParams)playerPortraitLayoutParams).rightMargin,
+                ((LinearLayout.LayoutParams)playerPortraitLayoutParams).bottomMargin);
+    }
+
+//    public View addCoverView(Integer coverViewLayoutResId){
+//        if (coverViewLayoutResId != null){
+//            return playerView.addCoverView(coverViewLayoutResId);
+//        }
+//        return null;
+//    }
+
+    public void clearCoverView(){
+        int childCount = getChildCount();
+        if (childCount > 4){
+            removeView(getChildAt(4));
+            coverView = null;
+        }
+    }
+
+    public void removePlayerBlackBackground(){
+        playerView.clearRootChildOtherView();
+    }
+
+    public void addPlayerBlackBackground(){
+        playerView.addCoverView(R.layout.petkit_player_black_background_cover_view);
+    }
+
+//    public void clearCoverViewByCount(int childViewCount){
+//        playerView.clearRootChildOtherView();
+//        int childCount = getChildCount();
+//        if (childCount > childViewCount){
+//            removeView(getChildAt(childViewCount));
+//            coverView = null;
+//        }
+//    }
+
+    public void clearCoverView(int index){
+        int childCount = getChildCount();
+        if (childCount > index){
+            removeView(getChildAt(index));
+        }
+    }
+
+    public View addCoverView(Integer coverViewLayoutResId){
+        if (coverViewLayoutResId != null){
+            clearCoverView();
+            addPlayerBlackBackground();
+            if ((getContext()).getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+                coverView = LayoutInflater.from(getContext()).inflate(coverViewLayoutResId, this, false);
+                //横屏后match_parent不生效，先这样处理
+                addView(coverView, new LayoutParams(getMeasuredWidth(), getMeasuredHeight()));
+                return this;
+            } else {
+                LayoutInflater.from(getContext()).inflate(coverViewLayoutResId,this);
+                coverView = getChildAt(getChildCount()-1);
+                return this;
+            }
+        }
+        return null;
+    }
+
+    public View addCoverWithBackgroundView(Integer coverViewLayoutRes, Integer backgroundLayoutRes){
+        if (coverViewLayoutRes != null){
+            clearCoverView();
+            playerView.addCoverView(backgroundLayoutRes);
+            if ((getContext()).getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+                coverView = LayoutInflater.from(getContext()).inflate(coverViewLayoutRes, this, false);
+                //横屏后match_parent不生效，先这样处理
+                addView(coverView, new LayoutParams(getMeasuredWidth(), getMeasuredHeight()));
+                return this;
+            } else {
+                LayoutInflater.from(getContext()).inflate(coverViewLayoutRes,this);
+                coverView = getChildAt(getChildCount()-1);
+                return this;
+            }
+        }
+        return null;
+    }
+
+    public View addCoverView(Integer coverViewLayoutResId, int index){
+        if (coverViewLayoutResId != null){
+            clearCoverView();
+            View coverView = LayoutInflater.from(getContext()).inflate(coverViewLayoutResId, this, false);
+            addView(coverView, index);
+            return this;
+        }
+        return null;
+    }
+
+    /**
+     * 设置云存视频播放倍速
+     * @param timesSpeed 倍速
+     */
+    public void setTimesSpeed(float timesSpeed){
+        float speed = timesSpeed > 2? 2: timesSpeed;
+        playerView.setPlaySpeed(speed);
+        if (isPlayerPlayingState()){
+            playerView.pausePlay();
+            long currentPosition = playerView.getCurrentPosition();
+            VideoData currentPlayingVideoData = playerView.getCurrentPlayingVideoData();
+            if (currentPlayingVideoData != null){
+                //CLOUD_STORAGE : 1倍速  CLOUD_DOUBLE：2倍速
+                if (timesSpeed>2){
+                    if (currentPlayingVideoData.getUrl().contains("CLOUD_STORAGE")){
+                        currentPlayingVideoData.setUrl(currentPlayingVideoData.getUrl().replace("CLOUD_STORAGE","CLOUD_DOUBLE"));
+                    }
+                } else {
+                    if (currentPlayingVideoData.getUrl().contains("CLOUD_DOUBLE")){
+                        currentPlayingVideoData.setUrl(currentPlayingVideoData.getUrl().replace("CLOUD_DOUBLE","CLOUD_STORAGE"));
+                    }
+                }
+                currentPlayingVideoData.setProgress(currentPosition);
+                startVideo(currentPlayingVideoData);
+            }
+        }
+    }
+
+    public void reStartPlay(){
+        playerView.reStartPlay();
+    }
+
+
     @Override
     public void onInitSuccess() {
-        if (playerListener != null) {
+        if (playerListener != null){
             playerListener.onInitSuccess();
         }
     }
@@ -228,6 +455,9 @@ public abstract class BasePetkitPlayer extends RelativeLayout implements VideoLi
     @Override
     public void onPrepared() {
         hideLoadingView();
+        if (playerListener != null){
+            playerListener.onPrepared();
+        }
     }
 
     @Override
@@ -242,11 +472,16 @@ public abstract class BasePetkitPlayer extends RelativeLayout implements VideoLi
 
     @Override
     public void onStartPlay() {
+        if (playerListener != null){
+            playerListener.onStartPlay();
+        }
     }
 
     @Override
     public void onReStart() {
-
+        if (playerListener != null){
+            playerListener.onPlayerRestart();
+        }
     }
 
     @Override
@@ -261,7 +496,9 @@ public abstract class BasePetkitPlayer extends RelativeLayout implements VideoLi
 
     @Override
     public void onCompleted() {
-
+        if (playerListener != null){
+            playerListener.onCompleted();
+        }
     }
 
     @Override
@@ -281,7 +518,9 @@ public abstract class BasePetkitPlayer extends RelativeLayout implements VideoLi
 
     @Override
     public void preparedVideo(String videoTime, int start, int max) {
-
+        if (playerListener != null){
+            playerListener.preparedVideo(videoTime, start, max);
+        }
     }
 
     @Override
@@ -291,7 +530,10 @@ public abstract class BasePetkitPlayer extends RelativeLayout implements VideoLi
 
     @Override
     public void playing(String videoTime, long position) {
-
+        PetkitLog.d(getClass().getSimpleName(), "videoTime:"+videoTime+", position:"+position);
+        if (playerListener != null){
+            playerListener.playing(videoTime, position);
+        }
     }
 
     @Override
@@ -301,7 +543,16 @@ public abstract class BasePetkitPlayer extends RelativeLayout implements VideoLi
 
     @Override
     public void onVideoClick() {
+        if (playerListener != null){
+            playerListener.onVideoClick();
+        }
+    }
 
+    @Override
+    public void onVideoTouch(boolean isZoon) {
+        if (playerListener != null){
+            playerListener.onVideoTouch(isZoon);
+        }
     }
 
     @Override

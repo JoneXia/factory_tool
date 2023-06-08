@@ -756,4 +756,11 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="Base_Petkit_Player_Landscape_Selector_Window_Appearance_Animation" parent="@android:style/Animation.Activity">
+        <item name="android:windowEnterAnimation">@anim/menu_slide_in_from_right</item>
+        <item name="android:windowExitAnimation">@anim/menu_slide_out_to_right</item>
+    </style>
+
+
+
 </resources>

@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
@@ -32,6 +33,7 @@ import com.petkit.matetool.model.DeviceModuleStateStruct;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.model.UDPDevice;
 import com.petkit.matetool.player.BasePetkitPlayerListener;
+import com.petkit.matetool.player.BasePetkitPlayerPortraitViewClickListener;
 import com.petkit.matetool.ui.D4S.mode.D4STestUnit;
 import com.petkit.matetool.ui.D4S.utils.D4SUtils;
 import com.petkit.matetool.ui.base.BaseActivity;
@@ -43,8 +45,8 @@ import com.petkit.matetool.ui.utils.PrintUtils;
 import com.petkit.matetool.utils.DateUtil;
 import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.JSONUtils;
-import com.petkit.matetool.utils.UiUtils;
 import com.petkit.matetool.widget.PetkitPlayer;
+import com.petkit.matetool.widget.PetkitPlayerPortraitView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,6 +59,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
+import static com.petkit.matetool.player.ijkplayer.VideoConstant.SwitchMode.SWITCH_FULL_OR_NORMAL;
 import static com.petkit.matetool.ui.D4H.D4HUtils.D4HTestModes.TEST_MODE_AGEINGRESULT;
 import static com.petkit.matetool.ui.D4H.D4HUtils.D4HTestModes.TEST_MODE_AUTO;
 import static com.petkit.matetool.ui.D4H.D4HUtils.D4HTestModes.TEST_MODE_MIC;
@@ -70,7 +73,8 @@ import static com.petkit.matetool.utils.Globals.TYPE_TEST;
 /**
  * Created by Jone on 17/4/24.
  */
-public class D4HTestDetailActivity extends BaseActivity implements PetkitSocketInstance.IPetkitSocketListener, PrintResultCallback, BasePetkitPlayerListener {
+public class D4HTestDetailActivity extends BaseActivity implements PetkitSocketInstance.IPetkitSocketListener,
+        PrintResultCallback, BasePetkitPlayerListener, BasePetkitPlayerPortraitViewClickListener {
 
     private Tester mTester;
     private int mCurTestStep;
@@ -646,13 +650,13 @@ public class D4HTestDetailActivity extends BaseActivity implements PetkitSocketI
                         result = mTempResult == 0x11;
                         break;
                     case 2:
-                        if (moduleStateStruct.getSub0() > 0) {
+                        if (moduleStateStruct.getSub1() > 0) {
                             mTempResult = mTempResult | 0x1;
-                            desc.append("\n").append("按键").append("-").append("WiFi设置键").append("-").append(getKeyDescByState(moduleStateStruct.getSub0()));
+                            desc.append("\n").append("按键").append("-").append("WiFi设置键").append("-").append(getKeyDescByState(moduleStateStruct.getSub1()));
                         }
-                        if (moduleStateStruct.getSub2() > 0) {
+                        if (moduleStateStruct.getSub0() > 0) {
                             mTempResult = mTempResult | 0x100;
-                            desc.append("\n").append("按键").append("-").append("喂食键").append("-").append(getKeyDescByState(moduleStateStruct.getSub2()));
+                            desc.append("\n").append("按键").append("-").append("喂食键").append("-").append(getKeyDescByState(moduleStateStruct.getSub0()));
                         }
                         result = mTempResult == 0x101;
                         break;
@@ -738,24 +742,9 @@ public class D4HTestDetailActivity extends BaseActivity implements PetkitSocketI
                         }
                         break;
                     case 8:
-                        desc.append("\n").append("左数值：").append(moduleStateStruct.getSub1())
-                                .append("，右数值：").append(moduleStateStruct.getSub2());
+                        desc.append("\n").append("串口通信：").append(moduleStateStruct.getState() == 1 ? "正常" : "异常");
 
-                        leftLow = (leftLow == 0 || moduleStateStruct.getSub1() < leftLow) ? moduleStateStruct.getSub1() : leftLow;
-                        leftTop = (leftTop == 0 || moduleStateStruct.getSub1() > leftTop) ? moduleStateStruct.getSub1() : leftTop;
-                        rightLow = (rightLow == 0 ||  moduleStateStruct.getSub2() < rightLow) ? moduleStateStruct.getSub2() : rightLow;
-                        rightTop = (rightTop == 0 || moduleStateStruct.getSub2() > rightTop) ? moduleStateStruct.getSub2() : rightTop;
-
-                        if (leftTop - leftLow >= 80 && leftLow < 350 && leftLow > 0) {
-                            mTempResult = (mTempResult | 0x1);
-                            desc.append("\n").append("左接近：测试成功");
-                        }
-
-                        if (rightTop - rightLow >= 80 && rightLow < 350 && rightLow > 0) {
-                            desc.append("\n").append("右接近：测试成功");
-                            mTempResult = (mTempResult | 0x10);
-                        }
-                        result = mTempResult == 0x11;
+                        result = moduleStateStruct.getState() == 1;
                         break;
                 }
                 mDescTextView.append(desc.toString());
@@ -988,7 +977,7 @@ public class D4HTestDetailActivity extends BaseActivity implements PetkitSocketI
                 desc = "松开";
                 break;
             case 3:
-                desc = "单机";
+                desc = "单击";
                 break;
             case 4:
                 desc = "空";
@@ -1236,25 +1225,42 @@ public class D4HTestDetailActivity extends BaseActivity implements PetkitSocketI
     private PetkitPlayer player;
     private boolean isPlayerInited = false;
     private boolean isWaitingInit  = false;
+    private PetkitPlayerPortraitView playerPortraitView;
 
     private void initPlayer() {
         player = findViewById(R.id.d4sh_player);
         player.setPlayerListener(this);
         player.post(() -> {
-            int videoPlayerHeight = Math.round((player.getWidth() - UiUtils.dip2px(this, 32))* 10f / 16);
+            int videoPlayerHeight = Math.round(player.getWidth() * 10f / 16);
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) player.getLayoutParams();
             layoutParams.height = videoPlayerHeight;
             player.setLayoutParams(layoutParams);
         });
-
     }
 
     private void startPlay() {
         if (isPlayerInited) {
             player.startVideo(String.format("http://%s", mUDPDevice.getIp()));
+            player.setTimesSpeed(1.1f);
             isWaitingInit = false;
         } else {
             isWaitingInit = true;
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(@androidx.annotation.NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            setNoTitle();
+            mPromptTextView.setVisibility(View.GONE);
+        } else {
+            setHasTitle();
+            mPromptTextView.setVisibility(View.VISIBLE);
+        }
+
+        if (player != null) {
+            player.setConfiguration(newConfig);
         }
     }
 
@@ -1304,11 +1310,60 @@ public class D4HTestDetailActivity extends BaseActivity implements PetkitSocketI
 
     @Override
     public void preparedVideo(String videoTime, int start, int max) {
-
+        if (playerPortraitView == null) {
+            playerPortraitView = new PetkitPlayerPortraitView(this);
+            playerPortraitView.setBowlImage(R.drawable.bowl_d4h);
+            playerPortraitView.setViewClickListener(this);
+            player.addPortraitView(playerPortraitView);
+        }
     }
 
     @Override
     public void onPrepared() {
 
+    }
+
+    @Override
+    public void onPlayerRestart() {
+
+    }
+
+    @Override
+    public void onFullScreenBtnClick() {
+
+    }
+
+    @Override
+    public void onQualityOrTimeSpeedBtnClick() {
+
+    }
+
+    @Override
+    public void onPlayBtnClick() {
+
+    }
+
+    @Override
+    public void onPlayerPortraitViewClick() {
+        player.switchFullOrWindowMode(SWITCH_FULL_OR_NORMAL, false);
+    }
+
+    @Override
+    public void onVolumeBtnClick() {
+
+    }
+
+    @Override
+    public void onPrivacyModePlayBtnClick() {
+
+    }
+
+    @Override
+    public void onVideoTouch(boolean isZoon) {
+        if (!isZoon) {
+            playerPortraitView.hideOneself();
+        } else {
+            playerPortraitView.showOneself(isZoon);
+        }
     }
 }

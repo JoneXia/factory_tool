@@ -29,11 +29,12 @@ import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.petkit.android.utils.Consts;
 import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.R;
-import com.petkit.matetool.utils.Consts;
 import com.petkit.matetool.utils.DataHelper;
 import com.petkit.matetool.utils.UiUtils;
 
@@ -47,6 +48,7 @@ import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 import static com.petkit.matetool.player.ijkplayer.VideoUtils.getIsOpenRotate;
+
 
 public class VideoPlayerView extends LinearLayout implements TextureView.SurfaceTextureListener {
 
@@ -83,7 +85,7 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
     public int mPlayMode = VideoConstant.PlayMode.MODE_NORMAL;
 
     //播放的视频
-    public VideoData mVideoData;
+    private VideoData mVideoData;
 
     private String mSpeed;
     private Runnable mRunnable;
@@ -122,6 +124,13 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
     private FrameLayout rootChildLayout;
     private boolean isH3Home;
 
+    //默认的视频宽度
+    private int defaultVideoWidth;
+    //默认的视频宽度
+    private int defaultVideoHeight;
+
+    private boolean initDefaultParams = false;
+
     public VideoPlayerView(Context context) {
         super(context);
         this.activity = (Activity) context;
@@ -142,6 +151,15 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
 
     }
 
+    /**
+     * 设置播放视频的宽高，当无视频时使用
+     * @param defaultVideoWidth 视频的宽度
+     * @param defaultVideoHeight 视频的高度
+     */
+    public void setDefaultVideoWidthHeight(int defaultVideoWidth, int defaultVideoHeight){
+        this.defaultVideoWidth = defaultVideoWidth;
+        this.defaultVideoHeight = defaultVideoHeight;
+    }
 
     private void initControllerView(Context context, AttributeSet attrs) {
         View mView = LayoutInflater.from(context).inflate(R.layout.layout_video_player, this);
@@ -172,11 +190,39 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-        mDefaultParams = getLayoutParams();
-        if (mDefaultParams.height == ViewGroup.LayoutParams.MATCH_PARENT){
-            mDefaultParams.height = Math.round(getMeasuredWidth()*10f/16);
+        if (!initDefaultParams){
+            if (getLayoutParams() instanceof RelativeLayout.LayoutParams){
+                if (getWidth()> getHeight() && getWidth() > 0 && getHeight()> 0){
+                    mDefaultParams = new RelativeLayout.LayoutParams(getWidth(), getHeight());
+                    initDefaultParams = true;
+                }
+            } else if (getLayoutParams() instanceof LayoutParams){
+                if (getWidth()> getHeight() && getWidth() > 0 && getHeight()> 0){
+                    mDefaultParams = new LayoutParams(getWidth(), getHeight());
+                    initDefaultParams = true;
+                }
+            } else {
+                if (getWidth()> getHeight() && getWidth() > 0 && getHeight()> 0) {
+                    mDefaultParams = new ViewGroup.LayoutParams(getWidth(), getHeight());
+                    initDefaultParams = true;
+                }
+            }
         }
+//        mDefaultParams = getLayoutParams();
+//        if (mDefaultParams.height == ViewGroup.LayoutParams.MATCH_PARENT){
+//            mDefaultParams.height = Math.round(getMeasuredWidth()*10f/16);
+//        }
     }
+
+//    public void setDefaultParams(int w, int h){
+//        if (getLayoutParams() instanceof RelativeLayout.LayoutParams){
+//            mDefaultParams = new RelativeLayout.LayoutParams(w, h);
+//        } else if (getLayoutParams() instanceof LinearLayout.LayoutParams){
+//            mDefaultParams = new LinearLayout.LayoutParams(w, h);
+//        } else {
+//            mDefaultParams = new ViewGroup.LayoutParams(w, h);
+//        }
+//    }
 
     private void initOnTouchListener(){
         ontl = (view, event)->{
@@ -305,6 +351,8 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
                     System.out.println("downX->" + downX+",downY->"+downY+",event.getX()->"+event.getX()+",event.getY()->"+event.getY());
                     if (downX!=-1 && downY!=-1 && Math.abs(event.getX()-downX) < UiUtils.dip2px(activity,10) &&  Math.abs(event.getY()-downY) < UiUtils.dip2px(activity,10)){
                         videoListener.onVideoClick();
+                    } else {
+                        videoListener.onVideoTouch(textureViewWidth == originWidth || textureViewHeight == originHeight);
                     }
                     pointerCount = 0;
                     doublePointer = false;
@@ -317,6 +365,7 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
 
 
     private void preparedPlay() {
+        clearRootChildOtherView();
         if (videoListener != null) {
             videoListener.onPrepared();
         }
@@ -354,6 +403,10 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
     private void startPlay(long position) {
         if (videoListener != null) {
             videoListener.onStartPlay();
+        }
+
+        if (isMute){
+            mPlayer.setVolume(0,0);
         }
 
         if (mPlayState == VideoConstant.PlayState.STATE_PREPARED) {
@@ -398,7 +451,6 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
 
     //视频播放准备
     public void loadVideo(Surface surface, VideoData videoData) {
-        clearRootChildOtherView();
         Log.d(VideoConstant.VIDEO_TAG, "entryVideo:$video");
         mVideoData = videoData;
         if (mPlayer != null) {
@@ -408,9 +460,13 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
                 resetPlay();
             }
             try {
-                HashMap<String, String> headers = new HashMap<>();
-                headers.put(Consts.HTTP_HEADER_SESSION, DataHelper.getStringSF(activity, Consts.SHARED_SESSION_ID));
-                ((IjkMediaPlayer)(mPlayer)).setDataSource(videoData.getUrl(),headers);
+                if (videoData.getPath() != null){
+                    ((IjkMediaPlayer)(mPlayer)).setDataSource(videoData.getPath());
+                } else {
+                    HashMap<String, String> headers = new HashMap<>();
+                    headers.put(Consts.HTTP_HEADER_SESSION, DataHelper.getStringSF(activity, Consts.SHARED_SESSION_ID));
+                    ((IjkMediaPlayer)(mPlayer)).setDataSource(videoData.getUrl(),headers);
+                }
                 //加载url之后为播放器初始化完成状态
                 mPlayState = VideoConstant.PlayState.STATE_INITLIZED;
                 //设置渲染画板
@@ -1162,7 +1218,9 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
             int oldWidth = mDefaultParams.width == -1 ? Math.min(phoneWidth,phoneHeight) : mDefaultParams.width;
             int oldHeight = mDefaultParams.height == -1 ? Math.max(phoneWidth,phoneHeight) : mDefaultParams.height;
             if (textureView != null) {
-                LayoutParams layoutParams = VideoUtils.changeVideoSize(oldWidth, oldHeight, mPlayer.getVideoWidth(), mPlayer.getVideoHeight());
+                LayoutParams layoutParams = VideoUtils.changeVideoSize(oldWidth, oldHeight,
+                        mPlayer.getVideoWidth()== 0? defaultVideoWidth : mPlayer.getVideoWidth(),
+                        mPlayer.getVideoHeight() == 0? defaultVideoHeight: mPlayer.getVideoHeight());
                 originWidth = oldWidth;
                 originHeight = oldHeight;
                 textureViewWidth = layoutParams.width;
@@ -1209,7 +1267,9 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
 
 
         if (textureView != null) {
-            LayoutParams layoutParams = VideoUtils.changeVideoSize(phoneHeight > phoneWidth ? phoneHeight : phoneWidth, phoneHeight > phoneWidth ? phoneWidth : phoneHeight, mPlayer.getVideoWidth(), mPlayer.getVideoHeight());
+            LayoutParams layoutParams = VideoUtils.changeVideoSize(phoneHeight > phoneWidth ? phoneHeight : phoneWidth, phoneHeight > phoneWidth ? phoneWidth : phoneHeight,
+                    mPlayer.getVideoWidth() == 0? defaultVideoWidth : mPlayer.getVideoWidth(),
+                    mPlayer.getVideoHeight() == 0? defaultVideoHeight: mPlayer.getVideoHeight());
             originWidth = layoutParams.width;
             originHeight = layoutParams.height;
             textureViewWidth = layoutParams.width;
@@ -1268,7 +1328,7 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
 
     public void addPowerOffView(OnClickListener l){
         clearRootChildOtherView();
-        LayoutInflater.from(activity).inflate(R.layout.layout_h3_turn_off,rootChildLayout);
+        LayoutInflater.from(activity).inflate(R.layout.d4sh_player_turn_off_cover_view,rootChildLayout);
         TextView turnOnCameraTextView = rootChildLayout.findViewById(R.id.turn_on_camera_text_view);
         turnOnCameraTextView.setOnClickListener(l);
     }
@@ -1304,5 +1364,30 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
          ((IjkMediaPlayer)mPlayer).setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "auto_save_map", 1);
     }
 
+    public String getRecordFilePath(){
+        return mPath;
+    }
+
+    public View addCoverView(Integer coverViewLayoutResId){
+        clearRootChildOtherView();
+        return LayoutInflater.from(activity).inflate(coverViewLayoutResId,rootChildLayout);
+    }
+
+    public VideoData getCurrentPlayingVideoData(){
+        return mVideoData;
+    }
+
+
+    public void setPlayerSpeed() {
+        if (videoListener != null) {
+            videoListener.onReStart();
+        }
+
+        resetPlay();
+        if (mVideoData != null) {
+            startVideo(mVideoData,isLive);
+        }
+
+    }
 
 }

@@ -7,6 +7,8 @@ public class VideoData {
     private long progress;
     private float frameSpeed;
 
+    private String path;
+
     public VideoData(String name, String url, long size, long progress) {
         this.name = name;
         this.url = url;
@@ -20,6 +22,10 @@ public class VideoData {
         this.size = size;
         this.progress = progress;
         this.frameSpeed = frameSpeed;
+    }
+
+    public VideoData(String path) {
+        this.path = path;
     }
 
     public String getName() {
@@ -60,5 +66,13 @@ public class VideoData {
 
     public void setFrameSpeed(float frameSpeed) {
         this.frameSpeed = frameSpeed;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 }

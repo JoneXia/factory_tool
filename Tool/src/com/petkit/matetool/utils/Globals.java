@@ -246,4 +246,9 @@ public class Globals {
 				pm.checkPermission(permission, activity.getPackageName()));
 	}
 
+
+	public static final String H3_VIDEO_PLAY_SPEED = "H3_VIDEO_PLAY_SPEED";
+
+
+
 }

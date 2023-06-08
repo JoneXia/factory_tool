@@ -594,7 +594,8 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
     }
 
     private boolean checkSelfPermissionComplete(Context context){
-        return Build.VERSION.SDK_INT < Build.VERSION_CODES.M || (PermissionChecker.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PermissionChecker.PERMISSION_GRANTED);
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.M ||
+                (PermissionChecker.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PermissionChecker.PERMISSION_GRANTED);
     }
 
 }

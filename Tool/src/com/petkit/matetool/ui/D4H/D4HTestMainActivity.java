@@ -102,7 +102,7 @@ public class D4HTestMainActivity extends BaseActivity implements PetkitSocketIns
 
     @Override
     protected void setupViews() {
-        setTitle("双子星喂食器视频版");
+        setTitle("SOLO喂食器视频版");
 
         mWifiAdminSimple = new WifiAdminSimple(this);
 
@@ -319,20 +319,20 @@ public class D4HTestMainActivity extends BaseActivity implements PetkitSocketIns
     private void showWifiManager() {
         switch (mTestType) {
             case Globals.TYPE_TEST_BOARD:
-                startActivityForResult(UDPManagerActivity.getIntent(this, new UDPScanRecord("D4SH", 0)), 0x111);
+                startActivityForResult(UDPManagerActivity.getIntent(this, new UDPScanRecord("D4H", 0)), 0x111);
                 break;
             case Globals.TYPE_TEST_PARTIALLY:
-                startActivityForResult(UDPManagerActivity.getIntent(this, new UDPScanRecord("D4SH", 1)), 0x111);
+                startActivityForResult(UDPManagerActivity.getIntent(this, new UDPScanRecord("D4H", 1)), 0x111);
                 break;
             case Globals.TYPE_TEST:
-                startActivityForResult(UDPManagerActivity.getIntent(this, new UDPScanRecord("D4SH", 2)), 0x111);
+                startActivityForResult(UDPManagerActivity.getIntent(this, new UDPScanRecord("D4H", 2)), 0x111);
                 break;
             case Globals.TYPE_MAINTAIN:
             case Globals.TYPE_AFTERMARKET:
             case Globals.TYPE_CHECK:
             case Globals.TYPE_DUPLICATE_MAC:
             case Globals.TYPE_DUPLICATE_SN:
-                startActivityForResult(UDPManagerActivity.getIntent(this, new UDPScanRecord("D4SH", 3)), 0x111);
+                startActivityForResult(UDPManagerActivity.getIntent(this, new UDPScanRecord("D4H", 3)), 0x111);
                 break;
         }
     }

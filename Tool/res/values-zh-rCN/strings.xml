@@ -371,5 +371,7 @@
     <string name="s_err_hall_o">集便盒上盖异常，请检查</string>
     <string name="s_pet_s">传感器已触发，长按“OK”键恢复工作</string>
 
+    <string name="Photo_has_been_saved">拍照已保存</string>
+    <string name="Camera_is_off">摄像机已关闭</string>
 
 </resources>

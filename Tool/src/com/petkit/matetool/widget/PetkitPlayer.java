@@ -26,10 +26,6 @@ public class PetkitPlayer extends BasePetkitPlayer {
         setupCorners();
     }
 
-    @Override
-    protected void initOtherView(Context context) {
-
-    }
 
     @Override
     public void preparedVideo(String videoTime, int start, int max) {
@@ -38,4 +34,12 @@ public class PetkitPlayer extends BasePetkitPlayer {
             playerListener.preparedVideo(videoTime, start, max);
         }
     }
+
+    @Override
+    protected void initOtherView(Context context) {
+        //设置播放器的默认视频资源宽高
+        setDefaultVideoWidthHeight(1728, 1080);
+    }
+
+
 }

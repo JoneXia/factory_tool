@@ -136,4 +136,50 @@
         <attr name="pllv_text_style" format="reference"/>
         <attr name="pllv_text_margin_top" format="dimension"/>
     </declare-styleable>
+
+
+    <declare-styleable name="SmallCircleDotView">
+        <attr name="bg_color" format="reference|color" />
+    </declare-styleable>
+
+
+    <declare-styleable name="TwoOptionsSwitchView">
+        <attr name="tosv_bg" format="reference" />
+        <attr name="tosv_left_option_text" format="string" />
+        <attr name="tosv_right_option_text" format="string" />
+        <attr name="tosv_select_text_style" format="reference" />
+        <attr name="tosv_unselect_text_style" format="reference" />
+        <attr name="tosv_select_text_bg" format="reference" />
+        <attr name="tosv_unselect_text_bg" format="reference" />
+        <attr name="tosv_select_index">
+            <enum name="LEFT" value="0" />
+            <enum name="RIGHT" value="1" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="UnderlineTextView">
+        <attr name="ut_ul_margin_top" format="dimension" />
+        <attr name="ut_ul_margin_left_right" format="dimension" />
+        <attr name="ut_ul_width" format="dimension" />
+        <attr name="ut_ul_height" format="dimension" />
+        <attr name="ut_ul_radius" format="dimension" />
+        <attr name="ut_ul_bg_color" format="color" />
+    </declare-styleable>
+    <declare-styleable name="RightImgLeftTextWheelView">
+        <attr name="riltw_vip_threshold" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="CloudServiceView">
+        <attr name="csv_device_status_immediate_renewal_invisible" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="SimpleTabView">
+        <attr name="src" format="reference"/>
+        <attr name="iv_width" format="dimension"/>
+        <attr name="iv_height" format="dimension"/>
+        <attr name="tv_style" format="reference"/>
+        <attr name="tv_text" format="string"/>
+        <attr name="tv_margin_top" format="dimension"/>
+    </declare-styleable>
+
 </resources>

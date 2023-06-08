@@ -9,6 +9,8 @@ import android.util.DisplayMetrics;
 import android.widget.LinearLayout;
 
 import com.petkit.android.utils.PetkitLog;
+import com.petkit.matetool.http.ApiTools;
+import com.petkit.matetool.utils.Consts;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -169,4 +171,43 @@ public class VideoUtils {
         }
 
     }
+
+
+    public static String getVideoUrl(String mediaApi){
+        String baseUrl = ApiTools.getApiHTTPUri();
+        String videoUrl = String.format("%s%s", baseUrl, mediaApi.startsWith("/") ? mediaApi.substring(1) : mediaApi);
+        return videoUrl.replace("https", "http");
+    }
+
+    public static String getVideoUrl(int deviceType, long deviceId, long startTime){
+        String baseUrl = ApiTools.getApiHTTPUri();
+        //CLOUD_STORAGE : 1倍速  CLOUD_DOUBLE：4倍速
+        String speedStr = "CLOUD_STORAGE";
+        String deviceTypeName = "d4sh";
+        switch (deviceType){
+            case Consts.BIND_DEVICE_D4SH:
+                deviceTypeName = "d4sh";
+                break;
+        }
+        return baseUrl + String.format("%s/getM3u8?deviceId=%s&startTime=%d&moduleType=%s", deviceTypeName, deviceId, startTime, speedStr);
+    }
+
+    /**
+     * 完整事件视频url，规则：对mediaApi进行替换moduleType以及去除eventId
+     * @param mediaApi
+     * @return
+     */
+    public static String getFullVideoUrl(String mediaApi, float timesSpeed){
+        ///d4sh/getM3u8?deviceId=8&moduleType=EVENT_VIDEO&eventId=8_1681800072&startTime=0&mark=1681800026
+        if (mediaApi != null){
+            String fullVideoUrl = mediaApi.replace("EVENT_VIDEO",timesSpeed>2 ? "CLOUD_DOUBLE" : "CLOUD_STORAGE");
+            int index1 = mediaApi.indexOf("&eventId=");
+            int index2 = mediaApi.indexOf("&startTime");
+            String eventId = mediaApi.substring(index1, index2);
+            fullVideoUrl = fullVideoUrl.replace(eventId, "");
+            return fullVideoUrl;
+        }
+        return null;
+    }
+
 }

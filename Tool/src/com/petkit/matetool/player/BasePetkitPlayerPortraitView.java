@@ -4,6 +4,9 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
+import com.petkit.matetool.R;
+
+
 public abstract class BasePetkitPlayerPortraitView extends RelativeLayout {
 
     protected BasePetkitPlayerPortraitViewClickListener viewClickListener;
@@ -23,10 +26,15 @@ public abstract class BasePetkitPlayerPortraitView extends RelativeLayout {
 
     private void initAll(Context context){
         initView(context);
+        initClickEvent();
     }
 
     public void setViewClickListener(BasePetkitPlayerPortraitViewClickListener viewClickListener) {
         this.viewClickListener = viewClickListener;
+    }
+
+    protected void setTransparentBackground(){
+        setBackground(getContext().getResources().getDrawable(R.color.transparent));
     }
 
     protected abstract void initView(Context context);
@@ -35,12 +43,18 @@ public abstract class BasePetkitPlayerPortraitView extends RelativeLayout {
 
     public abstract void hideOneself();
 
-    public abstract void showOneself(boolean liveStatus);
+    public abstract void showOneself(Boolean liveStatus);
 
     public abstract void setQuality(String text);
 
     public abstract void setTimeSpeed(String text);
 
     public abstract void setMute(boolean isMute);
+
+    public abstract void setPlayerSwitchImageViewResource(int playerSwitchImageViewResource);
+
+    public abstract void setVolumeImageVisible(Boolean showVolumeImage);
+
+    public abstract void setPrivacyModePlayImageVisible(Boolean showPrivacyModePlayImageView);
 
 }

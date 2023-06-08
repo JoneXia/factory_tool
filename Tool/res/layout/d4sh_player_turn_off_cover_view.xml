@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal">
+
+        <TextView
+            style="@style/New_Style_Content_14_Light_White"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Camera_is_off" />
+
+        <TextView
+            android:id="@+id/turn_on_camera_text_view"
+            style="@style/New_Style_Content_14_Light_White_With_Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/solid_d4sh_orange_btn_with_radius"
+            android:paddingLeft="23dp"
+            android:paddingTop="9dp"
+            android:paddingRight="23dp"
+            android:paddingBottom="9dp"
+            android:text="@string/Turn_on_camera" />
+
+    </LinearLayout>
+
+</RelativeLayout>

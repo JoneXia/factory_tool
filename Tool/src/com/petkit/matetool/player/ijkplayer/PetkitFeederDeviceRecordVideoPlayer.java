@@ -45,6 +45,7 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 import static com.petkit.matetool.player.ijkplayer.VideoUtils.getIsOpenRotate;
 
+
 public class PetkitFeederDeviceRecordVideoPlayer extends LinearLayout implements TextureView.SurfaceTextureListener {
 
     public H3TextureView textureView;
@@ -142,10 +143,17 @@ public class PetkitFeederDeviceRecordVideoPlayer extends LinearLayout implements
         mNetWorkSpeedHandler = new NetWorkSpeedHandler(context, SPEED_DELAY);
 
         initListener(context);
-        //无法点击
+        //无法点击(即使没有加载出视频，也支持点击事件)
         textureView.setOnTouchListener(new OnTouchListener() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
+            public boolean onTouch(View view, MotionEvent event) {
+                switch (event.getAction()){
+                    case MotionEvent.ACTION_UP:
+                        if (videoListener != null){
+                            videoListener.onVideoClick();
+                        }
+                        break;
+                }
                 return true;
             }
         });
@@ -153,14 +161,17 @@ public class PetkitFeederDeviceRecordVideoPlayer extends LinearLayout implements
         initAudio();
 
         mPlayer = new IjkMediaPlayer();
-
-        post(new Runnable() {
-            @Override
-            public void run() {
-                mDefaultParams = getLayoutParams();
-            }
-        });
     }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        mDefaultParams = getLayoutParams();
+        if (mDefaultParams.height == ViewGroup.LayoutParams.MATCH_PARENT){
+            mDefaultParams.height = Math.round(getMeasuredWidth()*10f/16);
+        }
+    }
+
 
     private void initOnTouchListener(){
         ontl = (view, event)->{
@@ -701,7 +712,9 @@ public class PetkitFeederDeviceRecordVideoPlayer extends LinearLayout implements
         } else {
             return;
         }
-        mPlayer.pause();
+        if (mPlayer != null){
+            mPlayer.pause();
+        }
         stopVideoTime();
     }
 

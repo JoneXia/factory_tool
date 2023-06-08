@@ -6,4 +6,12 @@ public interface BasePetkitPlayerPortraitViewClickListener {
 
     void onQualityOrTimeSpeedBtnClick();
 
+    void onPlayBtnClick();
+
+    void onPlayerPortraitViewClick();
+
+    void onVolumeBtnClick();
+
+    void onPrivacyModePlayBtnClick();
+
 }
