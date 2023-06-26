@@ -223,7 +223,6 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
         switch (mD4TestUnits.get(mCurTestStep).getType()) {
             case TEST_MODE_AGEINGRESULT:  // 人工判定结果
             case TEST_MODE_LED:
-            case TEST_MODE_IR:
                 mBtn1.setText(R.string.Start);
                 mBtn2.setText(R.string.Failure);
                 mBtn2.setBackgroundResource(R.drawable.selector_red);
@@ -331,7 +330,6 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
             case R.id.test_btn_2:
                 switch (mD4TestUnits.get(mCurTestStep).getType()) {
                     case TEST_MODE_LED:
-                    case TEST_MODE_IR:
                         isWriteEndCmd = true;
                         mD4TestUnits.get(mCurTestStep).setResult(TEST_FAILED);
 
@@ -358,7 +356,6 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                         gotoNextTestModule();
                         break;
                     case TEST_MODE_AGEINGRESULT:
-                    case TEST_MODE_IR:
                         mD4TestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         gotoNextTestModule();
                         break;
@@ -588,15 +585,6 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                                 mTempResult = (mTempResult | 0x1);
                                 desc.append("-粮道：未遮挡！");
                             }
-                            if (((moduleStateStruct.getState() >> 1) & 0x1) == 1) {
-                                mTempResult = (mTempResult | 0x1000);
-                                desc.append("-桶内：遮挡！");
-                            }
-                            if (((moduleStateStruct.getState() >> 1) & 0x1) == 0) {
-                                mTempResult = (mTempResult | 0x100);
-                                desc.append("-桶内：未遮挡！");
-                            }
-//                            result = mTempResult == 0x1111;
                         } else {
                             if ((moduleStateStruct.getState() & 0x1) == 0) {
                                 mTempResult = mTempResult | 0x1;
@@ -607,8 +595,8 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                             } else {
                                 desc.append("-异常！");
                             }
-                            result = mTempResult == 0x11;
                         }
+                        result = mTempResult == 0x11;
                         break;
                     case 4:
                         desc.append("\n").append("电机").append(": ").append(moduleStateStruct.getState() == 1 ? "正常" : "异常")
