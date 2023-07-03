@@ -586,27 +586,18 @@ public class D4TestDetailActivity extends BaseActivity implements PetkitSocketIn
                                 mTempResult = (mTempResult | 0x1);
                                 desc.append("-粮道：未遮挡！");
                             }
-                            if (((moduleStateStruct.getState() >> 1) & 0x1) == 1) {
-                                mTempResult = (mTempResult | 0x1000);
-                                desc.append("-桶内：遮挡！");
-                            }
-                            if (((moduleStateStruct.getState() >> 1) & 0x1) == 0) {
-                                mTempResult = (mTempResult | 0x100);
-                                desc.append("-桶内：未遮挡！");
-                            }
-                            result = mTempResult == 0x1111;
                         } else {
-                            if (moduleStateStruct.getState() == 0) {
+                            if ((moduleStateStruct.getState() & 0x1) == 0) {
                                 mTempResult = mTempResult | 0x1;
                                 desc.append("-未遮挡！");
-                            } else if (moduleStateStruct.getState() == 1) {
+                            } else if ((moduleStateStruct.getState() & 0x1) == 1) {
                                 mTempResult = mTempResult | 0x10;
                                 desc.append("-遮挡！");
                             } else {
                                 desc.append("-异常！");
                             }
-                            result = mTempResult == 0x11;
                         }
+                        result = mTempResult == 0x11;
                         break;
                     case 4:
                         desc.append("\n").append("电机").append(": ").append(moduleStateStruct.getState() == 1 ? "正常" : "异常")
