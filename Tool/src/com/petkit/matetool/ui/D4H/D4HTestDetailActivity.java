@@ -474,11 +474,21 @@ public class D4HTestDetailActivity extends BaseActivity implements PetkitSocketI
                 startAutoUnitsTest();
                 return;
             case TEST_MODE_VIDEO:
-            case TEST_MODE_IR_cut:
-            case TEST_MODE_IR_light:
             case TEST_MODE_SPEAK:
             case TEST_MODE_MIC:
                 params.put("state", mTempStep %2 == 0 ? 1 : 0);
+                mTempStep++;
+                break;
+            case TEST_MODE_IR_cut:
+                mDescTextView.append(mTempStep %2 == 0 ? "\nIRcut-已打开" : "\nIRcut-已关闭");
+                params.put("work", mTempStep %2 == 0 ? 1 : 0);
+                params.put("state", 1);
+                mTempStep++;
+                break;
+            case TEST_MODE_IR_light:
+                mDescTextView.append(mTempStep %2 == 0 ? "\n红外灯-已打开" : "\n红外灯-已关闭");
+                params.put("work", mTempStep %2 == 0 ? 1 : 0);
+                params.put("state", 1);
                 mTempStep++;
                 break;
 
