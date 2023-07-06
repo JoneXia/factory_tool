@@ -264,6 +264,7 @@ public class D4HTestDetailActivity extends BaseActivity implements PetkitSocketI
             case TEST_MODE_AGEINGRESULT:  // 人工判定结果
             case TEST_MODE_LED:
             case TEST_MODE_VIDEO:
+            case TEST_MODE_IR:
             case TEST_MODE_IR_cut:
             case TEST_MODE_IR_light:
             case TEST_MODE_SPEAK:
@@ -400,6 +401,7 @@ public class D4HTestDetailActivity extends BaseActivity implements PetkitSocketI
                 switch (mTestUnits.get(mCurTestStep).getType()) {
                     case TEST_MODE_LED:
                     case TEST_MODE_VIDEO:
+                    case TEST_MODE_IR:
                     case TEST_MODE_IR_cut:
                     case TEST_MODE_IR_light:
                     case TEST_MODE_SPEAK:
@@ -434,6 +436,7 @@ public class D4HTestDetailActivity extends BaseActivity implements PetkitSocketI
                         gotoNextTestModule();
                         break;
                     case TEST_MODE_VIDEO:
+                    case TEST_MODE_IR:
                     case TEST_MODE_IR_cut:
                     case TEST_MODE_IR_light:
                     case TEST_MODE_SPEAK:
@@ -693,43 +696,48 @@ public class D4HTestDetailActivity extends BaseActivity implements PetkitSocketI
                             desc.append("-异常！");
                         }
 
-                        result = mTempResult == 0x1111;
+//                        result = mTempResult == 0x1111;
                         break;
                     case 4:
                         if ((moduleStateStruct.getSub0() & 0x1) == 1) {
                             mTempResult = (mTempResult | 0x1);
                             desc.append("\n").append("关门：1");
                         } else {
-                            mTempResult = (mTempResult | 0x10);
+                            mTempResult = (mTempResult | 0x2);
                             desc.append("\n").append("关门：0");
                         }
 
                         if ((moduleStateStruct.getSub0() & 0x2) == 2) {
-                            mTempResult = (mTempResult | 0x100);
+                            mTempResult = (mTempResult | 0x4);
                             desc.append("，").append("左：1");
                         } else {
-                            mTempResult = (mTempResult | 0x1000);
+                            mTempResult = (mTempResult | 0x8);
                             desc.append("，").append("左：0");
                         }
 
                         if ((moduleStateStruct.getSub0() & 0x4) == 4) {
-                            mTempResult = (mTempResult | 0x10000);
+                            mTempResult = (mTempResult | 0x10);
                             desc.append("，").append("右：1");
                         } else {
-                            mTempResult = (mTempResult | 0x100000);
+                            mTempResult = (mTempResult | 0x20);
                             desc.append("，").append("右：0");
                         }
 
                         if ((moduleStateStruct.getSub0() & 0x8) == 8) {
-                            mTempResult = (mTempResult | 0x1000000);
+                            mTempResult = (mTempResult | 0x40);
                             desc.append("，").append("辅助：1");
                         } else {
-                            mTempResult = (mTempResult | 0x10000000);
+                            mTempResult = (mTempResult | 0x80);
                             desc.append("，").append("辅助：0");
+                        }
+                        if (moduleStateStruct.getSub1() > 0) {
+                            mTempResult = (mTempResult | 0x100);
+                        } else if(moduleStateStruct.getSub1() < 0) {
+                            mTempResult = (mTempResult | 0x200);
                         }
                         desc.append("，步数：").append(""+moduleStateStruct.getSub1())
                                 .append("电流："+moduleStateStruct.getSub2());
-                        result = mTempResult == 0x11111111;
+                        result = mTempResult == 0x3ff;
                         break;
                     case 5:
                         desc.append("\n").append("电池电压").append(":").append(moduleStateStruct.getSub0()).append("mv");
