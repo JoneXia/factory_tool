@@ -650,7 +650,11 @@ public class D4HTestDetailActivity extends BaseActivity implements PetkitSocketI
                 switch (moduleStateStruct.getModule()) {
                     case 0:
                         desc.append("\n").append("直流电压").append(":").append(moduleStateStruct.getSub0()).append("mv");
-                        result = moduleStateStruct.getSub0() >= 4750 && moduleStateStruct.getSub0() <= 6250;
+                        if (mTestType == Globals.TYPE_TEST_BOARD) {
+                            result = moduleStateStruct.getSub0() >= 4750 && moduleStateStruct.getSub0() <= 6250;
+                        } else {
+                            result = moduleStateStruct.getSub0() >= 4500 && moduleStateStruct.getSub0() <= 7000;
+                        }
                         break;
                     case 1:
                         if (moduleStateStruct.getState() == 0) {

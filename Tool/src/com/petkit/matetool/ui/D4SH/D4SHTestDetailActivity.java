@@ -202,7 +202,12 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
                 mPromptTextView.setText("需要分别测试手动喂食键和WiFi设置键！");
                 break;
             case TEST_MODE_DC:
-                mPromptTextView.setText("正常电压范围（单位mV）：[4750, 6250]");
+
+                if (mTestType == Globals.TYPE_TEST_BOARD) {
+                    mPromptTextView.setText("正常电压范围（单位mV）：[4750, 6250]");
+                } else {
+                    mPromptTextView.setText("正常电压范围（单位mV）：[4500, 7000]");
+                }
                 break;
             case TEST_MODE_LED:
                 mPromptTextView.setText("测试指示灯和蜂鸣器，观察是否正常！");
@@ -648,7 +653,11 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
                 switch (moduleStateStruct.getModule()) {
                     case 0:
                         desc.append("\n").append("直流电压").append(":").append(moduleStateStruct.getSub0()).append("mv");
-                        result = moduleStateStruct.getSub0() >= 4750 && moduleStateStruct.getSub0() <= 6250;
+                        if (mTestType == Globals.TYPE_TEST_BOARD) {
+                            result = moduleStateStruct.getSub0() >= 4750 && moduleStateStruct.getSub0() <= 6250;
+                        } else {
+                            result = moduleStateStruct.getSub0() >= 4500 && moduleStateStruct.getSub0() <= 7000;
+                        }
                         break;
                     case 1:
                         if (moduleStateStruct.getState() == 0) {
