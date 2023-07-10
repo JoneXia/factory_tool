@@ -114,6 +114,7 @@ public class Device implements Serializable {
     public String toString() {
         return "mac=" + mac + '\n' +
                 "sn=" + sn + '\n' +
-                "version=" + hardware + "." + firmware;
+                "version=" + hardware + "." + firmware  +
+                (id == "" ? "" : '\n' + "id=" + id);
     }
 }
