@@ -112,11 +112,8 @@ public class Device implements Serializable {
 
     @Override
     public String toString() {
-        return "Device{" +
-                "mac=" + mac + '\n' +
-                ", sn=" + sn + '\n' +
-                ", id=" + id + '\n' +
-                ", version=" + hardware + "." + firmware + '\n' +
-                '}';
+        return "mac=" + mac + '\n' +
+                "sn=" + sn + '\n' +
+                "version=" + hardware + "." + firmware;
     }
 }
