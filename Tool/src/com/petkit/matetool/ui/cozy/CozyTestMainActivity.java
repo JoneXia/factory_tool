@@ -277,7 +277,7 @@ public class CozyTestMainActivity extends BaseActivity implements PetkitSocketIn
             intent.putExtra(CozyUtils.EXTRA_COZY, mErrorDevice);
             startActivityForResult(intent, 0x12);
         } else {
-            showShortToast(mInfoTestTextView.getText().toString());
+            showShortToast("请先连接设备");
         }
     }
 

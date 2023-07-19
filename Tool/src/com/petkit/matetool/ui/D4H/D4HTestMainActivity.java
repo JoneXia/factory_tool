@@ -302,7 +302,7 @@ public class D4HTestMainActivity extends BaseActivity implements PetkitSocketIns
             intent.putExtra(DeviceCommonUtils.EXTRA_UDPDEVICE, mUDPDevice);
             startActivityForResult(intent, 0x12);
         } else {
-            showShortToast(mInfoTestTextView.getText().toString());
+            showShortToast("请先连接设备");
         }
     }
 
@@ -448,12 +448,10 @@ public class D4HTestMainActivity extends BaseActivity implements PetkitSocketIns
                     mCurDevice = new Device(mac, sn, chipid);
 
                     if (!jsonObject.isNull("hardware")) {
-                        stringBuilder.append("hardware: ").append(jsonObject.getInt("hardware")).append("\n");
                         mCurDevice.setHardware(jsonObject.getInt("hardware"));
                     }
                     if (!jsonObject.isNull("version")) {
                         mCurDevice.setFirmware(Integer.valueOf(jsonObject.getString("version")));
-                        stringBuilder.append("version: ").append(jsonObject.getString("version")).append("\n");
                     }
 
                     mInfoTestTextView.setText(mCurDevice.toString());

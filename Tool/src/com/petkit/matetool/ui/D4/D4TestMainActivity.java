@@ -253,6 +253,7 @@ public class D4TestMainActivity extends BaseActivity implements PetkitSocketInst
                     mD4TestUnits = (ArrayList<D4TestUnit>) data.getSerializableExtra("TestUnits");
                     mCurDevice = (Device) data.getSerializableExtra(D4Utils.EXTRA_D4);
                     mAdapter.notifyDataSetChanged();
+                    mInfoTestTextView.setText(mCurDevice.toString());
                     checkTestComplete();
                     refreshBottomButton();
                     break;
@@ -294,7 +295,7 @@ public class D4TestMainActivity extends BaseActivity implements PetkitSocketInst
             intent.putExtra(D4Utils.EXTRA_ERROR_D4, mErrorDevice);
             startActivityForResult(intent, 0x12);
         } else {
-            showShortToast(mInfoTestTextView.getText().toString());
+            showShortToast("请先连接设备");
         }
     }
 
@@ -444,29 +445,16 @@ public class D4TestMainActivity extends BaseActivity implements PetkitSocketInst
             case 110:
                 try {
                     JSONObject jsonObject = JSONUtils.getJSONObject(data);
-                    StringBuilder stringBuilder = new StringBuilder();
                     String mac = null, sn = null, chipid = null;
                     if (!jsonObject.isNull("mac")) {
                         mac = jsonObject.getString("mac");
-                        stringBuilder.append("\n").append("mac: ").append(mac).append("\n");
                     }
                     if (!jsonObject.isNull("sn")) {
                         sn = jsonObject.getString("sn");
-                        stringBuilder.append("sn: ").append(sn).append("\n");
                     }
                     if (!jsonObject.isNull("chipid")) {
                         chipid = jsonObject.getString("chipid");
-                        stringBuilder.append("chipid: ").append(chipid).append("\n");
                     }
-                    if (!jsonObject.isNull("hardware")) {
-                        stringBuilder.append("hardware: ").append(jsonObject.getInt("hardware")).append("\n");
-                    }
-                    if (!jsonObject.isNull("version")) {
-                        stringBuilder.append("version: ").append(jsonObject.getString("version")).append("\n");
-                    }
-//                    if (!jsonObject.isNull("id")) {
-//                        stringBuilder.append("id: ").append(jsonObject.getInt("id")).append("\n");
-//                    }
 
                     if(isEmpty(mac)) {
                         mInfoTestTextView.setText("设备信息不正确，没有MAC地址！");
@@ -490,7 +478,14 @@ public class D4TestMainActivity extends BaseActivity implements PetkitSocketInst
 
                     mCurDevice = new Device(mac, sn, chipid);
 
-                    mInfoTestTextView.append(stringBuilder.toString());
+                    if (!jsonObject.isNull("hardware")) {
+                        mCurDevice.setHardware(jsonObject.getInt("hardware"));
+                    }
+                    if (!jsonObject.isNull("version")) {
+                        mCurDevice.setFirmware(Integer.valueOf(jsonObject.getString("version")));
+                    }
+
+                    mInfoTestTextView.setText(mCurDevice.toString());
 
                     HashMap<String, Object> params = new HashMap<>();
                     params.put("mac", mCurDevice.getMac());

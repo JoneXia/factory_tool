@@ -4,7 +4,6 @@ dependencies {
     implementation fileTree(include: '*.jar', dir: 'libs')
     implementation project(':socketclient')
     implementation 'com.github.vilyever:AndroidLogger:1.0.9'
-    implementation files('libs/DzPrinter-2017-05-11.jar')
     implementation project(':zxingsupport')
     implementation 'com.android.support:multidex:1.0.1'
     implementation('com.github.gzu-liyujiang.AndroidPicker:FilePicker:1.5.5') {
@@ -30,6 +29,7 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation 'org.simple:androideventbus:1.0.5.1'
+    implementation files('libs/LPAPI-2021-02-02-R.jar')
 }
 
 repositories {
@@ -58,8 +58,8 @@ android {
         multiDexEnabled true
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 6003
-        versionName "6.0.3"
+        versionCode 6005
+        versionName "6.0.5"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         flavorDimensions "versionCode"
         ndk {

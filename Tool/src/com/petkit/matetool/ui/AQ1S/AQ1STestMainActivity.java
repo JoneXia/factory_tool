@@ -231,7 +231,7 @@ public class AQ1STestMainActivity extends BaseActivity {
             intent.putExtra("TestType", mTestType);
             startActivityForResult(intent, 0x12);
         } else {
-            showShortToast(mInfoTestTextView.getText().toString());
+            showShortToast("请先连接设备");
         }
     }
 

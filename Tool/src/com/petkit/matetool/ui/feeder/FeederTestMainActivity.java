@@ -279,7 +279,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
             intent.putExtra(FeederUtils.EXTRA_FEEDER, mErrorFeeder);
             startActivityForResult(intent, 0x12);
         } else {
-            showShortToast(mInfoTestTextView.getText().toString());
+            showShortToast("请先连接设备");
         }
     }
 

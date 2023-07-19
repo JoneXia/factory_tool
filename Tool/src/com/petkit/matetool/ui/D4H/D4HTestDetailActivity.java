@@ -477,8 +477,19 @@ public class D4HTestDetailActivity extends BaseActivity implements PetkitSocketI
                 startAutoUnitsTest();
                 return;
             case TEST_MODE_VIDEO:
+                if (player != null && player.isMute()) {
+                    player.switchMuteVolume();
+                }
+
+                params.put("state", mTempStep %2 == 0 ? 1 : 0);
+                mTempStep++;
+                break;
             case TEST_MODE_SPEAK:
             case TEST_MODE_MIC:
+                if (player != null && !player.isMute()) {
+                    player.switchMuteVolume();
+                }
+
                 params.put("state", mTempStep %2 == 0 ? 1 : 0);
                 mTempStep++;
                 break;
@@ -1334,7 +1345,7 @@ public class D4HTestDetailActivity extends BaseActivity implements PetkitSocketI
     public void preparedVideo(String videoTime, int start, int max) {
         if (playerPortraitView == null) {
             playerPortraitView = new PetkitPlayerPortraitView(this);
-            playerPortraitView.setBowlImage(R.drawable.bowl_d4h);
+            playerPortraitView.setBowlImage(mTestType == Globals.TYPE_TEST_BOARD ? R.drawable.video_circle : R.drawable.bowl_d4h);
             playerPortraitView.setViewClickListener(this);
             player.addPortraitView(playerPortraitView);
         }

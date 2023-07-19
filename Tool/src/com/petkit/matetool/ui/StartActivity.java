@@ -100,6 +100,7 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
 
         DeviceCommonUtils.initDeviceConfig();
         TesterManagerUtils.initTesterTempList();
+        PrintUtils.init(this);
 
         setContentView(R.layout.activity_start);
 

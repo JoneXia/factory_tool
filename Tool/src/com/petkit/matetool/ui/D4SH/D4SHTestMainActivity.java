@@ -302,7 +302,7 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
             intent.putExtra(DeviceCommonUtils.EXTRA_UDPDEVICE, mUDPDevice);
             startActivityForResult(intent, 0x12);
         } else {
-            showShortToast(mInfoTestTextView.getText().toString());
+            showShortToast("请先连接设备");
         }
     }
 
@@ -410,23 +410,16 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
             case 110:
                 try {
                     JSONObject jsonObject = JSONUtils.getJSONObject(data);
-                    StringBuilder stringBuilder = new StringBuilder();
                     String mac = null, sn = null, chipid = null;
                     if (!jsonObject.isNull("mac")) {
                         mac = jsonObject.getString("mac");
-//                        stringBuilder.append("\n").append("mac: ").append(mac).append("\n");
                     }
                     if (!jsonObject.isNull("sn")) {
                         sn = jsonObject.getString("sn");
-//                        stringBuilder.append("sn: ").append(sn).append("\n");
                     }
                     if (!jsonObject.isNull("chipid")) {
                         chipid = jsonObject.getString("chipid");
-//                        stringBuilder.append("chipid: ").append(chipid).append("\n");
                     }
-//                    if (!jsonObject.isNull("id")) {
-//                        stringBuilder.append("id: ").append(jsonObject.getInt("id")).append("\n");
-//                    }
 
                     if(isEmpty(mac)) {
                         mInfoTestTextView.setText("设备信息不正确，没有MAC地址！");
@@ -451,12 +444,10 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
                     mCurDevice = new Device(mac, sn, chipid);
 
                     if (!jsonObject.isNull("hardware")) {
-                        stringBuilder.append("hardware: ").append(jsonObject.getInt("hardware")).append("\n");
                         mCurDevice.setHardware(jsonObject.getInt("hardware"));
                     }
                     if (!jsonObject.isNull("version")) {
                         mCurDevice.setFirmware(Integer.valueOf(jsonObject.getString("version")));
-                        stringBuilder.append("version: ").append(jsonObject.getString("version")).append("\n");
                     }
 
                     mInfoTestTextView.setText(mCurDevice.toString());

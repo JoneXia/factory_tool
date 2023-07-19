@@ -276,7 +276,7 @@ public class FeederMiniTestMainActivity extends BaseActivity implements PetkitSo
             intent.putExtra(FeederMiniUtils.EXTRA_FEEDER, mErrorFeeder);
             startActivityForResult(intent, 0x12);
         } else {
-            showShortToast(mInfoTestTextView.getText().toString());
+            showShortToast("请先连接设备");
         }
     }
 
