@@ -350,10 +350,10 @@ public class CTW3TestDetailActivity extends BaseActivity implements PrintResultC
                         gotoNextTestModule();
                         break;
                     case TEST_MODE_PUMP:
-                        if (mTempResult != 0x11) {
-                            showShortToast("请先测试有水和没水状态，再观察水泵是否正常转动！");
-                            return;
-                        }
+//                        if (mTempResult != 0x11) {
+//                            showShortToast("请先测试有水和没水状态，再观察水泵是否正常转动！");
+//                            return;
+//                        }
                         mTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         gotoNextTestModule();
                         break;

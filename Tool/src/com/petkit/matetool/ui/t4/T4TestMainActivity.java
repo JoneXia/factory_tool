@@ -484,7 +484,18 @@ public class T4TestMainActivity extends BaseActivity implements PetkitSocketInst
                         mCurDevice.setHardware(jsonObject.getInt("hardware"));
                     }
                     if (!jsonObject.isNull("version")) {
-                        mCurDevice.setFirmware(Integer.valueOf(jsonObject.getString("version")));
+                        try {
+                            mCurDevice.setFirmware(Integer.valueOf(jsonObject.getString("version")));
+                        } catch (NumberFormatException e) {
+                            try {
+                                if (jsonObject.getString("version").indexOf(".") > 0) {
+                                    mCurDevice.setFirmware(Integer.valueOf(
+                                            jsonObject.getString("version").substring(jsonObject.getString("version").indexOf(".") + 1)));
+                                }
+                            } catch (NumberFormatException e2) {
+
+                            }
+                        }
                     }
 
                     mInfoTestTextView.setText(mCurDevice.toString());

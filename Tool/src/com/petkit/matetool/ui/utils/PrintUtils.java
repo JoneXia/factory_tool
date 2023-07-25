@@ -134,7 +134,7 @@ public class PrintUtils {
     }
 
     public static void setCallback(PrintResultCallback callback) {
-//        PrintUtils.callback = callback;
+        PrintUtils.callback = callback;
     }
 
     public static void init(Context context) {

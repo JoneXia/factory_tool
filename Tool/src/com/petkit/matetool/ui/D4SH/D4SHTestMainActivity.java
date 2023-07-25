@@ -331,6 +331,8 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
             case Globals.TYPE_MAINTAIN:
             case Globals.TYPE_AFTERMARKET:
             case Globals.TYPE_CHECK:
+                startActivityForResult(UDPManagerActivity.getIntent(this, new UDPScanRecord(DeviceCommonUtils.getDeviceKeyByType(mDeviceType), -1)), 0x111);
+                break;
             case Globals.TYPE_DUPLICATE_MAC:
             case Globals.TYPE_DUPLICATE_SN:
                 startActivityForResult(UDPManagerActivity.getIntent(this, new UDPScanRecord(DeviceCommonUtils.getDeviceKeyByType(mDeviceType), 3)), 0x111);
@@ -447,7 +449,18 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
                         mCurDevice.setHardware(jsonObject.getInt("hardware"));
                     }
                     if (!jsonObject.isNull("version")) {
-                        mCurDevice.setFirmware(Integer.valueOf(jsonObject.getString("version")));
+                        try {
+                            mCurDevice.setFirmware(Integer.valueOf(jsonObject.getString("version")));
+                        } catch (NumberFormatException e) {
+                            try {
+                                if (jsonObject.getString("version").indexOf(".") > 0) {
+                                    mCurDevice.setFirmware(Integer.valueOf(
+                                            jsonObject.getString("version").substring(jsonObject.getString("version").indexOf(".") + 1)));
+                                }
+                            } catch (NumberFormatException e2) {
+
+                            }
+                        }
                     }
 
                     mInfoTestTextView.setText(mCurDevice.toString());

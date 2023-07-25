@@ -28,6 +28,7 @@ import com.dothantech.printer.IDzPrinter.PrinterAddress;
 import com.dothantech.printer.IDzPrinter.PrinterState;
 import com.petkit.matetool.R;
 import com.petkit.matetool.ui.base.BaseActivity;
+import com.petkit.matetool.ui.utils.PrintResultCallback;
 import com.petkit.matetool.ui.utils.PrintUtils;
 
 import java.io.IOException;
@@ -51,7 +52,7 @@ import static com.petkit.matetool.ui.utils.PrintUtils.KeyPrintSpeed;
  * Created by Jone on 17/4/19.
  */
 
-public class PrintActivity extends BaseActivity {
+public class PrintActivity extends BaseActivity implements PrintResultCallback {
 
 
     /********************************************************************************************************************************************/
@@ -169,6 +170,13 @@ public class PrintActivity extends BaseActivity {
     @Override
     public void onClick(View v) {
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        PrintUtils.setCallback(this);
     }
 
 
@@ -527,17 +535,29 @@ public class PrintActivity extends BaseActivity {
     }
 
     // 标签打印成功时操作
-    private void onPrintSuccess() {
+    public void onPrintSuccess() {
         // 标签打印成功时，刷新界面提示
         clearAlertDialog();
         Toast.makeText(this, this.getResources().getString(R.string.printsuccess), Toast.LENGTH_SHORT).show();
     }
 
     // 打印请求失败或标签打印失败时操作
-    private void onPrintFailed() {
+    public void onPrintFailed() {
         // 打印请求失败或标签打印失败时，刷新界面提示
         clearAlertDialog();
         Toast.makeText(this, this.getResources().getString(R.string.printfailed), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onConnected() {
+        // 连接打印机成功时，刷新界面提示，保存相关信息
+        clearAlertDialog();
+        Toast.makeText(this, this.getResources().getString(R.string.connectprintersuccess), Toast.LENGTH_SHORT).show();
+        // 调用LPAPI对象的getPrinterInfo方法获得当前连接的打印机信息
+        String txt = getResources().getString(R.string.printer) + getResources().getString(R.string.chinesecolon);
+        txt += api.getPrinterInfo().deviceName + "\n";
+        txt += api.getPrinterInfo().deviceAddress;
+        btnConnectDevice.setText(txt);
     }
 
     // 显示连接、打印的状态提示框

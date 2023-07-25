@@ -267,7 +267,6 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
             case TEST_MODE_AGEINGRESULT:  // 人工判定结果
             case TEST_MODE_LED:
             case TEST_MODE_VIDEO:
-            case TEST_MODE_IR:
             case TEST_MODE_IR_cut:
             case TEST_MODE_IR_light:
             case TEST_MODE_SPEAK:
@@ -404,7 +403,6 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
                 switch (mTestUnits.get(mCurTestStep).getType()) {
                     case TEST_MODE_LED:
                     case TEST_MODE_VIDEO:
-                    case TEST_MODE_IR:
                     case TEST_MODE_IR_cut:
                     case TEST_MODE_IR_light:
                     case TEST_MODE_SPEAK:
@@ -439,7 +437,6 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
                         gotoNextTestModule();
                         break;
                     case TEST_MODE_VIDEO:
-                    case TEST_MODE_IR:
                     case TEST_MODE_IR_cut:
                     case TEST_MODE_IR_light:
                     case TEST_MODE_SPEAK:
@@ -683,7 +680,7 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
                     case 2:
                         if (moduleStateStruct.getSub0() > 0) {
                             mTempResult = mTempResult | 0x1;
-                            desc.append("\n").append("按键").append("-").append("喂食键2").append("-").append(getKeyDescByState(moduleStateStruct.getSub0()));
+                            desc.append("\n").append("按键").append("-").append("喂食键1").append("-").append(getKeyDescByState(moduleStateStruct.getSub0()));
                         }
                         if (moduleStateStruct.getSub1() > 0) {
                             mTempResult = mTempResult | 0x10;
@@ -691,7 +688,7 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
                         }
                         if (moduleStateStruct.getSub2() > 0) {
                             mTempResult = mTempResult | 0x100;
-                            desc.append("\n").append("按键").append("-").append("喂食键1").append("-").append(getKeyDescByState(moduleStateStruct.getSub2()));
+                            desc.append("\n").append("按键").append("-").append("喂食键2").append("-").append(getKeyDescByState(moduleStateStruct.getSub2()));
                         }
                         result = mTempResult == 0x111;
                         break;
@@ -707,29 +704,29 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
                             desc.append("-异常！");
                         }
 
-                        desc.append("\n").append("桶内左");
-                        if (moduleStateStruct.getSub1() == 0) {
-                            mTempResult = mTempResult | 0x100;
-                            desc.append("-未遮挡！");
-                        } else if (moduleStateStruct.getSub1() == 1) {
-                            mTempResult = mTempResult | 0x1000;
-                            desc.append("-遮挡！");
-                        } else {
-                            desc.append("-异常！");
-                        }
+//                        desc.append("\n").append("桶内左");
+//                        if (moduleStateStruct.getSub1() == 0) {
+//                            mTempResult = mTempResult | 0x100;
+//                            desc.append("-未遮挡！");
+//                        } else if (moduleStateStruct.getSub1() == 1) {
+//                            mTempResult = mTempResult | 0x1000;
+//                            desc.append("-遮挡！");
+//                        } else {
+//                            desc.append("-异常！");
+//                        }
+//
+//                        desc.append("\n").append("桶内右");
+//                        if (moduleStateStruct.getSub2() == 0) {
+//                            mTempResult = mTempResult | 0x10000;
+//                            desc.append("-未遮挡！");
+//                        } else if (moduleStateStruct.getSub2() == 1) {
+//                            mTempResult = mTempResult | 0x100000;
+//                            desc.append("-遮挡！");
+//                        } else {
+//                            desc.append("-异常！");
+//                        }
 
-                        desc.append("\n").append("桶内右");
-                        if (moduleStateStruct.getSub2() == 0) {
-                            mTempResult = mTempResult | 0x10000;
-                            desc.append("-未遮挡！");
-                        } else if (moduleStateStruct.getSub2() == 1) {
-                            mTempResult = mTempResult | 0x100000;
-                            desc.append("-遮挡！");
-                        } else {
-                            desc.append("-异常！");
-                        }
-
-//                        result = mTempResult == 0x111111;
+                        result = mTempResult == 0x11;
                         break;
                     case 4:
                         if ((moduleStateStruct.getSub0() & 0x1) == 1) {
@@ -1309,7 +1306,7 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
 
     private void startPlay() {
         if (isPlayerInited) {
-            player.startVideo(String.format("http://%s", mUDPDevice.getIp()));
+            player.startVideo(String.format("http://%s/sub.flv", mUDPDevice.getIp()));
             isWaitingInit = false;
         } else {
             isWaitingInit = true;

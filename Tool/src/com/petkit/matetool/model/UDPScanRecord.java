@@ -37,7 +37,8 @@ public class UDPScanRecord implements Serializable {
         if (this == o) return true;
         if (!(o instanceof UDPScanRecord)) return false;
         UDPScanRecord record = (UDPScanRecord) o;
-        return getStep() == record.getStep() && Objects.equals(getType(), record.getType());
+        return (getStep() == record.getStep() || getStep() == -1 || record.getStep() == -1)
+                && Objects.equals(getType(), record.getType());
     }
 
     @Override
