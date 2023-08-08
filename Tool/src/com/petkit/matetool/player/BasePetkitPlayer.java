@@ -15,7 +15,6 @@ import android.widget.RelativeLayout;
 
 import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.R;
-import com.petkit.matetool.http.ApiTools;
 import com.petkit.matetool.player.ijkplayer.VideoData;
 import com.petkit.matetool.player.ijkplayer.VideoListener;
 import com.petkit.matetool.player.ijkplayer.VideoPlayerView;
@@ -140,7 +139,7 @@ public abstract class BasePetkitPlayer extends RelativeLayout implements VideoLi
         if (videoData.getPath() != null){
 
         } else {
-            isLive = !videoData.getUrl().contains(ApiTools.getApiHTTPUri());
+            isLive = true;//TODO: !videoData.getUrl().contains(ApiTools.getApiHTTPUri());
             shortVideo = videoData.getUrl().contains("EVENT_VIDEO");
         }
         if (shortVideo){

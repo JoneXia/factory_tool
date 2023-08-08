@@ -80,7 +80,11 @@ public interface VideoListener {
 
     void onVideoClick();
 
-    void onVideoTouch(boolean isZoon);
-
     void onSeekCompleted();
+
+    void onVideoLongClick();
+
+    void onVideoLongClickEnd();
+
+    void onVideoTouch(boolean isZoon);
 }

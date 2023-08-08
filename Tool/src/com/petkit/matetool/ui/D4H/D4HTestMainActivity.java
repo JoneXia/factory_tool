@@ -465,6 +465,10 @@ public class D4HTestMainActivity extends BaseActivity implements PetkitSocketIns
                         }
                     }
 
+                    if (!jsonObject.isNull("ble_ver")) {
+                        mCurDevice.setBleVersion(jsonObject.getInt("ble_ver"));
+                    }
+
                     mInfoTestTextView.setText(mCurDevice.toString());
 
                     HashMap<String, Object> params = new HashMap<>();

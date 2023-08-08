@@ -65,6 +65,7 @@ import static com.petkit.matetool.ui.D4SH.D4SHUtils.D4SHTestModes.TEST_MODE_AUTO
 import static com.petkit.matetool.ui.D4SH.D4SHUtils.D4SHTestModes.TEST_MODE_MIC;
 import static com.petkit.matetool.ui.D4SH.D4SHUtils.D4SHTestModes.TEST_MODE_PRINT;
 import static com.petkit.matetool.ui.D4SH.D4SHUtils.D4SHTestModes.TEST_MODE_SN;
+import static com.petkit.matetool.ui.D4SH.D4SHUtils.D4SHTestModes.TEST_MODE_VIDEO;
 import static com.petkit.matetool.ui.utils.PrintUtils.isPrinterConnected;
 import static com.petkit.matetool.utils.Globals.TEST_FAILED;
 import static com.petkit.matetool.utils.Globals.TEST_PASS;
@@ -477,7 +478,7 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
                 startAutoUnitsTest();
                 return;
             case TEST_MODE_VIDEO:
-                if (player != null && player.isMute()) {
+                if (mTestType == Globals.TYPE_TEST_BOARD && player != null && player.isMute()) {
                     player.switchMuteVolume();
                 }
 
@@ -486,7 +487,7 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
                 break;
             case TEST_MODE_SPEAK:
             case TEST_MODE_MIC:
-                if (player != null && !player.isMute()) {
+                if (mTestType == Globals.TYPE_TEST_BOARD && player != null && !player.isMute()) {
                     player.switchMuteVolume();
                 }
 
@@ -1306,7 +1307,8 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
 
     private void startPlay() {
         if (isPlayerInited) {
-            player.startVideo(String.format("http://%s/sub.flv", mUDPDevice.getIp()));
+            player.startVideo(String.format(mTestType == Globals.TYPE_TEST_BOARD ?
+                    "http://%s/main.ts?audio=1" : "http://%s/main.flv", mUDPDevice.getIp()));
             isWaitingInit = false;
         } else {
             isWaitingInit = true;
@@ -1373,6 +1375,18 @@ public class D4SHTestDetailActivity extends BaseActivity implements PetkitSocket
             playerPortraitView.setViewClickListener(this);
             playerPortraitView.setBowlImage(mTestType == Globals.TYPE_TEST_BOARD ? R.drawable.video_circle : R.drawable.bowl_d4sh);
             player.addPortraitView(playerPortraitView);
+        }
+
+        if (mTestType == Globals.TYPE_TEST_BOARD) {
+            if (mTestUnits.get(mCurTestStep).getType() == TEST_MODE_VIDEO) {
+                if (player != null && player.isMute()) {
+                    player.switchMuteVolume();
+                }
+            } else {
+                if (player != null && !player.isMute()) {
+                    player.switchMuteVolume();
+                }
+            }
         }
     }
 

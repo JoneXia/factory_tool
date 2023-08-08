@@ -16,6 +16,7 @@ public class Device implements Serializable {
     private int inspectStatus = 0;
     private int hardware;
     private int firmware;
+    private int bleVersion;
 
     public Device(String mac, String sn, String chipid) {
         this.mac = mac;
@@ -110,11 +111,20 @@ public class Device implements Serializable {
         this.firmware = firmware;
     }
 
+    public void setBleVersion(int bleVersion) {
+        this.bleVersion = bleVersion;
+    }
+
+    public int getBleVersion() {
+        return bleVersion;
+    }
+
     @Override
     public String toString() {
         return "mac=" + mac + '\n' +
                 "sn=" + sn + '\n' +
                 "version=" + hardware + "." + firmware  +
+                (bleVersion == 0 ? "" : '\n' + "bleVersion=" + bleVersion) +
                 (id == "" ? "" : '\n' + "id=" + id);
     }
 }

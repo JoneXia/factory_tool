@@ -65,6 +65,7 @@ import static com.petkit.matetool.ui.D4H.D4HUtils.D4HTestModes.TEST_MODE_AUTO;
 import static com.petkit.matetool.ui.D4H.D4HUtils.D4HTestModes.TEST_MODE_MIC;
 import static com.petkit.matetool.ui.D4H.D4HUtils.D4HTestModes.TEST_MODE_PRINT;
 import static com.petkit.matetool.ui.D4H.D4HUtils.D4HTestModes.TEST_MODE_SN;
+import static com.petkit.matetool.ui.D4H.D4HUtils.D4HTestModes.TEST_MODE_VIDEO;
 import static com.petkit.matetool.ui.utils.PrintUtils.isPrinterConnected;
 import static com.petkit.matetool.utils.Globals.TEST_FAILED;
 import static com.petkit.matetool.utils.Globals.TEST_PASS;
@@ -1271,8 +1272,7 @@ public class D4HTestDetailActivity extends BaseActivity implements PetkitSocketI
     private void startPlay() {
         if (isPlayerInited) {
             player.startVideo(String.format(mTestType == Globals.TYPE_TEST_BOARD ?
-                    "http://%s/sub.flv?audio=1" : "http://%s/sub.flv", mUDPDevice.getIp()));
-            player.setTimesSpeed(1.1f);
+                    "http://%s/main.ts?audio=1" : "http://%s/main.flv", mUDPDevice.getIp()));
             isWaitingInit = false;
         } else {
             isWaitingInit = true;
@@ -1346,6 +1346,18 @@ public class D4HTestDetailActivity extends BaseActivity implements PetkitSocketI
             playerPortraitView.setBowlImage(mTestType == Globals.TYPE_TEST_BOARD ? R.drawable.video_circle : R.drawable.bowl_d4h);
             playerPortraitView.setViewClickListener(this);
             player.addPortraitView(playerPortraitView);
+        }
+
+        if (mTestType == Globals.TYPE_TEST_BOARD) {
+            if (mTestUnits.get(mCurTestStep).getType() == TEST_MODE_VIDEO) {
+                if (player != null && player.isMute()) {
+                    player.switchMuteVolume();
+                }
+            } else {
+                if (player != null && !player.isMute()) {
+                    player.switchMuteVolume();
+                }
+            }
         }
     }
 

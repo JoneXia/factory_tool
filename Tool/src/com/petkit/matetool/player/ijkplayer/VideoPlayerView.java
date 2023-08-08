@@ -32,14 +32,12 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.petkit.android.utils.Consts;
 import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.R;
-import com.petkit.matetool.utils.DataHelper;
 import com.petkit.matetool.utils.UiUtils;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.lang.ref.WeakReference;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -47,23 +45,26 @@ import tv.danmaku.ijk.media.player.AndroidMediaPlayer;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
-import static com.petkit.matetool.player.ijkplayer.VideoUtils.getIsOpenRotate;
-
+import static com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_BUFFERING_PAUSED;
+import static com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_BUFFERING_PLAYING;
+import static com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_COMPLETED;
+import static com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_PAUSED;
+import static com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_PLAYING;
 
 public class VideoPlayerView extends LinearLayout implements TextureView.SurfaceTextureListener {
 
-    public H3TextureView textureView;
+    public com.petkit.matetool.player.ijkplayer.H3TextureView textureView;
     public IMediaPlayer mPlayer;
 
     //默认params
     public ViewGroup.LayoutParams mDefaultParams;
     private Handler mHandler;
-    private NetWorkSpeedHandler mNetWorkSpeedHandler;
+    private com.petkit.matetool.player.ijkplayer.NetWorkSpeedHandler mNetWorkSpeedHandler;
 
     public final long SPEED_DELAY = 1000L;
     private AudioManager mAudioManager;
 
-    private VideoListener videoListener;
+    private com.petkit.matetool.player.ijkplayer.VideoListener videoListener;
 
     //初始亮度
     public int mStartLight = 0;
@@ -79,13 +80,13 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
     private boolean isMute;
 
     //播放状态
-    public int mPlayState = VideoConstant.PlayState.STATE_IDLE;
+    public int mPlayState = com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_IDLE;
 
     //播放模式
-    public int mPlayMode = VideoConstant.PlayMode.MODE_NORMAL;
+    public int mPlayMode = com.petkit.matetool.player.ijkplayer.VideoConstant.PlayMode.MODE_NORMAL;
 
     //播放的视频
-    private VideoData mVideoData;
+    private com.petkit.matetool.player.ijkplayer.VideoData mVideoData;
 
     private String mSpeed;
     private Runnable mRunnable;
@@ -131,6 +132,16 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
 
     private boolean initDefaultParams = false;
 
+    private AudioFocusRequest audioFocusRequest;
+    private boolean audioHasFocusRequest;
+    private long videoTouchDownStartTime;
+    private boolean longClickStart;
+    private final static long LONG_CLICK_TIME = 500;
+
+    private MainHandler mainHandler;
+
+    private static final String TAG = VideoPlayerView.class.getSimpleName();
+
     public VideoPlayerView(Context context) {
         super(context);
         this.activity = (Activity) context;
@@ -171,13 +182,30 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
         textureView = mView.findViewById(R.id.ttv_video_player);
 
         mHandler = new Handler(Looper.getMainLooper());
-        mNetWorkSpeedHandler = new NetWorkSpeedHandler(context, SPEED_DELAY);
+        mNetWorkSpeedHandler = new com.petkit.matetool.player.ijkplayer.NetWorkSpeedHandler(context, SPEED_DELAY);
 
         initListener(context);
-        //无法点击
         textureView.setOnTouchListener(new OnTouchListener() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
+            public boolean onTouch(View view, MotionEvent event) {
+                PetkitLog.d(VideoPlayerView.class.getSimpleName(), "event.getAction():"+event.getAction());
+                switch (event.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        videoTouchDownStartTime = System.currentTimeMillis();
+
+                        lastX = (int) event.getX();
+                        lastY = (int) event.getY();
+                        downX = (int) event.getX();
+                        downY = (int) event.getY();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        if (downX!=-1 && downY!=-1 && Math.abs(event.getX()-downX) < UiUtils.dip2px(activity,10) &&  Math.abs(event.getY()-downY) < UiUtils.dip2px(activity,10)){
+                            if (System.currentTimeMillis() - videoTouchDownStartTime < 500){
+                                videoListener.onVideoClick();
+                            }
+                        }
+                        break;
+                }
                 return true;
             }
         });
@@ -185,6 +213,7 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
         initAudio();
 
         mPlayer = new IjkMediaPlayer();
+        mainHandler = new MainHandler(getContext());
     }
 
     @Override
@@ -196,9 +225,9 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
                     mDefaultParams = new RelativeLayout.LayoutParams(getWidth(), getHeight());
                     initDefaultParams = true;
                 }
-            } else if (getLayoutParams() instanceof LayoutParams){
+            } else if (getLayoutParams() instanceof LinearLayout.LayoutParams){
                 if (getWidth()> getHeight() && getWidth() > 0 && getHeight()> 0){
-                    mDefaultParams = new LayoutParams(getWidth(), getHeight());
+                    mDefaultParams = new LinearLayout.LayoutParams(getWidth(), getHeight());
                     initDefaultParams = true;
                 }
             } else {
@@ -214,20 +243,40 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
 //        }
     }
 
-//    public void setDefaultParams(int w, int h){
-//        if (getLayoutParams() instanceof RelativeLayout.LayoutParams){
-//            mDefaultParams = new RelativeLayout.LayoutParams(w, h);
-//        } else if (getLayoutParams() instanceof LinearLayout.LayoutParams){
-//            mDefaultParams = new LinearLayout.LayoutParams(w, h);
-//        } else {
-//            mDefaultParams = new ViewGroup.LayoutParams(w, h);
-//        }
-//    }
+    /**
+     * 适用于多段视频中由于创建的时候没有竖屏状态的宽高的情况
+     * @param w
+     * @param h
+     */
+    public void setDefaultParams(int w, int h){
+        if (getLayoutParams() instanceof RelativeLayout.LayoutParams){
+            mDefaultParams = new RelativeLayout.LayoutParams(w, h);
+        } else if (getLayoutParams() instanceof LinearLayout.LayoutParams){
+            mDefaultParams = new LinearLayout.LayoutParams(w, h);
+        } else {
+            mDefaultParams = new ViewGroup.LayoutParams(w, h);
+        }
+        initDefaultParams = true;
+    }
+
+    public ViewGroup.LayoutParams getDefaultParams() {
+        return mDefaultParams;
+    }
 
     private void initOnTouchListener(){
         ontl = (view, event)->{
             switch (event.getAction()  & MotionEvent.ACTION_MASK){
                 case MotionEvent.ACTION_DOWN:
+                    videoTouchDownStartTime = System.currentTimeMillis();
+                    longClickStart = false;
+                    mainHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            longClickStart = true;
+                            videoListener.onVideoLongClick();
+                        }
+                    },LONG_CLICK_TIME);
+
                     lastX = (int) event.getX();
                     lastY = (int) event.getY();
                     downX = (int) event.getX();
@@ -285,12 +334,16 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
                         doublePointer = true;
                         int a = (int) Math.abs(event.getX(0) - event.getX(1)) - pointerWidthDistance;
                         int b = (int) Math.abs(event.getY(0) - event.getY(1)) - pointerHeightDistance;
-                        System.out.println("a->"+a+",b->"+b);
+                        //增加滑动效果
+                        a*=2;
+                        b*=2;
+
+                        PetkitLog.d(VideoPlayerView.class.getSimpleName(), "double point scale width difference："+a+",height difference："+b);
 
                         ViewGroup.LayoutParams lp = textureView.getLayoutParams();
 
                         float ratio;
-                        if (a>b){
+                        if (Math.abs(a)>Math.abs(b)){
                             ratio = (textureViewWidth+a)*1.0f/ textureViewWidth;
                             textureViewWidth += a;
                             textureViewHeight *= ratio;
@@ -300,7 +353,7 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
                             textureViewWidth *= ratio;
                         }
 
-                        System.out.println("ratio->"+ratio);
+                        PetkitLog.d(VideoPlayerView.class.getSimpleName(), "ratio->"+ratio);
 
                         if (textureViewWidth < originWidth){
                             textureViewWidth = originWidth;
@@ -341,19 +394,27 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
                             }
                         });
 
-                        System.out.println("textureViewWidth->"+textureViewWidth+",textureViewHeight->"+textureViewHeight);
+                        PetkitLog.d(VideoPlayerView.class.getSimpleName(), "textureViewWidth->"+textureViewWidth+",textureViewHeight->"+textureViewHeight);
 
                         pointerWidthDistance = (int) Math.abs(event.getX(0) - event.getX(1));
                         pointerHeightDistance = (int) Math.abs(event.getY(0) - event.getY(1));
                     }
                     break;
                 case MotionEvent.ACTION_UP:
-                    System.out.println("downX->" + downX+",downY->"+downY+",event.getX()->"+event.getX()+",event.getY()->"+event.getY());
+                case MotionEvent.ACTION_CANCEL:
+                    PetkitLog.d(VideoPlayerView.class.getSimpleName(), "downX->" + downX+",downY->"+downY+",event.getX()->"+event.getX()+",event.getY()->"+event.getY());
                     if (downX!=-1 && downY!=-1 && Math.abs(event.getX()-downX) < UiUtils.dip2px(activity,10) &&  Math.abs(event.getY()-downY) < UiUtils.dip2px(activity,10)){
-                        videoListener.onVideoClick();
+                        if (System.currentTimeMillis() - videoTouchDownStartTime < 500){
+                            videoListener.onVideoClick();
+                        }
                     } else {
                         videoListener.onVideoTouch(textureViewWidth == originWidth || textureViewHeight == originHeight);
                     }
+                    if (longClickStart){
+                        videoListener.onVideoLongClickEnd();
+                        longClickStart = false;
+                    }
+                    mainHandler.removeCallbacksAndMessages(null);
                     pointerCount = 0;
                     doublePointer = false;
                     break;
@@ -370,9 +431,10 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
             videoListener.onPrepared();
         }
         //预加载完成状态
-        mPlayState = VideoConstant.PlayState.STATE_PREPARED;
+//        mPlayState = VideoConstant.PlayState.STATE_PREPARED;
+        setPlayState(com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_PREPARED);
 
-        Log.d(VideoConstant.VIDEO_TAG, "setOnPreparedListener");
+        Log.d(com.petkit.matetool.player.ijkplayer.VideoConstant.VIDEO_TAG, "setOnPreparedListener");
 
         textureView.setOnTouchListener(ontl);
 
@@ -409,14 +471,15 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
             mPlayer.setVolume(0,0);
         }
 
-        if (mPlayState == VideoConstant.PlayState.STATE_PREPARED) {
-            Log.d(VideoConstant.VIDEO_TAG, "startPlay:" + position);
+        if (mPlayState == com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_PREPARED) {
+            Log.d(com.petkit.matetool.player.ijkplayer.VideoConstant.VIDEO_TAG, "startPlay:" + position);
             if (mPlayer != null) {
                 if (position != 0L) {
                     soughtTo(position);
                 }
                 mPlayer.start();
-                mPlayState = VideoConstant.PlayState.STATE_PLAYING;
+//                mPlayState = VideoConstant.PlayState.STATE_PLAYING;
+                setPlayState(com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_PLAYING);
                 runVideoTime();
             }
         }
@@ -430,12 +493,15 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
 
         resetPlay();
         if (mVideoData != null) {
+            if (mVideoData.getProgress()>0){
+                mVideoData.setProgress(0);
+            }
             startVideo(mVideoData,isLive);
         }
 
     }
 
-    public void startVideo(VideoData videoData, boolean isLive) {
+    public void startVideo(com.petkit.matetool.player.ijkplayer.VideoData videoData, boolean isLive) {
         this.isLive = isLive;
         //播放视频
         if (mSurface != null) {
@@ -444,31 +510,33 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
     }
 
 
-    public void startVideo(VideoData videoData) {
+    public void startVideo(com.petkit.matetool.player.ijkplayer.VideoData videoData) {
         startVideo(videoData,false);
     }
 
 
     //视频播放准备
-    public void loadVideo(Surface surface, VideoData videoData) {
-        Log.d(VideoConstant.VIDEO_TAG, "entryVideo:$video");
+    public void loadVideo(Surface surface, com.petkit.matetool.player.ijkplayer.VideoData videoData) {
+        Log.d(com.petkit.matetool.player.ijkplayer.VideoConstant.VIDEO_TAG, "entryVideo:$video");
         mVideoData = videoData;
         if (mPlayer != null) {
-            Log.d(VideoConstant.VIDEO_TAG, "mPlayState:" + mPlayState);
+            Log.d(com.petkit.matetool.player.ijkplayer.VideoConstant.VIDEO_TAG, "mPlayState:" + mPlayState);
             //如果不是IDLE状态就改变播放器状态
-            if (mPlayState != VideoConstant.PlayState.STATE_IDLE) {
+            if (mPlayState != com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_IDLE) {
                 resetPlay();
             }
             try {
                 if (videoData.getPath() != null){
                     ((IjkMediaPlayer)(mPlayer)).setDataSource(videoData.getPath());
                 } else {
-                    HashMap<String, String> headers = new HashMap<>();
-                    headers.put(Consts.HTTP_HEADER_SESSION, DataHelper.getStringSF(activity, Consts.SHARED_SESSION_ID));
-                    ((IjkMediaPlayer)(mPlayer)).setDataSource(videoData.getUrl(),headers);
+//                    HashMap<String, String> headers = new HashMap<>();
+//                    headers.put(Consts.HTTP_HEADER_SESSION, DataHelper.getStringSF(activity, Consts.SHARED_SESSION_ID));
+//                    ((IjkMediaPlayer)(mPlayer)).setDataSource(videoData.getUrl(),headers);
+                    ((IjkMediaPlayer)(mPlayer)).setDataSource(videoData.getUrl());
                 }
                 //加载url之后为播放器初始化完成状态
-                mPlayState = VideoConstant.PlayState.STATE_INITLIZED;
+//                mPlayState = VideoConstant.PlayState.STATE_INITLIZED;
+                setPlayState(com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_INITLIZED);
                 //设置渲染画板
                 mPlayer.setSurface(surface);
                 //初始化播放器监听
@@ -488,8 +556,9 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
         if (videoListener != null) {
             videoListener.onError(message);
         }
-        Log.d(VideoConstant.VIDEO_TAG, "setOnErrorListener:$what, $message");
-        mPlayState = VideoConstant.PlayState.STATE_ERROR;
+        Log.d(com.petkit.matetool.player.ijkplayer.VideoConstant.VIDEO_TAG, String.format("setOnErrorListener:what:%s, message:%s", what, message));
+//        mPlayState = VideoConstant.PlayState.STATE_ERROR;
+        setPlayState(com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_ERROR);
         //播放错误时记录下时间点
         if (mVideoData != null) {
             if (getPosition() != 0L) {
@@ -508,14 +577,14 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
     //初始化播放器监听
     public void initPlayerListener() {
         if (mPlayer == null) {
-            Log.d(VideoConstant.VIDEO_TAG, "mPlayer is null");
+            Log.d(com.petkit.matetool.player.ijkplayer.VideoConstant.VIDEO_TAG, "mPlayer is null");
             return;
         }
         //设置是否循环播放，默认可不写
         mPlayer.setLooping(false);
 
         if (mPlayer instanceof AndroidMediaPlayer) {
-            Log.d(VideoConstant.VIDEO_TAG, "AndroidMediaPlayer");
+            Log.d(com.petkit.matetool.player.ijkplayer.VideoConstant.VIDEO_TAG, "AndroidMediaPlayer");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 AudioAttributes attributes = new AudioAttributes.Builder()
                         .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
@@ -531,6 +600,10 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
             mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         }
 
+        if (isMute){
+            mPlayer.setVolume(0,0);
+        }
+
         //播放完成监听
         mPlayer.setOnCompletionListener(new IMediaPlayer.OnCompletionListener() {
             @Override
@@ -544,7 +617,7 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
             @Override
             public void onSeekComplete(IMediaPlayer mp) {
                 // mPlayState = PlayState.STATE_IDLE
-                Log.d(VideoConstant.VIDEO_TAG, "setOnSeekCompleteListener");
+                Log.d(com.petkit.matetool.player.ijkplayer.VideoConstant.VIDEO_TAG, "setOnSeekCompleteListener");
                 seekCompleted();
             }
         });
@@ -583,10 +656,11 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
                 switch (what) {
                     case MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START: {
                         // 播放器开始渲染
-                        mPlayState = VideoConstant.PlayState.STATE_PLAYING;
-                        Log.d(VideoConstant.VIDEO_TAG, "MEDIA_INFO_VIDEO_RENDERING_START");
+//                        mPlayState = VideoConstant.PlayState.STATE_PLAYING;
+                        setPlayState(com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_PLAYING);
+                        Log.d(com.petkit.matetool.player.ijkplayer.VideoConstant.VIDEO_TAG, "MEDIA_INFO_VIDEO_RENDERING_START");
                         if (mNetWorkSpeedHandler != null) {
-                            mNetWorkSpeedHandler.bindHandler(new NetWorkSpeedHandler.OnNetWorkSpeedListener() {
+                            mNetWorkSpeedHandler.bindHandler(new com.petkit.matetool.player.ijkplayer.NetWorkSpeedHandler.OnNetWorkSpeedListener() {
                                 @Override
                                 public void netWorkSpeed(String speed) {
                                     PetkitLog.d("netWorkSpeed", "netWorkSpeed:" + speed);
@@ -622,8 +696,8 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
             @Override
             public void onVideoSizeChanged(IMediaPlayer mp, int width, int height, int sar_num, int sar_den) {
                 //这里是视频的原始尺寸大小
-                Log.d(VideoConstant.VIDEO_TAG, "setOnVideoSizeChangedListener");
-                layoutParams = VideoUtils.changeVideoSize(getMeasuredWidth(),
+                Log.d(com.petkit.matetool.player.ijkplayer.VideoConstant.VIDEO_TAG, "setOnVideoSizeChangedListener");
+                layoutParams = com.petkit.matetool.player.ijkplayer.VideoUtils.changeVideoSize(getMeasuredWidth(),
                         getMeasuredHeight(),
                         mPlayer.getVideoWidth(),
                         mPlayer.getVideoHeight());
@@ -670,8 +744,28 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
                 player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "fflags", "fastseek");
                 player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "buffer-size", 1024 * 1024 * 5);
             } else {
+//                player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "protocol_whitelist", "crypto,file,http,https,tcp,tls,udp,hls");
+//                player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "enable-accurate-seek", 1);
+//                player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "max-buffer-size", 1024 * 1024 * 25);
+//                player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "fflags", "fastseek");
+
+//                player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec", 1);
+//                player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "framedrop", 5);
+//                player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "skip_loop_filter", 48);
+//                player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "soundtouch", 1);
+//                player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "enable-accurate-seek", 1);
+//                player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "fflags", "fastseek");;
+//                player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "http-detect-range-support", 0);
+//                player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT,"analyzeduration",1);;
+//                player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 2048);;
+//                player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzemaxduration", 100L);;
+//                player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "flush_packets", 1L);;
+//                player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "packet-buffering", 0L);;
+//                player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER,"find_stream_info", 0);;
+//                player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "render-wait-start", 1);;
+//                player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "seek-at-start", mVideoData.getProgress());
                 player.setSpeed(speed);
-                setCachePath();
+//                setCachePath();
             }
 //            if (mVideoData != null && mVideoData.getFrameSpeed() != 0){
 //                PetkitLog.e("playing","video url："+mVideoData.getUrl()+",frameSpeed："+mVideoData.getFrameSpeed());
@@ -705,26 +799,26 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
 
 
     public void switchFullOrWindowMode(int switchMode, boolean isRotateScreen) {
-        Log.d(VideoConstant.VIDEO_TAG, "playMode$mPlayMode");
+        Log.d(com.petkit.matetool.player.ijkplayer.VideoConstant.VIDEO_TAG, "playMode$mPlayMode");
         switch (mPlayMode) {
-            case VideoConstant.PlayMode.MODE_NORMAL: {
-                if (switchMode == VideoConstant.SwitchMode.SWITCH_FULL_OR_NORMAL) {
+            case com.petkit.matetool.player.ijkplayer.VideoConstant.PlayMode.MODE_NORMAL: {
+                if (switchMode == com.petkit.matetool.player.ijkplayer.VideoConstant.SwitchMode.SWITCH_FULL_OR_NORMAL) {
                     //进入全屏模式（在dialog的模式下似乎会有适配问题）
-                    mPlayMode = VideoConstant.PlayMode.MODE_FULL_SCREEN;
+                    mPlayMode = com.petkit.matetool.player.ijkplayer.VideoConstant.PlayMode.MODE_FULL_SCREEN;
                     if (videoListener != null) {
                         videoListener.onFullScreen();
                     }
                     //没有开启旋转的情况下要强制转屏来达到全屏效果
                     activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-                    if (getIsOpenRotate(activity)) {
-                        //开启旋转的情况下可以在转屏后恢复到默认状态， 屏幕旋转时指定默认的屏幕方向不然会转不过来...
-                        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-                    }
+//                    if (getIsOpenRotate(activity)) {
+//                        //开启旋转的情况下可以在转屏后恢复到默认状态， 屏幕旋转时指定默认的屏幕方向不然会转不过来...
+//                        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+//                    }
                 }
             }
             break;
-            case VideoConstant.PlayMode.MODE_FULL_SCREEN: {
+            case com.petkit.matetool.player.ijkplayer.VideoConstant.PlayMode.MODE_FULL_SCREEN: {
                 exitFullOrWindowMode(true, isRotateScreen);
             }
             break;
@@ -734,14 +828,14 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
     }
 
     public void exitFullOrWindowMode(boolean isBackNormal, boolean isRotateScreen) {
-        Log.d(VideoConstant.VIDEO_TAG, "exitMode");
-        if (getPlayMode() != VideoConstant.PlayMode.MODE_NORMAL && isBackNormal) {
+        Log.d(com.petkit.matetool.player.ijkplayer.VideoConstant.VIDEO_TAG, "exitMode");
+        if (getPlayMode() != com.petkit.matetool.player.ijkplayer.VideoConstant.PlayMode.MODE_NORMAL && isBackNormal) {
             //屏幕方向改为竖屏
             activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            if (getIsOpenRotate(activity)) {
-                //开启旋转的情况下可以在转屏后恢复到默认状态，确保下次能够旋转屏幕
-                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-            }
+//            if (getIsOpenRotate(activity)) {
+//                //开启旋转的情况下可以在转屏后恢复到默认状态，确保下次能够旋转屏幕
+//                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+//            }
             if (videoListener != null) {
                 videoListener.onNormalScreen();
             }
@@ -758,20 +852,23 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
 
 
     public void continuePlay() {
-        Log.d(VideoConstant.VIDEO_TAG, "continuePlay");
+        Log.d(com.petkit.matetool.player.ijkplayer.VideoConstant.VIDEO_TAG, "continuePlay"+",mPlayState:"+mPlayState);
+        PetkitLog.d(TAG, "continuePlay"+",mPlayState:"+mPlayState);
         switch (mPlayState) {
-            case VideoConstant.PlayState.STATE_PAUSED:
-            case VideoConstant.PlayState.STATE_COMPLETED: {
+            case com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_PAUSED:
+            case com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_COMPLETED: {
                 mPlayer.start();
-                mPlayState = VideoConstant.PlayState.STATE_PLAYING;
+//                mPlayState = VideoConstant.PlayState.STATE_PLAYING;
+                setPlayState(com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_PLAYING);
             }
             break;
-            case VideoConstant.PlayState.STATE_BUFFERING_PAUSED: {
+            case com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_BUFFERING_PAUSED: {
                 mPlayer.start();
-                mPlayState = VideoConstant.PlayState.STATE_BUFFERING_PLAYING;
+//                mPlayState = VideoConstant.PlayState.STATE_BUFFERING_PLAYING;
+                setPlayState(com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_BUFFERING_PLAYING);
             }
             break;
-            case VideoConstant.PlayState.STATE_ERROR: {
+            case com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_ERROR: {
                 reStartPlay();
             }
             break;
@@ -786,11 +883,14 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
         if (videoListener != null) {
             videoListener.onPausePlay();
         }
-        Log.d(VideoConstant.VIDEO_TAG, "pausePlay");
-        if (mPlayState == VideoConstant.PlayState.STATE_PLAYING || mPlayState == VideoConstant.PlayState.STATE_PREPARED) {
-            mPlayState = VideoConstant.PlayState.STATE_PAUSED;
-        } else if (mPlayState == VideoConstant.PlayState.STATE_BUFFERING_PLAYING) {
-            mPlayState = VideoConstant.PlayState.STATE_BUFFERING_PAUSED;
+        Log.d(com.petkit.matetool.player.ijkplayer.VideoConstant.VIDEO_TAG, "pausePlay");
+        PetkitLog.d(TAG, "pausePlay");
+        if (mPlayState == com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_PLAYING || mPlayState == com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_PREPARED) {
+//            mPlayState = VideoConstant.PlayState.STATE_PAUSED;
+            setPlayState(com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_PAUSED);
+        } else if (mPlayState == com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_BUFFERING_PLAYING) {
+//            mPlayState = VideoConstant.PlayState.STATE_BUFFERING_PAUSED;
+            setPlayState(com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_BUFFERING_PAUSED);
         } else {
             return;
         }
@@ -804,11 +904,11 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
     }
 
     public void bufferEnd() {
-        Log.d(VideoConstant.VIDEO_TAG, "buffered");
+        Log.d(com.petkit.matetool.player.ijkplayer.VideoConstant.VIDEO_TAG, "buffered");
         // 填充缓冲区后，MediaPlayer恢复播放/暂停
-        if (mPlayState == VideoConstant.PlayState.STATE_BUFFERING_PLAYING) {
+        if (mPlayState == com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_BUFFERING_PLAYING) {
             continuePlay();
-        } else if (mPlayState == VideoConstant.PlayState.STATE_BUFFERING_PAUSED) {
+        } else if (mPlayState == com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_BUFFERING_PAUSED) {
             pausePlay();
         }
         //缓冲结束解绑网速获取器
@@ -819,12 +919,13 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
 
 
     public void resetPlay() {
-        Log.d(VideoConstant.VIDEO_TAG, "resetPlay");
+        Log.d(com.petkit.matetool.player.ijkplayer.VideoConstant.VIDEO_TAG, "resetPlay");
         if (videoListener != null) {
             videoListener.onReset();
         }
         mPlayer.reset();
-        mPlayState = VideoConstant.PlayState.STATE_IDLE;
+//        mPlayState = VideoConstant.PlayState.STATE_IDLE;
+        setPlayState(com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_IDLE);
         setOnTouchListener(ontl);
     }
 
@@ -833,13 +934,17 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
             videoListener.onCompleted();
         }
         //播放完成状态
-        mPlayState = VideoConstant.PlayState.STATE_COMPLETED;
-        Log.d(VideoConstant.VIDEO_TAG, "completedPlay");
+//        mPlayState = VideoConstant.PlayState.STATE_COMPLETED;
+        setPlayState(com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_COMPLETED);
+        Log.d(com.petkit.matetool.player.ijkplayer.VideoConstant.VIDEO_TAG, "completedPlay");
     }
 
     //播放进度开始计时
     public void runVideoTime() {
-        Log.d(VideoConstant.VIDEO_TAG, "runVideoTime");
+        mHandler.removeCallbacksAndMessages(null);
+
+        Log.d(com.petkit.matetool.player.ijkplayer.VideoConstant.VIDEO_TAG, "runVideoTime");
+        PetkitLog.d(TAG, "runVideoTime");
         mRunnable = new Runnable() {
             @Override
             public void run() {
@@ -867,21 +972,23 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
 
     public void bufferStart() {
         //loading
-        Log.d(VideoConstant.VIDEO_TAG, "bufferStart:state$mPlayState");
+        Log.d(com.petkit.matetool.player.ijkplayer.VideoConstant.VIDEO_TAG, "bufferStart:state"+mPlayState);
         // MediaPlayer暂时不播放，以缓冲更多的数据
         switch (mPlayState) {
-            case VideoConstant.PlayState.STATE_PAUSED: {
-                mPlayState = VideoConstant.PlayState.STATE_BUFFERING_PAUSED;
+            case com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_PAUSED: {
+//                mPlayState = VideoConstant.PlayState.STATE_BUFFERING_PAUSED;
+                setPlayState(com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_BUFFERING_PAUSED);
             }
             break;
-            case VideoConstant.PlayState.STATE_PLAYING: {
-                mPlayState = VideoConstant.PlayState.STATE_BUFFERING_PLAYING;
+            case com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_PLAYING: {
+//                mPlayState = VideoConstant.PlayState.STATE_BUFFERING_PLAYING;
+                setPlayState(com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_BUFFERING_PLAYING);
             }
             break;
         }
         //缓冲开始时绑定实时网速获取器
         if (mNetWorkSpeedHandler != null) {
-            mNetWorkSpeedHandler.bindHandler(new NetWorkSpeedHandler.OnNetWorkSpeedListener() {
+            mNetWorkSpeedHandler.bindHandler(new com.petkit.matetool.player.ijkplayer.NetWorkSpeedHandler.OnNetWorkSpeedListener() {
                 @Override
                 public void netWorkSpeed(String speed) {
                     PetkitLog.d("netWorkSpeed", "netWorkSpeed:" + speed);
@@ -913,12 +1020,13 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
     }
 
     public void soughtTo(long position) {
+        PetkitLog.d(TAG, "seekTo,position:"+position);
         //loading
         mPlayer.seekTo(position);
         //缓冲开始时显示网速
 
         if (mNetWorkSpeedHandler != null) {
-            mNetWorkSpeedHandler.bindHandler(new NetWorkSpeedHandler.OnNetWorkSpeedListener() {
+            mNetWorkSpeedHandler.bindHandler(new com.petkit.matetool.player.ijkplayer.NetWorkSpeedHandler.OnNetWorkSpeedListener() {
                 @Override
                 public void netWorkSpeed(String speed) {
                     PetkitLog.d("netWorkSpeed", "netWorkSpeed:" + speed);
@@ -933,20 +1041,21 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
         }
     }
 
-    public void seekCompletePlay(long position, H3SeekCompleteListener l) {
-        PetkitLog.d("H3HomeActivity","position:"+position);
+    public void seekCompletePlay(long position, com.petkit.matetool.player.ijkplayer.H3SeekCompleteListener l) {
 //        soughtTo(position);
 
-        Log.d(VideoConstant.VIDEO_TAG, "seekToPlay:" + position);
+        Log.d(com.petkit.matetool.player.ijkplayer.VideoConstant.VIDEO_TAG, "seekToPlay:" + position);
+        PetkitLog.d(TAG, "start seek,position:" + position);
         if (mPlayer != null) {
-            if (mPlayState == VideoConstant.PlayState.STATE_PAUSED || mPlayState == VideoConstant.PlayState.STATE_BUFFERING_PAUSED || mPlayState == VideoConstant.PlayState.STATE_COMPLETED) {
+            PetkitLog.d(TAG, "start seek,mPlayState:"+mPlayState);
+            if (mPlayState == com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_PAUSED || mPlayState == com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_BUFFERING_PAUSED || mPlayState == com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_COMPLETED) {
                 soughtTo(position);
                 continuePlay();//拖动时播放一秒再暂停
                 pausePlay();
-            } else if (mPlayState == VideoConstant.PlayState.STATE_PLAYING || mPlayState == VideoConstant.PlayState.STATE_BUFFERING_PLAYING) {
+            } else if (mPlayState == com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_PLAYING || mPlayState == com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_BUFFERING_PLAYING) {
                 soughtTo(position);
                 continuePlay();
-            } else if (mPlayState == VideoConstant.PlayState.STATE_PREPARED) {
+            } else if (mPlayState == com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_PREPARED) {
                 startPlay(position);
             }
         }
@@ -969,13 +1078,18 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
 
     }
 
-    public void setVideoListener(VideoListener videoListener) {
+    public void setVideoListener(com.petkit.matetool.player.ijkplayer.VideoListener videoListener) {
         this.videoListener = videoListener;
+    }
+
+    private void setPlayState(int mPlayState){
+        this.mPlayState = mPlayState;
+        PetkitLog.d(TAG,"setPlayState,mPlayState:"+mPlayState);
     }
 
     @Override
     public void onSurfaceTextureAvailable(@NonNull SurfaceTexture surfaceTexture, int width, int height) {
-        Log.d(VideoConstant.VIDEO_TAG, "onSurfaceTextureAvailable:$width - $height" + width + "-" + height);
+        Log.d(com.petkit.matetool.player.ijkplayer.VideoConstant.VIDEO_TAG, "onSurfaceTextureAvailable:$width - $height" + width + "-" + height);
         if (mSurface == null) {
             mSurface = new Surface(surfaceTexture);
         }
@@ -986,19 +1100,20 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
 
     @Override
     public void onSurfaceTextureSizeChanged(@NonNull SurfaceTexture surfaceTexture, int width, int height) {
-        Log.d(VideoConstant.VIDEO_TAG, "onSurfaceTextureSizeChanged:$width - $height" + width + "-" + height);
+        Log.d(com.petkit.matetool.player.ijkplayer.VideoConstant.VIDEO_TAG, "onSurfaceTextureSizeChanged:$width - $height" + width + "-" + height);
 
     }
 
     @Override
     public boolean onSurfaceTextureDestroyed(@NonNull SurfaceTexture surfaceTexture) {
-        Log.d(VideoConstant.VIDEO_TAG, "onSurfaceTextureDestroyed");
+        Log.d(com.petkit.matetool.player.ijkplayer.VideoConstant.VIDEO_TAG, "onSurfaceTextureDestroyed");
         releasePlay(false);
         return false;
     }
 
     @Override
     public void onSurfaceTextureUpdated(@NonNull SurfaceTexture surfaceTexture) {
+        Log.d(com.petkit.matetool.player.ijkplayer.VideoConstant.VIDEO_TAG, "onSurfaceTextureUpdated");
 
     }
 
@@ -1030,39 +1145,7 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
     public void initAudio() {
         mAudioManager = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //8.0以上需要响应音频焦点的状态改变
-            AudioAttributes audioAttributes = new AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_MEDIA)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .build();
-            /*
-            AUDIOFOCUS_GAIN  的使用场景：应用需要聚焦音频的时长会根据用户的使用时长改变，属于不确定期限。例如：多媒体播放或者播客等应用。
-            AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK  的使用场景：应用只需短暂的音频聚焦，来播放一些提示类语音消息，或录制一段语音。例如：闹铃，导航等应用。
-            AUDIOFOCUS_GAIN_TRANSIENT  的使用场景：应用只需短暂的音频聚焦，但包含了不同响应情况，例如：电话、QQ、微信等通话应用。
-            AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE  的使用场景：同样您的应用只是需要短暂的音频聚焦。未知时长，但不允许被其它应用截取音频焦点。例如：录音软件。
-            */
-            AudioFocusRequest audioFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-                    .setAudioAttributes(audioAttributes)
-                    .setAcceptsDelayedFocusGain(true)
-                    .setOnAudioFocusChangeListener(new AudioManager.OnAudioFocusChangeListener() {
-                        @Override
-                        public void onAudioFocusChange(int i) {
 
-                        }
-                    }).build();
-
-            if (mAudioManager != null) {
-                mAudioManager.requestAudioFocus(audioFocusRequest);
-            }
-        } else {
-            if (mAudioManager != null) {
-                mAudioManager.requestAudioFocus(null,
-                        AudioManager.STREAM_MUSIC,
-                        AudioManager.AUDIOFOCUS_GAIN);
-            }
-
-        }
         //初始音量值
         mDefaultVolume = getVolume(false);
 
@@ -1076,18 +1159,73 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
         mStartLight = getLight(false);
     }
 
+    public void requestAudioFocus(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (audioFocusRequest == null){
+                //8.0以上需要响应音频焦点的状态改变
+                AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .build();
+            /*
+            AUDIOFOCUS_GAIN  的使用场景：应用需要聚焦音频的时长会根据用户的使用时长改变，属于不确定期限。例如：多媒体播放或者播客等应用。
+            AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK  的使用场景：应用只需短暂的音频聚焦，来播放一些提示类语音消息，或录制一段语音。例如：闹铃，导航等应用。
+            AUDIOFOCUS_GAIN_TRANSIENT  的使用场景：应用只需短暂的音频聚焦，但包含了不同响应情况，例如：电话、QQ、微信等通话应用。
+            AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE  的使用场景：同样您的应用只是需要短暂的音频聚焦。未知时长，但不允许被其它应用截取音频焦点。例如：录音软件。
+            */
+                audioFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                        .setAudioAttributes(audioAttributes)
+                        .setAcceptsDelayedFocusGain(true)
+                        .setOnAudioFocusChangeListener(new AudioManager.OnAudioFocusChangeListener() {
+                            @Override
+                            public void onAudioFocusChange(int i) {
+
+                            }
+                        }).build();
+
+                if (mAudioManager != null) {
+                    mAudioManager.requestAudioFocus(audioFocusRequest);
+                }
+            }
+        } else {
+            if (mAudioManager != null) {
+                mAudioManager.requestAudioFocus(null,
+                        AudioManager.STREAM_MUSIC,
+                        AudioManager.AUDIOFOCUS_GAIN);
+            }
+
+        }
+
+        audioHasFocusRequest = true;
+    }
+
+    public void abandonAudioFocus() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mAudioManager.abandonAudioFocusRequest(audioFocusRequest);
+        } else {
+            mAudioManager.abandonAudioFocus(new AudioManager.OnAudioFocusChangeListener() {
+                @Override
+                public void onAudioFocusChange(int focusChange) {
+
+                }
+            });
+        }
+
+    }
+
     public boolean isMute() {
         return isMute;
     }
 
 
     public void seekCompleted() {
-        Log.d(VideoConstant.VIDEO_TAG, "seekCompleted");
-        if (mPlayState == VideoConstant.PlayState.STATE_BUFFERING_PAUSED || mPlayState == VideoConstant.PlayState.STATE_BUFFERING_PLAYING) {
+        Log.d(com.petkit.matetool.player.ijkplayer.VideoConstant.VIDEO_TAG, "seekCompleted");
+        PetkitLog.d(TAG, "seekCompleted");
+        if (mPlayState == com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_BUFFERING_PAUSED || mPlayState == com.petkit.matetool.player.ijkplayer.VideoConstant.PlayState.STATE_BUFFERING_PLAYING) {
             //缓冲开始时绑定实时网速获取器
 
             if (mNetWorkSpeedHandler != null) {
-                mNetWorkSpeedHandler.bindHandler(new NetWorkSpeedHandler.OnNetWorkSpeedListener() {
+                mNetWorkSpeedHandler.bindHandler(new com.petkit.matetool.player.ijkplayer.NetWorkSpeedHandler.OnNetWorkSpeedListener() {
                     @Override
                     public void netWorkSpeed(String speed) {
                         PetkitLog.d("netWorkSpeed", "netWorkSpeed:" + speed);
@@ -1113,6 +1251,9 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
     public void switchMuteVolume() {
         if (mPlayer != null) {
             if (isMute) {
+                if (!audioHasFocusRequest){
+                    requestAudioFocus();
+                }
                 int volume = getVolume(false);
                 mPlayer.setVolume(volume, volume);
                 mDefaultVolume = volume;
@@ -1194,11 +1335,11 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
         textureView.getScroller().startScroll(textureView.getScroller().getFinalX(),textureView.getScroller().getFinalY(),-textureView.getScroller().getFinalX(),-textureView.getScroller().getFinalY(),0);
         if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
             autoEntryPortraitScreen();
-            Log.d(VideoConstant.VIDEO_TAG, "Configuration.ORIENTATION_PORTRAIT");
+            Log.d(com.petkit.matetool.player.ijkplayer.VideoConstant.VIDEO_TAG, "Configuration.ORIENTATION_PORTRAIT");
         }
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             autoEntryFullScreen();
-            Log.d(VideoConstant.VIDEO_TAG, "Configuration.ORIENTATION_LANDSCAPE");
+            Log.d(com.petkit.matetool.player.ijkplayer.VideoConstant.VIDEO_TAG, "Configuration.ORIENTATION_LANDSCAPE");
         }
     }
 
@@ -1208,17 +1349,17 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
     public void autoEntryPortraitScreen() {
         //进入普通模式
         if (mDefaultParams != null) {
-            mPlayMode = VideoConstant.PlayMode.MODE_NORMAL;
+            mPlayMode = com.petkit.matetool.player.ijkplayer.VideoConstant.PlayMode.MODE_NORMAL;
             activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             activity.getWindow().getDecorView().setSystemUiVisibility(View.VISIBLE);
             setLayoutParams(mDefaultParams);
-            int phoneWidth = VideoUtils.getPhoneDisplayWidth(activity);
-            int phoneHeight = VideoUtils.getPhoneDisplayHeight(activity);
+            int phoneWidth = com.petkit.matetool.player.ijkplayer.VideoUtils.getPhoneDisplayWidth(activity);
+            int phoneHeight = com.petkit.matetool.player.ijkplayer.VideoUtils.getPhoneDisplayHeight(activity);
             //退出全屏后，需要获取播放器在竖屏下的高度
             int oldWidth = mDefaultParams.width == -1 ? Math.min(phoneWidth,phoneHeight) : mDefaultParams.width;
             int oldHeight = mDefaultParams.height == -1 ? Math.max(phoneWidth,phoneHeight) : mDefaultParams.height;
             if (textureView != null) {
-                LayoutParams layoutParams = VideoUtils.changeVideoSize(oldWidth, oldHeight,
+                LayoutParams layoutParams = com.petkit.matetool.player.ijkplayer.VideoUtils.changeVideoSize(oldWidth, oldHeight,
                         mPlayer.getVideoWidth()== 0? defaultVideoWidth : mPlayer.getVideoWidth(),
                         mPlayer.getVideoHeight() == 0? defaultVideoHeight: mPlayer.getVideoHeight());
                 originWidth = oldWidth;
@@ -1262,12 +1403,12 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
                 | View.SYSTEM_UI_FLAG_FULLSCREEN);
 
         //全屏直接使用手机大小,此时未翻转的话，高宽对调
-        int phoneWidth = VideoUtils.getPhoneDisplayWidth(activity);
-        int phoneHeight = VideoUtils.getPhoneDisplayHeight(activity);
+        int phoneWidth = com.petkit.matetool.player.ijkplayer.VideoUtils.getPhoneDisplayWidth(activity);
+        int phoneHeight = com.petkit.matetool.player.ijkplayer.VideoUtils.getPhoneDisplayHeight(activity);
 
 
         if (textureView != null) {
-            LayoutParams layoutParams = VideoUtils.changeVideoSize(phoneHeight > phoneWidth ? phoneHeight : phoneWidth, phoneHeight > phoneWidth ? phoneWidth : phoneHeight,
+            LayoutParams layoutParams = com.petkit.matetool.player.ijkplayer.VideoUtils.changeVideoSize(Math.max(phoneHeight, phoneWidth), Math.min(phoneHeight, phoneWidth),
                     mPlayer.getVideoWidth() == 0? defaultVideoWidth : mPlayer.getVideoWidth(),
                     mPlayer.getVideoHeight() == 0? defaultVideoHeight: mPlayer.getVideoHeight());
             originWidth = layoutParams.width;
@@ -1291,7 +1432,7 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
     }
 
     public String getVideoTimeStr(long position) {
-        return VideoUtils.progress2Time(position) + "&" + VideoUtils.progress2Time(getDuration());
+        return com.petkit.matetool.player.ijkplayer.VideoUtils.progress2Time(position) + "&" + com.petkit.matetool.player.ijkplayer.VideoUtils.progress2Time(getDuration());
     }
 
     public long getDuration() {
@@ -1311,6 +1452,7 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
     }
 
     public void setPlaySpeed(float speed){
+        this.speed = speed;
         ((IjkMediaPlayer)mPlayer).setSpeed(speed);
     }
 
@@ -1373,7 +1515,7 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
         return LayoutInflater.from(activity).inflate(coverViewLayoutResId,rootChildLayout);
     }
 
-    public VideoData getCurrentPlayingVideoData(){
+    public com.petkit.matetool.player.ijkplayer.VideoData getCurrentPlayingVideoData(){
         return mVideoData;
     }
 
@@ -1389,5 +1531,39 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
         }
 
     }
+
+    public boolean isPlayerAvailableState(){
+        return getPlayState() == STATE_PLAYING || getPlayState() == STATE_BUFFERING_PLAYING ||
+                getPlayState() == STATE_PAUSED || getPlayState() == STATE_BUFFERING_PAUSED ||
+                getPlayState() == STATE_COMPLETED;
+    }
+
+    public boolean isPlayerPlayingState(){
+        return getPlayState() == STATE_PLAYING || getPlayState() == STATE_BUFFERING_PLAYING;
+    }
+
+    public boolean isPlayerPauseState(){
+        return getPlayState() == STATE_PAUSED ||  getPlayState() == STATE_BUFFERING_PAUSED;
+    }
+
+    public boolean isPlayerCompleteState(){
+        return getPlayState() == STATE_COMPLETED;
+    }
+
+
+    public boolean isLive() {
+        return isLive;
+    }
+
+    static class MainHandler extends Handler {
+        private final WeakReference<Context> mContext;
+
+        public MainHandler(Context context) {
+            super(Looper.getMainLooper());
+            mContext = new WeakReference<Context>(context);
+        }
+
+    }
+
 
 }

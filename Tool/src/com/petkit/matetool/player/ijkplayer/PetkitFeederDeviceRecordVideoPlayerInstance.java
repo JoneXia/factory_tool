@@ -11,7 +11,7 @@ import android.widget.RelativeLayout;
  */
 public class PetkitFeederDeviceRecordVideoPlayerInstance {
 
-    private PetkitFeederDeviceRecordVideoPlayer simplePlayer;
+    private com.petkit.matetool.player.ijkplayer.PetkitFeederDeviceRecordVideoPlayer simplePlayer;
     private RelativeLayout.LayoutParams playerLp;
 
     private static class PetkitFeederDeviceRecordVideoPlayerInstanceHolder{
@@ -27,13 +27,13 @@ public class PetkitFeederDeviceRecordVideoPlayerInstance {
 
     //初始化事件列表预览公共播放器x
     public void initPlayer(Activity activity){
-        simplePlayer = new PetkitFeederDeviceRecordVideoPlayer(activity);
+        simplePlayer = new com.petkit.matetool.player.ijkplayer.PetkitFeederDeviceRecordVideoPlayer(activity);
         playerLp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         playerLp.addRule(RelativeLayout.CENTER_IN_PARENT);
 //        playerLp.setMargins(UiUtils.dip2px(activity,2),UiUtils.dip2px(activity,2),UiUtils.dip2px(activity,2),UiUtils.dip2px(activity,2));
     }
 
-    public PetkitFeederDeviceRecordVideoPlayer getSimplePlayer() {
+    public com.petkit.matetool.player.ijkplayer.PetkitFeederDeviceRecordVideoPlayer getSimplePlayer() {
         return simplePlayer;
     }
 

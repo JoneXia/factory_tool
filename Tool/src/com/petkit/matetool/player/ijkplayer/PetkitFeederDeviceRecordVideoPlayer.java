@@ -9,7 +9,6 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.media.AudioAttributes;
-import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -28,14 +27,11 @@ import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
-import com.petkit.android.utils.Consts;
 import com.petkit.android.utils.PetkitLog;
 import com.petkit.matetool.R;
-import com.petkit.matetool.utils.DataHelper;
 import com.petkit.matetool.utils.UiUtils;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,7 +40,6 @@ import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 import static com.petkit.matetool.player.ijkplayer.VideoUtils.getIsOpenRotate;
-
 
 public class PetkitFeederDeviceRecordVideoPlayer extends LinearLayout implements TextureView.SurfaceTextureListener {
 
@@ -392,9 +387,10 @@ public class PetkitFeederDeviceRecordVideoPlayer extends LinearLayout implements
                 resetPlay();
             }
             try {
-                HashMap<String, String> headers = new HashMap<>();
-                headers.put(Consts.HTTP_HEADER_SESSION, DataHelper.getStringSF(activity, Consts.SHARED_SESSION_ID));
-                ((IjkMediaPlayer)(mPlayer)).setDataSource(videoData.getUrl(),headers);
+//                HashMap<String, String> headers = new HashMap<>();
+//                headers.put(Consts.HTTP_HEADER_SESSION, DataHelper.getStringSF(activity, Cons
+//                        ts.SHARED_SESSION_ID));
+                ((IjkMediaPlayer)(mPlayer)).setDataSource(videoData.getUrl());
                 //加载url之后为播放器初始化完成状态
                 mPlayState = VideoConstant.PlayState.STATE_INITLIZED;
                 //设置渲染画板
@@ -938,39 +934,39 @@ public class PetkitFeederDeviceRecordVideoPlayer extends LinearLayout implements
     public void initAudio() {
         mAudioManager = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //8.0以上需要响应音频焦点的状态改变
-            AudioAttributes audioAttributes = new AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_MEDIA)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .build();
-            /*
-            AUDIOFOCUS_GAIN  的使用场景：应用需要聚焦音频的时长会根据用户的使用时长改变，属于不确定期限。例如：多媒体播放或者播客等应用。
-            AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK  的使用场景：应用只需短暂的音频聚焦，来播放一些提示类语音消息，或录制一段语音。例如：闹铃，导航等应用。
-            AUDIOFOCUS_GAIN_TRANSIENT  的使用场景：应用只需短暂的音频聚焦，但包含了不同响应情况，例如：电话、QQ、微信等通话应用。
-            AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE  的使用场景：同样您的应用只是需要短暂的音频聚焦。未知时长，但不允许被其它应用截取音频焦点。例如：录音软件。
-            */
-            AudioFocusRequest audioFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-                    .setAudioAttributes(audioAttributes)
-                    .setAcceptsDelayedFocusGain(true)
-                    .setOnAudioFocusChangeListener(new AudioManager.OnAudioFocusChangeListener() {
-                        @Override
-                        public void onAudioFocusChange(int i) {
-
-                        }
-                    }).build();
-
-            if (mAudioManager != null) {
-                mAudioManager.requestAudioFocus(audioFocusRequest);
-            }
-        } else {
-            if (mAudioManager != null) {
-                mAudioManager.requestAudioFocus(null,
-                        AudioManager.STREAM_MUSIC,
-                        AudioManager.AUDIOFOCUS_GAIN);
-            }
-
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            //8.0以上需要响应音频焦点的状态改变
+//            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+//                    .setUsage(AudioAttributes.USAGE_MEDIA)
+//                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+//                    .build();
+//            /*
+//            AUDIOFOCUS_GAIN  的使用场景：应用需要聚焦音频的时长会根据用户的使用时长改变，属于不确定期限。例如：多媒体播放或者播客等应用。
+//            AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK  的使用场景：应用只需短暂的音频聚焦，来播放一些提示类语音消息，或录制一段语音。例如：闹铃，导航等应用。
+//            AUDIOFOCUS_GAIN_TRANSIENT  的使用场景：应用只需短暂的音频聚焦，但包含了不同响应情况，例如：电话、QQ、微信等通话应用。
+//            AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE  的使用场景：同样您的应用只是需要短暂的音频聚焦。未知时长，但不允许被其它应用截取音频焦点。例如：录音软件。
+//            */
+//            AudioFocusRequest audioFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+//                    .setAudioAttributes(audioAttributes)
+//                    .setAcceptsDelayedFocusGain(true)
+//                    .setOnAudioFocusChangeListener(new AudioManager.OnAudioFocusChangeListener() {
+//                        @Override
+//                        public void onAudioFocusChange(int i) {
+//
+//                        }
+//                    }).build();
+//
+//            if (mAudioManager != null) {
+//                mAudioManager.requestAudioFocus(audioFocusRequest);
+//            }
+//        } else {
+//            if (mAudioManager != null) {
+//                mAudioManager.requestAudioFocus(null,
+//                        AudioManager.STREAM_MUSIC,
+//                        AudioManager.AUDIOFOCUS_GAIN);
+//            }
+//
+//        }
         //初始音量值
         mDefaultVolume = getVolume(false);
 

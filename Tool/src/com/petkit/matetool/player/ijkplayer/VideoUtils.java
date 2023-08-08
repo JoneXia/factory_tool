@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.widget.LinearLayout;
 
@@ -89,6 +90,7 @@ public class VideoUtils {
 
     /**
      * 竖屏下使用：两边等比例放大，结果宽高一边等于宽或高，一边小于宽或高
+     *
      * @param phoneWidth
      * @param phoneHeight
      * @param playerWidth
@@ -97,7 +99,7 @@ public class VideoUtils {
      */
     //按比例改变视频大小适配屏幕宽高,
     public static LinearLayout.LayoutParams changeVideoSize(int phoneWidth, int phoneHeight, int playerWidth, int playerHeight) {
-        PetkitLog.d("changeVideoSize", "changeVideoSize:phoneWidth"+phoneWidth+", phoneHeight:"+phoneHeight+", playerWidth:"+playerWidth+", playerHeight:"+playerHeight);
+        PetkitLog.d("changeVideoSize", "changeVideoSize:phoneWidth" + phoneWidth + ", phoneHeight:" + phoneHeight + ", playerWidth:" + playerWidth + ", playerHeight:" + playerHeight);
         int defaultWidth = phoneWidth < 0 ? 1920 : phoneWidth;
 
         //根据视频尺寸去计算->视频可以在TextureView中放大的最大倍数。
@@ -113,6 +115,7 @@ public class VideoUtils {
 
     /**
      * 全屏下使用：两边等比例放大，结果宽高一边等于宽或高，一边大于宽或高
+     *
      * @param phoneWidth
      * @param phoneHeight
      * @param playerWidth
@@ -121,7 +124,7 @@ public class VideoUtils {
      */
 
     public static LinearLayout.LayoutParams changeVideoSizeMax(int phoneWidth, int phoneHeight, int playerWidth, int playerHeight) {
-        PetkitLog.d("changeVideoSize", "changeVideoSize:phoneWidth"+phoneWidth+", phoneHeight:"+phoneHeight+", playerWidth:"+playerWidth+", playerHeight:"+playerHeight);
+        PetkitLog.d("changeVideoSize", "changeVideoSize:phoneWidth" + phoneWidth + ", phoneHeight:" + phoneHeight + ", playerWidth:" + playerWidth + ", playerHeight:" + playerHeight);
         int defaultWidth = phoneWidth < 0 ? 1920 : phoneWidth;
 
         //根据视频尺寸去计算->视频可以在TextureView中放大的最大倍数。
@@ -173,20 +176,23 @@ public class VideoUtils {
     }
 
 
-    public static String getVideoUrl(String mediaApi){
+    public static String getVideoUrl(String mediaApi) {
         String baseUrl = ApiTools.getApiHTTPUri();
         String videoUrl = String.format("%s%s", baseUrl, mediaApi.startsWith("/") ? mediaApi.substring(1) : mediaApi);
-        return videoUrl.replace("https", "http");
+        return videoUrl;
     }
 
-    public static String getVideoUrl(int deviceType, long deviceId, long startTime){
+    public static String getVideoUrl(int deviceType, long deviceId, long startTime) {
         String baseUrl = ApiTools.getApiHTTPUri();
         //CLOUD_STORAGE : 1倍速  CLOUD_DOUBLE：4倍速
         String speedStr = "CLOUD_STORAGE";
         String deviceTypeName = "d4sh";
-        switch (deviceType){
+        switch (deviceType) {
             case Consts.BIND_DEVICE_D4SH:
                 deviceTypeName = "d4sh";
+                break;
+            case Consts.BIND_DEVICE_D4H:
+                deviceTypeName = "d4h";
                 break;
         }
         return baseUrl + String.format("%s/getM3u8?deviceId=%s&startTime=%d&moduleType=%s", deviceTypeName, deviceId, startTime, speedStr);
@@ -194,13 +200,14 @@ public class VideoUtils {
 
     /**
      * 完整事件视频url，规则：对mediaApi进行替换moduleType以及去除eventId
+     *
      * @param mediaApi
      * @return
      */
-    public static String getFullVideoUrl(String mediaApi, float timesSpeed){
+    public static String getFullVideoUrl(String mediaApi, float timesSpeed) {
         ///d4sh/getM3u8?deviceId=8&moduleType=EVENT_VIDEO&eventId=8_1681800072&startTime=0&mark=1681800026
-        if (mediaApi != null){
-            String fullVideoUrl = mediaApi.replace("EVENT_VIDEO",timesSpeed>2 ? "CLOUD_DOUBLE" : "CLOUD_STORAGE");
+        if (!TextUtils.isEmpty(mediaApi)) {
+            String fullVideoUrl = mediaApi.replace("EVENT_VIDEO", timesSpeed > 2 ? "CLOUD_DOUBLE" : "CLOUD_STORAGE");
             int index1 = mediaApi.indexOf("&eventId=");
             int index2 = mediaApi.indexOf("&startTime");
             String eventId = mediaApi.substring(index1, index2);

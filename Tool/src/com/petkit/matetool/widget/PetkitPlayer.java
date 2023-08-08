@@ -36,6 +36,16 @@ public class PetkitPlayer extends BasePetkitPlayer {
     }
 
     @Override
+    public void onVideoLongClick() {
+
+    }
+
+    @Override
+    public void onVideoLongClickEnd() {
+
+    }
+
+    @Override
     protected void initOtherView(Context context) {
         //设置播放器的默认视频资源宽高
         setDefaultVideoWidthHeight(1728, 1080);

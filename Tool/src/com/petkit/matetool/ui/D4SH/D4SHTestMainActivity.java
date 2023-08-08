@@ -462,6 +462,9 @@ public class D4SHTestMainActivity extends BaseActivity implements PetkitSocketIn
                             }
                         }
                     }
+                    if (!jsonObject.isNull("ble_ver")) {
+                        mCurDevice.setBleVersion(jsonObject.getInt("ble_ver"));
+                    }
 
                     mInfoTestTextView.setText(mCurDevice.toString());
 
