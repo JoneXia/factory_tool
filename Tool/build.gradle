@@ -54,7 +54,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.petkit.matetool"
+        applicationId "com.petkit.matetool.new"
         multiDexEnabled true
         minSdkVersion 21
         targetSdkVersion 29

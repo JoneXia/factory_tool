@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="app_name">小佩产测工具</string>
+    <string name="app_name">小佩产测工具-视频版</string>
 
     <!--global word-->
     <string name="Warning">警告</string>

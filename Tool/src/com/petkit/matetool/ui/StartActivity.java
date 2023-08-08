@@ -389,36 +389,47 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
 
         tempRadioButton = (RadioButton) findViewById(R.id.mate_style);
         tempRadioButton.setText("Mate Style" + " v" + TOOL_MATE_VERSION);
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.mate_pro);
         tempRadioButton.setText("Mate Pro" + " v" + TOOL_MATE_VERSION);
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.go);
         tempRadioButton.setText(getTextDetail(Globals.GO, "Go抽检" + " v" + TOOL_GO_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.feeder);
         tempRadioButton.setText(getTextDetail(Globals.FEEDER, "喂食器（D1）" + " v" + TOOL_FEEDER_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.cozy);
         tempRadioButton.setText(getTextDetail(Globals.COZY, "宠物窝new（Z1s）" + " v" + TOOL_COZY));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.feeder_mini);
         tempRadioButton.setText(getTextDetail(Globals.FEEDER_MINI, "喂食器Mini（D2）" + " v" + TOOL_FEEDER_MINI_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.k2);
         tempRadioButton.setText(getTextDetail(Globals.K2, "净味器（K2）" + " v" + TOOL_K2_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.toilet);
         tempRadioButton.setText(getTextDetail(Globals.T3, "自动猫厕所（T3）" + " v" + TOOL_T3_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.aq);
         tempRadioButton.setText(getTextDetail(Globals.AQ, "智能鱼缸（AQ）" + " v" + TOOL_AQ_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.d3);
         tempRadioButton.setText(getTextDetail(Globals.D3, "行星喂食器（D3）" + " v" + TOOL_D3_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.d4);
         tempRadioButton.setText(getTextDetail(Globals.D4, "喂食器SOLO（D4）" + " v" + TOOL_D4_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.w5);
         tempRadioButton.setText(getTextDetail(Globals.W5, "智能饮水机（W5）" + " v" + TOOL_W5_VERSION));
@@ -426,45 +437,59 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
 
         tempRadioButton = (RadioButton) findViewById(R.id.w5c);
         tempRadioButton.setText(getTextDetail(Globals.W5C, "智能饮水机MINI（W5C）" + " v" + TOOL_W5_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.t4);
         tempRadioButton.setText(getTextDetail(Globals.T4, "智能猫厕所MAX（T4）" + " v" + TOOL_T4_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.t4_p);
         tempRadioButton.setText(getTextDetail(Globals.T4_p, "智能猫厕所MAX（T4标配K3）" + " v" + TOOL_T4_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.p3c);
         tempRadioButton.setText(getTextDetail(Globals.P3C, "智能猫牌（P3C）" + " v" + TOOL_P3_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.p3d);
         tempRadioButton.setText(getTextDetail(Globals.P3D, "智能狗牌（P3D）" + " v" + TOOL_P3_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.k3);
         tempRadioButton.setText(getTextDetail(Globals.K3, "智能净味器（K3）" + " v" + TOOL_K3_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.aqr);
         tempRadioButton.setText(getTextDetail(Globals.AQR, "智能鱼缸（AQR）" + " v" + TOOL_AQR_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.aq1s);
         tempRadioButton.setText(getTextDetail(Globals.AQ1S, "智能鱼缸（AQ1S）" + " v" + TOOL_AQ1S_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.r2);
         tempRadioButton.setText(getTextDetail(Globals.R2, "智能加热棒（R2）" + " v" + TOOL_R2_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.w5n);
         tempRadioButton.setText(getTextDetail(Globals.W5N, "无线智能饮水机-陶瓷（W5）" + " v" + TOOL_W5N_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.w4x);
         tempRadioButton.setText(getTextDetail(Globals.W4X, "无线智能饮水机-不锈钢（W4X）" + " v" + TOOL_W5N_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.aqh1_500);
         tempRadioButton.setText(getTextDetail(Globals.AQH1_500, "鱼缸加热棒-500W（AQ-H1）" + " v" + TOOL_AQH1_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.aqh1_1000);
         tempRadioButton.setText(getTextDetail(Globals.AQH1_1000, "鱼缸加热棒-1000W（AQ-H1）" + " v" + TOOL_AQH1_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.ctw2);
         tempRadioButton.setText(getTextDetail(Globals.CTW2, "智能饮水机SOLO（CTW2）" + " v" + TOOL_CTW2_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.d4_1);
         tempRadioButton.setText(getTextDetail(Globals.D4_1, "喂食器SOLO NEW（D4-1）" + " v" + TOOL_D4_1_VERSION));
@@ -476,30 +501,38 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
 
         tempRadioButton = (RadioButton) findViewById(R.id.d4s);
         tempRadioButton.setText(getTextDetail(Globals.D4S, "双子星喂食器（D4S）" + " v" + TOOL_D4S_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.hg);
         tempRadioButton.setText(getTextDetail(Globals.HG, "烘干箱220V（HG）" + " v" + TOOL_HG_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.hg_100v);
         tempRadioButton.setText(getTextDetail(Globals.HG_110V, "烘干箱110V（HG）" + " v" + TOOL_HG_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.hg_p);
         tempRadioButton.setText(getTextDetail(Globals.HG_P, "烘干箱活氧版220V（HG_p）" + " v" + TOOL_HG_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.hg_p_100v);
         tempRadioButton.setText(getTextDetail(Globals.HG_P_110V, "烘干箱活氧版110V（HG_p）" + " v" + TOOL_HG_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.w4x_uv);
         tempRadioButton.setText(getTextDetail(Globals.W4X_UV, "无线智能饮水机-不锈钢-UV杀菌（W4X-UV）" + " v" + TOOL_W5N_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.ctw3);
         tempRadioButton.setText(getTextDetail(Globals.CTW3, "饮水机PRO（CTW3）" + " v" + TOOL_CTW3_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.d4sh);
         tempRadioButton.setText(getTextDetail(Globals.D4SH, "双子星喂食器视频版（D4SH）" + " v" + TOOL_D4SH_VERSION));
 
         tempRadioButton = (RadioButton) findViewById(R.id.d4_2);
         tempRadioButton.setText(getTextDetail(Globals.D4_2, "喂食器SOLO NEW（D4-2）" + " v" + TOOL_D4_2_VERSION));
+        tempRadioButton.setVisibility(View.GONE);
 
         tempRadioButton = (RadioButton) findViewById(R.id.d4h);
         tempRadioButton.setText(getTextDetail(Globals.D4H, "喂食器SOLO视频版（D4H）" + " v" + TOOL_D4H_VERSION));
