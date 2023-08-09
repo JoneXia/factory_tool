@@ -862,104 +862,6 @@ public class CommonUtils {
 		return true;
 	}
 	
-	/**
-	 * 
-	 * 获取显示时用到的时间格式，如刚刚、几分钟前等
-	 * 
-	 * @param context
-	 * @param petId
-	 * @return
-	 */
-	public static String getDogLastSyncTimeString(Context context, String petId){
-		long lastSyncTime = getDogLastSyncTime(petId);
-		java.text.SimpleDateFormat format = new java.text.SimpleDateFormat(
-				"yyyy-MM-dd HH:mm:ss");
-		try {
-			if(lastSyncTime > 0){
-				lastSyncTime += format.parse(BLEConsts.BASE_TIMELINE).getTime();
-				format.setTimeZone(TimeZone.getTimeZone("GMT"));
-				Date date = new Date();
-				date.setTime(lastSyncTime);
-				return getDisplayTimeFromDate(context, DateUtil.formatISO8601Date(date));
-			}
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		
-		return "-";
-	}
-	
-	/**
-	 * 获取显示时用到的时间格式，如刚刚、几分钟前等
-     * @param context
-	 * @param date 格式是yyyy-MM-dd'T'HH:mm:ss'Z'
-	 * @return
-	 */
-	public static String getDisplayTimeFromDate(Context context, Date date){
-		return getDisplayTimeFromDate(context, DateUtil.formatISO8601Date(date));
-	}
-	
-	
-	
-	/**
-	 * 获取显示时用到的时间格式，如刚刚、几分钟前等
-	 * @param dateString 格式是yyyy-MM-dd'T'HH:mm:ss'Z'
-	 * @return
-	 */
-	public static String getDisplayTimeFromDate(Context context, String dateString){
-		
-		if(isEmpty(dateString) || dateString.length() < 20){
-			return "";
-		}
-		
-		SimpleDateFormat sdf;
-		if(dateString.length() <= 20){
-			sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-		}else{
-			sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-		}
-		sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
-		Date date1;
-		try {
-			date1 = sdf.parse(dateString);
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(date1);
-			long time1 = cal.getTimeInMillis();
-			long time2 = new java.util.Date().getTime();
-			long between_time = (time2 - time1) / (1000 * 60);
-			String between_time_string;
-			if(between_time < 1){
-				int resId = MResource.getResourceIdByName(context.getPackageName(), "string", "Unit_time_just_now");
-				return context.getString(resId);
-			}
-			if(between_time < 60){
-				int resId = MResource.getResourceIdByName(context.getPackageName(), "string", between_time > 1 ? "Unit_minutes" : "Unit_minute");
-				between_time_string = between_time + context.getString(resId);
-				int resId2 = MResource.getResourceIdByName(context.getPackageName(), "string", "Unit_time_ago");
-				return context.getString(resId2, between_time_string);
-			}
-			between_time = between_time / 60;
-			if(between_time < 24){
-				int resId = MResource.getResourceIdByName(context.getPackageName(), "string", between_time > 1 ? "Unit_hours" : "Unit_hour");
-				between_time_string = between_time + context.getString(resId);
-				int resId2 = MResource.getResourceIdByName(context.getPackageName(), "string", "Unit_time_ago");
-				return context.getString(resId2, between_time_string);
-			}
-			between_time = between_time / 24;
-			if(between_time < 7){
-				int resId = MResource.getResourceIdByName(context.getPackageName(), "string", between_time > 1 ? "Unit_days" : "Unit_day");
-				between_time_string = between_time + context.getString(resId);
-				int resId2 = MResource.getResourceIdByName(context.getPackageName(), "string", "Unit_time_ago");
-				return context.getString(resId2, between_time_string);
-			}
-			
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		
-		return DateUtil.getFormatDate2FromString(dateString);
-	}
-	
 	
 	/**
 	 * 获取基于TimeZone的时间，格式是yyyy-MM-dd'T'HH:mm:ss'Z'，基于2000-01-01 00:00:00时间
@@ -1023,36 +925,7 @@ public class CommonUtils {
 		
 		return 0;
 	}
-	
-	/**
-	 * 获取显示时用到的时间格式，如几分几秒等
-     * @param context
-	 * @param seconds
-	 * @return
-	 */
-	
 
-	public static String getLeftTime(Context context, int seconds) {
-		int mins = seconds / 60;
-		int second = seconds % 60;
-		
-		if(mins == 0) {
-			if(second == 0) {
-				return null;
-			} else {
-				return (second + context.getString(MResource.getResourceIdByName(context.getPackageName(), "string", "Unit_second")));
-			}
-		} else {
-			if(second == 0) {
-				return (mins + context.getString(MResource.getResourceIdByName(context.getPackageName(), "string", "Unit_minute")));
-			} else {
-				int resId1 = MResource.getResourceIdByName(context.getPackageName(), "string", "Unit_minute");
-				int resId2 = MResource.getResourceIdByName(context.getPackageName(), "string", "Unit_second");
-				return(mins + context.getString(resId1) + second + context.getString(resId2));
-			}
-		}
-	}
-	
 	/**
 	 * 获取显示时用到的时间格式，如刚刚、几分钟前等
 	 * @param date1String 格式是yyyy-MM-dd'T'HH:mm:ss'Z'
@@ -1313,112 +1186,6 @@ public class CommonUtils {
 		return result;
 	}
 
-
-	/**
-	 * 根据出生日期取年龄，返回格式为：X岁X个月
-     * @param context
-	 * @param dateString 格式为 yyyy-MM-dd
-	 * @return
-	 */
-	@SuppressWarnings("deprecation")
-	public static String getAgeByBirthday(Context context, String dateString){
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date date, curDate = new Date();
-		try {
-			date = sdf.parse(dateString);
-			int year, month;
-			month = curDate.getMonth() - date.getMonth();
-			year = curDate.getYear() - date.getYear();
-			if(month < 0){
-				year--;
-				month += 12;
-			}
-			
-			if(year < 0){
-				return "";
-			}
-			StringBuilder sBuilder = new StringBuilder();
-			if(year > 0 ){
-				int resId = MResource.getResourceIdByName(context.getPackageName(), "string", year > 1 ? "Unit_ages" : "Unit_age");
-				sBuilder.append(year).append(context.getString(resId));
-			}
-			if(month > 0){
-				int resId = MResource.getResourceIdByName(context.getPackageName(), "string", year > 1 ? "Unit_months" : "Unit_month");
-				sBuilder.append(month).append(context.getString(resId));
-			}
-			
-			if(year == 0 && month == 0){
-				int day = (int) ((curDate.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
-				if(day < 0){
-					return "";
-				}
-				int resId = MResource.getResourceIdByName(context.getPackageName(), "string", day > 1 ? "Unit_days" : "Unit_day");
-				sBuilder.append(day).append(context.getString(resId));
-			}
-			
-			return sBuilder.toString();
-			
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		return "";
-	}
-
-	/**
-	 * 根据出生日期取年龄，返回格式为：X岁X个月
-	 * @param context
-	 * @param dateString 格式为 yyyy-MM-dd
-	 * @return
-	 */
-	@SuppressWarnings("deprecation")
-	public static String getSimplifyAgeByBirthday(Context context, String dateString){
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date date, curDate = new Date();
-		try {
-			date = sdf.parse(dateString);
-			int year, month;
-			month = curDate.getMonth() - date.getMonth();
-			year = curDate.getYear() - date.getYear();
-			if(month < 0){
-				year--;
-				month += 12;
-			}
-
-			if(year < 0){
-				return "";
-			}
-			StringBuilder sBuilder = new StringBuilder();
-			if(year > 0 ){
-				int resId = MResource.getResourceIdByName(context.getPackageName(), "string", "Unit_age_short");
-				sBuilder.append(year).append(context.getString(resId));
-			}
-			if(month > 0){
-				int resId = MResource.getResourceIdByName(context.getPackageName(), "string", "Unit_month_short");
-				if(year>0){
-					Locale locale = context.getResources().getConfiguration().locale;
-					String language = locale.getLanguage();
-					if(language!=null&&language.endsWith("en"))
-						sBuilder.append("-");
-				}
-				sBuilder.append(month).append(context.getString(resId));
-			}
-
-			if(year == 0 && month == 0){
-				int day = (int) ((curDate.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
-				if(day < 0){
-					return "";
-				}
-				int resId = MResource.getResourceIdByName(context.getPackageName(), "string", "Unit_day_short");
-				sBuilder.append(day).append(context.getString(resId));
-			}
-
-			return sBuilder.toString();
-
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		return "";
-	}
 	
 	
 	public static String getConnectionStateDesc(int state){
@@ -1633,27 +1400,6 @@ public class CommonUtils {
 		}
 		
 		return false;
-	}
-	
-	public static String getRankFormatString(Context context, int rank){
-		int resId = 0;
-		switch (rank) {
-		case 1:
-			resId = MResource.getResourceIdByName(context.getPackageName(), "string", "Rank_first");
-			break;
-		case 2:
-			resId = MResource.getResourceIdByName(context.getPackageName(), "string", "Rank_second");
-			break;
-		case 3:
-			resId = MResource.getResourceIdByName(context.getPackageName(), "string", "Rank_Third");
-			break;
-
-		default:
-			resId = MResource.getResourceIdByName(context.getPackageName(), "string", "Rank_other");
-			break;
-		}
-		
-		return context.getString(resId);
 	}
 
 

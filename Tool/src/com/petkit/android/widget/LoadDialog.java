@@ -1,18 +1,17 @@
 package com.petkit.android.widget;
 
 
-import com.petkit.android.utils.MResource;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
+
+import com.petkit.matetool.R;
 
 
 /**
@@ -38,17 +37,12 @@ public class LoadDialog extends Dialog{
 		super(ctx);
 
 		this.canNotCancel = canNotCancel;
-		if(TextUtils.isEmpty(tipMsg)){
-//			tipMsg = "该操作不能返回！";
-		}
-//		this.tipMsg = tipMsg;
+		
 		this.getContext().setTheme(android.R.style.Theme_InputMethod);
-		Log.d("LoadDialog", "packageName: " + ctx.getPackageName());
-		int resId = MResource.getResourceIdByName(ctx.getPackageName(), "layout", "layout_dialog_loading");
-		Log.d("LoadDialog", "packageName resId: " + resId);
+		int resId = R.layout.layout_dialog_loading;
 		setContentView(resId);
 
-		int resId2 = MResource.getResourceIdByName(ctx.getPackageName(), "id", "loading_text");
+		int resId2 = R.id.loading_text;;
 		TextView loadingText = (TextView) findViewById(resId2);
 		if(!TextUtils.isEmpty(tipMsg)){
 			loadingText.setText(tipMsg);
