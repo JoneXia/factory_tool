@@ -469,7 +469,7 @@ public class Versions {
 	 * 1. 支持D4SH产测全功能
 	 *
 	 */
-	public static final String TOOL_D4SH_VERSION	= "0.1";
+	public static final String TOOL_D4SH_VERSION	= "1.0";
 
 	/**
 	 * 1.0说明：
@@ -486,6 +486,6 @@ public class Versions {
 	 * 1. 支持D4H产测全功能
 	 *
 	 */
-	public static final String TOOL_D4H_VERSION	= "0.1";
+	public static final String TOOL_D4H_VERSION	= "1.0";
 
 }
