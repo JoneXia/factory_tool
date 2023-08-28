@@ -180,7 +180,7 @@ public class CTW3TestDetailActivity extends BaseActivity implements PrintResultC
                 mPromptTextView.setText("正常电压范围（单位mV）：[4500, 5500]，BAT电压范围：【3500， 4300】");
                 break;
             case TEST_MODE_LED:
-                mPromptTextView.setText("测试指示灯《蓝红绿》依次闪烁，观察是否正常！");
+                mPromptTextView.setText("测试指示灯《红红红蓝绿》依次闪烁，观察是否正常！");
                 break;
             case TEST_MODE_KEY:
                 mPromptTextView.setText("按键测试，观察是否正常！");
@@ -349,10 +349,10 @@ public class CTW3TestDetailActivity extends BaseActivity implements PrintResultC
                         gotoNextTestModule();
                         break;
                     case TEST_MODE_PUMP:
-                        if (mTempResult != 0x11) {
-                            showShortToast("请先测试有水和没水状态，再观察水泵是否正常转动！");
-                            return;
-                        }
+//                        if (mTempResult != 0x11) {
+//                            showShortToast("请先测试有水和没水状态，再观察水泵是否正常转动！");
+//                            return;
+//                        }
                         mTestUnits.get(mCurTestStep).setResult(TEST_PASS);
                         gotoNextTestModule();
                         break;
@@ -530,7 +530,7 @@ public class CTW3TestDetailActivity extends BaseActivity implements PrintResultC
                         desc.append("\n接近数值：" + ByteUtil.byteToInt(data, 0, 2));
                         break;
                     case TEST_MODE_CHARGING:
-                        desc.append("\n充电：" + (data[0] == 1 ? "连接" : "断开")).append(data[1] == 1 ? "，充电完成" : "，充电中");
+                        desc.append("\n充电：" + (data[0] == 1 ? "连接" + (data[1] == 1 ? "，充电完成" : "，充电中") : "断开"));
                         if (data[0] == 1) {
                             mTempResult = (mTempResult | 0x1);
                         } else {

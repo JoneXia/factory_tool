@@ -121,6 +121,7 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
     protected void onResume() {
         super.onResume();
 
+        refreshView();
         PetkitSocketInstance.getInstance().setPetkitSocketListener(this);
     }
 
@@ -268,7 +269,7 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
             intent.putExtra("TestType", mTestType);
             startActivityForResult(intent, 0x12);
         } else {
-            showShortToast(mInfoTestTextView.getText().toString());
+            showShortToast("请先连接设备");
         }
     }
 
@@ -364,7 +365,7 @@ public class K2TestMainActivity extends BaseActivity implements PetkitSocketInst
                 PetkitSocketInstance.getInstance().startConnect(remoteIp, 8001);
             }
         } else {
-            mInfoTestTextView.setText("可以开始测试啦");
+//            mInfoTestTextView.setText("可以开始测试啦");
             mTestState = TEST_STATE_CONNECTED;
         }
     }

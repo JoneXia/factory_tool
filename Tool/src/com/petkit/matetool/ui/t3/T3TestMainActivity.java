@@ -121,6 +121,7 @@ public class T3TestMainActivity extends BaseActivity implements PetkitSocketInst
     protected void onResume() {
         super.onResume();
 
+        refreshView();
         PetkitSocketInstance.getInstance().setPetkitSocketListener(this);
     }
 
@@ -245,6 +246,7 @@ public class T3TestMainActivity extends BaseActivity implements PetkitSocketInst
                     mT3TestUnits = (ArrayList<T3TestUnit>) data.getSerializableExtra("TestUnits");
                     mCurDevice = (Device) data.getSerializableExtra(T3Utils.EXTRA_T3);
                     mAdapter.notifyDataSetChanged();
+                    mInfoTestTextView.setText(mCurDevice.toString());
                     checkTestComplete();
                     refreshBottomButton();
                     break;
@@ -285,7 +287,7 @@ public class T3TestMainActivity extends BaseActivity implements PetkitSocketInst
             intent.putExtra(T3Utils.EXTRA_ERROR_T3, mErrorDevice);
             startActivityForResult(intent, 0x12);
         } else {
-            showShortToast(mInfoTestTextView.getText().toString());
+            showShortToast("请先连接设备");
         }
     }
 
@@ -380,7 +382,7 @@ public class T3TestMainActivity extends BaseActivity implements PetkitSocketInst
                 PetkitSocketInstance.getInstance().startConnect(remoteIp, 8001);
             }
         } else {
-            mInfoTestTextView.setText("可以开始测试啦");
+//            mInfoTestTextView.setText("可以开始测试啦");
             mTestState = TEST_STATE_CONNECTED;
         }
     }
@@ -435,29 +437,16 @@ public class T3TestMainActivity extends BaseActivity implements PetkitSocketInst
             case 110:
                 try {
                     JSONObject jsonObject = JSONUtils.getJSONObject(data);
-                    StringBuilder stringBuilder = new StringBuilder();
                     String mac = null, sn = null, chipid = null;
                     if (!jsonObject.isNull("mac")) {
                         mac = jsonObject.getString("mac");
-                        stringBuilder.append("\n").append("mac: ").append(mac).append("\n");
                     }
                     if (!jsonObject.isNull("sn")) {
                         sn = jsonObject.getString("sn");
-                        stringBuilder.append("sn: ").append(sn).append("\n");
                     }
                     if (!jsonObject.isNull("chipid")) {
                         chipid = jsonObject.getString("chipid");
-                        stringBuilder.append("chipid: ").append(chipid).append("\n");
                     }
-                    if (!jsonObject.isNull("hardware")) {
-                        stringBuilder.append("hardware: ").append(jsonObject.getInt("hardware")).append("\n");
-                    }
-                    if (!jsonObject.isNull("version")) {
-                        stringBuilder.append("version: ").append(jsonObject.getString("version")).append("\n");
-                    }
-//                    if (!jsonObject.isNull("id")) {
-//                        stringBuilder.append("id: ").append(jsonObject.getInt("id")).append("\n");
-//                    }
 
                     if(isEmpty(mac)) {
                         mInfoTestTextView.setText("设备信息不正确，没有MAC地址！");
@@ -481,7 +470,25 @@ public class T3TestMainActivity extends BaseActivity implements PetkitSocketInst
 
                     mCurDevice = new Device(mac, sn, chipid);
 
-                    mInfoTestTextView.append(stringBuilder.toString());
+                    if (!jsonObject.isNull("hardware")) {
+                        mCurDevice.setHardware(jsonObject.getInt("hardware"));
+                    }
+                    if (!jsonObject.isNull("version")) {
+                        try {
+                            mCurDevice.setFirmware(Integer.valueOf(jsonObject.getString("version")));
+                        } catch (NumberFormatException e) {
+                            try {
+                                if (jsonObject.getString("version").indexOf(".") > 0) {
+                                    mCurDevice.setFirmware(Integer.valueOf(
+                                            jsonObject.getString("version").substring(jsonObject.getString("version").indexOf(".") + 1)));
+                                }
+                            } catch (NumberFormatException e2) {
+
+                            }
+                        }
+                    }
+
+                    mInfoTestTextView.setText(mCurDevice.toString());
 
                     HashMap<String, Object> params = new HashMap<>();
                     params.put("mac", mCurDevice.getMac());

@@ -228,7 +228,7 @@ public class W5TestMainActivity extends BaseActivity {
             intent.putExtra(W5Utils.EXTRA_W5_TYPE, mW5Type);
             startActivityForResult(intent, 0x12);
         } else {
-            showShortToast(mInfoTestTextView.getText().toString());
+            showShortToast("请先连接设备");
         }
     }
 

@@ -115,6 +115,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
     protected void onResume() {
         super.onResume();
 
+        refreshView();
         PetkitSocketInstance.getInstance().setPetkitSocketListener(this);
     }
 
@@ -278,7 +279,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
             intent.putExtra(FeederUtils.EXTRA_FEEDER, mErrorFeeder);
             startActivityForResult(intent, 0x12);
         } else {
-            showShortToast(mInfoTestTextView.getText().toString());
+            showShortToast("请先连接设备");
         }
     }
 
@@ -369,7 +370,7 @@ public class FeederTestMainActivity extends BaseActivity implements PetkitSocket
                 PetkitSocketInstance.getInstance().startConnect(remoteIp, 8001);
             }
         } else {
-            mInfoTestTextView.setText("可以开始测试啦");
+//            mInfoTestTextView.setText("可以开始测试啦");
             mTestState = TEST_STATE_CONNECTED;
         }
     }
