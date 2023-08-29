@@ -1,5 +1,6 @@
 package com.petkit.matetool.ui.common;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,25 +19,34 @@ import android.widget.Toast;
 import com.google.zxing.Result;
 import com.petkit.android.utils.LogcatStorageHelper;
 import com.petkit.android.utils.PetkitLog;
+import com.petkit.android.widget.LoadDialog;
 import com.petkit.matetool.R;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
 import com.petkit.matetool.ui.feederMini.utils.FeederMiniUtils;
+import com.petkit.matetool.ui.permission.PermissionDialogActivity;
+import com.petkit.matetool.ui.permission.mode.PermissionBean;
+import com.petkit.matetool.ui.print.PrintActivity;
+import com.petkit.matetool.ui.utils.PrintResultCallback;
+import com.petkit.matetool.ui.utils.PrintUtils;
 import com.petkit.matetool.ui.utils.zxing.ScanListener;
 import com.petkit.matetool.ui.utils.zxing.ScanManager;
 import com.petkit.matetool.ui.utils.zxing.decode.DecodeThread;
+import com.petkit.matetool.utils.Globals;
 import com.petkit.matetool.utils.JSONUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * 扫描SN条码
  *
  * Created by Jone on 17/6/2.
  */
-public class CommonScanActivity extends BaseActivity implements ScanListener {
+public class CommonScanActivity extends BaseActivity implements ScanListener, PrintResultCallback {
 
     private Tester mTester;
 
@@ -66,10 +76,26 @@ public class CommonScanActivity extends BaseActivity implements ScanListener {
             mTester = (Tester) getIntent().getSerializableExtra(FeederMiniUtils.EXTRA_FEEDER_MINI_TESTER);
         }
 
+        checkPermissions();
+
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         setContentView(R.layout.activity_feeder_scan);
+    }
+
+    private boolean checkPermissions() {
+        if(!Globals.checkPermission(this, Manifest.permission.CAMERA)) {
+            Bundle bundle = new Bundle();
+            ArrayList<PermissionBean> permissionBeens = new ArrayList<>();
+            permissionBeens.add(new PermissionBean(Manifest.permission.CAMERA, R.string.Camera, R.drawable.permission_read_phone));
+
+            bundle.putSerializable(Globals.EXTRA_PERMISSION_CONTENT, permissionBeens);
+            startActivityWithData(PermissionDialogActivity.class, bundle, false);
+            return false;
+        }
+
+        return true;
     }
 
     @Override
@@ -84,6 +110,7 @@ public class CommonScanActivity extends BaseActivity implements ScanListener {
     protected void setupViews() {
 
         setTitle("扫码");
+        setTitleRightButton("打印机设置", this);
 
         scanPreview = (SurfaceView) findViewById(R.id.capture_preview);
         scanContainer = findViewById(R.id.capture_container);
@@ -122,6 +149,9 @@ public class CommonScanActivity extends BaseActivity implements ScanListener {
             case R.id.service_register_rescan://再次开启扫描
                 startScan();
                 break;
+            case R.id.title_right_btn:
+                startActivity(PrintActivity.class);
+                break;
             default:
                 break;
         }
@@ -133,6 +163,7 @@ public class CommonScanActivity extends BaseActivity implements ScanListener {
         scanManager.onResume();
         rescan.setVisibility(View.INVISIBLE);
         scan_image.setVisibility(View.GONE);
+        PrintUtils.setCallback(this);
     }
 
     @Override
@@ -183,17 +214,22 @@ public class CommonScanActivity extends BaseActivity implements ScanListener {
 
     private void checkContent(String data) {
 
-        if(data == null || data.contains(" ") || data.length() != 14) {
+        if(data == null || data.contains(" ")) {
             showShortToast("无效的内容！");
             return;
         }
         String sn = "";
 
-        if(data.contains("SN:")) {
+        if(data.contains("SN")) {
             try {
                 JSONObject result = JSONUtils.getJSONObject(data);
                 if (result != null && !result.isNull("SN")) {
                     sn = result.getString("SN");
+
+                    if (mDeviceType == -1) {
+                        showPrintConfirmDialog("SN:" + sn, data);
+                        return;
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -205,6 +241,10 @@ public class CommonScanActivity extends BaseActivity implements ScanListener {
 
         if(isEmpty(sn)) {
             showShortToast("无效的SN");
+            return;
+        }
+        if (mDeviceType == -1) {
+            showPrintConfirmDialog("SN:" + sn, "SN:" + sn);
             return;
         }
 
@@ -254,4 +294,51 @@ public class CommonScanActivity extends BaseActivity implements ScanListener {
 
     }
 
+    private void showPrintConfirmDialog(final String onedBarcde, final String twodBarcde) {
+        new AlertDialog.Builder(this)
+                .setCancelable(false)
+                .setTitle(R.string.Prompt)
+                .setMessage("请确认SN: " + onedBarcde + "，是否立即打印？")
+                .setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        PrintUtils.printText(onedBarcde, twodBarcde, 1);
+                    }
+                })
+                .setNegativeButton(R.string.Cancel,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).show();
+
+    }
+
+    @Override
+    public void onPrintSuccess() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                LoadDialog.dismissDialog();
+                showShortToast(getString(R.string.printsuccess));
+            }
+        });
+    }
+
+    @Override
+    public void onPrintFailed() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                showShortToast(getString(R.string.printfailed));
+            }
+        });
+    }
+
+    @Override
+    public void onConnected() {
+
+    }
 }

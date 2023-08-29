@@ -575,7 +575,7 @@ public class PrintActivity extends BaseActivity {
         if (stateAlertDialog != null && stateAlertDialog.isShowing()) {
             stateAlertDialog.setTitle(str);
         } else {
-            stateAlertDialog = new AlertDialog.Builder(this).setCancelable(false).setTitle(str).show();
+            stateAlertDialog = new AlertDialog.Builder(this).setCancelable(true).setTitle(str).show();
         }
     }
 

@@ -9,7 +9,6 @@ import com.petkit.matetool.R;
 import com.petkit.matetool.model.Tester;
 import com.petkit.matetool.ui.base.BaseActivity;
 import com.petkit.matetool.ui.common.utils.DeviceCommonUtils;
-import com.petkit.matetool.ui.t4.T4LanguageActivity;
 import com.petkit.matetool.utils.Globals;
 
 /**
@@ -60,8 +59,8 @@ public class WifiStartActivity extends BaseActivity {
         findViewById(R.id.test_case5).setOnClickListener(this);
         findViewById(R.id.test_case6).setOnClickListener(this);
 
-        ((Button) findViewById(R.id.test_case5)).setText("位图生成");
-        findViewById(R.id.test_case5).setVisibility(View.VISIBLE);
+        ((Button) findViewById(R.id.test_case5)).setText("连续打码");
+        findViewById(R.id.test_case5).setVisibility(View.GONE);
         switch (mDeviceType) {
             case Globals.AQH1_500:
             case Globals.AQH1_500_A:
@@ -104,11 +103,12 @@ public class WifiStartActivity extends BaseActivity {
                 startActivityWithData(DeviceCommonUtils.getMainActivityByType(mDeviceType), bundle, false);
                 break;
             case R.id.test_case5:
-                bundle = new Bundle();
-                bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
-                bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
-                bundle.putInt(DeviceCommonUtils.EXTRA_TEST_TYPE, Globals.TYPE_CHECK);
-                startActivityWithData(T4LanguageActivity.class, bundle, false);
+//                bundle = new Bundle();
+//                bundle.putSerializable(DeviceCommonUtils.EXTRA_TESTER, mTester);
+//                bundle.putInt(DeviceCommonUtils.EXTRA_DEVICE_TYPE, mDeviceType);
+//                bundle.putInt(DeviceCommonUtils.EXTRA_TEST_TYPE, Globals.TYPE_CHECK);
+//                startActivityWithData(T4LanguageActivity.class, bundle, false);
+                startScanSN(-1);
                 break;
             case R.id.test_case6:
                 bundle = new Bundle();
