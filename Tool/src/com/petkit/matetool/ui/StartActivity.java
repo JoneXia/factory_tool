@@ -378,6 +378,12 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
             case R.id.d4h:
                 testStyle = Globals.D4H;
                 break;
+            case R.id.d4sh_oversea:
+                testStyle = Globals.D4SH_oversea;
+                break;
+            case R.id.d4h_oversea:
+                testStyle = Globals.D4H_oversea;
+                break;
             //TODO: 新增设备需对应添加
             default:
                 break;
@@ -536,6 +542,12 @@ public class StartActivity extends BaseActivity implements RadioGroup.OnCheckedC
 
         tempRadioButton = (RadioButton) findViewById(R.id.d4h);
         tempRadioButton.setText(getTextDetail(Globals.D4H, "喂食器SOLO视频版（D4H）" + " v" + TOOL_D4H_VERSION));
+
+        tempRadioButton = (RadioButton) findViewById(R.id.d4sh_oversea);
+        tempRadioButton.setText(getTextDetail(Globals.D4SH_oversea, "双子星喂食器视频版海外版（D4SH海外）" + " v" + TOOL_D4SH_VERSION));
+
+        tempRadioButton = (RadioButton) findViewById(R.id.d4h_oversea);
+        tempRadioButton.setText(getTextDetail(Globals.D4H_oversea, "喂食器SOLO视频版海外版（D4H海外）" + " v" + TOOL_D4H_VERSION));
 
         //TODO: 新增设备需对应添加
     }

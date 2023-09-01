@@ -273,6 +273,18 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dip" />
 
+            <RadioButton
+                android:id="@+id/d4sh_oversea"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip" />
+
+            <RadioButton
+                android:id="@+id/d4h_oversea"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dip" />
+
         </RadioGroup>
     </ScrollView>
 

@@ -58,8 +58,8 @@ android {
         multiDexEnabled true
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 6010
-        versionName "6.1.0"
+        versionCode 6011
+        versionName "6.1.1"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         flavorDimensions "versionCode"
         ndk {

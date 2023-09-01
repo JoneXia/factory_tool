@@ -141,6 +141,10 @@ public class DeviceCommonUtils {
                 Globals.DEVICE_TYPE_CODE_NEW_D4SH, D4SHTestMainActivity.class));
         mDeviceConfigs.put(Globals.D4H, new DeviceConfigInfo(false, "D4H", "D4H", new String[]{"Petkit_D4H"},
                 Globals.DEVICE_TYPE_CODE_NEW_D4H, D4HTestMainActivity.class));
+        mDeviceConfigs.put(Globals.D4SH_oversea, new DeviceConfigInfo(false, "D4SH", "A_D4SH", new String[]{"Petkit_A_D4SH"},
+                Globals.DEVICE_TYPE_CODE_NEW_D4SH_OVERSEA, D4SHTestMainActivity.class));
+        mDeviceConfigs.put(Globals.D4H_oversea, new DeviceConfigInfo(false, "D4H", "A_D4H", new String[]{"Petkit_A_D4H"},
+                Globals.DEVICE_TYPE_CODE_NEW_D4H_OVERSEA, D4HTestMainActivity.class));
     }
     /**
      *
