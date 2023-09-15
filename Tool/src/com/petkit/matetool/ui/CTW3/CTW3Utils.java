@@ -22,7 +22,9 @@ public class CTW3Utils {
         TEST_MODE_DC,   //电压
         TEST_MODE_BAT,   //BAT电压
         TEST_MODE_LED,
+        TEST_MODE_TIME,
         TEST_MODE_KEY,  //按键
+        TEST_MODE_PUMP_RESET,   //校验没水泵时的电压
         TEST_MODE_PUMP,
         TEST_MODE_PROXIMITY, //接近
         TEST_MODE_BAT_SHIP, //电池运输模式
@@ -69,8 +71,10 @@ public class CTW3Utils {
             } else {
                 results.add(new CTW3TestUnit(CTW3TestModes.TEST_MODE_AUTO, "自动测试项", 99, 0));
             }
+            results.add(new CTW3TestUnit(CTW3TestModes.TEST_MODE_TIME, "时间测试", 242, 8));
             results.add(new CTW3TestUnit(CTW3TestModes.TEST_MODE_LED, "指示灯测试", 242, 2));
             results.add(new CTW3TestUnit(CTW3TestModes.TEST_MODE_KEY, "按键测试", 242, 3));
+//            results.add(new CTW3TestUnit(CTW3TestModes.TEST_MODE_PUMP_RESET, "水泵校准", 242, 7));
             results.add(new CTW3TestUnit(CTW3TestModes.TEST_MODE_PUMP, "水泵测试", 242, 4));
             results.add(new CTW3TestUnit(CTW3TestModes.TEST_MODE_PROXIMITY, "接近测试", 242, 5));
             results.add(new CTW3TestUnit(CTW3TestModes.TEST_MODE_CHARGING, "充电测试", 242, 6));

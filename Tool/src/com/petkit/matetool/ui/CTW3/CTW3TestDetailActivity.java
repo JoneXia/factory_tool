@@ -40,6 +40,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.petkit.matetool.ui.CTW3.CTW3Utils.CTW3TestModes.TEST_MODE_KEY;
+import static com.petkit.matetool.ui.CTW3.CTW3Utils.CTW3TestModes.TEST_MODE_PUMP_RESET;
+import static com.petkit.matetool.ui.CTW3.CTW3Utils.CTW3TestModes.TEST_MODE_TIME;
 import static com.petkit.matetool.ui.utils.PrintUtils.isPrinterConnected;
 import static com.petkit.matetool.utils.Globals.TEST_FAILED;
 import static com.petkit.matetool.utils.Globals.TEST_PASS;
@@ -109,6 +111,7 @@ public class CTW3TestDetailActivity extends BaseActivity implements PrintResultC
 
         if (mTestUnits.get(mCurTestStep).getType() != CTW3Utils.CTW3TestModes.TEST_MODE_SN &&
                 mTestUnits.get(mCurTestStep).getType() != CTW3Utils.CTW3TestModes.TEST_MODE_PRINT &&
+                mTestUnits.get(mCurTestStep).getType() != CTW3Utils.CTW3TestModes.TEST_MODE_PUMP_RESET &&
                 mTestUnits.get(mCurTestStep).getType() != CTW3Utils.CTW3TestModes.TEST_MODE_RESET_SN &&
                 mTestUnits.get(mCurTestStep).getType() != CTW3Utils.CTW3TestModes.TEST_MODE_RESET_ID) {
             startTestModule();
@@ -193,6 +196,12 @@ public class CTW3TestDetailActivity extends BaseActivity implements PrintResultC
                 break;
             case TEST_MODE_CHARGING:
                 mPromptTextView.setText("测试充电状态");
+                break;
+            case TEST_MODE_TIME:
+                mPromptTextView.setText("设置当前时间，确认显示的是否正确");
+                break;
+            case TEST_MODE_PUMP_RESET:
+                mPromptTextView.setText("请将水泵从内筒取出，然后进行测试，电压应该处于[100, 220]mV");
                 break;
             default:
                 break;
@@ -315,6 +324,9 @@ public class CTW3TestDetailActivity extends BaseActivity implements PrintResultC
                         setResult(RESULT_OK);
                         gotoNextTestModule();
                         break;
+                    case TEST_MODE_PUMP_RESET:
+                        showPUMPResetDialog();
+                        break;
                     default:
                         startTestModule();
                         break;
@@ -373,6 +385,20 @@ public class CTW3TestDetailActivity extends BaseActivity implements PrintResultC
         switch (mTestUnits.get(mCurTestStep).getType()) {
             case TEST_MODE_AUTO:
                 startAutoUnitsTest();
+                break;
+            case TEST_MODE_TIME:
+                byte[] data = new byte[6];
+                data[0] = (byte) mTestUnits.get(mCurTestStep).getState();
+
+                int sec = BLEConsts.getSeconds();
+                data[1] = (byte) ((sec >> 24) & 0xFF);
+                data[2] = (byte) ((sec >> 16) & 0xFF);
+                data[3] = (byte) ((sec >> 8) & 0xFF);
+                data[4] = (byte) ((sec >> 0) & 0xFF);
+
+                data[5] = 20;
+
+                sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule(), data));
                 break;
             default:
                 sendBleData(BaseDataUtils.buildOpCodeBuffer(mTestUnits.get(mCurTestStep).getModule(), mTestUnits.get(mCurTestStep).getState()));
@@ -446,6 +472,7 @@ public class CTW3TestDetailActivity extends BaseActivity implements PrintResultC
             if (mTestUnits.get(mCurTestStep).getType() != CTW3Utils.CTW3TestModes.TEST_MODE_SN
                 && mTestUnits.get(mCurTestStep).getType() != CTW3Utils.CTW3TestModes.TEST_MODE_RESET_SN
                     && mTestUnits.get(mCurTestStep).getType() != CTW3Utils.CTW3TestModes.TEST_MODE_RESET_ID
+                    && mTestUnits.get(mCurTestStep).getType() != CTW3Utils.CTW3TestModes.TEST_MODE_PUMP_RESET
                     && mTestUnits.get(mCurTestStep).getType() != CTW3Utils.CTW3TestModes.TEST_MODE_PRINT) {
                 startTestModule();
             }
@@ -508,6 +535,17 @@ public class CTW3TestDetailActivity extends BaseActivity implements PrintResultC
                         break;
                     case TEST_MODE_LED:
                         break;
+                    case TEST_MODE_TIME:
+                        int year = ByteUtil.byteToInt(data, 0, 2);
+                        int mouth = ByteUtil.byteToInt(data, 2, 1);
+                        int day = ByteUtil.byteToInt(data, 3, 1);
+                        int hour = ByteUtil.byteToInt(data, 4, 1);
+                        int minute = ByteUtil.byteToInt(data, 5, 1);
+                        int second = ByteUtil.byteToInt(data, 6, 1);
+                        int week = ByteUtil.byteToInt(data, 7, 1);
+                        desc.append(String.format("\n %d月%d日 %d时%d分%d秒 周%d", mouth, day, hour, minute, second, week));
+                        result = year >= 2023;
+                        break;
                     case TEST_MODE_KEY:
                         desc.append("\n按键：" + (data[0] == 1 ? "按下" : "松开"));
                         if (data[0] == 1) {
@@ -516,6 +554,11 @@ public class CTW3TestDetailActivity extends BaseActivity implements PrintResultC
                             mTempResult = (mTempResult | 0x10);
                         }
                         result = mTempResult == 0x11;
+                        break;
+                    case TEST_MODE_PUMP_RESET:
+                        desc.append("\n" + (data[0] == 1 ? "校准完成" : "校准中"));
+                        desc.append("，线圈电压(mV)：" + ByteUtil.byteToInt(data, 1, 2));
+                        result = data[0] == 1;
                         break;
                     case TEST_MODE_PUMP:
                         desc.append("\n水泵：" + (data[0] == 1 ? "开启" : "关闭"));
@@ -604,7 +647,9 @@ public class CTW3TestDetailActivity extends BaseActivity implements PrintResultC
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if (mTestUnits.get(mCurTestStep).getType() != TEST_MODE_KEY
+                        if (mTestUnits.get(mCurTestStep).getType() != TEST_MODE_PUMP_RESET
+                                && mTestUnits.get(mCurTestStep).getType() != TEST_MODE_KEY
+                                && mTestUnits.get(mCurTestStep).getType() != TEST_MODE_TIME
                                 && System.currentTimeMillis() - mTempTimestamp > 0.9 * 1000) {
                             mTempTimestamp = System.currentTimeMillis();
                             sendBleData(BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_TEST_INFO), false);
@@ -656,6 +701,24 @@ public class CTW3TestDetailActivity extends BaseActivity implements PrintResultC
         mDevice.setCreation(System.currentTimeMillis());
 
         sendBleData(BaseDataUtils.buildOpCodeBuffer(BLEConsts.OP_CODE_WRITE_SN, mDevice.getSn().getBytes()));
+    }
+
+    private void showPUMPResetDialog() {
+
+        new AlertDialog.Builder(this)
+                .setCancelable(false)
+                .setTitle(R.string.Prompt)
+                .setMessage("确认已将水泵从内筒中取出了吗？")
+                .setNegativeButton(R.string.Cancel, null)
+                .setPositiveButton("确认",
+                        new DialogInterface.OnClickListener(){
+                            public void onClick(
+                                    DialogInterface dialog,
+                                    int which){
+                                startTestModule();
+                            }
+                        })
+                .show();
     }
 
     private Bundle getPrintParam() {
