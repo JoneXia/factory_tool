@@ -72,7 +72,9 @@ public class WifiStartActivity extends BaseActivity {
                 findViewById(R.id.test_case1).setVisibility(View.GONE);
                 break;
             case Globals.D4SH:
+            case Globals.D4SH_oversea:
             case Globals.D4H:
+            case Globals.D4H_oversea:
                 findViewById(R.id.test_case0).setVisibility(View.VISIBLE);
                 break;
         }

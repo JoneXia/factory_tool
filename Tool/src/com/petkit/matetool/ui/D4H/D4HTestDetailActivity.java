@@ -816,9 +816,14 @@ public class D4HTestDetailActivity extends BaseActivity implements PetkitSocketI
                                     payload.put("opt", 1);
                                     PetkitSocketInstance.getInstance().sendString(DeviceCommonUtils.getRequestForKeyAndPayload(161, payload));
                                 } else if (opt == 1) {
-                                    mDescTextView.append("\n进行读取校验");
+                                    mDescTextView.append("\n写入SN成功");
+                                    if (isNewSN) {
+                                        isNewSN = false;
+                                        DeviceCommonUtils.storeSucceedDeviceInfo(mDeviceType, mDevice, mAgeingResult);
+                                    }
 
-                                    PetkitSocketInstance.getInstance().sendString(DeviceCommonUtils.getDefaultRequestForKey(110));
+                                    mTestUnits.get(mCurTestStep).setResult(TEST_PASS);
+                                    refershBtnView();
                                 } else {
                                     mDescTextView.append("\n opt参数错误！值为：" + opt);
                                 }

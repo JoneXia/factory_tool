@@ -14,7 +14,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.petkit.android.utils.LogcatStorageHelper;
 import com.petkit.android.utils.PetkitLog;
+import com.petkit.android.utils.PetkitToast;
 import com.petkit.matetool.R;
 import com.petkit.matetool.model.UDPDevice;
 import com.petkit.matetool.model.UDPScanRecord;
@@ -135,6 +137,7 @@ public class UDPManagerActivity extends BaseListActivity {
                 mServer = new UDPServer();
                 mServer.setListener((device) -> {
                     PetkitLog.d("find new device: " + device.toString());
+                    LogcatStorageHelper.addLog("find UDP new device: " + device.toString());
                     if (!mList.contains(device) && device.getScanRecord().equals(mFlterScanRecord)) {
                         mList.add(device);
 
