@@ -310,14 +310,37 @@ public class D4HTestMainActivity extends BaseActivity implements PetkitSocketIns
         String apSsid = mWifiAdminSimple.getWifiConnectedSsid();
         if(apSsid == null || !apSsid.equalsIgnoreCase("PETKIT_PT_WIFI")) {
             mInfoTestTextView.setText("请先连接到特定的WIFI《PETKIT_PT_WIFI》，再进行测试！");
-//        } else {
-//            showWifiManager();
         }
 
         mAdapter.notifyDataSetChanged();
     }
 
+    private boolean checkWifi() {
+        String apSsid = mWifiAdminSimple.getWifiConnectedSsid();
+        if(apSsid == null || !apSsid.startsWith("PETKIT_PT_WIFI")) {
+            return false;
+        }
+
+        String targetSsid;
+        switch (mTestType) {
+            case Globals.TYPE_TEST_PARTIALLY:
+                targetSsid = "PETKIT_PT_WIFI_1";
+                break;
+            case Globals.TYPE_TEST:
+                targetSsid = "PETKIT_PT_WIFI_3";
+                break;
+            default:
+                targetSsid = "PETKIT_PT_WIFI";
+                break;
+        }
+        return targetSsid.equalsIgnoreCase(apSsid);
+    }
+
     private void showWifiManager() {
+        if (!checkWifi()) {
+            showShortToast("请先连接到指定WiFi");
+            return;
+        }
         switch (mTestType) {
             case Globals.TYPE_TEST_BOARD:
                 startActivityForResult(UDPManagerActivity.getIntent(this, new UDPScanRecord(DeviceCommonUtils.getDeviceTesterKeyByType(mDeviceType), 0)), 0x111);
