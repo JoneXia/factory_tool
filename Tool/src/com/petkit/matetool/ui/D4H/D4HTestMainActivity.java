@@ -329,6 +329,8 @@ public class D4HTestMainActivity extends BaseActivity implements PetkitSocketIns
             case Globals.TYPE_TEST:
                 targetSsid = "PETKIT_PT_WIFI_3";
                 break;
+            case Globals.TYPE_AFTERMARKET:
+                return true;
             default:
                 targetSsid = "PETKIT_PT_WIFI";
                 break;
