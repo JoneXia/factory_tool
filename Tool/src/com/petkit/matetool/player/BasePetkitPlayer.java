@@ -172,6 +172,8 @@ public abstract class BasePetkitPlayer extends RelativeLayout implements VideoLi
                         layoutParams1.width = getMeasuredWidth();
                         layoutParams1.height = getMeasuredHeight();
                         landscapeView.setLayoutParams(layoutParams1);
+
+                        PetkitLog.d("setConfiguration onGlobalLayout landscapeView: width: " + layoutParams1.width + ", height: " + layoutParams1.height);
                     }
 
                     if (coverView != null){
@@ -179,6 +181,8 @@ public abstract class BasePetkitPlayer extends RelativeLayout implements VideoLi
                         layoutParams2.width = getMeasuredWidth();
                         layoutParams2.height = getMeasuredHeight();
                         coverView.setLayoutParams(layoutParams2);
+
+                        PetkitLog.d("setConfiguration onGlobalLayout coverView: width: " + layoutParams2.width + ", height: " + layoutParams2.height);
                     }
 
                     getViewTreeObserver().removeOnGlobalLayoutListener(this);

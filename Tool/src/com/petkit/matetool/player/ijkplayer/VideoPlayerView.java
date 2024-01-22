@@ -1418,6 +1418,9 @@ public class VideoPlayerView extends LinearLayout implements TextureView.Surface
             originTextureViewWidth = textureViewWidth;
             originTextureViewHeight = textureViewHeight;
 
+            PetkitLog.d("setConfiguration autoEntryFullScreen: width: " + originWidth + ", height: " + originHeight);
+            PetkitLog.d("setConfiguration autoEntryFullScreen: originTextureViewWidth: " + originTextureViewWidth + ", originTextureViewHeight: " + originTextureViewHeight);
+
             setLayoutParams(layoutParams);
             textureView.setLayoutParams(new LayoutParams(textureViewWidth, textureViewHeight));
 //            textureView.setLayoutParams(layoutParams);
