@@ -36,8 +36,6 @@
     <string name="s_bx_full">O caixote de resíduos está cheio. Esvazie-o</string>
     <string name="s_around">O gato aproximou-se à zona de deteção</string>
     <string name="s_pet_w_r">Peso do gato</string>
-    <string name="s_pet_w">Adicionar peso</string>
-    <string name="s_pet_in">O gato está na liteira</string>
     <string name="s_15min">Iniciar limpeza em 15 minutos</string>
     <string name="s_14min">Iniciar limpeza em 14 minutos</string>
     <string name="s_13min">Iniciar limpeza em 13 minutos</string>
@@ -62,11 +60,12 @@
     <string name="s_spr_fb">A inicialização da Liteira falhou. Por favor, verifique a bateria do Dispositivo de Remoção de Odor.</string>
     <string name="s_spr_fn">A inicialização da Liteira falhou. O Dispositivo de Remoção de Odor não foi encontrado.</string>
     <string name="s_spr_bt">A bateria do Dispositivo de Remoção de Odor não possui carga suficiente. Por favor, substitua as baterias.</string>
-
+    <string name="s_pet_w">Adicionar peso</string>
+    <string name="s_pet_in">O gato está na liteira</string>
     <string name="s_mten">Modo de Manutenção</string>
     <string name="s_mten_i">Em manutenção, clique OK para sair</string>
     <string name="s_err_hall_o">Erro da tampa de fecho. Verifique</string>
-    <string name="s_pet_s">Sensor ativado, segure "OK" para proceguir</string>
+    <string name="s_pet_s">Sensor ativado, clique duas "OK" para proceguir </string>
 
 
 </resources>

@@ -1,14 +1,14 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="s_wific">Конфигурирование сети</string>
-    <string name="s_wifici">Подключение...</string>
+    <string name="s_wifici">Подключение…</string>
     <string name="s_wificed">Подключено</string>
     <string name="s_rst">Сброс</string>
     <string name="s_spd">Приостановлено</string>
     <string name="s_rst_i">Идет сброс</string>
     <string name="s_rst_ovr">Сброс завершен</string>
     <string name="s_od_rmv">Удалить запахи</string>
-    <string name="s_od_rmvi">Удаление запахов...</string>
+    <string name="s_od_rmvi">Удаление запахов…</string>
     <string name="s_od_rmvd">Запахи удалены</string>
     <string name="s_cln">Очистить сейчас</string>
     <string name="s_cln_i">Очистка</string>
@@ -36,8 +36,6 @@
     <string name="s_bx_full">Бак для сбора мусора заполнен, пожалуйста, очистите его</string>
     <string name="s_around">Кот попал в зону обнаружения</string>
     <string name="s_pet_w_r">Вес кота</string>
-    <string name="s_pet_w">Добавить вес</string>
-    <string name="s_pet_in">Кот в лотке</string>
     <string name="s_15min">Начать очистку через 15 минут</string>
     <string name="s_14min">Начать очистку через 14 минут</string>
     <string name="s_13min">Начать очистку через 13 минут</string>
@@ -62,10 +60,11 @@
     <string name="s_spr_fb">Не удалось запустить лоток. Пожалуйста, проверьте аккумулятор в устройстве для удаления запаха.</string>
     <string name="s_spr_fn">Не удалось запустить лоток. Устройство для удаления запаха не обнаружено.</string>
     <string name="s_spr_bt">Батарея устройства удаления запаха разряжена. Пожалуйста, замените батарею.</string>
-
+    <string name="s_pet_w">Добавить вес</string>
+    <string name="s_pet_in">Кот в лотке</string>
     <string name="s_mten">Режим обслуживания</string>
     <string name="s_mten_i">Производится обслуживание, нажмите ОК, чтобы выйти</string>
     <string name="s_err_hall_o">Ошибка уплотнительной крышки, пожалуйста, проверьте ее</string>
-    <string name="s_pet_s">Датчик включен, зажмите "ОК" для продолжения</string>
+    <string name="s_pet_s">Датчик включен, дважды нажмите "ОК" для продолжения</string>
 
 </resources>

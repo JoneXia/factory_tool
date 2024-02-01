@@ -302,6 +302,7 @@
 
 	<string name="Mate_microphone">麦克风</string>
 
+	<!-- T4 dev -->
 	<string name="s_wific">Configure the network</string>
 	<string name="s_wifici">Connecting…</string>
 	<string name="s_wificed">Connected</string>
@@ -338,8 +339,6 @@
 	<string name="s_bx_full">Waste collection bin is full, please empty</string>
 	<string name="s_around">The cat has approached the detection zone</string>
 	<string name="s_pet_w_r">Cat weight</string>
-	<string name="s_pet_w">Add weight</string>
-	<string name="s_pet_in">Cat is in the litter box</string>
 	<string name="s_15min">Initiate cleaning in 15 minutes</string>
 	<string name="s_14min">Initiate cleaning in 14 minutes</string>
 	<string name="s_13min">Initiate cleaning in 13 minutes</string>
@@ -354,8 +353,6 @@
 	<string name="s_4min">Initiate cleaning in 4 minutes</string>
 	<string name="s_3min">Initiate cleaning in 3 minutes</string>
 	<string name="s_2min">Initiate cleaning in 2 minutes</string>
-
-	<!-- T4 dev -->
 	<string name="s_light">Turn on the Light</string>
 	<string name="s_light_o">Light On</string>
 	<string name="s_light_c">Turn off the Light</string>
@@ -366,10 +363,11 @@
 	<string name="s_spr_fb">Litter Box start failed. Please check the battery in Odor Removal Device. </string>
 	<string name="s_spr_fn">Litter Box start failed. Odor Removal Device undetected. </string>
 	<string name="s_spr_bt">Odor Removal Device battery low. Please replace the batteries. </string>
+	<string name="s_pet_w">Add weight</string>
+	<string name="s_pet_in">Cat is in the litter box</string>
 	<string name="s_mten">Maintenance Mode</string>
 	<string name="s_mten_i">Under maintenance, click OK to exit</string>
-
 	<string name="s_err_hall_o">Sealing cover error, please check</string>
-	<string name="s_pet_s">Sensor triggered, long press "OK" to resume</string>
+	<string name="s_pet_s">Sensor triggered, double click OK button to resume</string>
 
 </resources>

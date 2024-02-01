@@ -36,8 +36,6 @@
     <string name="s_bx_full">集便盒已滿，請清理</string>
     <string name="s_around">貓已靠近檢測區域</string>
     <string name="s_pet_w_r">貓咪體重</string>
-    <string name="s_pet_w">增加重量</string>
-    <string name="s_pet_in">貓咪已進入</string>
     <string name="s_15min">15分鐘後開始清理</string>
     <string name="s_14min">14分鐘後開始清理</string>
     <string name="s_13min">13分鐘後開始清理</string>
@@ -62,10 +60,11 @@
     <string name="s_spr_fb">啟動失敗，請檢查淨味器電量</string>
     <string name="s_spr_fn">啟動失敗，未找到淨味器</string>
     <string name="s_spr_bt">淨味器電量不足，請更換電池</string>
-
+    <string name="s_pet_w">增加重量</string>
+    <string name="s_pet_in">貓咪已進入</string>
     <string name="s_mten">保養/維護模式</string>
     <string name="s_mten_i">在保養/維護模式下，點擊OK退出</string>
     <string name="s_err_hall_o">集便盒上蓋異常，請檢查</string>
-    <string name="s_pet_s">已觸發感測器，長按「OK」鍵恢復作業</string>
+    <string name="s_pet_s">已觸發感測器，按兩下「OK」鍵恢復作業</string>
 
 </resources>

@@ -301,7 +301,7 @@
 
     <string name="Mate_microphone">麦克风</string>
 
-    <!-- T3 dev -->
+    <!-- T4 dev -->
     <string name="s_wific">配置网络</string>
     <string name="s_wifici">正在配网</string>
     <string name="s_wificed">配网完成</string>
@@ -318,9 +318,9 @@
     <string name="s_dmp">倾空猫砂</string>
     <string name="s_dmp_i">正在倾倒</string>
     <string name="s_dmp_ovr">倾倒完成</string>
-    <string name="s_smth">平整猫砂</string>
-    <string name="s_smth_ing">正在平整</string>
-    <string name="s_smth_ovr">平整完成</string>
+    <string name="s_smth">抚平猫砂</string>
+    <string name="s_smth_ing">正在抚平</string>
+    <string name="s_smth_ovr">抚平完成</string>
     <string name="s_bk2main">返回首页</string>
     <string name="s_ota_ing">正在升级</string>
     <string name="s_err_tip">设备故障</string>
@@ -338,8 +338,6 @@
     <string name="s_bx_full">集便盒已满，请清理</string>
     <string name="s_around">猫已靠近检测区域</string>
     <string name="s_pet_w_r">猫咪体重</string>
-    <string name="s_pet_w">增加重量</string>
-    <string name="s_pet_in">猫咪已进入</string>
     <string name="s_15min">15分钟后开始清理</string>
     <string name="s_14min">14分钟后开始清理</string>
     <string name="s_13min">13分钟后开始清理</string>
@@ -354,8 +352,6 @@
     <string name="s_4min">4分钟后开始清理</string>
     <string name="s_3min">3分钟后开始清理</string>
     <string name="s_2min">2分钟后开始清理</string>
-
-    <!-- T4 dev -->
     <string name="s_light">立即亮灯</string>
     <string name="s_light_o">灯光已开启</string>
     <string name="s_light_c">关闭灯光</string>
@@ -366,10 +362,12 @@
     <string name="s_spr_fb">启动失败，请检查净味器电量</string>
     <string name="s_spr_fn">启动失败，未找到净味器</string>
     <string name="s_spr_bt">净味器电量不足，请更换电池</string>
+    <string name="s_pet_w">增加重量</string>
+    <string name="s_pet_in">猫咪已进入</string>
     <string name="s_mten">维护模式</string>
     <string name="s_mten_i">维护中，点击OK键退出</string>
     <string name="s_err_hall_o">集便盒上盖异常，请检查</string>
-    <string name="s_pet_s">传感器已触发，长按“OK”键恢复工作</string>
+    <string name="s_pet_s">传感器已触发，双击“OK”键恢复工作</string>
 
 
 </resources>

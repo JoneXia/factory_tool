@@ -101,7 +101,7 @@ public class DeviceCommonUtils {
                 Globals.DEVICE_TYPE_CODE_NEW_R2, R2TestMainActivity.class));
         mDeviceConfigs.put(Globals.W5N, new DeviceConfigInfo(true, "W5", "W5N", new String[]{"Petkit_W5N", "Petkit_W4X"},
                 Globals.DEVICE_TYPE_CODE_NEW_W5N, W5NTestMainActivity.class));
-        mDeviceConfigs.put(Globals.W4X, new DeviceConfigInfo(true, "W5", "W4X", new String[]{"Petkit_W5N", "Petkit_W4X"},
+        mDeviceConfigs.put(Globals.W4X, new DeviceConfigInfo(true, "W5", "W4X", new String[]{"Petkit_W5N", "Petkit_W4X", "Petkit_W4XUVC", "Petkit_CTW2"},
                 Globals.DEVICE_TYPE_CODE_NEW_W4X, W5NTestMainActivity.class));
         mDeviceConfigs.put(Globals.AQH1_500, new DeviceConfigInfo(false, "AQH1", "AQH1_500", null,
                 Globals.DEVICE_TYPE_CODE_NEW_AQH1_500, AQH1TestMainActivity.class));
@@ -111,7 +111,7 @@ public class DeviceCommonUtils {
                 Globals.DEVICE_TYPE_CODE_NEW_AQH1_500, AQH1TestMainActivity.class));
         mDeviceConfigs.put(Globals.AQH1_1000_A, new DeviceConfigInfo(false, "AQH1", "AQH1_1000", null,
                 Globals.DEVICE_TYPE_CODE_NEW_AQH1_1000, AQH1TestMainActivity.class));
-        mDeviceConfigs.put(Globals.CTW2, new DeviceConfigInfo(true, "W5", "CTW2", new String[]{"Petkit_W5N", "Petkit_W4X", "Petkit_CTW2"},
+        mDeviceConfigs.put(Globals.CTW2, new DeviceConfigInfo(true, "W5", "CTW2", new String[]{"Petkit_W5N", "Petkit_W4X", "Petkit_W4XUVC", "Petkit_CTW2"},
                 Globals.DEVICE_TYPE_CODE_NEW_CTW2, W5NTestMainActivity.class));
 //        mDeviceConfigs.put(Globals.D3_1, new DeviceConfigInfo(true, "D3_1", "D3_1", null,
 //                Globals.DEVICE_TYPE_CODE_NEW_D3_1, D3TestMainActivity.class));

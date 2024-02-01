@@ -1,14 +1,14 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="s_wific">Configurar la Red</string>
-    <string name="s_wifici">Conectando...</string>
+    <string name="s_wifici">Conectando…</string>
     <string name="s_wificed">Conectado</string>
     <string name="s_rst">Reiniciar</string>
     <string name="s_spd">Pausado</string>
     <string name="s_rst_i">Restableciendo</string>
     <string name="s_rst_ovr">Restablecimiento completo</string>
     <string name="s_od_rmv">Desodorizar ahora</string>
-    <string name="s_od_rmvi">Desodorizando...</string>
+    <string name="s_od_rmvi">Desodorizando…</string>
     <string name="s_od_rmvd">Desodorizado</string>
     <string name="s_cln">Limpiar ahora</string>
     <string name="s_cln_i">Limpiar</string>
@@ -36,8 +36,6 @@
     <string name="s_bx_full">El recipiente de recolección de residuos está lleno, por favor vacíelo</string>
     <string name="s_around">El gato se ha acercado a la zona de detección.</string>
     <string name="s_pet_w_r">Peso del Gato</string>
-    <string name="s_pet_w">Agregar el Peso</string>
-    <string name="s_pet_in">El Gato está en la litera con arena</string>
     <string name="s_15min">Iniciar la limpieza en 15 minutos</string>
     <string name="s_14min">Iniciar la limpieza en 14 minutos</string>
     <string name="s_13min">Iniciar la limpieza en 13 minutos</string>
@@ -62,10 +60,12 @@
     <string name="s_spr_fb">La caja de arena no se ha iniciado. Compruebe la batería del dispositivo de eliminación de olores. </string>
     <string name="s_spr_fn">La caja de arena no se ha iniciado. No se ha detectado el dispositivo de eliminación de olores. </string>
     <string name="s_spr_bt">La batería del dispositivo de eliminación de olores está baja. Reemplace las pilas.</string>
+    <string name="s_pet_w">Agregar el Peso</string>
+    <string name="s_pet_in">El Gato está en la litera con arena</string>
     <string name="s_mten">Modo de mantenimiento</string>
     <string name="s_mten_i">En mantenimiento, clic en OK para salir</string>
     <string name="s_err_hall_o">Tapa protectora anormal, por favor compruebe</string>
-    <string name="s_pet_s">Sensor en uso, mantén "OK" pulsado para reanudar.</string>
+    <string name="s_pet_s">Sensor en uso, doble clic en "OK" pulsado para reanudar.</string>
 
 
 </resources>

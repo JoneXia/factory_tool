@@ -36,8 +36,6 @@
   <string name="s_bx_full">Cestino dei rifiuti pieno, per favore svuota</string>
   <string name="s_around">Il gatto si è avvicinato all\'area di rilevazione</string>
   <string name="s_pet_w_r">Peso del gatto</string>
-  <string name="s_pet_w">Aggiungi peso</string>
-  <string name="s_pet_in">Il gatto è nella lettiera chiusa</string>
   <string name="s_15min">Inizio pulizia in 15 minuti</string>
   <string name="s_14min">Inizio pulizia in 14 minuti</string>
   <string name="s_13min">Inizio pulizia in 13 minuti</string>
@@ -62,10 +60,12 @@
   <string name="s_spr_fb">Avvio del Cestino della Spazzatura non riuscito. Controlla la batteria del Dispositivo Rimuovi Odori</string>
   <string name="s_spr_fn">Avvio del Cestino della Spazzatura non riuscito. Dispositivo Rimuovi Odori non rilevato.</string>
   <string name="s_spr_bt">Batteria scarica del Dispositivo Rimuovi Odori. Sostituisci le batterie.</string>
+  <string name="s_pet_w">Aggiungi peso</string>
+  <string name="s_pet_in">Il gatto è nella lettiera chiusa</string>
   <string name="s_mten">Modalità di Manutenzione</string>
   <string name="s_mten_i">In manutenzione, fare clic su OK per uscire</string>
   <string name="s_err_hall_o">Errore del coperchio di tenuta, controllare</string>
-  <string name="s_pet_s">Sensore attivo, premi a lungo "OK" per riprendere</string>
+  <string name="s_pet_s">Sensore attivo, fare doppio cli OK per riprendere</string>
 
 
 </resources>

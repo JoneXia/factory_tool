@@ -36,8 +36,6 @@
     <string name="s_bx_full">Der Abfallsammelbehälter ist voll, bitte leer</string>
     <string name="s_around">Die Katze hat sich der Erkennungszone genähert</string>
     <string name="s_pet_w_r">Katzengewicht</string>
-    <string name="s_pet_w">Gewicht hinzufügen</string>
-    <string name="s_pet_in">Katze ist in der Katzentoilette</string>
     <string name="s_15min">Starten Sie die Reinigung in 15 Minuten</string>
     <string name="s_14min">Starten Sie die Reinigung in 14 Minuten</string>
     <string name="s_13min">Starten Sie die Reinigung in 13 Minuten</string>
@@ -62,10 +60,12 @@
     <string name="s_spr_fb">Katzenklostart fehlgeschlagen. Bitte überprüfen Sie die Batterie im Geruchsbeseitigungsgerät.  </string>
     <string name="s_spr_fn">Katzenklostart fehlgeschlagen. Geruchsbeseitigungsgerät nicht erkannt. </string>
     <string name="s_spr_bt">Niedriger Batteriestand des Geruchsbeseitigungsgeräts; bitte ersetzen Sie die Batterien. </string>
+    <string name="s_pet_w">Gewicht hinzufügen</string>
+    <string name="s_pet_in">Katze ist in der Katzentoilette</string>
     <string name="s_mten">Wartungsmodus</string>
     <string name="s_mten_i">Unter Wartung, klicken Sie zum Abbrechen</string>
     <string name="s_err_hall_o">Fehler am Dichtungsdeckel, bitte überprüfen</string>
-    <string name="s_pet_s">Sensor ausgelöst, langes Drücken auf "OK" zum Fortfahren</string>
+    <string name="s_pet_s">Sensor ausgelöst, drücken sie zweimal auf die "OK" zum Fortfahren</string>
 
 
 </resources>

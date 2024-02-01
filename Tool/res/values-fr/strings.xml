@@ -1,5 +1,5 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    
+
     <string name="s_wific">Configurer le réseau</string>
     <string name="s_wifici">En cours de connection</string>
     <string name="s_wificed">Connecté</string>
@@ -36,8 +36,6 @@
     <string name="s_bx_full">Le bac de récupération des déchets est plein, veuillez le vider</string>
     <string name="s_around">Le chat approche de la zone de détection</string>
     <string name="s_pet_w_r">Poids du chat</string>
-    <string name="s_pet_w">Ajoutez du poids</string>
-    <string name="s_pet_in">Le chat est dans le bac à llitière</string>
     <string name="s_15min">Commencer le nettoyage dans 15 minutes</string>
     <string name="s_14min">Commencer le nettoyage dans 14 minutes</string>
     <string name="s_13min">Commencer le nettoyage dans 13 minutes</string>
@@ -62,9 +60,11 @@
     <string name="s_spr_fb">Le démarrage du bac à litière a échoué. Veuillez vérifier la batterie du dispositif d\'élimination des odeurs. </string>
     <string name="s_spr_fn">Le démarrage du bac à litière a échoué. Le dispositif d\'élimination des odeurs n\'a pas été détecté. </string>
     <string name="s_spr_bt">La pile du dispositif d\'élimination des odeurs est faible. Veuillez remplacer les piles.</string>
+    <string name="s_pet_w">Ajoutez du poids</string>
+    <string name="s_pet_in">Le chat est dans le bac à llitière</string>
     <string name="s_mten">Mode de Maintenance</string>
     <string name="s_mten_i">Sous maintenance, cliquez sur OK pour quitter</string>
     <string name="s_err_hall_o">Erreur du couvercle d\'étanchéité, veuillez vérifier</string>
-    <string name="s_pet_s">Déclenchement du capteur, appuyez longuement sur "OK" pour recommencer</string>
+    <string name="s_pet_s">Déclenchement du capteur, cliquez deux fois sur "OK" pour recommencer</string>
 
 </resources>

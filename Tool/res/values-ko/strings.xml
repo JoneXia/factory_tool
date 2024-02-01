@@ -1,13 +1,13 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="s_wific">네트워크 구성</string>
-  <string name="s_wifici">연결 중...</string>
+  <string name="s_wifici">연결 중…</string>
   <string name="s_wificed">연결됨</string>
   <string name="s_rst">초기화</string>
   <string name="s_spd">일시 중지됨</string>
   <string name="s_rst_i">재설정</string>
   <string name="s_rst_ovr">재설정 완료</string>
   <string name="s_od_rmv">지금 탈취</string>
-  <string name="s_od_rmvi">탈취 중...</string>
+  <string name="s_od_rmvi">탈취 중…</string>
   <string name="s_od_rmvd">탈취됨</string>
   <string name="s_cln">지금 청소</string>
   <string name="s_cln_i">청소</string>
@@ -35,8 +35,6 @@
   <string name="s_bx_full">오물 수거통이 가득 찼습니다. 비워 주세요.</string>
   <string name="s_around">고양이가 감지 구역에 접근했습니다.</string>
   <string name="s_pet_w_r">고양이 체중</string>
-  <string name="s_pet_w">체중 추가</string>
-  <string name="s_pet_in">고양이가 리터 상자 안에 있음</string>
   <string name="s_15min">15분 후 청소 시작</string>
   <string name="s_14min">14분 후 청소 시작</string>
   <string name="s_13min">13분 내 청소 시작</string>
@@ -61,10 +59,12 @@
   <string name="s_spr_fb">작동 실패. 냄새 청정기 배터리를 확인하여 주십시오</string>
   <string name="s_spr_fn">작동 실패. 냄새 청정기를 찾지 못함</string>
   <string name="s_spr_bt">냄새 청정기의 배터리가 부족함. 배터리를 교체하여 주십시오</string>
+  <string name="s_pet_w">체중 추가</string>
+  <string name="s_pet_in">고양이가 리터 상자 안에 있음</string>
   <string name="s_mten">유지 보수 모드</string>
   <string name="s_mten_i">유지 보수 중, OK를 눌러 나가기 </string>
   <string name="s_err_hall_o">밀봉 덮개 오류. 확인해 주십시오</string>
-  <string name="s_pet_s">센서가 작동했습니다. "OK"를 길게 눌러 재시작해 주십시오</string>
+  <string name="s_pet_s">센서가 작동했습니다. 다시 시작하려면 "OK"을 두 번 클릭하세요.</string>
 
 
 </resources>
